@@ -113,7 +113,7 @@
       </div>
     </section>
 
-    <!-- معرض الصور (يعمل باللمس والانتقال بسلاسة) -->
+    <!-- معرض الصور -->
     <section class="section" id="work">
       <div class="section-heading">
         <div>
@@ -215,7 +215,7 @@
       </div>
     </section>
 
-    <!-- نموذج التواصل الموجه إلى PHP -->
+    <!-- نموذج التواصل الفوري (واتساب) -->
     <section class="contact-section" id="contact">
       <div class="contact-top">
         <p class="eyebrow" data-i18n="contactTop1">لديك قصة تريد روايتها؟</p>
@@ -228,15 +228,18 @@
         أخبرني بما تتخيله. دعنا نحول فكرتك إلى عمل فني يستحق الاحتفاظ به.
       </p>
 
-      <form id="phpContactForm" action="send.php" method="POST" style="max-width: 500px; margin: 30px auto; display: flex; flex-direction: column; gap: 15px; text-align: right;">
-        <input type="text" name="name" placeholder="اسمك الكريم" required style="padding: 12px; background: #1a1a18; border: 1px solid var(--line); color: white; border-radius: 4px;">
-        <select name="session" style="padding: 12px; background: #1a1a18; border: 1px solid var(--line); color: white; border-radius: 4px;">
-          <option value="جلسة بورتريه">جلسة بورتريه</option>
-          <option value="تصوير تخرج">تصوير تخرج</option>
-          <option value="تصوير تجاري">تصوير تجاري</option>
-          <option value="أخرى">أخرى</option>
+      <form id="directContactForm" style="max-width: 500px; margin: 30px auto; display: flex; flex-direction: column; gap: 15px; text-align: right;">
+        <input type="text" id="clientName" data-i18n-placeholder="namePlaceholder" placeholder="اسمك الكريم" required style="padding: 12px; background: #1a1a18; border: 1px solid var(--line); color: white; border-radius: 4px;">
+        
+        <select id="sessionType" style="padding: 12px; background: #1a1a18; border: 1px solid var(--line); color: white; border-radius: 4px;">
+          <option value="جلسة بورتريه" data-i18n="opt1">جلسة بورتريه</option>
+          <option value="تصوير تخرج" data-i18n="opt2">تصوير تخرج</option>
+          <option value="تصوير تجاري" data-i18n="opt3">تصوير تجاري</option>
+          <option value="أخرى" data-i18n="opt4">أخرى</option>
         </select>
-        <textarea name="message" placeholder="تفاصيل الطلب أو الرسالة..." rows="4" required style="padding: 12px; background: #1a1a18; border: 1px solid var(--line); color: white; border-radius: 4px; resize: none;"></textarea>
+
+        <textarea id="clientMsg" data-i18n-placeholder="msgPlaceholder" placeholder="تفاصيل الطلب أو الرسالة..." rows="4" required style="padding: 12px; background: #1a1a18; border: 1px solid var(--line); color: white; border-radius: 4px; resize: none;"></textarea>
+        
         <button type="submit" class="button button-gold" style="width: 100%; cursor: pointer;"><span data-i18n="sendBtn">إرسال الطلب</span> <span>↗</span></button>
       </form>
 
