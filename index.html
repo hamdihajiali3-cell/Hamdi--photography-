@@ -31,7 +31,7 @@
       <span class="brand-name">HAMDI<small>PHOTOGRAPHY</small></span>
     </a>
 
-    <!-- محدد اللغات الثلاث (عربي، تركي، إنجليزي) -->
+    <!-- محدد اللغات الثلاث -->
     <div class="language-switcher" style="display: flex; gap: 8px; font-size: 11px; color: var(--gold);">
       <button onclick="setLanguage('ar')" style="background:none; border:none; color:inherit; cursor:pointer; font-weight:bold;">AR</button> |
       <button onclick="setLanguage('tr')" style="background:none; border:none; color:inherit; cursor:pointer;">TR</button> |
@@ -41,40 +41,40 @@
     <button class="menu-toggle" aria-label="Open menu" aria-expanded="false">☰</button>
 
     <nav class="nav">
-      <a href="#work">معرض الصور</a>
-      <a href="#about">من أنا</a>
-      <a href="#services">خدماتي</a>
-      <a class="nav-cta" href="#contact">لنتحدث <span>↗</span></a>
+      <a href="#work" data-i18n="navWork">معرض الصور</a>
+      <a href="#about" data-i18n="navAbout">من أنا</a>
+      <a href="#services" data-i18n="navServices">خدماتي</a>
+      <a class="nav-cta" href="#contact" data-i18n="navContact">لنتحدث <span>↗</span></a>
     </nav>
   </header>
 
   <main>
     <section class="hero" id="home">
       <div class="hero-copy">
-        <p class="eyebrow">
+        <p class="eyebrow" data-i18n="heroEyebrow">
           <span class="live-dot"></span>
           مصور فوتوغرافي وموثق بصري
         </p>
 
-        <h1 id="hero-title">الحياة، بنظرة<br><em>مختلفة تماماً.</em></h1>
+        <h1 data-i18n="heroTitle">الحياة، بنظرة<br><em>مختلفة تماماً.</em></h1>
 
-        <p class="hero-text" id="hero-desc">
+        <p class="hero-text" data-i18n="heroDesc">
           كل لقطة تحكي شعوراً. اكتشف التصوير السينمائي، البورتريهات التي لا تُنسى، والقصص البصرية المصنوعة بشغف وعناية.
         </p>
 
         <div class="hero-actions">
-          <a class="button button-gold" href="#work">
+          <a class="button button-gold" href="#work" data-i18n="heroBtn1">
             استعرض أعمالي <span>↘</span>
           </a>
-          <a class="text-link" href="#about">
+          <a class="text-link" href="#about" data-i18n="heroBtn2">
             اكتشف الرؤية <span>→</span>
           </a>
         </div>
 
         <div class="hero-meta">
-          <div><strong>01</strong><span>القصة أولاً</span></div>
-          <div><strong>02</strong><span>عشق الإضاءة</span></div>
-          <div><strong>03</strong><span>أصالة دائمة</span></div>
+          <div><strong>01</strong><span data-i18n="meta1">القصة أولاً</span></div>
+          <div><strong>02</strong><span data-i18n="meta2">عشق الإضاءة</span></div>
+          <div><strong>03</strong><span data-i18n="meta3">أصالة دائمة</span></div>
         </div>
       </div>
 
@@ -84,11 +84,11 @@
         <div class="orbit orbit-one"></div>
         <div class="orbit orbit-two"></div>
 
-        <div class="floating-label label-top">
+        <div class="floating-label label-top" data-i18n="visualLabel1">
           السجل البصري <span>— 2026</span>
         </div>
 
-        <div class="floating-label label-bottom">
+        <div class="floating-label label-bottom" data-i18n="visualLabel2">
           <span class="tiny-line"></span> اطبع قصتك الخاصة
         </div>
 
@@ -96,81 +96,81 @@
       </div>
 
       <a class="scroll-cue" href="#work">
-        <span></span> اسحب للاستكشاف
+        <span></span> <span data-i18n="scrollCue">اسحب للاستكشاف</span>
       </a>
     </section>
 
     <section class="ticker">
       <div class="ticker-track">
-        <span>بورتريه</span><b>✳</b>
-        <span>إيديتوريال</span><b>✳</b>
-        <span>قصص الشارع</span><b>✳</b>
-        <span>فنون بصرية</span><b>✳</b>
-        <span>بورتريه</span><b>✳</b>
-        <span>إيديتوريال</span><b>✳</b>
-        <span>قصص الشارع</span><b>✳</b>
-        <span>فنون بصرية</span><b>✳</b>
+        <span data-i18n="t1">بورتريه</span><b>✳</b>
+        <span data-i18n="t2">إيديتوريال</span><b>✳</b>
+        <span data-i18n="t3">قصص الشارع</span><b>✳</b>
+        <span data-i18n="t4">فنون بصرية</span><b>✳</b>
+        <span data-i18n="t1">بورتريه</span><b>✳</b>
+        <span data-i18n="t2">إيديتوريال</span><b>✳</b>
+        <span data-i18n="t3">قصص الشارع</span><b>✳</b>
+        <span data-i18n="t4">فنون بصرية</span><b>✳</b>
       </div>
     </section>
 
-    <!-- معرض الصور -->
+    <!-- معرض الصور (يعمل باللمس والانتقال بسلاسة) -->
     <section class="section" id="work">
       <div class="section-heading">
         <div>
-          <p class="eyebrow">لقطات مختارة / 2024—2026</p>
-          <h2>لحظات تستحق<br><em>أن تتوقف عندها.</em></h2>
+          <p class="eyebrow" data-i18n="workEyebrow">لقطات مختارة / 2024—2026</p>
+          <h2 data-i18n="workTitle">لحظات تستحق<br><em>أن تتوقف عندها.</em></h2>
         </div>
-        <p class="section-intro">
+        <p class="section-intro" data-i18n="workIntro">
           مجموعة من اللحظات، الأجواء، والتفاصيل الدقيقة بعدسة احترافية.
         </p>
       </div>
 
       <div class="gallery">
-        <a class="gallery-card card-tall" href="#contact" data-tilt>
+        <div class="gallery-card card-tall" onclick="location.href='#contact'" style="cursor: pointer;">
           <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1000&q=85" alt="بورتريه">
           <span class="image-shade"></span>
-          <span class="card-number">01 / بورتريه</span>
-          <span class="card-caption">النظرة الهادئة <b>↗</b></span>
-        </a>
+          <span class="card-number">01 / <span data-i18n="g1">بورتريه</span></span>
+          <span class="card-caption"><span data-i18n="gc1">النظرة الهادئة</span> <b>↗</b></span>
+        </div>
 
-        <a class="gallery-card card-wide" href="#contact" data-tilt>
+        <div class="gallery-card card-wide" onclick="location.href='#contact'" style="cursor: pointer;">
           <img src="https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=1200&q=85" alt="أجواء سينمائية">
           <span class="image-shade"></span>
-          <span class="card-number">02 / أجواء</span>
-          <span class="card-caption">بعد الساعة الزرقاء <b>↗</b></span>
-        </a>
+          <span class="card-number">02 / <span data-i18n="g2">أجواء</span></span>
+          <span class="card-caption"><span data-i18n="gc2">بعد الساعة الزرقاء</span> <b>↗</b></span>
+        </div>
 
-        <a class="gallery-card card-wide" href="#contact" data-tilt>
+        <div class="gallery-card card-wide" onclick="location.href='#contact'" style="cursor: pointer;">
           <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1200&q=85" alt="تصوير أزياء">
           <span class="image-shade"></span>
-          <span class="card-number">03 / إيديتوريال</span>
-          <span class="card-caption">دراسة في الثقة <b>↗</b></span>
-        </a>
+          <span class="card-number">03 / <span data-i18n="g3">إيديتوريال</span></span>
+          <span class="card-caption"><span data-i18n="gc3">دراسة في الثقة</span> <b>↗</b></span>
+        </div>
 
-        <a class="gallery-card card-tall" href="#contact" data-tilt>
+        <div class="gallery-card card-tall" onclick="location.href='#contact'" style="cursor: pointer;">
           <img src="https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=1000&q=85" alt="مناظر طبيعية">
           <span class="image-shade"></span>
-          <span class="card-number">04 / طبيعة</span>
-          <span class="card-caption">الضوء الأول <b>↗</b></span>
-        </a>
+          <span class="card-number">04 / <span data-i18n="g4">طبيعة</span></span>
+          <span class="card-caption"><span data-i18n="gc4">الضوء الأول</span> <b>↗</b></span>
+        </div>
       </div>
     </section>
 
     <section class="manifesto" id="about">
       <div class="manifesto-orb">
         <div class="orb-inner"></div>
-        <span>H / الرؤية</span>
+        <span data-i18n="aboutBadge">H / الرؤية</span>
       </div>
 
       <div class="manifesto-copy">
-        <p class="eyebrow">خلف العدسة</p>
-        <h2>ليس ما تراه فقط.<br><em>بل ما تشعر به.</em></h2>
+        <p class="eyebrow" data-i18n="aboutEyebrow">خلف العدسة</p>
+        <h2 data-i18n="aboutTitle">ليس ما تراه فقط.<br><em>بل ما تشعر به.</em></h2>
 
-        <p>
+        <p data-i18n="aboutDesc">
           التصوير هو فن الملاحظة. الضوء الساقط على الوجه، اللحظة التي تسبق الضحكة، والجمال المخفي في التفاصيل العادية. كل صورة يجب أن تروي قصتها الخاصة.
         </p>
 
-        <a class="text-link" href="#contact">
+        <a class="text-link" href="#contact" data-i18n="aboutLink">
           لنصنع شيئاً معاً <span>↗</span>
         </a>
       </div>
@@ -179,11 +179,11 @@
     <section class="section" id="services">
       <div class="section-heading">
         <div>
-          <p class="eyebrow">خدماتي</p>
-          <h2>مصنوعة بكل<br><em>عناية واحترافية.</em></h2>
+          <p class="eyebrow" data-i18n="servEyebrow">خدماتي</p>
+          <h2 data-i18n="servTitle">مصنوعة بكل<br><em>عناية واحترافية.</em></h2>
         </div>
 
-        <p class="section-intro">
+        <p class="section-intro" data-i18n="servIntro">
           أعمال بصرية مدروسة، مصممة خصيصاً لتناسب قصتك والأثر الذي ترغب بتركه.
         </p>
       </div>
@@ -192,56 +192,56 @@
         <article class="service">
           <span class="service-no">01</span>
           <div class="service-icon">◉</div>
-          <h3>جلسات البورتريه</h3>
-          <p>بورتريهات شخصية معبرة بإضاءة طبيعية ولمسة فنية مميزة.</p>
+          <h3 data-i18n="s1Title">جلسات البورتريه</h3>
+          <p data-i18n="s1Desc">بورتريهات شخصية معبرة بإضاءة طبيعية ولمسة فنية مميزة.</p>
           <span class="service-arrow">↗</span>
         </article>
 
         <article class="service">
           <span class="service-no">02</span>
           <div class="service-icon">▧</div>
-          <h3>التصوير التجاري (الإيديتوريال)</h3>
-          <p>صور إبداعية للعلامات التجارية، الفنانين، والحملات البصرية.</p>
+          <h3 data-i18n="s2Title">التصوير التجاري</h3>
+          <p data-i18n="s2Desc">صور إبداعية للعلامات التجارية، الفنانين، والحملات البصرية.</p>
           <span class="service-arrow">↗</span>
         </article>
 
         <article class="service">
           <span class="service-no">03</span>
           <div class="service-icon">✳</div>
-          <h3>الفعاليات والقصص</h3>
-          <p>اللحظات الحقيقية موثقة بعناية فائقة واهتمام بأدق التفاصيل.</p>
+          <h3 data-i18n="s3Title">الفعاليات والقصص</h3>
+          <p data-i18n="s3Desc">اللحظات الحقيقية موثقة بعناية فائقة واهتمام بأدق التفاصيل.</p>
           <span class="service-arrow">↗</span>
         </article>
       </div>
     </section>
 
-    <!-- نموذج التواصل السريع والمباشر -->
+    <!-- نموذج التواصل الموجه إلى PHP -->
     <section class="contact-section" id="contact">
       <div class="contact-top">
-        <p class="eyebrow">لديك قصة تريد روايتها؟</p>
-        <span>متاح للمشاريع المختارة</span>
+        <p class="eyebrow" data-i18n="contactTop1">لديك قصة تريد روايتها؟</p>
+        <span data-i18n="contactTop2">متاح للمشاريع المختارة</span>
       </div>
 
-      <h2>لنصنع شيئاً<br><em>لا يُنسى.</em></h2>
+      <h2 data-i18n="contactTitle">لنصنع شيئاً<br><em>لا يُنسى.</em></h2>
 
-      <p class="contact-description">
+      <p class="contact-description" data-i18n="contactDesc">
         أخبرني بما تتخيله. دعنا نحول فكرتك إلى عمل فني يستحق الاحتفاظ به.
       </p>
 
-      <form id="directContactForm" style="max-width: 500px; margin: 30px auto; display: flex; flex-direction: column; gap: 15px; text-align: right;">
-        <input type="text" id="clientName" placeholder="اسمك الكريم" required style="padding: 12px; background: #1a1a18; border: 1px solid var(--line); color: white; border-radius: 4px;">
-        <select id="sessionType" style="padding: 12px; background: #1a1a18; border: 1px solid var(--line); color: white; border-radius: 4px;">
+      <form id="phpContactForm" action="send.php" method="POST" style="max-width: 500px; margin: 30px auto; display: flex; flex-direction: column; gap: 15px; text-align: right;">
+        <input type="text" name="name" placeholder="اسمك الكريم" required style="padding: 12px; background: #1a1a18; border: 1px solid var(--line); color: white; border-radius: 4px;">
+        <select name="session" style="padding: 12px; background: #1a1a18; border: 1px solid var(--line); color: white; border-radius: 4px;">
           <option value="جلسة بورتريه">جلسة بورتريه</option>
           <option value="تصوير تخرج">تصوير تخرج</option>
           <option value="تصوير تجاري">تصوير تجاري</option>
           <option value="أخرى">أخرى</option>
         </select>
-        <textarea id="clientMsg" placeholder="تفاصيل الطلب أو الرسالة..." rows="4" required style="padding: 12px; background: #1a1a18; border: 1px solid var(--line); color: white; border-radius: 4px; resize: none;"></textarea>
-        <button type="submit" class="button button-gold" style="width: 100%; cursor: pointer;">إرسال الطلب الفوري <span>↗</span></button>
+        <textarea name="message" placeholder="تفاصيل الطلب أو الرسالة..." rows="4" required style="padding: 12px; background: #1a1a18; border: 1px solid var(--line); color: white; border-radius: 4px; resize: none;"></textarea>
+        <button type="submit" class="button button-gold" style="width: 100%; cursor: pointer;"><span data-i18n="sendBtn">إرسال الطلب</span> <span>↗</span></button>
       </form>
 
       <div class="contact-details">
-        <span>غازي عنتاب، تركيا · بموعد مسبق</span>
+        <span data-i18n="locationText">غازي عنتاب، تركيا · بموعد مسبق</span>
         <span>0537 742 36 71</span>
       </div>
     </section>
@@ -253,8 +253,8 @@
       <span class="brand-name">HAMDI<small>PHOTOGRAPHY</small></span>
     </a>
 
-    <p>© <span id="year"></span> Hamdi Photography. جميع الحقوق محفوظة.</p>
-    <a href="#home" class="back-top">العودة للاعلى ↑</a>
+    <p>© <span id="year"></span> Hamdi Photography. <span data-i18n="rightsText">جميع الحقوق محفوظة.</span></p>
+    <a href="#home" class="back-top" data-i18n="backTop">العودة للاعلى ↑</a>
   </footer>
 </body>
 </html>
