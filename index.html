@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080808">
+  <meta name="description" content="Hamdi Photography — cinematic photography and visual storytelling.">
+  <title>Hamdi Photography | Luxury Visuals</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+    }
+  }
+  </script>
+  <script type="module" src="script.js"></script>
+</head>
+
+<body>
+  <div class="noise"></div>
+
+  <header class="topbar">
+    <a class="brand" href="#home">
+      <span class="brand-mark">H<span>.</span></span>
+      <span class="brand-name">HAMDI<small>PHOTOGRAPHY</small></span>
+    </a>
+
+    <button class="menu-toggle" aria-label="Open menu" aria-expanded="false">☰</button>
+
+    <nav class="nav">
+      <a href="#work">Portfolio</a>
+      <a href="#about">About</a>
+      <a href="#services">Services</a>
+      <a class="nav-cta" href="#contact">Let's talk <span>↗</span></a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="hero-copy">
+        <p class="eyebrow">
+          <span class="live-dot"></span>
+          PHOTOGRAPHER & VISUAL STORYTELLER
+        </p>
+
+        <h1>Life, in a<br><em>different light.</em></h1>
+
+        <p class="hero-text">
+          Every frame holds a feeling. Discover cinematic photography,
+          unforgettable portraits, and visual stories created with intention.
+        </p>
+
+        <div class="hero-actions">
+          <a class="button button-gold" href="#work">
+            Explore my work <span>↘</span>
+          </a>
+          <a class="text-link" href="#about">
+            Discover the vision <span>→</span>
+          </a>
+        </div>
+
+        <div class="hero-meta">
+          <div><strong>01</strong><span>STORY FIRST</span></div>
+          <div><strong>02</strong><span>LIGHT OBSESSED</span></div>
+          <div><strong>03</strong><span>ALWAYS AUTHENTIC</span></div>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="visual-glow"></div>
+        <div id="three-stage" class="three-stage"></div>
+        <div class="orbit orbit-one"></div>
+        <div class="orbit orbit-two"></div>
+
+        <div class="floating-label label-top">
+          VISUAL JOURNAL <span>— 2026</span>
+        </div>
+
+        <div class="floating-label label-bottom">
+          <span class="tiny-line"></span> FRAME YOUR OWN STORY
+        </div>
+
+        <div class="hero-index">H / 001</div>
+      </div>
+
+      <a class="scroll-cue" href="#work">
+        <span></span> SCROLL TO EXPLORE
+      </a>
+    </section>
+
+    <section class="ticker">
+      <div class="ticker-track">
+        <span>PORTRAITS</span><b>✳</b>
+        <span>EDITORIAL</span><b>✳</b>
+        <span>STREET STORIES</span><b>✳</b>
+        <span>VISUAL ART</span><b>✳</b>
+        <span>PORTRAITS</span><b>✳</b>
+        <span>EDITORIAL</span><b>✳</b>
+        <span>STREET STORIES</span><b>✳</b>
+        <span>VISUAL ART</span><b>✳</b>
+      </div>
+    </section>
+
+    <section class="section" id="work">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">SELECTED FRAMES / 2024—2026</p>
+          <h2>Stories worth<br><em>stopping for.</em></h2>
+        </div>
+        <p class="section-intro">
+          A collection of moments, moods, and details.
+          Replace the sample photographs with your own original work.
+        </p>
+      </div>
+
+      <div class="gallery">
+        <a class="gallery-card card-tall" href="#contact" data-tilt>
+          <img
+            src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1000&q=85"
+            alt="Portrait photography">
+          <span class="image-shade"></span>
+          <span class="card-number">01 / PORTRAIT</span>
+          <span class="card-caption">The quiet gaze <b>↗</b></span>
+        </a>
+
+        <a class="gallery-card card-wide" href="#contact" data-tilt>
+          <img
+            src="https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=1200&q=85"
+            alt="Atmospheric landscape">
+          <span class="image-shade"></span>
+          <span class="card-number">02 / ATMOSPHERE</span>
+          <span class="card-caption">After the blue hour <b>↗</b></span>
+        </a>
+
+        <a class="gallery-card card-wide" href="#contact" data-tilt>
+          <img
+            src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1200&q=85"
+            alt="Fashion editorial photography">
+          <span class="image-shade"></span>
+          <span class="card-number">03 / EDITORIAL</span>
+          <span class="card-caption">A study in confidence <b>↗</b></span>
+        </a>
+
+        <a class="gallery-card card-tall" href="#contact" data-tilt>
+          <img
+            src="https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=1000&q=85"
+            alt="Sunrise landscape photography">
+          <span class="image-shade"></span>
+          <span class="card-number">04 / LANDSCAPE</span>
+          <span class="card-caption">First light <b>↗</b></span>
+        </a>
+      </div>
+
+      <p class="gallery-note">
+        ✳ Sample images are placeholders. Add your own photographs here.
+      </p>
+    </section>
+
+    <section class="manifesto" id="about">
+      <div class="manifesto-orb">
+        <div class="orb-inner"></div>
+        <span>H / VISION</span>
+      </div>
+
+      <div class="manifesto-copy">
+        <p class="eyebrow">BEHIND THE LENS</p>
+        <h2>Not just what<br>you see. <em>What you feel.</em></h2>
+
+        <p>
+          Photography is the art of noticing. The light falling across a face,
+          the pause before a laugh, and the beauty hidden in ordinary moments.
+          Every image should tell a story of its own.
+        </p>
+
+        <a class="text-link" href="#contact">
+          Create something together <span>↗</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="section" id="services">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">WHAT I DO</p>
+          <h2>Made with<br><em>intention.</em></h2>
+        </div>
+
+        <p class="section-intro">
+          Thoughtful visual work, tailored to your story and the feeling
+          you want to leave behind.
+        </p>
+      </div>
+
+      <div class="services-grid">
+        <article class="service">
+          <span class="service-no">01</span>
+          <div class="service-icon">◉</div>
+          <h3>Portraits</h3>
+          <p>Personal, expressive portraits with natural light and character.</p>
+          <span class="service-arrow">↗</span>
+        </article>
+
+        <article class="service">
+          <span class="service-no">02</span>
+          <div class="service-icon">▧</div>
+          <h3>Editorial</h3>
+          <p>Creative imagery for brands, artists, and visual campaigns.</p>
+          <span class="service-arrow">↗</span>
+        </article>
+
+        <article class="service">
+          <span class="service-no">03</span>
+          <div class="service-icon">✳</div>
+          <h3>Events & Stories</h3>
+          <p>Real moments captured with care, atmosphere, and detail.</p>
+          <span class="service-arrow">↗</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="contact-section" id="contact">
+      <div class="contact-top">
+        <p class="eyebrow">HAVE A STORY IN MIND?</p>
+        <span>AVAILABLE FOR SELECT PROJECTS</span>
+      </div>
+
+      <h2>Let's make<br><em>it unforgettable.</em></h2>
+
+      <p class="contact-description">
+        Tell me what you're imagining. Let's turn an idea into something worth keeping.
+      </p>
+
+      <div class="contact-actions">
+        <a class="button button-gold" href="mailto:hamdihajiali3@gmail.com">
+          Email me <span>↗</span>
+        </a>
+
+        <a class="button button-outline" href="tel:+905377423671">
+          Call me <span>↗</span>
+        </a>
+
+        <a
+          class="button button-outline"
+          href="https://wa.me/905377423671"
+          target="_blank"
+          rel="noopener noreferrer">
+          WhatsApp <span>↗</span>
+        </a>
+      </div>
+
+      <div class="contact-details">
+        <a href="mailto:hamdihajiali3@gmail.com">hamdihajiali3@gmail.com</a>
+        <span>Gaziantep, Türkiye · By appointment</span>
+        <span>0537 742 36 71</span>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <a class="brand" href="#home">
+      <span class="brand-mark">H<span>.</span></span>
+      <span class="brand-name">HAMDI<small>PHOTOGRAPHY</small></span>
+    </a>
+
+    <p>© <span id="year"></span> Hamdi Photography.</p>
+    <a href="#home" class="back-top">BACK TO TOP ↑</a>
+  </footer>
+</body>
+</html>
