@@ -28,7 +28,10 @@ const translations = {
     contactTop1: "لديك قصة تريد روايتها؟", contactTop2: "متاح للمشاريع المختارة",
     contactTitle: "لنصنع شيئاً<br><em>لا يُنسى.</em>",
     contactDesc: "أخبرني بما تتخيله. دعنا نحول فكرتك إلى عمل فني يستحق الاحتفاظ به.",
-    sendBtn: "إرسال الطلب", locationText: "غازي عنتاب، تركيا · بموعد مسبق",
+    namePlaceholder: "اسمك الكريم",
+    msgPlaceholder: "تفاصيل الطلب أو الرسالة...",
+    opt1: "جلسة بورتريه", opt2: "تصوير تخرج", opt3: "تصوير تجاري", opt4: "أخرى",
+    sendBtn: "إرسال الطلب عبر الواتساب", locationText: "غازي عنتاب، تركيا · بموعد مسبق",
     rightsText: "جميع الحقوق محفوظة.", backTop: "العودة للاعلى ↑"
   },
   tr: {
@@ -60,7 +63,10 @@ const translations = {
     contactTop1: "AKLINIZDA BİR HİKAYE VAR MI?", contactTop2: "SEÇİLEN PROJELER İÇİN UYGUN",
     contactTitle: "Unutulmaz<br><em>Kılalım.</em>",
     contactDesc: "Ne hayal ettiğinizi söyleyin. Bir fikri saklamaya değer bir şeye dönüştürelim.",
-    sendBtn: "İsteği Gönder", locationText: "Gaziantep, Türkiye · Randevu ile",
+    namePlaceholder: "Adınız Soyadınız",
+    msgPlaceholder: "Talep veya mesaj detayları...",
+    opt1: "Portre Çekimi", opt2: "Mezuniyet Çekimi", opt3: "Ticari Çekim", opt4: "Diğer",
+    sendBtn: "WhatsApp ile Gönder", locationText: "Gaziantep, Türkiye · Randevu ile",
     rightsText: "Tüm hakları saklıdır.", backTop: "YUKARI ÇIK ↑"
   },
   en: {
@@ -92,7 +98,10 @@ const translations = {
     contactTop1: "HAVE A STORY IN MIND?", contactTop2: "AVAILABLE FOR SELECT PROJECTS",
     contactTitle: "Let's make<br><em>it unforgettable.</em>",
     contactDesc: "Tell me what you're imagining. Let's turn an idea into something worth keeping.",
-    sendBtn: "Send Request", locationText: "Gaziantep, Türkiye · By appointment",
+    namePlaceholder: "Your Name",
+    msgPlaceholder: "Request details or message...",
+    opt1: "Portrait Session", opt2: "Graduation Shoot", opt3: "Commercial Shoot", opt4: "Other",
+    sendBtn: "Send via WhatsApp", locationText: "Gaziantep, Türkiye · By appointment",
     rightsText: "All rights reserved.", backTop: "BACK TO TOP ↑"
   }
 };
@@ -108,11 +117,33 @@ window.setLanguage = function(lang) {
       el.innerHTML = translations[lang][key];
     }
   });
+
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    if (translations[lang][key]) {
+      el.placeholder = translations[lang][key];
+    }
+  });
 };
 
 document.addEventListener("DOMContentLoaded", () => {
   const yearSpan = document.getElementById('year');
   if (yearSpan) {
     yearSpan.textContent = new Date().getFullYear();
+  }
+
+  const directForm = document.getElementById('directContactForm');
+  if (directForm) {
+    directForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('clientName').value;
+      const session = document.getElementById('sessionType').value;
+      const msg = document.getElementById('clientMsg').value;
+
+      const text = `مرحباً، أنا ${name}\nأريد حجز: ${session}\nالتفاصيل: ${msg}`;
+      const whatsappUrl = `https://wa.me/905377423671?text=${encodeURIComponent(text)}`;
+      
+      window.open(whatsappUrl, '_blank');
+    });
   }
 });
