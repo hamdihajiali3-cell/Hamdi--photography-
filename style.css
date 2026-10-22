@@ -383,7 +383,7 @@ img {
   overflow: hidden;
   border-block: 1px solid var(--line);
   padding: 21px 0;
-  background: #0d0d0b;
+  background: rgba(13, 13, 11, .38);
 }
 
 .ticker-track {
@@ -1133,7 +1133,7 @@ html {
 body {
   position: relative;
   isolation: isolate;
-  background: rgba(5, 5, 5, .78);
+  background: rgba(5, 5, 5, .3);
 }
 
 body::before {
@@ -1153,14 +1153,14 @@ body::before {
 }
 
 .topbar {
-  background: rgba(5, 5, 5, .64);
+  background: rgba(5, 5, 5, .42);
   border-bottom-color: rgba(255, 255, 255, .09);
   -webkit-backdrop-filter: blur(24px) saturate(135%);
   backdrop-filter: blur(24px) saturate(135%);
 }
 
 .manifesto {
-  background: rgba(12, 12, 11, .68);
+  background: rgba(12, 12, 11, .46);
   border-block: 1px solid rgba(255, 255, 255, .055);
   -webkit-backdrop-filter: blur(22px) saturate(120%);
   backdrop-filter: blur(22px) saturate(120%);
@@ -1169,7 +1169,7 @@ body::before {
 .contact-section {
   background:
     radial-gradient(ellipse at 50% 100%, rgba(126, 91, 42, .18), transparent 60%),
-    rgba(8, 8, 8, .7);
+    rgba(8, 8, 8, .44);
   -webkit-backdrop-filter: blur(22px) saturate(125%);
   backdrop-filter: blur(22px) saturate(125%);
 }
@@ -1436,5 +1436,87 @@ body::after {
     animation: none;
     transform: none;
     will-change: auto;
+  }
+}
+
+
+/* Anime-style floating sakura night scene */
+.anime-atmosphere {
+  position: fixed;
+  z-index: -1;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  contain: strict;
+}
+
+.anime-petal {
+  position: absolute;
+  top: -9vh;
+  left: 50%;
+  width: 11px;
+  height: 16px;
+  border-radius: 100% 0 100% 0;
+  background: linear-gradient(145deg, rgba(255, 239, 243, .9), rgba(222, 140, 166, .54) 58%, rgba(150, 82, 117, .25));
+  box-shadow: 0 0 14px rgba(244, 174, 196, .3);
+  opacity: 0;
+  transform: rotate(0deg) scale(var(--petal-scale, .85));
+  animation: sakura-fall var(--fall-duration, 28s) linear var(--fall-delay, 0s) infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes sakura-fall {
+  0% {
+    transform: translate3d(0, -10vh, 0) rotate(0deg) scale(var(--petal-scale, .85));
+    opacity: 0;
+  }
+  12% { opacity: .62; }
+  48% {
+    transform: translate3d(var(--petal-mid-drift, 25px), 48vh, 0) rotate(330deg) scale(var(--petal-scale, .85));
+    opacity: .44;
+  }
+  84% { opacity: .55; }
+  100% {
+    transform: translate3d(var(--petal-drift, 60px), 112vh, 0) rotate(720deg) scale(var(--petal-scale, .85));
+    opacity: 0;
+  }
+}
+
+.anime-shooting-star {
+  position: absolute;
+  top: var(--star-top, 18%);
+  left: var(--star-left, 76%);
+  width: 145px;
+  height: 1px;
+  opacity: 0;
+  background: linear-gradient(90deg, transparent, rgba(143, 211, 235, .3), rgba(226, 246, 255, .92));
+  box-shadow: 0 0 12px rgba(153, 218, 239, .42);
+  transform: rotate(-28deg);
+  transform-origin: right center;
+  animation: anime-shooting-star 15s linear var(--star-delay, 0s) infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes anime-shooting-star {
+  0%, 5% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) rotate(-28deg) scaleX(.28);
+  }
+  8% { opacity: .9; }
+  19% {
+    opacity: 0;
+    transform: translate3d(-62vw, 43vh, 0) rotate(-28deg) scaleX(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(-62vw, 43vh, 0) rotate(-28deg) scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anime-petal,
+  .anime-shooting-star {
+    animation: none !important;
+    display: none;
   }
 }
