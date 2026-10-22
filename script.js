@@ -151,15 +151,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const confirmations = {
         ar: {
           message: 'تم تجهيز طلبك. أرسل الرسالة عبر واتساب لإكمال الطلب.',
-          locale: '$2'
         },
         tr: {
           message: 'Talebiniz hazır. İşlemi tamamlamak için WhatsApp mesajını gönderin.',
-          locale: '$2'
         },
         en: {
           message: 'Your request is ready. Send the WhatsApp message to complete your request.',
-          locale: '$2'
         }
       };
       const confirmation = confirmations[lang];
