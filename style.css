@@ -1714,3 +1714,90 @@ body::after {
     animation: none;
   }
 }
+
+
+/* Exploded lens assembly animation */
+.camera-lens-outer,
+.camera-lens-ring,
+.camera-lens-glass,
+.camera-lens-detail,
+.camera-lens-center,
+.camera-iris {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.camera-lens-outer {
+  animation: lens-outer-release 13s cubic-bezier(.42, 0, .58, 1) infinite;
+}
+
+.camera-lens-ring {
+  animation: lens-ring-release 13s cubic-bezier(.42, 0, .58, 1) infinite;
+}
+
+.camera-lens-glass {
+  animation: lens-glass-release 13s cubic-bezier(.42, 0, .58, 1) infinite;
+  filter: drop-shadow(0 0 12px rgba(114, 189, 207, .36));
+}
+
+.camera-iris {
+  transform-box: view-box;
+  transform-origin: 50% 57%;
+  animation: lens-iris-release 13s cubic-bezier(.42, 0, .58, 1) infinite;
+}
+
+.camera-iris-spin {
+  transform-box: view-box;
+  transform-origin: 50% 57%;
+  animation: camera-aperture-spin 22s linear infinite;
+}
+
+.camera-lens-center {
+  animation: lens-core-release 13s cubic-bezier(.42, 0, .58, 1) infinite;
+}
+
+.camera-lens-detail {
+  animation: lens-detail-release 13s cubic-bezier(.42, 0, .58, 1) infinite;
+}
+
+@keyframes lens-outer-release {
+  0%, 9%, 72%, 100% { transform: translate(0, 0) rotate(0) scale(1); }
+  28%, 48% { transform: translate(-18px, -7px) rotate(-11deg) scale(1.06); }
+}
+
+@keyframes lens-ring-release {
+  0%, 9%, 72%, 100% { transform: translate(0, 0) rotate(0) scale(1); }
+  28%, 48% { transform: translate(17px, -24px) rotate(13deg) scale(1.1); }
+}
+
+@keyframes lens-glass-release {
+  0%, 9%, 72%, 100% { transform: translate(0, 0) rotate(0) scale(1); }
+  28%, 48% { transform: translate(-9px, 21px) rotate(-8deg) scale(1.1); }
+}
+
+@keyframes lens-iris-release {
+  0%, 9%, 72%, 100% { transform: translate(0, 0) rotate(0) scale(1); }
+  28%, 48% { transform: translate(12px, 35px) rotate(22deg) scale(.9); }
+}
+
+@keyframes lens-core-release {
+  0%, 9%, 72%, 100% { transform: translate(0, 0) scale(1); }
+  28%, 48% { transform: translate(4px, 47px) scale(.76); }
+}
+
+@keyframes lens-detail-release {
+  0%, 9%, 72%, 100% { transform: translate(0, 0) rotate(0) scale(1); }
+  28%, 48% { transform: translate(-13px, -30px) rotate(-15deg) scale(1.08); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .camera-lens-outer,
+  .camera-lens-ring,
+  .camera-lens-glass,
+  .camera-lens-detail,
+  .camera-lens-center,
+  .camera-iris,
+  .camera-iris-spin {
+    animation: none !important;
+  }
+}
