@@ -132,6 +132,102 @@ document.addEventListener("DOMContentLoaded", () => {
     yearSpan.textContent = new Date().getFullYear();
   }
 
+  const galleryCards = Array.from(document.querySelectorAll('.gallery-card'));
+  if (galleryCards.length) {
+    const language = () => {
+      const current = document.documentElement.lang.slice(0, 2);
+      return ['ar', 'tr'].includes(current) ? current : 'en';
+    };
+    const labels = {
+      ar: { dialog: 'معرض الصور', close: 'إغلاق الصورة', previous: 'الصورة السابقة', next: 'الصورة التالية' },
+      tr: { dialog: 'Fotoğraf galerisi', close: 'Fotoğrafı kapat', previous: 'Önceki fotoğraf', next: 'Sonraki fotoğraf' },
+      en: { dialog: 'Photo gallery', close: 'Close photo', previous: 'Previous photo', next: 'Next photo' }
+    };
+
+    const dialog = document.createElement('dialog');
+    dialog.className = 'portfolio-lightbox';
+    dialog.innerHTML = `
+      <button class="lightbox-close" type="button"><span aria-hidden="true">×</span></button>
+      <button class="lightbox-nav lightbox-prev" type="button"><span aria-hidden="true">←</span></button>
+      <figure class="lightbox-figure">
+        <span class="lightbox-category"></span>
+        <img class="lightbox-image" alt="">
+        <figcaption class="lightbox-caption">
+          <span class="lightbox-title"></span>
+          <span class="lightbox-count"></span>
+        </figcaption>
+      </figure>
+      <button class="lightbox-nav lightbox-next" type="button"><span aria-hidden="true">→</span></button>
+    `;
+    document.body.appendChild(dialog);
+
+    const lightboxImage = dialog.querySelector('.lightbox-image');
+    const category = dialog.querySelector('.lightbox-category');
+    const title = dialog.querySelector('.lightbox-title');
+    const count = dialog.querySelector('.lightbox-count');
+    const closeButton = dialog.querySelector('.lightbox-close');
+    const previousButton = dialog.querySelector('.lightbox-prev');
+    const nextButton = dialog.querySelector('.lightbox-next');
+    let activeIndex = 0;
+    let previousFocus = null;
+
+    function renderPhoto(index) {
+      activeIndex = (index + galleryCards.length) % galleryCards.length;
+      const card = galleryCards[activeIndex];
+      const source = card.querySelector('img');
+      const caption = card.querySelector('.card-caption');
+      const categoryText = card.querySelector('.card-number [data-i18n]');
+
+      lightboxImage.src = source.currentSrc || source.src;
+      lightboxImage.alt = source.alt;
+      category.textContent = categoryText ? categoryText.textContent.trim() : '';
+      title.textContent = caption ? caption.textContent.replace('↗', '').trim() : source.alt;
+      count.textContent = `${String(activeIndex + 1).padStart(2, '0')} / ${String(galleryCards.length).padStart(2, '0')}`;
+
+      const copy = labels[language()];
+      dialog.setAttribute('aria-label', copy.dialog);
+      closeButton.setAttribute('aria-label', copy.close);
+      previousButton.setAttribute('aria-label', copy.previous);
+      nextButton.setAttribute('aria-label', copy.next);
+    }
+
+    function openPhoto(index, trigger) {
+      previousFocus = trigger;
+      renderPhoto(index);
+      dialog.showModal();
+      closeButton.focus();
+    }
+
+    function movePhoto(offset) {
+      renderPhoto(activeIndex + offset);
+    }
+
+    galleryCards.forEach((card, index) => {
+      card.addEventListener('click', () => openPhoto(index, card));
+      card.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          openPhoto(index, card);
+        }
+      });
+    });
+
+    closeButton.addEventListener('click', () => dialog.close());
+    previousButton.addEventListener('click', () => movePhoto(-1));
+    nextButton.addEventListener('click', () => movePhoto(1));
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+    dialog.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowLeft') movePhoto(-1);
+      if (event.key === 'ArrowRight') movePhoto(1);
+    });
+    dialog.addEventListener('close', () => {
+      if (previousFocus && previousFocus.isConnected) previousFocus.focus();
+      previousFocus = null;
+    });
+  }
+
   const directForm = document.getElementById('directContactForm');
   if (directForm) {
     directForm.addEventListener('submit', function(e) {
