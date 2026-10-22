@@ -269,12 +269,14 @@ document.addEventListener("DOMContentLoaded", () => {
         <circle class="camera-lens-ring" cx="450" cy="365" r="151"/>
         <circle class="camera-lens-glass" cx="450" cy="365" r="131"/>
         <g class="camera-iris">
+          <g class="camera-iris-spin">
           <path d="M450 244c43 5 77 37 82 78l-82 43-48-79c10-22 26-36 48-42Z"/>
           <path d="M450 244c43 5 77 37 82 78l-82 43-48-79c10-22 26-36 48-42Z" transform="rotate(60 450 365)"/>
           <path d="M450 244c43 5 77 37 82 78l-82 43-48-79c10-22 26-36 48-42Z" transform="rotate(120 450 365)"/>
           <path d="M450 244c43 5 77 37 82 78l-82 43-48-79c10-22 26-36 48-42Z" transform="rotate(180 450 365)"/>
           <path d="M450 244c43 5 77 37 82 78l-82 43-48-79c10-22 26-36 48-42Z" transform="rotate(240 450 365)"/>
           <path d="M450 244c43 5 77 37 82 78l-82 43-48-79c10-22 26-36 48-42Z" transform="rotate(300 450 365)"/>
+          </g>
         </g>
         <circle class="camera-lens-center" cx="450" cy="365" r="55"/>
         <circle class="camera-lens-highlight" cx="420" cy="332" r="20"/>
