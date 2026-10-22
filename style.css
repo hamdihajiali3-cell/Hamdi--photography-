@@ -1123,3 +1123,66 @@ html[dir="rtl"] .reading-progress {
 }
 
 
+
+
+/* Signature translucent-black glass atmosphere */
+html {
+  background: #030303;
+}
+
+body {
+  position: relative;
+  isolation: isolate;
+  background: rgba(5, 5, 5, .78);
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: -16%;
+  z-index: -1;
+  pointer-events: none;
+  opacity: .78;
+  background:
+    radial-gradient(ellipse at 17% 20%, rgba(216, 182, 117, .17), transparent 30%),
+    radial-gradient(ellipse at 83% 34%, rgba(92, 121, 137, .13), transparent 32%),
+    radial-gradient(ellipse at 56% 88%, rgba(154, 105, 57, .12), transparent 34%);
+  filter: blur(42px);
+  transform: translate3d(0, 0, 0);
+  animation: black-glass-drift 30s ease-in-out infinite alternate;
+}
+
+.topbar {
+  background: rgba(5, 5, 5, .64);
+  border-bottom-color: rgba(255, 255, 255, .09);
+  -webkit-backdrop-filter: blur(24px) saturate(135%);
+  backdrop-filter: blur(24px) saturate(135%);
+}
+
+.manifesto {
+  background: rgba(12, 12, 11, .68);
+  border-block: 1px solid rgba(255, 255, 255, .055);
+  -webkit-backdrop-filter: blur(22px) saturate(120%);
+  backdrop-filter: blur(22px) saturate(120%);
+}
+
+.contact-section {
+  background:
+    radial-gradient(ellipse at 50% 100%, rgba(126, 91, 42, .18), transparent 60%),
+    rgba(8, 8, 8, .7);
+  -webkit-backdrop-filter: blur(22px) saturate(125%);
+  backdrop-filter: blur(22px) saturate(125%);
+}
+
+@keyframes black-glass-drift {
+  0% { transform: translate3d(-1.2%, -0.6%, 0) scale(1); }
+  50% { transform: translate3d(1%, 0.7%, 0) scale(1.025); }
+  100% { transform: translate3d(-0.5%, 1.1%, 0) scale(1.04); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before {
+    animation: none;
+    transform: none;
+  }
+}
