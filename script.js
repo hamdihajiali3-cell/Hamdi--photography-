@@ -433,3 +433,71 @@ async function initThreeScene() {
 }
 
 document.addEventListener('DOMContentLoaded', initThreeScene);
+
+
+function initMotionNarrative() {
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const progress = document.createElement('div');
+  progress.className = 'reading-progress';
+  progress.setAttribute('aria-hidden', 'true');
+  document.body.prepend(progress);
+
+  const revealTargets = document.querySelectorAll(
+    '.hero-copy, .hero-visual, #work .section-heading, #work .gallery-card, ' +
+    '#about .manifesto-orb, #about .manifesto-copy, #services .section-heading, ' +
+    '#services .service, #contact .contact-top, #contact h2, ' +
+    '#contact .contact-description, #contact #directContactForm, #contact .contact-details'
+  );
+
+  revealTargets.forEach((element, index) => {
+    element.classList.add('motion-reveal');
+    element.style.setProperty('--motion-delay', Math.min(index % 4, 3) * 75 + 'ms');
+  });
+
+  const showElement = (element) => element.classList.add('is-visible');
+  if (!reducedMotion && 'IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        showElement(entry.target);
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.14, rootMargin: '0px 0px -6% 0px' });
+    revealTargets.forEach((element) => observer.observe(element));
+  } else {
+    revealTargets.forEach(showElement);
+  }
+
+  let progressFrame = 0;
+  const updateProgress = () => {
+    progressFrame = 0;
+    const root = document.documentElement;
+    const scrollableHeight = root.scrollHeight - window.innerHeight;
+    const amount = scrollableHeight > 0 ? Math.min(1, Math.max(0, window.scrollY / scrollableHeight)) : 0;
+    progress.style.transform = 'scaleX(' + amount + ')';
+  };
+  const queueProgressUpdate = () => {
+    if (!progressFrame) progressFrame = window.requestAnimationFrame(updateProgress);
+  };
+  window.addEventListener('scroll', queueProgressUpdate, { passive: true });
+  window.addEventListener('resize', queueProgressUpdate, { passive: true });
+  queueProgressUpdate();
+
+  if (!reducedMotion && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    document.querySelectorAll('.gallery-card').forEach((card) => {
+      card.addEventListener('pointermove', (event) => {
+        const bounds = card.getBoundingClientRect();
+        const horizontal = (event.clientX - bounds.left) / bounds.width - 0.5;
+        const vertical = (event.clientY - bounds.top) / bounds.height - 0.5;
+        card.style.setProperty('--card-rotate-x', (-vertical * 6).toFixed(2) + 'deg');
+        card.style.setProperty('--card-rotate-y', (horizontal * 7).toFixed(2) + 'deg');
+      });
+      card.addEventListener('pointerleave', () => {
+        card.style.setProperty('--card-rotate-x', '0deg');
+        card.style.setProperty('--card-rotate-y', '0deg');
+      });
+    });
+  }
+}
+
+document.addEventListener('DOMContentLoaded', initMotionNarrative);
