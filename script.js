@@ -144,6 +144,50 @@ document.addEventListener("DOMContentLoaded", () => {
       const whatsappUrl = `https://wa.me/905377423671?text=${encodeURIComponent(text)}`;
       
       window.open(whatsappUrl, '_blank');
+
+      const lang = ['ar', 'tr', 'en'].includes(document.documentElement.lang)
+        ? document.documentElement.lang
+        : 'ar';
+      const confirmations = {
+        ar: {
+          message: 'تم تجهيز طلبك. أرسل الرسالة عبر واتساب لإكمال الطلب.',
+          voice: 'تم تجهيز طلبك. أرسل الرسالة عبر واتساب لإكمال الطلب.',
+          locale: 'ar-SA'
+        },
+        tr: {
+          message: 'Talebiniz hazır. İşlemi tamamlamak için WhatsApp mesajını gönderin.',
+          voice: 'Talebiniz hazır. İşlemi tamamlamak için WhatsApp mesajını gönderin.',
+          locale: 'tr-TR'
+        },
+        en: {
+          message: 'Your request is ready. Send the WhatsApp message to complete your request.',
+          voice: 'Your request is ready. Send the WhatsApp message to complete your request.',
+          locale: 'en-US'
+        }
+      };
+      const confirmation = confirmations[lang];
+      let status = document.getElementById('requestStatus');
+      if (!status) {
+        status = document.createElement('p');
+        status.id = 'requestStatus';
+        status.className = 'request-status';
+        status.setAttribute('role', 'status');
+        status.setAttribute('aria-live', 'polite');
+        directForm.insertAdjacentElement('afterend', status);
+      }
+      status.textContent = confirmation.message;
+      status.classList.add('is-visible');
+
+      if ('speechSynthesis' in window && 'SpeechSynthesisUtterance' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(confirmation.voice);
+        utterance.lang = confirmation.locale;
+        utterance.rate = 0.94;
+        const voices = window.speechSynthesis.getVoices();
+        const voice = voices.find(item => item.lang.toLowerCase().startsWith(lang));
+        if (voice) utterance.voice = voice;
+        window.speechSynthesis.speak(utterance);
+      }
     });
   }
 });
