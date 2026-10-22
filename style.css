@@ -921,3 +921,47 @@ img {
     transition-duration: .01ms !important;
   }
 }
+
+
+/* Cinematic camera scene interaction and graceful WebGL fallback */
+.three-stage {
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.three-stage.is-dragging {
+  cursor: grabbing;
+}
+
+.three-stage.three-stage-fallback {
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.three-stage.three-stage-fallback::before,
+.three-stage.three-stage-fallback::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.three-stage.three-stage-fallback::before {
+  width: min(50vw, 320px);
+  border: 1px solid rgba(216, 182, 117, .58);
+  background:
+    radial-gradient(circle at 38% 32%, rgba(116, 160, 164, .58), transparent 24%),
+    radial-gradient(circle, #17272b 0 30%, #090b0c 55%, #b39151 56% 58%, #1c1a15 59% 64%, transparent 65%);
+  box-shadow: 0 0 45px rgba(216, 182, 117, .19), inset 0 0 30px rgba(216, 182, 117, .12);
+}
+
+.three-stage.three-stage-fallback::after {
+  width: min(65vw, 410px);
+  border: 1px solid rgba(216, 182, 117, .22);
+  transform: translate(-50%, -50%) rotate(-24deg) scaleY(.52);
+}
