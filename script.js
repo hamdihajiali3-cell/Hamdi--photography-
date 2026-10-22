@@ -152,11 +152,13 @@ document.addEventListener("DOMContentLoaded", () => {
       <figure class="lightbox-figure">
         <span class="lightbox-category"></span>
         <img class="lightbox-image" alt="">
+        <span class="lightbox-focus-frame" aria-hidden="true"></span>
         <figcaption class="lightbox-caption">
           <span class="lightbox-title"></span>
           <span class="lightbox-count"></span>
         </figcaption>
       </figure>
+      <span class="lightbox-flash" aria-hidden="true"></span>
       <button class="lightbox-nav lightbox-next" type="button"><span aria-hidden="true">→</span></button>
     `;
     document.body.appendChild(dialog);
@@ -170,6 +172,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const nextButton = dialog.querySelector('.lightbox-next');
     let activeIndex = 0;
     let previousFocus = null;
+    let captureTimer;
+
+    function animateCapture() {
+      if (!dialog.open) return;
+      window.clearTimeout(captureTimer);
+      dialog.classList.remove('is-capturing');
+      void dialog.offsetWidth;
+      dialog.classList.add('is-capturing');
+      captureTimer = window.setTimeout(() => dialog.classList.remove('is-capturing'), 720);
+    }
 
     function renderPhoto(index) {
       activeIndex = (index + galleryCards.length) % galleryCards.length;
@@ -195,11 +207,13 @@ document.addEventListener("DOMContentLoaded", () => {
       previousFocus = trigger;
       renderPhoto(index);
       dialog.showModal();
+      animateCapture();
       closeButton.focus();
     }
 
     function movePhoto(offset) {
       renderPhoto(activeIndex + offset);
+      animateCapture();
     }
 
     galleryCards.forEach((card, index) => {
