@@ -1646,3 +1646,71 @@ body::after {
     animation: none !important;
   }
 }
+
+
+/* Camera focus lock and shutter flash */
+.lightbox-focus-frame {
+  position: absolute;
+  z-index: 3;
+  inset: 10% 12% 23%;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    linear-gradient(var(--gold), var(--gold)) left top / 31px 2px no-repeat,
+    linear-gradient(var(--gold), var(--gold)) left top / 2px 31px no-repeat,
+    linear-gradient(var(--gold), var(--gold)) right top / 31px 2px no-repeat,
+    linear-gradient(var(--gold), var(--gold)) right top / 2px 31px no-repeat,
+    linear-gradient(var(--gold), var(--gold)) left bottom / 31px 2px no-repeat,
+    linear-gradient(var(--gold), var(--gold)) left bottom / 2px 31px no-repeat,
+    linear-gradient(var(--gold), var(--gold)) right bottom / 31px 2px no-repeat,
+    linear-gradient(var(--gold), var(--gold)) right bottom / 2px 31px no-repeat;
+  filter: drop-shadow(0 0 8px rgba(216, 182, 117, .8));
+}
+
+.lightbox-flash {
+  position: absolute;
+  z-index: 5;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(ellipse at 50% 44%, rgba(255, 248, 229, .92), rgba(255, 236, 196, .44) 38%, rgba(255, 255, 255, 0) 76%);
+}
+
+.portfolio-lightbox.is-capturing .lightbox-focus-frame {
+  animation: camera-focus-lock .68s cubic-bezier(.2, .7, .2, 1) both;
+}
+
+.portfolio-lightbox.is-capturing .lightbox-flash {
+  animation: camera-shutter-flash .62s ease-out both;
+}
+
+@keyframes camera-focus-lock {
+  0% { opacity: 0; transform: scale(1.12); }
+  30% { opacity: 1; transform: scale(.97); }
+  68% { opacity: .9; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1); }
+}
+
+@keyframes camera-shutter-flash {
+  0%, 100% { opacity: 0; }
+  12% { opacity: .82; }
+  34% { opacity: .12; }
+  48% { opacity: .48; }
+  70% { opacity: .08; }
+}
+
+@media (max-width: 600px) {
+  .lightbox-focus-frame {
+    inset: 10% 14% 23%;
+    background-size:
+      24px 2px, 2px 24px, 24px 2px, 2px 24px,
+      24px 2px, 2px 24px, 24px 2px, 2px 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portfolio-lightbox.is-capturing .lightbox-focus-frame,
+  .portfolio-lightbox.is-capturing .lightbox-flash {
+    animation: none;
+  }
+}
