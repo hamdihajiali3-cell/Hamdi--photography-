@@ -757,3 +757,125 @@ function initMotionNarrative() {
 document.addEventListener('DOMContentLoaded', initMotionNarrative);
 
 
+
+
+function initGalleryFocusEffect() {
+  const cards = Array.from(document.querySelectorAll('.gallery-card'));
+  if (!cards.length) return;
+
+  const language = document.documentElement.lang.slice(0, 2);
+  const focusLabel = language === 'ar'
+    ? 'اكتمل التركيز'
+    : language === 'tr'
+      ? 'ODAK KİLİTLENDİ'
+      : 'FOCUS LOCKED';
+
+  cards.forEach((card) => {
+    const target = document.createElement('span');
+    target.className = 'gallery-focus-target';
+    target.setAttribute('aria-hidden', 'true');
+
+    const status = document.createElement('span');
+    status.className = 'gallery-focus-status';
+    status.textContent = focusLabel;
+    target.appendChild(status);
+    card.appendChild(target);
+
+    card.addEventListener('pointermove', (event) => {
+      if (event.pointerType === 'touch') return;
+      const bounds = card.getBoundingClientRect();
+      const horizontal = Math.min(92, Math.max(8, (event.clientX - bounds.left) / bounds.width * 100));
+      const vertical = Math.min(82, Math.max(12, (event.clientY - bounds.top) / bounds.height * 100));
+      card.style.setProperty('--focus-x', horizontal.toFixed(1) + '%');
+      card.style.setProperty('--focus-y', vertical.toFixed(1) + '%');
+      card.classList.add('is-focus-hover');
+    });
+
+    card.addEventListener('pointerleave', () => card.classList.remove('is-focus-hover'));
+    card.addEventListener('focusin', () => card.classList.add('is-focus-hover'));
+    card.addEventListener('focusout', (event) => {
+      if (!card.contains(event.relatedTarget)) card.classList.remove('is-focus-hover');
+    });
+  });
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const gallery = document.querySelector('#work .gallery');
+  if (!gallery) return;
+
+  let galleryVisible = false;
+  let activeIndex = -1;
+  let cycleTimer = 0;
+  let scanTimer = 0;
+  let unlockTimer = 0;
+  let flashTimer = 0;
+
+  const clearActiveFocus = () => {
+    window.clearTimeout(scanTimer);
+    window.clearTimeout(unlockTimer);
+    window.clearTimeout(flashTimer);
+    cards.forEach((card) => card.classList.remove('is-focus-scanning', 'is-focus-locked', 'is-focus-flash'));
+  };
+
+  const stopFocusLoop = () => {
+    window.clearTimeout(cycleTimer);
+    cycleTimer = 0;
+    clearActiveFocus();
+  };
+
+  const focusNextPhoto = () => {
+    cycleTimer = 0;
+    if (!galleryVisible || document.hidden) return;
+    if (cards.some((card) => card.matches(':hover, :focus-within'))) {
+      cycleTimer = window.setTimeout(focusNextPhoto, 900);
+      return;
+    }
+
+    clearActiveFocus();
+    activeIndex = (activeIndex + 1) % cards.length;
+    const card = cards[activeIndex];
+    const startX = 22 + (activeIndex % 3) * 13;
+    const startY = 28 + (activeIndex % 2) * 17;
+    const lockX = 53 + (activeIndex % 3) * 9;
+    const lockY = 38 + (activeIndex % 2) * 15;
+
+    card.style.setProperty('--focus-start-x', startX + '%');
+    card.style.setProperty('--focus-start-y', startY + '%');
+    card.style.setProperty('--focus-lock-x', lockX + '%');
+    card.style.setProperty('--focus-lock-y', lockY + '%');
+    card.classList.add('is-focus-scanning');
+
+    scanTimer = window.setTimeout(() => {
+      card.classList.remove('is-focus-scanning');
+      card.classList.add('is-focus-locked', 'is-focus-flash');
+      flashTimer = window.setTimeout(() => card.classList.remove('is-focus-flash'), 520);
+      unlockTimer = window.setTimeout(() => card.classList.remove('is-focus-locked'), 1450);
+    }, 1080);
+
+    cycleTimer = window.setTimeout(focusNextPhoto, 3600);
+  };
+
+  const startFocusLoop = () => {
+    if (!galleryVisible || document.hidden || cycleTimer) return;
+    focusNextPhoto();
+  };
+
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      galleryVisible = entries.some((entry) => entry.isIntersecting);
+      if (galleryVisible) startFocusLoop();
+      else stopFocusLoop();
+    }, { threshold: 0.16 });
+    observer.observe(gallery);
+  } else {
+    galleryVisible = true;
+    startFocusLoop();
+  }
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stopFocusLoop();
+    else if (galleryVisible) startFocusLoop();
+  });
+}
+
+document.addEventListener('DOMContentLoaded', initGalleryFocusEffect);
