@@ -228,6 +228,36 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const animeAtmosphere = document.createElement('div');
+    animeAtmosphere.className = 'anime-atmosphere';
+    animeAtmosphere.setAttribute('aria-hidden', 'true');
+
+    const petalCount = window.matchMedia('(max-width: 600px)').matches ? 11 : 19;
+    for (let index = 0; index < petalCount; index += 1) {
+      const petal = document.createElement('span');
+      petal.className = 'anime-petal';
+      petal.style.left = (Math.random() * 100).toFixed(2) + '%';
+      petal.style.setProperty('--petal-scale', (0.58 + Math.random() * 0.62).toFixed(2));
+      petal.style.setProperty('--fall-duration', (22 + Math.random() * 18).toFixed(1) + 's');
+      petal.style.setProperty('--fall-delay', (Math.random() * -38).toFixed(2) + 's');
+      petal.style.setProperty('--petal-drift', (Math.random() * 260 - 130).toFixed(1) + 'px');
+      petal.style.setProperty('--petal-mid-drift', (Math.random() * 150 - 75).toFixed(1) + 'px');
+      animeAtmosphere.appendChild(petal);
+    }
+
+    for (let index = 0; index < 3; index += 1) {
+      const shootingStar = document.createElement('span');
+      shootingStar.className = 'anime-shooting-star';
+      shootingStar.style.setProperty('--star-top', (8 + Math.random() * 55).toFixed(1) + '%');
+      shootingStar.style.setProperty('--star-left', (58 + Math.random() * 39).toFixed(1) + '%');
+      shootingStar.style.setProperty('--star-delay', (Math.random() * -15).toFixed(2) + 's');
+      animeAtmosphere.appendChild(shootingStar);
+    }
+
+    document.body.appendChild(animeAtmosphere);
+  }
+
   const directForm = document.getElementById('directContactForm');
   if (directForm) {
     directForm.addEventListener('submit', function(e) {
