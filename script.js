@@ -147,3 +147,289 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+
+async function initThreeScene() {
+  const mount = document.getElementById('three-stage');
+  if (!mount) return;
+
+  let THREE;
+  try {
+    THREE = await import('three');
+  } catch (error) {
+    mount.classList.add('three-stage-fallback');
+    console.warn('The 3D scene could not load; showing its visual fallback.', error);
+    return;
+  }
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 100);
+  camera.position.set(0, 0, 8.2);
+
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'low-power' });
+  } catch (error) {
+    mount.classList.add('three-stage-fallback');
+    console.warn('WebGL is unavailable; showing the 3D scene fallback.', error);
+    return;
+  }
+
+  renderer.setClearColor(0x000000, 0);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.7));
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.domElement.setAttribute('aria-hidden', 'true');
+  mount.appendChild(renderer.domElement);
+
+  scene.add(new THREE.HemisphereLight(0xf6e7c8, 0x171411, 2.1));
+  const keyLight = new THREE.DirectionalLight(0xffd99a, 3.4);
+  keyLight.position.set(-3, 4, 6);
+  scene.add(keyLight);
+  const rimLight = new THREE.PointLight(0x73a6bf, 22, 12);
+  rimLight.position.set(2.5, 1.2, 3.3);
+  scene.add(rimLight);
+
+  const rig = new THREE.Group();
+  scene.add(rig);
+
+  const cameraBody = new THREE.Mesh(
+    new THREE.BoxGeometry(2.7, 1.78, 0.52),
+    new THREE.MeshStandardMaterial({ color: 0x171816, metalness: 0.78, roughness: 0.3 })
+  );
+  cameraBody.position.set(0, -0.08, -0.24);
+  rig.add(cameraBody);
+
+  const topPlate = new THREE.Mesh(
+    new THREE.BoxGeometry(0.58, 0.16, 0.56),
+    new THREE.MeshStandardMaterial({ color: 0x252520, metalness: 0.72, roughness: 0.27 })
+  );
+  topPlate.position.set(-0.65, 0.92, -0.2);
+  rig.add(topPlate);
+
+  const lensBarrel = new THREE.Mesh(
+    new THREE.CylinderGeometry(1.11, 1.18, 0.42, 72, 1, false),
+    new THREE.MeshStandardMaterial({ color: 0x302b20, metalness: 0.92, roughness: 0.22 })
+  );
+  lensBarrel.rotation.x = Math.PI / 2;
+  lensBarrel.position.z = 0.18;
+  rig.add(lensBarrel);
+
+  const lensGlass = document.createElement('canvas');
+  lensGlass.width = 512;
+  lensGlass.height = 512;
+  const lensContext = lensGlass.getContext('2d');
+  const lensGradient = lensContext.createRadialGradient(184, 165, 10, 256, 256, 270);
+  lensGradient.addColorStop(0, '#7ca7ad');
+  lensGradient.addColorStop(0.19, '#29434b');
+  lensGradient.addColorStop(0.48, '#121e22');
+  lensGradient.addColorStop(0.8, '#080b0d');
+  lensGradient.addColorStop(1, '#030404');
+  lensContext.fillStyle = lensGradient;
+  lensContext.fillRect(0, 0, 512, 512);
+  lensContext.strokeStyle = 'rgba(218,190,132,.34)';
+  lensContext.lineWidth = 2;
+  for (let i = 0; i < 16; i += 1) {
+    const angle = (Math.PI * 2 * i) / 16;
+    lensContext.beginPath();
+    lensContext.moveTo(256 + Math.cos(angle) * 126, 256 + Math.sin(angle) * 126);
+    lensContext.lineTo(256 + Math.cos(angle + 0.18) * 217, 256 + Math.sin(angle + 0.18) * 217);
+    lensContext.stroke();
+  }
+  lensContext.beginPath();
+  lensContext.arc(256, 256, 224, 0, Math.PI * 2);
+  lensContext.strokeStyle = 'rgba(232,215,178,.48)';
+  lensContext.stroke();
+
+  const lensTexture = new THREE.CanvasTexture(lensGlass);
+  lensTexture.colorSpace = THREE.SRGBColorSpace;
+  const glass = new THREE.Mesh(
+    new THREE.CircleGeometry(0.91, 80),
+    new THREE.MeshPhysicalMaterial({
+      map: lensTexture,
+      metalness: 0.58,
+      roughness: 0.16,
+      clearcoat: 1,
+      clearcoatRoughness: 0.08
+    })
+  );
+  glass.position.z = 0.414;
+  rig.add(glass);
+
+  const outerRim = new THREE.Mesh(
+    new THREE.TorusGeometry(1.13, 0.055, 18, 96),
+    new THREE.MeshStandardMaterial({ color: 0xc7a768, metalness: 0.95, roughness: 0.19 })
+  );
+  outerRim.position.z = 0.43;
+  rig.add(outerRim);
+
+  const innerRim = new THREE.Mesh(
+    new THREE.TorusGeometry(0.96, 0.018, 12, 80),
+    new THREE.MeshStandardMaterial({ color: 0xe4d4ad, metalness: 0.92, roughness: 0.15 })
+  );
+  innerRim.position.z = 0.45;
+  rig.add(innerRim);
+
+  const orbitalRing = new THREE.Mesh(
+    new THREE.TorusGeometry(1.82, 0.009, 8, 140),
+    new THREE.MeshBasicMaterial({ color: 0xd8b675, transparent: true, opacity: 0.62 })
+  );
+  orbitalRing.rotation.set(1.13, 0.12, -0.25);
+  orbitalRing.position.z = -0.72;
+  rig.add(orbitalRing);
+
+  const imageUrls = [
+    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=700&q=80',
+    'https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=700&q=80',
+    'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=700&q=80',
+    'https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=700&q=80'
+  ];
+  const photoPositions = [
+    [-2.05, 1.35, -1.08, -0.2, 0.12],
+    [2.02, 1.28, -1.16, 0.2, -0.1],
+    [-2.12, -1.32, -1.0, 0.22, -0.1],
+    [2.06, -1.35, -1.08, -0.18, 0.1]
+  ];
+  const loader = new THREE.TextureLoader();
+  loader.crossOrigin = 'anonymous';
+  const photoCards = [];
+
+  imageUrls.forEach((url, index) => {
+    const [x, y, z, tilt, roll] = photoPositions[index];
+    const card = new THREE.Group();
+    card.position.set(x, y, z);
+    card.rotation.set(roll, tilt, index % 2 ? -0.035 : 0.035);
+    card.userData.baseY = y;
+    card.userData.phase = index * 1.35;
+
+    const isPortrait = index === 0 || index === 2;
+    const width = isPortrait ? 0.9 : 1.25;
+    const height = isPortrait ? 1.22 : 0.9;
+    const frame = new THREE.Mesh(
+      new THREE.BoxGeometry(width + 0.11, height + 0.11, 0.075),
+      new THREE.MeshStandardMaterial({ color: 0xd0b779, metalness: 0.64, roughness: 0.3 })
+    );
+    card.add(frame);
+
+    const photoSurface = new THREE.Mesh(
+      new THREE.PlaneGeometry(width, height),
+      new THREE.MeshBasicMaterial({ color: 0x786e5c })
+    );
+    photoSurface.position.z = 0.041;
+    card.add(photoSurface);
+
+    loader.load(url, (texture) => {
+      texture.colorSpace = THREE.SRGBColorSpace;
+      photoSurface.material.map = texture;
+      photoSurface.material.color.set(0xffffff);
+      photoSurface.material.needsUpdate = true;
+    });
+
+    rig.add(card);
+    photoCards.push(card);
+  });
+
+  const specklePositions = new Float32Array(150 * 3);
+  for (let i = 0; i < 150; i += 1) {
+    specklePositions[i * 3] = (Math.random() - 0.5) * 7.2;
+    specklePositions[i * 3 + 1] = (Math.random() - 0.5) * 5.5;
+    specklePositions[i * 3 + 2] = -2.4 - Math.random() * 2;
+  }
+  const specklesGeometry = new THREE.BufferGeometry();
+  specklesGeometry.setAttribute('position', new THREE.BufferAttribute(specklePositions, 3));
+  const speckles = new THREE.Points(
+    specklesGeometry,
+    new THREE.PointsMaterial({ color: 0xdcc38e, size: 0.018, transparent: true, opacity: 0.76 })
+  );
+  scene.add(speckles);
+
+  let targetX = 0;
+  let targetY = 0;
+  let dragging = false;
+  let previousPointer = { x: 0, y: 0 };
+  const pointerStart = (event) => {
+    dragging = true;
+    previousPointer = { x: event.clientX, y: event.clientY };
+    mount.classList.add('is-dragging');
+    if (mount.setPointerCapture) mount.setPointerCapture(event.pointerId);
+  };
+  const pointerMove = (event) => {
+    const bounds = mount.getBoundingClientRect();
+    if (dragging) {
+      targetY += (event.clientX - previousPointer.x) * 0.006;
+      targetX += (event.clientY - previousPointer.y) * 0.004;
+      targetY = THREE.MathUtils.clamp(targetY, -0.48, 0.48);
+      targetX = THREE.MathUtils.clamp(targetX, -0.28, 0.28);
+      previousPointer = { x: event.clientX, y: event.clientY };
+    } else {
+      const x = (event.clientX - bounds.left) / bounds.width * 2 - 1;
+      const y = (event.clientY - bounds.top) / bounds.height * 2 - 1;
+      targetY = x * 0.14;
+      targetX = y * 0.09;
+    }
+    if (reducedMotion) render();
+  };
+  const pointerEnd = () => {
+    dragging = false;
+    mount.classList.remove('is-dragging');
+  };
+  mount.addEventListener('pointerdown', pointerStart);
+  mount.addEventListener('pointermove', pointerMove);
+  mount.addEventListener('pointerup', pointerEnd);
+  mount.addEventListener('pointercancel', pointerEnd);
+  mount.addEventListener('pointerleave', () => {
+    if (!dragging) {
+      targetX = 0;
+      targetY = 0;
+    }
+  });
+
+  function resize() {
+    const width = Math.max(1, mount.clientWidth);
+    const height = Math.max(1, mount.clientHeight);
+    camera.aspect = width / height;
+    camera.position.z = width < 520 ? 8.9 : 8.2;
+    camera.updateProjectionMatrix();
+    renderer.setSize(width, height, false);
+    render();
+  }
+
+  function render() {
+    renderer.render(scene, camera);
+  }
+
+  const resizeObserver = new ResizeObserver(resize);
+  resizeObserver.observe(mount);
+  resize();
+
+  let frameId = 0;
+  let previousTime = 0;
+  function animate(time) {
+    frameId = window.requestAnimationFrame(animate);
+    if (document.hidden || reducedMotion) return;
+    const delta = Math.min((time - previousTime) / 1000 || 0, 0.04);
+    previousTime = time;
+    rig.rotation.y += (targetY - rig.rotation.y) * 0.045;
+    rig.rotation.x += (targetX - rig.rotation.x) * 0.045;
+    rig.rotation.y += delta * 0.035;
+    orbitalRing.rotation.z += delta * 0.09;
+    photoCards.forEach((card) => {
+      card.position.y = card.userData.baseY + Math.sin(time * 0.0007 + card.userData.phase) * 0.055;
+    });
+    speckles.rotation.z += delta * 0.008;
+    render();
+  }
+  if (!reducedMotion) frameId = window.requestAnimationFrame(animate);
+
+  document.addEventListener('visibilitychange', () => {
+    if (!reducedMotion && document.hidden) window.cancelAnimationFrame(frameId);
+    else if (!reducedMotion) frameId = window.requestAnimationFrame(animate);
+  });
+  window.addEventListener('pagehide', () => {
+    window.cancelAnimationFrame(frameId);
+    resizeObserver.disconnect();
+    renderer.dispose();
+  }, { once: true });
+}
+
+document.addEventListener('DOMContentLoaded', initThreeScene);
