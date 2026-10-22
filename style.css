@@ -1898,3 +1898,89 @@ body::after {
   .flash-star { opacity: .12; transform: rotate(-18deg) scale(.7); }
   .flash-bokeh { transform: none; }
 }
+
+
+/* Staggered luxury flash bursts */
+.flash-pop {
+  position: absolute;
+  width: var(--flash-pop-size, 112px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle,
+    rgba(255, 250, 237, .9) 0 1%,
+    rgba(255, 235, 194, .62) 2%,
+    rgba(231, 194, 124, .24) 10%,
+    rgba(121, 184, 196, .09) 30%,
+    transparent 72%
+  );
+  filter: blur(3px) drop-shadow(0 0 18px rgba(255, 225, 169, .32));
+  animation: luxury-flash-pop 12s ease-out infinite;
+}
+
+.flash-pop::before,
+.flash-pop::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(90deg, transparent, rgba(255, 246, 224, .82), transparent);
+}
+
+.flash-pop::before {
+  width: 150%;
+  height: 1px;
+}
+
+.flash-pop::after {
+  width: 1px;
+  height: 150%;
+  background: linear-gradient(180deg, transparent, rgba(255, 246, 224, .64), transparent);
+}
+
+.flash-pop-one {
+  top: 24%;
+  left: 24%;
+  --flash-pop-size: 100px;
+  animation-delay: 0s;
+}
+
+.flash-pop-two {
+  top: 46%;
+  left: 75%;
+  --flash-pop-size: 132px;
+  animation-delay: -4s;
+}
+
+.flash-pop-three {
+  top: 73%;
+  left: 48%;
+  --flash-pop-size: 84px;
+  animation-delay: -8s;
+}
+
+@keyframes luxury-flash-pop {
+  0%, 100% { opacity: 0; transform: scale(.38) rotate(-18deg); }
+  4% { opacity: .82; transform: scale(1) rotate(-18deg); }
+  7% { opacity: .18; transform: scale(1.32) rotate(-18deg); }
+  10% { opacity: .46; transform: scale(1.5) rotate(-18deg); }
+  14% { opacity: 0; transform: scale(1.85) rotate(-18deg); }
+}
+
+@media (max-width: 600px) {
+  .flash-pop-one { top: 25%; left: 12%; --flash-pop-size: 82px; }
+  .flash-pop-two { top: 49%; left: 72%; --flash-pop-size: 100px; }
+  .flash-pop-three { top: 76%; left: 42%; --flash-pop-size: 70px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flash-pop {
+    animation: none !important;
+    opacity: .08;
+    transform: none;
+  }
+}
