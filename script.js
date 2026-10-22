@@ -145,33 +145,6 @@ document.addEventListener("DOMContentLoaded", () => {
       
       window.open(whatsappUrl, '_blank');
 
-      const lang = ['ar', 'tr', 'en'].includes(document.documentElement.lang)
-        ? document.documentElement.lang
-        : 'ar';
-      const confirmations = {
-        ar: {
-          message: 'تم تجهيز طلبك. أرسل الرسالة عبر واتساب لإكمال الطلب.',
-        },
-        tr: {
-          message: 'Talebiniz hazır. İşlemi tamamlamak için WhatsApp mesajını gönderin.',
-        },
-        en: {
-          message: 'Your request is ready. Send the WhatsApp message to complete your request.',
-        }
-      };
-      const confirmation = confirmations[lang];
-      let status = document.getElementById('requestStatus');
-      if (!status) {
-        status = document.createElement('p');
-        status.id = 'requestStatus';
-        status.className = 'request-status';
-        status.setAttribute('role', 'status');
-        status.setAttribute('aria-live', 'polite');
-        directForm.insertAdjacentElement('afterend', status);
-      }
-      status.textContent = confirmation.message;
-      status.classList.add('is-visible');
-
     });
   }
 });
