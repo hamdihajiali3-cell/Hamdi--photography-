@@ -151,18 +151,15 @@ document.addEventListener("DOMContentLoaded", () => {
       const confirmations = {
         ar: {
           message: 'تم تجهيز طلبك. أرسل الرسالة عبر واتساب لإكمال الطلب.',
-          voice: 'تم تجهيز طلبك. أرسل الرسالة عبر واتساب لإكمال الطلب.',
-          locale: 'ar-SA'
+          locale: '$2'
         },
         tr: {
           message: 'Talebiniz hazır. İşlemi tamamlamak için WhatsApp mesajını gönderin.',
-          voice: 'Talebiniz hazır. İşlemi tamamlamak için WhatsApp mesajını gönderin.',
-          locale: 'tr-TR'
+          locale: '$2'
         },
         en: {
           message: 'Your request is ready. Send the WhatsApp message to complete your request.',
-          voice: 'Your request is ready. Send the WhatsApp message to complete your request.',
-          locale: 'en-US'
+          locale: '$2'
         }
       };
       const confirmation = confirmations[lang];
@@ -178,16 +175,6 @@ document.addEventListener("DOMContentLoaded", () => {
       status.textContent = confirmation.message;
       status.classList.add('is-visible');
 
-      if ('speechSynthesis' in window && 'SpeechSynthesisUtterance' in window) {
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(confirmation.voice);
-        utterance.lang = confirmation.locale;
-        utterance.rate = 0.94;
-        const voices = window.speechSynthesis.getVoices();
-        const voice = voices.find(item => item.lang.toLowerCase().startsWith(lang));
-        if (voice) utterance.voice = voice;
-        window.speechSynthesis.speak(utterance);
-      }
     });
   }
 });
