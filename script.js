@@ -501,3 +501,188 @@ function initMotionNarrative() {
 }
 
 document.addEventListener('DOMContentLoaded', initMotionNarrative);
+
+
+function initAudioExperience() {
+  const labels = {
+    ar: { off: 'الصوت مغلق', on: 'الصوت يعمل', enable: 'تشغيل الصوت', disable: 'إيقاف الصوت' },
+    tr: { off: 'Ses kapalı', on: 'Ses açık', enable: 'Sesi aç', disable: 'Sesi kapat' },
+    en: { off: 'Sound off', on: 'Sound on', enable: 'Enable sound', disable: 'Turn sound off' }
+  };
+  const control = document.createElement('button');
+  control.type = 'button';
+  control.className = 'sound-toggle';
+  control.setAttribute('aria-pressed', 'false');
+  control.innerHTML = '<span class="sound-toggle-icon" aria-hidden="true">♫</span><span class="sound-toggle-label"></span><span class="sound-toggle-dot" aria-hidden="true"></span>';
+  document.body.appendChild(control);
+
+  const label = control.querySelector('.sound-toggle-label');
+  let enabled = false;
+  let audioContext = null;
+  let outputGain = null;
+  let ambientNodes = [];
+
+  function currentLabels() {
+    return labels[document.documentElement.lang] || labels.ar;
+  }
+
+  function syncLabel() {
+    const language = currentLabels();
+    label.textContent = enabled ? language.on : language.off;
+    control.setAttribute('aria-label', enabled ? language.disable : language.enable);
+    control.setAttribute('aria-pressed', String(enabled));
+    control.classList.toggle('is-active', enabled);
+    document.body.classList.toggle('sound-enabled', enabled);
+  }
+  window.syncHamdiSoundLabel = syncLabel;
+
+  function ensureAudio() {
+    if (audioContext) return audioContext;
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) throw new Error('Web Audio is not available in this browser.');
+    audioContext = new AudioContextClass();
+    outputGain = audioContext.createGain();
+    outputGain.gain.value = 0.0001;
+    outputGain.connect(audioContext.destination);
+    return audioContext;
+  }
+
+  function startAmbient() {
+    if (ambientNodes.length) return;
+    const context = audioContext;
+    const filter = context.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = 470;
+    filter.Q.value = 0.55;
+    filter.connect(outputGain);
+
+    [110, 164.81, 220].forEach((frequency, index) => {
+      const oscillator = context.createOscillator();
+      const voice = context.createGain();
+      oscillator.type = index === 1 ? 'triangle' : 'sine';
+      oscillator.frequency.value = frequency;
+      voice.gain.value = [0.075, 0.035, 0.018][index];
+      oscillator.connect(voice);
+      voice.connect(filter);
+      oscillator.start();
+      ambientNodes.push(oscillator);
+    });
+
+    const lfo = context.createOscillator();
+    const lfoDepth = context.createGain();
+    lfo.frequency.value = 0.075;
+    lfoDepth.gain.value = 145;
+    lfo.connect(lfoDepth);
+    lfoDepth.connect(filter.frequency);
+    lfo.start();
+    ambientNodes.push(lfo, filter);
+  }
+
+  function setOutputLevel(value, duration) {
+    if (!audioContext || !outputGain) return;
+    const now = audioContext.currentTime;
+    outputGain.gain.cancelScheduledValues(now);
+    outputGain.gain.setValueAtTime(Math.max(outputGain.gain.value, 0.0001), now);
+    outputGain.gain.linearRampToValueAtTime(value, now + duration);
+  }
+
+  function playChime(frequency, pan) {
+    if (!enabled || !audioContext || !outputGain) return;
+    const now = audioContext.currentTime;
+    const envelope = audioContext.createGain();
+    const panner = audioContext.createStereoPanner ? audioContext.createStereoPanner() : null;
+    if (panner) {
+      panner.pan.value = pan || 0;
+      envelope.connect(panner);
+      panner.connect(outputGain);
+    } else {
+      envelope.connect(outputGain);
+    }
+    envelope.gain.setValueAtTime(0.0001, now);
+    envelope.gain.exponentialRampToValueAtTime(0.13, now + 0.035);
+    envelope.gain.exponentialRampToValueAtTime(0.0001, now + 0.62);
+
+    [1, 1.5].forEach((ratio, index) => {
+      const oscillator = audioContext.createOscillator();
+      const voice = audioContext.createGain();
+      oscillator.type = index ? 'sine' : 'triangle';
+      oscillator.frequency.setValueAtTime(frequency * ratio, now);
+      oscillator.frequency.exponentialRampToValueAtTime(frequency * ratio * 0.94, now + 0.5);
+      voice.gain.value = index ? 0.34 : 0.66;
+      oscillator.connect(voice);
+      voice.connect(envelope);
+      oscillator.start(now);
+      oscillator.stop(now + 0.64);
+    });
+  }
+
+  function playShutter() {
+    if (!enabled || !audioContext || !outputGain) return;
+    const context = audioContext;
+    const length = Math.max(1, Math.floor(context.sampleRate * 0.035));
+    const buffer = context.createBuffer(1, length, context.sampleRate);
+    const samples = buffer.getChannelData(0);
+    for (let index = 0; index < length; index += 1) {
+      samples[index] = (Math.random() * 2 - 1) * (1 - index / length);
+    }
+    const source = context.createBufferSource();
+    const filter = context.createBiquadFilter();
+    const envelope = context.createGain();
+    const now = context.currentTime;
+    source.buffer = buffer;
+    filter.type = 'bandpass';
+    filter.frequency.value = 2100;
+    filter.Q.value = 0.75;
+    envelope.gain.setValueAtTime(0.0001, now);
+    envelope.gain.exponentialRampToValueAtTime(0.11, now + 0.004);
+    envelope.gain.exponentialRampToValueAtTime(0.0001, now + 0.09);
+    source.connect(filter);
+    filter.connect(envelope);
+    envelope.connect(outputGain);
+    source.start(now);
+  }
+
+  control.addEventListener('click', async () => {
+    if (enabled) {
+      enabled = false;
+      syncLabel();
+      setOutputLevel(0.0001, 0.45);
+      return;
+    }
+    try {
+      const context = ensureAudio();
+      await context.resume();
+      startAmbient();
+      enabled = true;
+      syncLabel();
+      setOutputLevel(0.19, 1.3);
+      playChime(523.25, 0);
+    } catch (error) {
+      enabled = false;
+      syncLabel();
+      console.warn('Sound effects are unavailable.', error);
+    }
+  });
+
+  document.querySelectorAll('.gallery-card').forEach((card, index) => {
+    card.addEventListener('click', () => playChime(590 + index * 72, (index - 1.5) * 0.24));
+  });
+  const cameraStage = document.getElementById('three-stage');
+  if (cameraStage) {
+    cameraStage.addEventListener('click', () => {
+      playShutter();
+      playChime(440, -0.12);
+    });
+  }
+
+  const previousSetLanguage = window.setLanguage;
+  if (typeof previousSetLanguage === 'function') {
+    window.setLanguage = function(lang) {
+      previousSetLanguage(lang);
+      syncLabel();
+    };
+  }
+  syncLabel();
+}
+
+document.addEventListener('DOMContentLoaded', initAudioExperience);
