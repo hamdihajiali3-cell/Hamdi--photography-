@@ -1397,3 +1397,44 @@ body::before {
     transition: none;
   }
 }
+
+
+/* Animated cinematic aurora background */
+body::after {
+  content: "";
+  position: fixed;
+  inset: -34%;
+  z-index: -1;
+  pointer-events: none;
+  opacity: .36;
+  mix-blend-mode: screen;
+  filter: blur(34px);
+  background:
+    radial-gradient(ellipse at 19% 44%, rgba(79, 157, 177, .2), transparent 24%),
+    radial-gradient(ellipse at 78% 29%, rgba(216, 182, 117, .18), transparent 22%),
+    radial-gradient(ellipse at 66% 79%, rgba(94, 119, 157, .16), transparent 25%),
+    conic-gradient(from 210deg at 51% 50%, transparent 0deg, rgba(216, 182, 117, .07) 28deg, transparent 61deg, rgba(98, 157, 174, .06) 116deg, transparent 152deg, rgba(216, 182, 117, .05) 228deg, transparent 270deg);
+  transform: translate3d(0, 0, 0) rotate(-8deg) scale(1.02);
+  animation: hamdi-aurora-flow 34s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes hamdi-aurora-flow {
+  0% {
+    transform: translate3d(-2.5%, -1.5%, 0) rotate(-10deg) scale(1.02);
+  }
+  50% {
+    transform: translate3d(2%, 1%, 0) rotate(2deg) scale(1.07);
+  }
+  100% {
+    transform: translate3d(-1%, 2.5%, 0) rotate(11deg) scale(1.03);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::after {
+    animation: none;
+    transform: none;
+    will-change: auto;
+  }
+}
