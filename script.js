@@ -228,35 +228,51 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    const animeAtmosphere = document.createElement('div');
-    animeAtmosphere.className = 'anime-atmosphere';
-    animeAtmosphere.setAttribute('aria-hidden', 'true');
-
-    const petalCount = window.matchMedia('(max-width: 600px)').matches ? 21 : 40;
-    for (let index = 0; index < petalCount; index += 1) {
-      const petal = document.createElement('span');
-      petal.className = 'anime-petal';
-      petal.style.left = (Math.random() * 100).toFixed(2) + '%';
-      petal.style.setProperty('--petal-scale', (0.58 + Math.random() * 0.62).toFixed(2));
-      petal.style.setProperty('--fall-duration', (12 + Math.random() * 11).toFixed(1) + 's');
-      petal.style.setProperty('--fall-delay', (Math.random() * -25).toFixed(2) + 's');
-      petal.style.setProperty('--petal-drift', (Math.random() * 340 - 170).toFixed(1) + 'px');
-      petal.style.setProperty('--petal-mid-drift', (Math.random() * 150 - 75).toFixed(1) + 'px');
-      animeAtmosphere.appendChild(petal);
-    }
-
-    for (let index = 0; index < 6; index += 1) {
-      const shootingStar = document.createElement('span');
-      shootingStar.className = 'anime-shooting-star';
-      shootingStar.style.setProperty('--star-top', (8 + Math.random() * 55).toFixed(1) + '%');
-      shootingStar.style.setProperty('--star-left', (58 + Math.random() * 39).toFixed(1) + '%');
-      shootingStar.style.setProperty('--star-delay', (Math.random() * -9).toFixed(2) + 's');
-      animeAtmosphere.appendChild(shootingStar);
-    }
-
-    document.body.appendChild(animeAtmosphere);
-  }
+  const cameraAtmosphere = document.createElement('div');
+  cameraAtmosphere.className = 'camera-atmosphere';
+  cameraAtmosphere.setAttribute('aria-hidden', 'true');
+  cameraAtmosphere.innerHTML = `
+    <svg class="camera-illustration" viewBox="0 0 900 640" role="presentation">
+      <defs>
+        <radialGradient id="camera-lens-glow" cx="36%" cy="30%">
+          <stop offset="0" stop-color="#91c9d5" stop-opacity=".32"/>
+          <stop offset=".48" stop-color="#263a42" stop-opacity=".2"/>
+          <stop offset="1" stop-color="#050708" stop-opacity=".72"/>
+        </radialGradient>
+        <linearGradient id="camera-shell-light" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#d8b675" stop-opacity=".16"/>
+          <stop offset=".48" stop-color="#111615" stop-opacity=".25"/>
+          <stop offset="1" stop-color="#6c91a0" stop-opacity=".16"/>
+        </linearGradient>
+      </defs>
+      <g class="camera-body-motion">
+        <path class="camera-shell" d="M150 190h151l45-61h208l45 61h151a54 54 0 0 1 54 54v254a54 54 0 0 1-54 54H150a54 54 0 0 1-54-54V244a54 54 0 0 1 54-54Z"/>
+        <path class="camera-top-line" d="M304 190 346 143h208l42 47"/>
+        <rect class="camera-viewfinder" x="173" y="221" width="77" height="48" rx="10"/>
+        <circle class="camera-shutter-button" cx="690" cy="228" r="22"/>
+        <circle class="camera-shutter-core" cx="690" cy="228" r="8"/>
+        <circle class="camera-lens-outer" cx="450" cy="365" r="170"/>
+        <circle class="camera-lens-ring" cx="450" cy="365" r="151"/>
+        <circle class="camera-lens-glass" cx="450" cy="365" r="131"/>
+        <g class="camera-iris">
+          <path d="M450 244c43 5 77 37 82 78l-82 43-48-79c10-22 26-36 48-42Z"/>
+          <path d="M450 244c43 5 77 37 82 78l-82 43-48-79c10-22 26-36 48-42Z" transform="rotate(60 450 365)"/>
+          <path d="M450 244c43 5 77 37 82 78l-82 43-48-79c10-22 26-36 48-42Z" transform="rotate(120 450 365)"/>
+          <path d="M450 244c43 5 77 37 82 78l-82 43-48-79c10-22 26-36 48-42Z" transform="rotate(180 450 365)"/>
+          <path d="M450 244c43 5 77 37 82 78l-82 43-48-79c10-22 26-36 48-42Z" transform="rotate(240 450 365)"/>
+          <path d="M450 244c43 5 77 37 82 78l-82 43-48-79c10-22 26-36 48-42Z" transform="rotate(300 450 365)"/>
+        </g>
+        <circle class="camera-lens-center" cx="450" cy="365" r="55"/>
+        <circle class="camera-lens-highlight" cx="420" cy="332" r="20"/>
+        <circle class="camera-lens-detail" cx="450" cy="365" r="112"/>
+      </g>
+    </svg>
+    <span class="camera-flash"></span>
+    <span class="camera-bokeh camera-bokeh-one"></span>
+    <span class="camera-bokeh camera-bokeh-two"></span>
+    <span class="camera-bokeh camera-bokeh-three"></span>
+  `;
+  document.body.appendChild(cameraAtmosphere);
 
   const directForm = document.getElementById('directContactForm');
   if (directForm) {
