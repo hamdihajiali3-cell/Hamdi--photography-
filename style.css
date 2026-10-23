@@ -283,21 +283,7 @@ img {
   height: 100%;
 }
 
-.visual-glow {
-  position: absolute;
-  width: 70%;
-  aspect-ratio: 1;
-  left: 15%;
-  top: 15%;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgba(174,128,58,.2),
-    rgba(98,72,37,.08) 42%,
-    transparent 70%
-  );
-  filter: blur(10px);
-}
+
 
 .orbit {
   position: absolute;
@@ -2464,82 +2450,5 @@ section[id] { scroll-margin-top: 104px; }
   .ambient-dust {
     animation: none !important;
     will-change: auto;
-  }
-}
-/* Animated circular ring light inside the transparent camera frame */
-.hero-visual { isolation: isolate; }
-.ringlight-scene {
-  position: absolute;
-  z-index: 1;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-  border-radius: 48% 48% 3px 3px / 36% 36% 3px 3px;
-}
-.ringlight-scene::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 49%;
-  width: min(82%, 440px);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  opacity: .76;
-  background: conic-gradient(
-    from 5deg,
-    rgba(105, 204, 235, .12),
-    rgba(126, 199, 226, .88) 15deg,
-    rgba(230, 244, 234, .48) 31deg,
-    rgba(216, 182, 117, .72) 58deg,
-    rgba(216, 182, 117, .12) 92deg,
-    transparent 132deg 194deg,
-    rgba(216, 182, 117, .16) 224deg,
-    rgba(255, 237, 200, .82) 254deg,
-    rgba(110, 195, 222, .55) 279deg,
-    rgba(110, 195, 222, .1) 312deg,
-    transparent 345deg
-  );
-  -webkit-mask: radial-gradient(circle, transparent 0 60%, #000 62% 67%, transparent 72%);
-  mask: radial-gradient(circle, transparent 0 60%, #000 62% 67%, transparent 72%);
-  filter: drop-shadow(0 0 13px rgba(112, 199, 226, .34)) drop-shadow(0 0 34px rgba(216, 182, 117, .2));
-  transform: translate3d(-50%, -50%, 0) rotate(0);
-  animation: ringlight-turn 48s linear infinite, ringlight-shine 8s ease-in-out infinite alternate;
-}
-.ringlight-scene::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 49%;
-  width: min(94%, 510px);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle, transparent 0 39%, rgba(109, 190, 219, .1) 51%, rgba(216, 182, 117, .08) 58%, transparent 73%),
-    radial-gradient(circle at 50% 50%, rgba(231, 209, 168, .08), transparent 66%);
-  filter: blur(12px);
-  transform: translate3d(-50%, -50%, 0);
-  animation: ringlight-aura 7s ease-in-out infinite alternate;
-}
-@keyframes ringlight-turn {
-  from { transform: translate3d(-50%, -50%, 0) rotate(0); }
-  to { transform: translate3d(-50%, -50%, 0) rotate(1turn); }
-}
-@keyframes ringlight-shine {
-  from { opacity: .52; filter: drop-shadow(0 0 10px rgba(112, 199, 226, .22)) drop-shadow(0 0 22px rgba(216, 182, 117, .12)); }
-  to { opacity: .9; filter: drop-shadow(0 0 18px rgba(112, 199, 226, .45)) drop-shadow(0 0 42px rgba(216, 182, 117, .28)); }
-}
-@keyframes ringlight-aura {
-  from { opacity: .38; transform: translate3d(-50%, -50%, 0) scale(.94); }
-  to { opacity: .76; transform: translate3d(-50%, -50%, 0) scale(1.04); }
-}
-@media (max-width: 600px) {
-  .ringlight-scene::before { width: 88%; top: 48%; }
-  .ringlight-scene::after { width: 104%; top: 48%; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .ringlight-scene::before,
-  .ringlight-scene::after {
-    animation: none !important;
-    opacity: .7;
   }
 }
