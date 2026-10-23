@@ -2525,6 +2525,8 @@ body::after {
   border: 1px solid rgba(255,255,255,.34);
   border-radius: 14px;
   transform: none;
+  animation: none !important;
+  will-change: auto;
 }
 .manifesto-orb::after { content: none !important; display: none !important; }
 .manifesto-orb .orb-inner {
