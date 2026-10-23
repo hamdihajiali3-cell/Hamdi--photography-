@@ -1084,6 +1084,47 @@ function initSelectionSound() {
     if (target.closest('.gallery-card, [data-select-service]')) playSelectionSound();
   }, true);
 
+  let lastTypingSoundAt = 0;
+  let typingSoundIndex = 0;
+  const playTypingSound = (event) => {
+    if (!event.isTrusted || event.isComposing) return;
+    const stamp = performance.now();
+    if (stamp - lastTypingSoundAt < 28) return;
+    lastTypingSoundAt = stamp;
+
+    try {
+      audioContext ||= new AudioContextClass();
+      if (audioContext.state === 'suspended') void audioContext.resume().catch(() => {});
+      const now = audioContext.currentTime;
+      const filter = audioContext.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(1500, now);
+      filter.Q.setValueAtTime(0.65, now);
+
+      const envelope = audioContext.createGain();
+      envelope.gain.setValueAtTime(0.0001, now);
+      envelope.gain.exponentialRampToValueAtTime(0.045, now + 0.002);
+      envelope.gain.exponentialRampToValueAtTime(0.0001, now + 0.038);
+      filter.connect(envelope);
+      envelope.connect(audioContext.destination);
+
+      const keyTap = audioContext.createOscillator();
+      keyTap.type = 'triangle';
+      keyTap.frequency.setValueAtTime(470 + (typingSoundIndex % 5) * 22, now);
+      keyTap.frequency.exponentialRampToValueAtTime(210, now + 0.034);
+      keyTap.connect(filter);
+      keyTap.start(now);
+      keyTap.stop(now + 0.04);
+      typingSoundIndex += 1;
+    } catch (error) {
+      // Keep typing available when audio is blocked or unsupported.
+    }
+  };
+
+  document.querySelectorAll('#clientName, #clientMsg').forEach((field) => {
+    field.addEventListener('beforeinput', playTypingSound);
+  });
+
   const sessionType = document.getElementById('sessionType');
   sessionType?.addEventListener('change', playSelectionSound);
 
