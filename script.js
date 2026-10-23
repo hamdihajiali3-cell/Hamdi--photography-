@@ -1,5 +1,135 @@
 const translations = {
   ar: {
+    pageTitle: "Hamdi Photography | صور تحكي قصتك",
+    pageDescription: "تصوير بورتريه ومناسبات وتصوير تجاري في غازي عنتاب. صور بتفاصيل مدروسة تحفظ إحساس اللحظة مع حمدي.",
+    languageLabel: "لغة الموقع", menuLabel: "فتح القائمة",
+    navWork: "المعرض", navAbout: "قصتي", navServices: "الخدمات", navContact: "احجز جلسة",
+    heroEyebrow: "<span class=\"live-dot\"></span>حمدي — مصوّر فوتوغرافي وصانع قصص بصرية",
+    heroTitle: "كل صورة تحكي<br><em>حكاية تشبهك.</em>",
+    heroDesc: "من جلسة البورتريه إلى يومك المميز، أصنع صوراً تهتم بالضوء والتفاصيل وتحفظ إحساس اللحظة. تصوير شخصي ومناسبات ومشاريع تجارية في غازي عنتاب.",
+    heroBtn1: "اكتشف المعرض", heroBtn2: "خطّط لجلسة",
+    meta1: "لقطة تشبهك", meta2: "ضوء يصنع فرقاً", meta3: "ذكرى تدوم",
+    visualLabel1: "خلف كل لقطة — 2026", visualLabel2: "قصتك تستحق إطاراً",
+    scrollCue: "انزل واستكشف",
+    t1: "بورتريه", t2: "مناسبات", t3: "تصوير تجاري", t4: "قصص بصرية",
+    workEyebrow: "مختارات بعدسة حمدي / 2024—2026",
+    workTitle: "لحظاتك<br><em>تستحق أن تُروى.</em>",
+    workIntro: "تفاصيل صادقة، ضوء مدروس، وصور تحفظ الإحساس قبل الشكل.",
+    galleryHint: "حرّك المؤشر فوق الصور لمتابعة إطار التركيز، واضغط الصورة لعرضها كاملة. على الهاتف، المس الصورة.",
+    g1: "بورتريه", gc1: "نظرة تحكي الكثير", g1Alt: "صورة بورتريه بتعبير هادئ",
+    g2: "أجواء", gc2: "بعد الساعة الزرقاء", g2Alt: "سماء ليلية بألوان سينمائية",
+    g3: "إيديتوريال", gc3: "حضور وثقة", g3Alt: "صورة أزياء بطابع تحريري",
+    g4: "طبيعة", gc4: "الضوء الأول", g4Alt: "ضوء الصباح فوق مشهد طبيعي",
+    aboutBadge: "H / الرؤية", aboutEyebrow: "خلف العدسة",
+    aboutTitle: "أبحث عن<br><em>الإحساس قبل اللقطة.</em>",
+    aboutDesc: "أنا حمدي. أؤمن أن أجمل الصور لا تكتفي بتوثيق اللحظة، بل تحفظ الإحساس الذي كان فيها. أركّز على الضوء والتفاصيل، وأعمل معك من الفكرة حتى اللقطة لتكون الصورة قريبة منك وتحكي قصتك.",
+    aboutLink: "احكيلي عن فكرتك",
+    servEyebrow: "كيف أقدر أساعدك؟",
+    servTitle: "فكرتك أولاً،<br><em>والصورة تحكي الباقي.</em>",
+    servIntro: "اختر الخدمة المناسبة؛ اضغط عليها لنجهّز نوع التصوير في نموذج واتساب.",
+    s1Title: "جلسات البورتريه", s1Desc: "جلسة مريحة بطابعك، نختار فيها الضوء والتفاصيل لتطلع صور تشبهك فعلاً.",
+    s2Title: "التصوير التجاري", s2Desc: "صور جذابة تقدّم منتجك أو مشروعك بهوية بصرية واضحة ومتناسقة.",
+    s3Title: "المناسبات والقصص", s3Desc: "نوثّق التفاصيل واللحظات العفوية لتبقى مناسبتك حاضرة بكل إحساسها.",
+    serviceCta: "ابدأ طلب هذه الخدمة",
+    contactTop1: "جاهز تحوّل فكرتك لصورة؟", contactTop2: "ابدأ طلبك عبر واتساب",
+    contactTitle: "خلّي فكرتك<br><em>تصير صورة.</em>",
+    contactDesc: "اختر نوع التصوير واكتب لنا فكرتك. سنجهّز رسالة واتساب لتراجعها قبل إرسالها.",
+    nameLabel: "اسمك", sessionLabel: "نوع التصوير", messageLabel: "احكيلي عن فكرتك",
+    namePlaceholder: "اكتب اسمك", msgPlaceholder: "ما الفكرة أو اللحظة التي تريد تصويرها؟",
+    contactFormHint: "ستفتح واتساب برسالة جاهزة؛ راجعها وعدّلها ثم أرسلها.",
+    opt1: "جلسة بورتريه", opt2: "تصوير تخرّج", opt3: "تصوير تجاري", opt4: "تصوير مناسبة", opt5: "طلب آخر",
+    sendBtn: "تابع إلى واتساب", locationText: "غازي عنتاب، تركيا · بموعد مسبق",
+    waIntro: "مرحباً حمدي، أنا", waBooking: "أرغب بحجز", waDetails: "تفاصيل فكرتي",
+    rightsText: "جميع الحقوق محفوظة.", backTop: "العودة لأعلى الصفحة ↑"
+  },
+  tr: {
+    pageTitle: "Hamdi Photography | Hikâyeni anlatan kareler",
+    pageDescription: "Gaziantep'te portre, etkinlik ve ticari fotoğraf çekimleri. Anın duygusunu koruyan özenli kareler.",
+    languageLabel: "Site dili", menuLabel: "Menüyü aç",
+    navWork: "Portfolyo", navAbout: "Hakkımda", navServices: "Hizmetler", navContact: "Çekim planla",
+    heroEyebrow: "<span class=\"live-dot\"></span>HAMDI — fotoğrafçı ve görsel hikâye anlatıcısı",
+    heroTitle: "Her kare,<br><em>seni anlatsın.</em>",
+    heroDesc: "Portrelerden özel günlere, ışığa ve ayrıntılara özen göstererek anın duygusunu koruyan kareler üretiyorum. Gaziantep'te kişisel, etkinlik ve ticari çekimler.",
+    heroBtn1: "Portfolyoyu Gör", heroBtn2: "Çekimini Planla",
+    meta1: "SANA ÖZEL KARE", meta2: "IŞIĞIN GÜCÜ", meta3: "KALICI ANILAR",
+    visualLabel1: "HER KARENİN ARDINDA — 2026", visualLabel2: "HİKÂYENİ ÇERÇEVELE",
+    scrollCue: "KEŞFETMEK İÇİN KAYDIR",
+    t1: "PORTRE", t2: "ETKİNLİK", t3: "TİCARİ ÇEKİM", t4: "GÖRSEL HİKÂYELER",
+    workEyebrow: "HAMDI'NİN SEÇKİSİ / 2024—2026",
+    workTitle: "Anların<br><em>hikâyeni anlatsın.</em>",
+    workIntro: "Gerçek duygular, özenli ışık ve her karede sana ait ayrıntılar.",
+    galleryHint: "Odak çerçevesini görmek için görselin üzerinde gezinin; tam ekran için tıklayın. Telefonda görsele dokunun.",
+    g1: "PORTRE", gc1: "Sessiz bir bakış", g1Alt: "Sakin ifadeli portre fotoğrafı",
+    g2: "ATMOSFER", gc2: "Mavi saatten sonra", g2Alt: "Sinematik renklerde gece gökyüzü",
+    g3: "EDİTORYAL", gc3: "Duruş ve özgüven", g3Alt: "Editoryal tarzda moda fotoğrafı",
+    g4: "MANZARA", gc4: "İlk ışık", g4Alt: "Doğal bir manzaranın üzerine düşen sabah ışığı",
+    aboutBadge: "H / VİZYON", aboutEyebrow: "LENSİN ARKASINDA",
+    aboutTitle: "Önce hissi,<br><em>sonra kareyi ararım.</em>",
+    aboutDesc: "Ben Hamdi. İyi bir fotoğrafın yalnızca anı göstermediğine, o anda hissedileni de sakladığına inanıyorum. Işığa ve ayrıntılara odaklanıyor, fikir aşamasından çekime kadar seninle çalışarak hikâyene yakın kareler oluşturuyorum.",
+    aboutLink: "Fikrini anlat",
+    servEyebrow: "SANA NASIL YARDIMCI OLABİLİRİM?",
+    servTitle: "Önce fikrin,<br><em>sonra hikâyen.</em>",
+    servIntro: "Sana uygun hizmeti seç; çekim türünü WhatsApp formunda senin için hazırlayayım.",
+    s1Title: "Portre çekimleri", s1Desc: "Tarzına uygun, rahat bir çekim. Sana benzeyen kareler için ışığı ve ayrıntıları birlikte seçelim.",
+    s2Title: "Ticari fotoğraf", s2Desc: "Ürününü veya markanı tutarlı bir görsel dille öne çıkaran fotoğraflar.",
+    s3Title: "Etkinlik ve hikâyeler", s3Desc: "Özel gününün ayrıntılarını ve içten anlarını duygusuyla birlikte kaydedelim.",
+    serviceCta: "Bu çekim için başla",
+    contactTop1: "Fikrini bir kareye dönüştürelim mi?", contactTop2: "WhatsApp üzerinden talep oluştur",
+    contactTitle: "Fikrini<br><em>kareye dönüştür.</em>",
+    contactDesc: "Çekim türünü seç ve fikrini yaz. Göndermeden önce incelemen için WhatsApp mesajı hazırlayalım.",
+    nameLabel: "Adın", sessionLabel: "Çekim türü", messageLabel: "Fikrini anlat",
+    namePlaceholder: "Adını yaz", msgPlaceholder: "Nasıl bir çekim hayal ediyorsun?",
+    contactFormHint: "Hazır mesaj WhatsApp'ta açılır; kontrol edip düzenledikten sonra gönderebilirsin.",
+    opt1: "Portre çekimi", opt2: "Mezuniyet çekimi", opt3: "Ticari çekim", opt4: "Etkinlik çekimi", opt5: "Diğer",
+    sendBtn: "WhatsApp'ta devam et", locationText: "Gaziantep, Türkiye · Randevu ile",
+    waIntro: "Merhaba Hamdi, ben", waBooking: "Çekim için randevu almak istiyorum", waDetails: "Fikrimin detayları",
+    rightsText: "Tüm hakları saklıdır.", backTop: "Sayfanın başına dön ↑"
+  },
+  en: {
+    pageTitle: "Hamdi Photography | Frames with a story",
+    pageDescription: "Portrait, event, and commercial photography in Gaziantep. Thoughtful images that hold on to how the moment felt.",
+    languageLabel: "Site language", menuLabel: "Open menu",
+    navWork: "Portfolio", navAbout: "About", navServices: "Services", navContact: "Plan a shoot",
+    heroEyebrow: "<span class=\"live-dot\"></span>HAMDI — photographer & visual storyteller",
+    heroTitle: "Every frame,<br><em>a story like yours.</em>",
+    heroDesc: "From portraits to the days you want to remember, I shape light and detail into honest photographs. Personal, event, and commercial shoots in Gaziantep.",
+    heroBtn1: "Explore the portfolio", heroBtn2: "Plan your shoot",
+    meta1: "MADE TO FEEL", meta2: "LIGHT WITH INTENT", meta3: "MEMORIES THAT LAST",
+    visualLabel1: "BEHIND EVERY FRAME — 2026", visualLabel2: "FRAME YOUR STORY",
+    scrollCue: "SCROLL TO EXPLORE",
+    t1: "PORTRAITS", t2: "EVENTS", t3: "COMMERCIAL", t4: "VISUAL STORIES",
+    workEyebrow: "SELECTED BY HAMDI / 2024—2026",
+    workTitle: "Moments worth<br><em>holding onto.</em>",
+    workIntro: "Honest feeling, thoughtful light, and details that make the image yours.",
+    galleryHint: "Move over a photo to see the focus frame. Click to view it full size; on a phone, tap the image.",
+    g1: "PORTRAIT", gc1: "A quiet gaze", g1Alt: "Portrait with a calm expression",
+    g2: "ATMOSPHERE", gc2: "After the blue hour", g2Alt: "Night sky in cinematic colors",
+    g3: "EDITORIAL", gc3: "Presence & confidence", g3Alt: "Fashion photograph in an editorial style",
+    g4: "LANDSCAPE", gc4: "First light", g4Alt: "Morning light falling over a natural landscape",
+    aboutBadge: "H / VISION", aboutEyebrow: "BEHIND THE LENS",
+    aboutTitle: "I look for the feeling<br><em>before the frame.</em>",
+    aboutDesc: "I'm Hamdi. I believe a good photograph does more than show a moment; it keeps how that moment felt. I focus on light and detail, working with you from the first idea to the final frame so the image feels like yours.",
+    aboutLink: "Tell me your idea",
+    servEyebrow: "HOW CAN I HELP?",
+    servTitle: "Your idea first,<br><em>the image follows.</em>",
+    servIntro: "Choose a service to prefill the shoot type in your WhatsApp request.",
+    s1Title: "Portrait sessions", s1Desc: "A relaxed session built around your style, with light and details chosen to make the photos feel like you.",
+    s2Title: "Commercial photography", s2Desc: "Clear, compelling images that present your product or brand with a consistent visual identity.",
+    s3Title: "Events & stories", s3Desc: "The details and candid moments of your occasion, kept with all the feeling they held.",
+    serviceCta: "Start this booking",
+    contactTop1: "Ready to turn an idea into a photograph?", contactTop2: "Start your request on WhatsApp",
+    contactTitle: "Let's turn your idea<br><em>into a frame.</em>",
+    contactDesc: "Choose a shoot type and share your idea. We'll prepare a WhatsApp message for you to review before sending.",
+    nameLabel: "Your name", sessionLabel: "Type of shoot", messageLabel: "Tell me about your idea",
+    namePlaceholder: "Write your name", msgPlaceholder: "What would you like to photograph?",
+    contactFormHint: "A prepared message opens in WhatsApp; review or edit it before sending.",
+    opt1: "Portrait session", opt2: "Graduation shoot", opt3: "Commercial shoot", opt4: "Event coverage", opt5: "Other",
+    sendBtn: "Continue to WhatsApp", locationText: "Gaziantep, Türkiye · By appointment",
+    waIntro: "Hi Hamdi, I'm", waBooking: "I'd like to book", waDetails: "My idea",
+    rightsText: "All rights reserved.", backTop: "Back to top ↑"
+  }
+};
+  ar: {
     navWork: "معرض الصور", navAbout: "من أنا", navServices: "خدماتي", navContact: "لنتحدث",
     heroEyebrow: "مصور فوتوغرافي وموثق بصري",
     heroTitle: "الحياة، بنظرة<br><em>مختلفة تماماً.</em>",
@@ -109,24 +239,48 @@ const translations = {
 window.setLanguage = function(lang) {
   if (!translations[lang]) return;
   document.documentElement.lang = lang;
-  document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+  document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
 
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.getAttribute('data-i18n');
-    if (translations[lang][key]) {
-      el.innerHTML = translations[lang][key];
-    }
-  });
+  const copy = translations[lang];
+  document.title = copy.pageTitle;
+  const description = document.querySelector('meta[name="description"]');
+  if (description) description.content = copy.pageDescription;
 
-  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-    const key = el.getAttribute('data-i18n-placeholder');
-    if (translations[lang][key]) {
-      el.placeholder = translations[lang][key];
-    }
+  document.querySelectorAll('[data-i18n]').forEach((element) => {
+    const key = element.getAttribute('data-i18n');
+    if (copy[key] !== undefined) element.innerHTML = copy[key];
   });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach((element) => {
+    const key = element.getAttribute('data-i18n-placeholder');
+    if (copy[key] !== undefined) element.placeholder = copy[key];
+  });
+  document.querySelectorAll('[data-i18n-value]').forEach((element) => {
+    const key = element.getAttribute('data-i18n-value');
+    if (copy[key] !== undefined) element.value = copy[key];
+  });
+  document.querySelectorAll('[data-i18n-alt]').forEach((element) => {
+    const key = element.getAttribute('data-i18n-alt');
+    if (copy[key] !== undefined) element.alt = copy[key];
+  });
+  document.querySelectorAll('[data-i18n-aria-label]').forEach((element) => {
+    const key = element.getAttribute('data-i18n-aria-label');
+    if (copy[key] !== undefined) element.setAttribute('aria-label', copy[key]);
+  });
+  document.querySelectorAll('[data-language]').forEach((button) => {
+    const active = button.getAttribute('data-language') === lang;
+    button.classList.toggle('is-active', active);
+    button.setAttribute('aria-pressed', String(active));
+  });
+  try { window.localStorage.setItem('hamdiLanguage', lang); } catch (error) {}
 };
 
 document.addEventListener("DOMContentLoaded", () => {
+  let initialLanguage = translations[document.documentElement.lang] ? document.documentElement.lang : 'ar';
+  try {
+    const savedLanguage = window.localStorage.getItem('hamdiLanguage');
+    if (translations[savedLanguage]) initialLanguage = savedLanguage;
+  } catch (error) {}
+  window.setLanguage(initialLanguage);
   const yearSpan = document.getElementById('year');
   if (yearSpan) {
     yearSpan.textContent = new Date().getFullYear();
@@ -252,7 +406,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const session = document.getElementById('sessionType').value;
       const msg = document.getElementById('clientMsg').value;
 
-      const text = `مرحباً، أنا ${name}\nأريد حجز: ${session}\nالتفاصيل: ${msg}`;
+      const copy = translations[document.documentElement.lang] || translations.en;
+      const lineBreak = String.fromCharCode(10);
+      const text = copy.waIntro + ' ' + name + lineBreak + copy.waBooking + ': ' + session + lineBreak + copy.waDetails + ': ' + msg;
       const whatsappUrl = `https://wa.me/905377423671?text=${encodeURIComponent(text)}`;
       
       window.open(whatsappUrl, '_blank');
@@ -833,3 +989,19 @@ function initGalleryFocusEffect() {
 }
 
 document.addEventListener('DOMContentLoaded', initGalleryFocusEffect);
+
+function initServiceBookingLinks() {
+  const select = document.getElementById('sessionType');
+  if (!select) return;
+  document.querySelectorAll('[data-select-service]').forEach((link) => {
+    link.addEventListener('click', () => {
+      const key = link.getAttribute('data-select-service');
+      const option = Array.from(select.options).find((item) => item.getAttribute('data-i18n-value') === key);
+      if (!option) return;
+      select.value = option.value;
+      select.classList.add('service-prefilled');
+    });
+  });
+  select.addEventListener('change', () => select.classList.remove('service-prefilled'));
+}
+document.addEventListener('DOMContentLoaded', initServiceBookingLinks);
