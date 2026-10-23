@@ -397,38 +397,88 @@ async function initThreeScene() {
   lensGlass.width = 512;
   lensGlass.height = 512;
   const lensContext = lensGlass.getContext('2d');
-  const lensGradient = lensContext.createRadialGradient(184, 165, 10, 256, 256, 270);
-  lensGradient.addColorStop(0, '#7ca7ad');
-  lensGradient.addColorStop(0.19, '#29434b');
-  lensGradient.addColorStop(0.48, '#121e22');
-  lensGradient.addColorStop(0.8, '#080b0d');
-  lensGradient.addColorStop(1, '#030404');
+  const lensGradient = lensContext.createRadialGradient(174, 144, 8, 256, 256, 272);
+  lensGradient.addColorStop(0, '#a8e6f5');
+  lensGradient.addColorStop(0.12, '#467fa4');
+  lensGradient.addColorStop(0.3, '#182c46');
+  lensGradient.addColorStop(0.64, '#08111d');
+  lensGradient.addColorStop(1, '#020407');
   lensContext.fillStyle = lensGradient;
   lensContext.fillRect(0, 0, 512, 512);
-  lensContext.strokeStyle = 'rgba(218,190,132,.34)';
-  lensContext.lineWidth = 2;
-  for (let i = 0; i < 16; i += 1) {
-    const angle = (Math.PI * 2 * i) / 16;
+
+  const coatingGlow = lensContext.createRadialGradient(166, 140, 4, 218, 198, 235);
+  coatingGlow.addColorStop(0, 'rgba(151,235,255,.46)');
+  coatingGlow.addColorStop(0.28, 'rgba(76,151,221,.18)');
+  coatingGlow.addColorStop(0.62, 'rgba(147,107,222,.08)');
+  coatingGlow.addColorStop(1, 'rgba(4,8,16,0)');
+  lensContext.fillStyle = coatingGlow;
+  lensContext.fillRect(0, 0, 512, 512);
+
+  lensContext.globalCompositeOperation = 'screen';
+  const reflection = lensContext.createLinearGradient(80, 360, 410, 95);
+  reflection.addColorStop(0, 'rgba(94,213,247,0)');
+  reflection.addColorStop(0.48, 'rgba(156,224,255,.2)');
+  reflection.addColorStop(0.56, 'rgba(255,255,255,.44)');
+  reflection.addColorStop(0.68, 'rgba(166,136,255,.14)');
+  reflection.addColorStop(1, 'rgba(112,190,255,0)');
+  lensContext.fillStyle = reflection;
+  lensContext.fillRect(0, 0, 512, 512);
+  lensContext.globalCompositeOperation = 'source-over';
+
+  for (let i = 0; i < 48; i += 1) {
+    const angle = (Math.PI * 2 * i) / 48;
+    const major = i % 4 === 0;
+    const innerRadius = major ? 220 : 228;
+    const outerRadius = 241;
     lensContext.beginPath();
-    lensContext.moveTo(256 + Math.cos(angle) * 126, 256 + Math.sin(angle) * 126);
-    lensContext.lineTo(256 + Math.cos(angle + 0.18) * 217, 256 + Math.sin(angle + 0.18) * 217);
+    lensContext.moveTo(256 + Math.cos(angle) * innerRadius, 256 + Math.sin(angle) * innerRadius);
+    lensContext.lineTo(256 + Math.cos(angle) * outerRadius, 256 + Math.sin(angle) * outerRadius);
+    lensContext.strokeStyle = major ? 'rgba(192,221,246,.56)' : 'rgba(120,180,220,.28)';
+    lensContext.lineWidth = major ? 2 : 1;
     lensContext.stroke();
   }
+
+  [184, 212, 244].forEach((radius, index) => {
+    lensContext.beginPath();
+    lensContext.arc(256, 256, radius, 0, Math.PI * 2);
+    lensContext.strokeStyle = ['rgba(110,202,239,.5)', 'rgba(194,214,238,.3)', 'rgba(216,182,117,.42)'][index];
+    lensContext.lineWidth = index === 0 ? 2 : 1;
+    lensContext.stroke();
+  });
+
   lensContext.beginPath();
-  lensContext.arc(256, 256, 224, 0, Math.PI * 2);
-  lensContext.strokeStyle = 'rgba(232,215,178,.48)';
+  for (let i = 0; i < 7; i += 1) {
+    const angle = (Math.PI * 2 * i) / 7 - Math.PI / 2;
+    const x = 256 + Math.cos(angle) * 88;
+    const y = 256 + Math.sin(angle) * 88;
+    if (i === 0) lensContext.moveTo(x, y);
+    else lensContext.lineTo(x, y);
+  }
+  lensContext.closePath();
+  const apertureShade = lensContext.createRadialGradient(256, 256, 8, 256, 256, 112);
+  apertureShade.addColorStop(0, '#020308');
+  apertureShade.addColorStop(0.76, '#07111c');
+  apertureShade.addColorStop(1, '#18354a');
+  lensContext.fillStyle = apertureShade;
+  lensContext.fill();
+  lensContext.strokeStyle = 'rgba(116,219,247,.72)';
+  lensContext.lineWidth = 3;
   lensContext.stroke();
 
   const lensTexture = new THREE.CanvasTexture(lensGlass);
   lensTexture.colorSpace = THREE.SRGBColorSpace;
   const glass = new THREE.Mesh(
-    new THREE.CircleGeometry(0.91, 80),
+    new THREE.CircleGeometry(0.91, 96),
     new THREE.MeshPhysicalMaterial({
       map: lensTexture,
-      metalness: 0.58,
-      roughness: 0.16,
+      color: 0xc8e7ff,
+      metalness: 0.42,
+      roughness: 0.12,
       clearcoat: 1,
-      clearcoatRoughness: 0.08
+      clearcoatRoughness: 0.045,
+      iridescence: 0.82,
+      iridescenceIOR: 1.35,
+      iridescenceThicknessRange: [180, 520]
     })
   );
   glass.position.z = 0.414;
@@ -437,7 +487,7 @@ async function initThreeScene() {
 
   const outerRim = new THREE.Mesh(
     new THREE.TorusGeometry(1.13, 0.055, 18, 96),
-    new THREE.MeshStandardMaterial({ color: 0xc7a768, metalness: 0.95, roughness: 0.19 })
+    new THREE.MeshStandardMaterial({ color: 0xa6b9d3, metalness: 0.98, roughness: 0.16 })
   );
   outerRim.position.z = 0.43;
   rig.add(outerRim);
@@ -445,36 +495,38 @@ async function initThreeScene() {
 
   const innerRim = new THREE.Mesh(
     new THREE.TorusGeometry(0.96, 0.018, 12, 80),
-    new THREE.MeshStandardMaterial({ color: 0xe4d4ad, metalness: 0.92, roughness: 0.15 })
+    new THREE.MeshStandardMaterial({ color: 0xe2ecf5, metalness: 0.95, roughness: 0.12 })
   );
   innerRim.position.z = 0.45;
   rig.add(innerRim);
   registerLensComponent(innerRim, [0.08, 0.02, 1.02], [-0.035, 0.025, 0.06], 0.96);
 
   const opticalGlassMaterial = new THREE.MeshPhysicalMaterial({
-    color: 0x8bcad3,
-    metalness: 0.28,
-    roughness: 0.12,
+    color: 0x75b9e5,
+    metalness: 0.34,
+    roughness: 0.09,
     transparent: true,
-    opacity: 0.24,
+    opacity: 0.29,
     clearcoat: 1,
+    iridescence: 0.9,
     side: THREE.DoubleSide,
     depthWrite: false
   });
-  const opticalElementRear = new THREE.Mesh(new THREE.CircleGeometry(0.77, 80), opticalGlassMaterial);
+  const opticalElementRear = new THREE.Mesh(new THREE.CircleGeometry(0.77, 88), opticalGlassMaterial);
   opticalElementRear.position.z = 0.49;
   rig.add(opticalElementRear);
   registerLensComponent(opticalElementRear, [-0.06, 0.04, 1.48], [0.04, -0.02, -0.04], 0.94);
 
   const opticalElementFront = new THREE.Mesh(
-    new THREE.CircleGeometry(0.59, 80),
+    new THREE.CircleGeometry(0.59, 88),
     new THREE.MeshPhysicalMaterial({
-      color: 0xc8dfe0,
-      metalness: 0.22,
-      roughness: 0.08,
+      color: 0xc4bdff,
+      metalness: 0.24,
+      roughness: 0.055,
       transparent: true,
-      opacity: 0.2,
+      opacity: 0.22,
       clearcoat: 1,
+      iridescence: 1,
       side: THREE.DoubleSide,
       depthWrite: false
     })
@@ -483,9 +535,17 @@ async function initThreeScene() {
   rig.add(opticalElementFront);
   registerLensComponent(opticalElementFront, [0.08, -0.06, 1.9], [-0.035, 0.03, 0.075], 0.82);
 
+  const coatingRing = new THREE.Mesh(
+    new THREE.TorusGeometry(0.84, 0.009, 10, 88),
+    new THREE.MeshBasicMaterial({ color: 0x7bdcff, transparent: true, opacity: 0.78 })
+  );
+  coatingRing.position.z = 0.545;
+  rig.add(coatingRing);
+  registerLensComponent(coatingRing, [0.03, 0.04, 2.04], [0.02, -0.03, -0.04], 0.96);
+
   const floatingLensRim = new THREE.Mesh(
     new THREE.TorusGeometry(0.78, 0.027, 14, 88),
-    new THREE.MeshStandardMaterial({ color: 0x8fc5cd, metalness: 0.93, roughness: 0.17 })
+    new THREE.MeshStandardMaterial({ color: 0x8edbf1, metalness: 0.96, roughness: 0.13 })
   );
   floatingLensRim.position.z = 0.55;
   rig.add(floatingLensRim);
@@ -493,20 +553,85 @@ async function initThreeScene() {
 
   const focusLensRim = new THREE.Mesh(
     new THREE.TorusGeometry(0.58, 0.016, 12, 80),
-    new THREE.MeshStandardMaterial({ color: 0xe3d2aa, metalness: 0.9, roughness: 0.2 })
+    new THREE.MeshStandardMaterial({ color: 0xd1c6f3, metalness: 0.96, roughness: 0.14 })
   );
   focusLensRim.position.z = 0.57;
   rig.add(focusLensRim);
   registerLensComponent(focusLensRim, [-0.04, 0.05, 2.48], [-0.05, 0.025, 0.05], 0.9);
 
-  const lensPulseLight = new THREE.PointLight(0xffe6ba, 0, 5);
+  const irisAssembly = new THREE.Group();
+  irisAssembly.position.z = 0.585;
+  irisAssembly.userData.baseRotationZ = irisAssembly.rotation.z;
+  const apertureCore = new THREE.Mesh(
+    new THREE.CircleGeometry(0.34, 56),
+    new THREE.MeshBasicMaterial({ color: 0x02050a })
+  );
+  apertureCore.position.z = 0.012;
+  irisAssembly.add(apertureCore);
+
+  const irisBlades = [];
+  const bladePalette = [0x17202d, 0x202334, 0x172631, 0x252337];
+  const bladePoints = [
+    [0.31, -0.1],
+    [0.83, -0.45],
+    [0.89, -0.1],
+    [0.43, 0.29]
+  ];
+  const rotateBladePoint = (point, angle) => [
+    point[0] * Math.cos(angle) - point[1] * Math.sin(angle),
+    point[0] * Math.sin(angle) + point[1] * Math.cos(angle)
+  ];
+
+  for (let i = 0; i < 8; i += 1) {
+    const angle = (Math.PI * 2 * i) / 8;
+    const shape = new THREE.Shape();
+    bladePoints.forEach((point, pointIndex) => {
+      const [x, y] = rotateBladePoint(point, angle);
+      if (pointIndex === 0) shape.moveTo(x, y);
+      else shape.lineTo(x, y);
+    });
+    shape.closePath();
+    const blade = new THREE.Mesh(
+      new THREE.ShapeGeometry(shape),
+      new THREE.MeshPhysicalMaterial({
+        color: bladePalette[i % bladePalette.length],
+        metalness: 0.88,
+        roughness: 0.24,
+        clearcoat: 0.8,
+        clearcoatRoughness: 0.18,
+        side: THREE.DoubleSide
+      })
+    );
+    blade.position.z = 0.017 + i * 0.0007;
+    irisAssembly.add(blade);
+    irisBlades.push({ mesh: blade, baseRotation: 0, phase: angle });
+  }
+
+  const apertureEdge = new THREE.Mesh(
+    new THREE.TorusGeometry(0.34, 0.012, 10, 64),
+    new THREE.MeshStandardMaterial({ color: 0x82def6, metalness: 0.86, roughness: 0.18, emissive: 0x123040 })
+  );
+  apertureEdge.position.z = 0.027;
+  irisAssembly.add(apertureEdge);
+  rig.add(irisAssembly);
+  registerLensComponent(irisAssembly, [0.01, -0.02, 1.62], [0.035, -0.025, 0.07], 0.92);
+
+  const secondaryCoatingRing = new THREE.Mesh(
+    new THREE.TorusGeometry(0.48, 0.008, 10, 72),
+    new THREE.MeshBasicMaterial({ color: 0xb8a8ff, transparent: true, opacity: 0.62 })
+  );
+  secondaryCoatingRing.position.z = 0.62;
+  rig.add(secondaryCoatingRing);
+  registerLensComponent(secondaryCoatingRing, [-0.025, 0.045, 2.32], [-0.02, 0.04, -0.055], 0.94);
+
+  const lensPulseLight = new THREE.PointLight(0x8de7ff, 0, 5);
   lensPulseLight.position.set(0, 0, 2.7);
   rig.add(lensPulseLight);
 
 
   const orbitalRing = new THREE.Mesh(
     new THREE.TorusGeometry(1.82, 0.009, 8, 140),
-    new THREE.MeshBasicMaterial({ color: 0xd8b675, transparent: true, opacity: 0.62 })
+    new THREE.MeshBasicMaterial({ color: 0x9ac9ef, transparent: true, opacity: 0.62 })
   );
   orbitalRing.rotation.set(1.13, 0.12, -0.25);
   orbitalRing.position.z = -0.72;
@@ -667,6 +792,13 @@ async function initThreeScene() {
         component.baseRotation.z + component.rotationOffset.z * separation
       );
       component.mesh.scale.copy(component.baseScale).lerp(component.explodedScale, separation);
+    });
+    const apertureMotion = Math.sin(time * 0.0011);
+    irisAssembly.rotation.z = irisAssembly.userData.baseRotationZ + apertureMotion * 0.018;
+    irisBlades.forEach((blade) => {
+      const bladeMotion = Math.sin(time * 0.0012 + blade.phase) * 0.018;
+      blade.mesh.rotation.z = blade.baseRotation + bladeMotion;
+      blade.mesh.scale.setScalar(0.99 + (apertureMotion + 1) * 0.006);
     });
     const phase = (time % 14000) / 14000;
     const flash = Math.max(0, 1 - Math.abs(phase - 0.77) / 0.035);
