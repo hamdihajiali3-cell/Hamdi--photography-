@@ -1121,8 +1121,10 @@ function initSelectionSound() {
     }
   };
 
-  document.querySelectorAll('#clientName, #clientMsg').forEach((field) => {
+  document.querySelectorAll('.contact-field').forEach((field) => {
     field.addEventListener('focus', playSelectionSound);
+  });
+  document.querySelectorAll('#clientName, #clientMsg').forEach((field) => {
     field.addEventListener('beforeinput', playTypingSound);
   });
 
