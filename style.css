@@ -20,7 +20,10 @@ html {
 
 body {
   margin: 0;
-  background: var(--bg);
+  background:
+    linear-gradient(rgba(8, 8, 8, .82), rgba(8, 8, 8, .88)),
+    url("https://lexus.jp/brand/jms2025/assets/img/common/bg_pc.jpg") center / cover fixed;
+  background-color: var(--bg);
   color: var(--text);
   font-family: var(--sans);
   overflow-x: hidden;
