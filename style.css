@@ -2466,141 +2466,80 @@ section[id] { scroll-margin-top: 104px; }
     will-change: auto;
   }
 }
-/* Animated photographic studio, contained inside the transparent camera frame */
+/* Animated circular ring light inside the transparent camera frame */
 .hero-visual { isolation: isolate; }
-.studio-set {
+.ringlight-scene {
   position: absolute;
   z-index: 1;
   inset: 0;
   overflow: hidden;
   pointer-events: none;
   border-radius: 48% 48% 3px 3px / 36% 36% 3px 3px;
-  background:
-    radial-gradient(ellipse at 50% 83%, rgba(216, 182, 117, .15), transparent 44%),
-    radial-gradient(ellipse at 50% 28%, rgba(94, 151, 177, .12), transparent 48%);
-  -webkit-mask-image: linear-gradient(180deg, #000 0 84%, transparent 100%);
-  mask-image: linear-gradient(180deg, #000 0 84%, transparent 100%);
 }
-.studio-set::before {
+.ringlight-scene::before {
   content: "";
   position: absolute;
-  z-index: 0;
-  inset: 0;
-  opacity: .9;
-  background:
-    radial-gradient(ellipse at 50% 28%, rgba(139, 189, 205, .12), transparent 45%),
-    radial-gradient(ellipse at 50% 80%, rgba(226, 190, 124, .11), transparent 48%),
-    linear-gradient(180deg, rgba(13, 18, 20, .22), transparent 54%, rgba(4, 5, 6, .2));
-  animation: studio-wall-glow 10s ease-in-out infinite alternate;
-}
-.studio-set::after {
-  content: "";
-  position: absolute;
-  z-index: 3;
-  inset: -34% -70%;
-  opacity: .64;
-  background: linear-gradient(
-    110deg,
-    transparent 39%,
-    rgba(103, 192, 220, .025) 46%,
-    rgba(139, 207, 226, .16) 50%,
-    rgba(249, 226, 184, .22) 52%,
-    rgba(178, 155, 218, .08) 56%,
-    transparent 64%
-  );
-  filter: blur(18px);
-  mix-blend-mode: screen;
-  transform: rotate(-13deg) translate3d(-22%, 0, 0);
-  animation: studio-stage-sweep 15s ease-in-out infinite alternate;
-}
-.studio-softbox {
-  position: absolute;
-  z-index: 1;
-  top: 17%;
-  width: clamp(38px, 6.4vw, 78px);
-  height: 43%;
-  border: 1px solid rgba(243, 222, 181, .48);
-  border-radius: 7px;
-  background: linear-gradient(180deg, rgba(255, 247, 225, .72), rgba(183, 218, 225, .38) 47%, rgba(216, 182, 117, .48));
-  box-shadow:
-    inset 0 0 18px rgba(255, 249, 231, .48),
-    0 0 14px rgba(230, 208, 162, .28),
-    0 0 54px rgba(100, 179, 210, .17);
-  opacity: .66;
-  transform: perspective(500px) rotateY(12deg);
-  animation: studio-softbox-breathe 7s ease-in-out infinite alternate;
-}
-.studio-softbox::before {
-  content: "";
-  position: absolute;
-  inset: 5px;
-  border: 1px solid rgba(255, 255, 255, .3);
-  border-radius: 4px;
-  background: linear-gradient(180deg, rgba(255, 252, 239, .48), rgba(226, 204, 163, .1));
-}
-.studio-softbox::after {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  top: 82%;
-  left: -145%;
-  width: 390%;
-  height: 170%;
-  clip-path: polygon(39% 0, 61% 0, 100% 100%, 0 100%);
-  background: linear-gradient(180deg, rgba(255, 237, 198, .2), rgba(113, 175, 199, .065) 56%, transparent);
-  filter: blur(7px);
-}
-.studio-softbox-left { left: 7%; }
-.studio-softbox-right {
-  right: 7%;
-  transform: perspective(500px) rotateY(-12deg);
-  animation-delay: -3.5s;
-}
-.studio-floor-glow {
-  position: absolute;
-  z-index: 2;
-  left: 13%;
-  right: 13%;
-  bottom: 11%;
-  height: 16%;
-  border-top: 1px solid rgba(228, 199, 147, .4);
+  left: 50%;
+  top: 49%;
+  width: min(82%, 440px);
+  aspect-ratio: 1;
   border-radius: 50%;
-  background: radial-gradient(ellipse at 50% 0, rgba(227, 195, 135, .2), rgba(73, 125, 149, .085) 36%, transparent 72%);
-  filter: blur(2px);
-  box-shadow: 0 -8px 30px rgba(111, 169, 190, .1);
-  animation: studio-floor-glimmer 8s ease-in-out infinite alternate;
+  opacity: .76;
+  background: conic-gradient(
+    from 5deg,
+    rgba(105, 204, 235, .12),
+    rgba(126, 199, 226, .88) 15deg,
+    rgba(230, 244, 234, .48) 31deg,
+    rgba(216, 182, 117, .72) 58deg,
+    rgba(216, 182, 117, .12) 92deg,
+    transparent 132deg 194deg,
+    rgba(216, 182, 117, .16) 224deg,
+    rgba(255, 237, 200, .82) 254deg,
+    rgba(110, 195, 222, .55) 279deg,
+    rgba(110, 195, 222, .1) 312deg,
+    transparent 345deg
+  );
+  -webkit-mask: radial-gradient(circle, transparent 0 60%, #000 62% 67%, transparent 72%);
+  mask: radial-gradient(circle, transparent 0 60%, #000 62% 67%, transparent 72%);
+  filter: drop-shadow(0 0 13px rgba(112, 199, 226, .34)) drop-shadow(0 0 34px rgba(216, 182, 117, .2));
+  transform: translate3d(-50%, -50%, 0) rotate(0);
+  animation: ringlight-turn 48s linear infinite, ringlight-shine 8s ease-in-out infinite alternate;
 }
-@keyframes studio-softbox-breathe {
-  from { opacity: .48; filter: brightness(.86); }
-  to { opacity: .84; filter: brightness(1.14); }
+.ringlight-scene::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 49%;
+  width: min(94%, 510px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, transparent 0 39%, rgba(109, 190, 219, .1) 51%, rgba(216, 182, 117, .08) 58%, transparent 73%),
+    radial-gradient(circle at 50% 50%, rgba(231, 209, 168, .08), transparent 66%);
+  filter: blur(12px);
+  transform: translate3d(-50%, -50%, 0);
+  animation: ringlight-aura 7s ease-in-out infinite alternate;
 }
-@keyframes studio-wall-glow {
-  from { opacity: .58; filter: hue-rotate(-5deg); }
-  to { opacity: .96; filter: hue-rotate(7deg); }
+@keyframes ringlight-turn {
+  from { transform: translate3d(-50%, -50%, 0) rotate(0); }
+  to { transform: translate3d(-50%, -50%, 0) rotate(1turn); }
 }
-@keyframes studio-stage-sweep {
-  from { transform: rotate(-13deg) translate3d(-22%, 1%, 0) scaleX(.94); }
-  to { transform: rotate(-13deg) translate3d(22%, -1%, 0) scaleX(1.06); }
+@keyframes ringlight-shine {
+  from { opacity: .52; filter: drop-shadow(0 0 10px rgba(112, 199, 226, .22)) drop-shadow(0 0 22px rgba(216, 182, 117, .12)); }
+  to { opacity: .9; filter: drop-shadow(0 0 18px rgba(112, 199, 226, .45)) drop-shadow(0 0 42px rgba(216, 182, 117, .28)); }
 }
-@keyframes studio-floor-glimmer {
-  from { opacity: .52; transform: scaleX(.92); }
-  to { opacity: .9; transform: scaleX(1.04); }
+@keyframes ringlight-aura {
+  from { opacity: .38; transform: translate3d(-50%, -50%, 0) scale(.94); }
+  to { opacity: .76; transform: translate3d(-50%, -50%, 0) scale(1.04); }
 }
 @media (max-width: 600px) {
-  .studio-softbox { top: 20%; height: 37%; width: 40px; }
-  .studio-softbox-left { left: 3%; }
-  .studio-softbox-right { right: 3%; }
-  .studio-floor-glow { left: 8%; right: 8%; bottom: 10%; }
-  .studio-set::after { inset: -22% -85%; opacity: .5; }
+  .ringlight-scene::before { width: 88%; top: 48%; }
+  .ringlight-scene::after { width: 104%; top: 48%; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .studio-set::before,
-  .studio-set::after,
-  .studio-softbox,
-  .studio-floor-glow {
+  .ringlight-scene::before,
+  .ringlight-scene::after {
     animation: none !important;
+    opacity: .7;
   }
-  .studio-set::before { opacity: .78; }
-  .studio-softbox { opacity: .62; }
-  .studio-floor-glow { opacity: .68; }
 }
