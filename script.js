@@ -21,6 +21,10 @@ const translations = {
     g2: "أجواء", gc2: "بعد الساعة الزرقاء", g2Alt: "سماء ليلية بألوان سينمائية",
     g3: "إيديتوريال", gc3: "حضور وثقة", g3Alt: "صورة أزياء بطابع تحريري",
     g4: "طبيعة", gc4: "الضوء الأول", g4Alt: "ضوء الصباح فوق مشهد طبيعي",
+    g5: "مناسبات", gc5: "فرحٌ يُروى بصورة", g5Alt: "لحظة زفاف تحت ضوء دافئ",
+    g6: "بورتريه", gc6: "ملامح من حكاية", g6Alt: "بورتريه رجالي بإضاءة طبيعية",
+    g7: "فعاليات", gc7: "لحظة في قلب المشهد", g7Alt: "أجواء حفل موسيقي وأضواء الجمهور",
+    g8: "تجاري", gc8: "تفاصيل تصنع الفرق", g8Alt: "ساعة يد بتكوين تصوير تجاري أنيق",
     aboutBadge: "H / الرؤية", aboutEyebrow: "خلف العدسة",
     aboutTitle: "أبحث عن<br><em>الإحساس قبل اللقطة.</em>",
     aboutDesc: "أنا حمدي. أؤمن أن أجمل الصور لا تكتفي بتوثيق اللحظة، بل تحفظ الإحساس الذي كان فيها. أركّز على الضوء والتفاصيل، وأعمل معك من الفكرة حتى اللقطة لتكون الصورة قريبة منك وتحكي قصتك.",
@@ -65,6 +69,10 @@ const translations = {
     g2: "ATMOSFER", gc2: "Mavi saatten sonra", g2Alt: "Sinematik renklerde gece gökyüzü",
     g3: "EDİTORYAL", gc3: "Duruş ve özgüven", g3Alt: "Editoryal tarzda moda fotoğrafı",
     g4: "MANZARA", gc4: "İlk ışık", g4Alt: "Doğal bir manzaranın üzerine düşen sabah ışığı",
+    g5: "ETKİNLİK", gc5: "Bir kareye sığan mutluluk", g5Alt: "Sıcak ışıkta bir düğün anı",
+    g6: "PORTRE", gc6: "Bir hikâyenin yüzü", g6Alt: "Doğal ışıkla çekilmiş erkek portresi",
+    g7: "ETKİNLİK", gc7: "Anın tam ortasında", g7Alt: "Konser atmosferi ve seyirci ışıkları",
+    g8: "TİCARİ", gc8: "Ayrıntılar fark yaratır", g8Alt: "Şık bir ticari çekimle fotoğraflanmış kol saati",
     aboutBadge: "H / VİZYON", aboutEyebrow: "LENSİN ARKASINDA",
     aboutTitle: "Önce hissi,<br><em>sonra kareyi ararım.</em>",
     aboutDesc: "Ben Hamdi. İyi bir fotoğrafın yalnızca anı göstermediğine, o anda hissedileni de sakladığına inanıyorum. Işığa ve ayrıntılara odaklanıyor, fikir aşamasından çekime kadar seninle çalışarak hikâyene yakın kareler oluşturuyorum.",
@@ -109,6 +117,10 @@ const translations = {
     g2: "ATMOSPHERE", gc2: "After the blue hour", g2Alt: "Night sky in cinematic colors",
     g3: "EDITORIAL", gc3: "Presence & confidence", g3Alt: "Fashion photograph in an editorial style",
     g4: "LANDSCAPE", gc4: "First light", g4Alt: "Morning light falling over a natural landscape",
+    g5: "EVENT", gc5: "A celebration in one frame", g5Alt: "A wedding moment in warm light",
+    g6: "PORTRAIT", gc6: "A face with a story", g6Alt: "A male portrait in natural light",
+    g7: "EVENT", gc7: "Right in the moment", g7Alt: "Concert atmosphere and audience lights",
+    g8: "COMMERCIAL", gc8: "Details make the difference", g8Alt: "A wristwatch in an elegant commercial photo",
     aboutBadge: "H / VISION", aboutEyebrow: "BEHIND THE LENS",
     aboutTitle: "I look for the feeling<br><em>before the frame.</em>",
     aboutDesc: "I'm Hamdi. I believe a good photograph does more than show a moment; it keeps how that moment felt. I focus on light and detail, working with you from the first idea to the final frame so the image feels like yours.",
@@ -988,10 +1000,13 @@ function initImmersiveGallery() {
   if (!gallery) return;
   const cards = Array.from(gallery.querySelectorAll('.gallery-card'));
   const current = document.getElementById('galleryCurrent');
+  const total = document.getElementById('galleryTotal');
   const progress = document.getElementById('galleryProgress');
   const progressFill = progress?.querySelector('span');
   const buttons = Array.from(document.querySelectorAll('[data-gallery-step]'));
   if (!cards.length) return;
+  if (total) total.textContent = String(cards.length).padStart(2, '0');
+  if (progress) progress.setAttribute('aria-valuemax', String(cards.length));
 
   let activeIndex = 0;
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
