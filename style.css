@@ -3382,3 +3382,81 @@ body::after {
 @media (prefers-reduced-motion: reduce) {
   .brand-emblem { transition: none; }
 }
+
+
+/* Cinematic moving camera image behind the hero album */
+.hero-visual::before,
+.hero-visual::after {
+  display: none;
+}
+.cinematic-camera-backdrop {
+  position: absolute;
+  z-index: 1;
+  inset: 9% 2% 9%;
+  overflow: hidden;
+  border: 1px solid rgba(157, 191, 220, .22);
+  border-radius: 10px;
+  background: #06111c;
+  box-shadow:
+    inset 0 0 55px rgba(2, 7, 13, .5),
+    0 30px 90px rgba(0, 0, 0, .38),
+    0 0 38px rgba(64, 132, 190, .09);
+  isolation: isolate;
+  pointer-events: none;
+}
+.cinematic-camera-backdrop img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 47% center;
+  filter: brightness(.78) contrast(1.1) saturate(.88);
+  transform: scale(1.06);
+  animation: cinematic-camera-drift 28s cubic-bezier(.45, 0, .3, 1) infinite alternate;
+  will-change: transform;
+}
+.cinematic-camera-backdrop::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(100deg, rgba(239, 143, 69, .22), transparent 39%, rgba(66, 143, 205, .14) 88%),
+    linear-gradient(180deg, rgba(3, 6, 11, .08), rgba(3, 6, 11, .18) 48%, rgba(2, 3, 6, .72)),
+    radial-gradient(ellipse at center, transparent 38%, rgba(1, 4, 8, .58) 100%);
+}
+.cinematic-camera-backdrop::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  inset: -24% auto -24% -42%;
+  width: 28%;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(255, 200, 136, .13), rgba(135, 190, 232, .09), transparent);
+  filter: blur(14px);
+  transform: skewX(-18deg);
+  animation: cinematic-camera-sweep 16s ease-in-out infinite;
+}
+@keyframes cinematic-camera-drift {
+  from { transform: scale(1.06) translate3d(-.6%, .25%, 0); }
+  to { transform: scale(1.12) translate3d(.8%, -.35%, 0); }
+}
+@keyframes cinematic-camera-sweep {
+  0%, 18% { left: -42%; opacity: 0; }
+  34% { opacity: .7; }
+  72% { opacity: .65; }
+  100% { left: 118%; opacity: 0; }
+}
+@media (max-width: 600px) {
+  .cinematic-camera-backdrop { inset: 11% 0 11%; border-radius: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cinematic-camera-backdrop img,
+  .cinematic-camera-backdrop::after {
+    animation: none !important;
+    will-change: auto;
+  }
+  .cinematic-camera-backdrop img { transform: scale(1.06); }
+}
