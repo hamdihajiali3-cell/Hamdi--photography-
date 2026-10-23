@@ -1362,13 +1362,13 @@ function initSiteLoader() {
     if (!isReady) target = Math.min(92, target + 4);
   }, 240);
 
-  const fallbackTimer = window.setTimeout(finishLoading, 12000);
+  const fallbackTimer = window.setTimeout(finishLoading, 1800);
   if (document.readyState === 'complete') finishLoading();
   else window.addEventListener('load', finishLoading, { once: true });
 
   const animate = () => {
     const remaining = target - progress;
-    if (remaining > 0) progress += Math.max(.12, remaining * .07);
+    if (remaining > 0) progress += Math.max(.12, remaining * (isReady ? .22 : .07));
     if (isReady && progress > 99.4) progress = 100;
 
     const shown = Math.min(100, Math.floor(progress));
