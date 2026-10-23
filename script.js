@@ -9,6 +9,7 @@ const translations = {
     heroDesc: "من جلسة البورتريه إلى يومك المميز، أصنع صوراً تهتم بالضوء والتفاصيل وتحفظ إحساس اللحظة. تصوير شخصي ومناسبات ومشاريع تجارية في غازي عنتاب.",
     heroBtn1: "اكتشف المعرض", heroBtn2: "خطّط لجلسة",
     meta1: "لقطة تشبهك", meta2: "ضوء يصنع فرقاً", meta3: "ذكرى تدوم",
+    loaderLabel: "جارٍ تجهيز تجربتك البصرية", loadingSubtext: "لحظات ونبدأ الحكاية", loadingProgress: "تقدم تحميل الموقع",
     visualLabel1: "خلف كل لقطة — 2026", visualLabel2: "قصتك تستحق إطاراً",
     scrollCue: "انزل واستكشف",
     t1: "بورتريه", t2: "مناسبات", t3: "تصوير تجاري", t4: "قصص بصرية",
@@ -57,6 +58,7 @@ const translations = {
     heroDesc: "Portrelerden özel günlere, ışığa ve ayrıntılara özen göstererek anın duygusunu koruyan kareler üretiyorum. Gaziantep'te kişisel, etkinlik ve ticari çekimler.",
     heroBtn1: "Portfolyoyu Gör", heroBtn2: "Çekimini Planla",
     meta1: "SANA ÖZEL KARE", meta2: "IŞIĞIN GÜCÜ", meta3: "KALICI ANILAR",
+    loaderLabel: "Görsel deneyimin hazırlanıyor", loadingSubtext: "Birazdan başlıyoruz", loadingProgress: "Site yükleme durumu",
     visualLabel1: "HER KARENİN ARDINDA — 2026", visualLabel2: "HİKÂYENİ ÇERÇEVELE",
     scrollCue: "KEŞFETMEK İÇİN KAYDIR",
     t1: "PORTRE", t2: "ETKİNLİK", t3: "TİCARİ ÇEKİM", t4: "GÖRSEL HİKÂYELER",
@@ -105,6 +107,7 @@ const translations = {
     heroDesc: "From portraits to the days you want to remember, I shape light and detail into honest photographs. Personal, event, and commercial shoots in Gaziantep.",
     heroBtn1: "Explore the portfolio", heroBtn2: "Plan your shoot",
     meta1: "MADE TO FEEL", meta2: "LIGHT WITH INTENT", meta3: "MEMORIES THAT LAST",
+    loaderLabel: "Preparing your visual experience", loadingSubtext: "Your story is about to begin", loadingProgress: "Website loading progress",
     visualLabel1: "BEHIND EVERY FRAME — 2026", visualLabel2: "FRAME YOUR STORY",
     scrollCue: "SCROLL TO EXPLORE",
     t1: "PORTRAITS", t2: "EVENTS", t3: "COMMERCIAL", t4: "VISUAL STORIES",
@@ -1327,3 +1330,69 @@ function initBookingDatePicker() {
 }
 document.addEventListener('DOMContentLoaded', initBookingDatePicker);
 
+
+
+/* Circular page loader with a smooth 0–100 progress display */
+function initSiteLoader() {
+  const loader = document.getElementById('siteLoader');
+  if (!loader) return;
+
+  const meter = loader.querySelector('.loader-meter');
+  const ring = document.getElementById('loaderRingProgress');
+  const number = document.getElementById('loaderPercent');
+  const progressBar = document.getElementById('loaderProgressBar');
+  if (!meter || !ring || !number || !progressBar) return;
+
+  const circumference = 2 * Math.PI * 68;
+  const startedAt = performance.now();
+  let progress = 0;
+  let target = 5;
+  let isReady = false;
+  let lastShown = -1;
+
+  const finishLoading = () => {
+    if (isReady) return;
+    isReady = true;
+    target = 100;
+    window.clearInterval(progressTimer);
+    window.clearTimeout(fallbackTimer);
+  };
+
+  const progressTimer = window.setInterval(() => {
+    if (!isReady) target = Math.min(92, target + 4);
+  }, 240);
+
+  const fallbackTimer = window.setTimeout(finishLoading, 12000);
+  if (document.readyState === 'complete') finishLoading();
+  else window.addEventListener('load', finishLoading, { once: true });
+
+  const animate = () => {
+    const remaining = target - progress;
+    if (remaining > 0) progress += Math.max(.12, remaining * .07);
+    if (isReady && progress > 99.4) progress = 100;
+
+    const shown = Math.min(100, Math.floor(progress));
+    if (shown !== lastShown) {
+      const locale = ({ ar: 'ar', tr: 'tr-TR', en: 'en-US' })[document.documentElement.lang] || 'en-US';
+      number.textContent = new Intl.NumberFormat(locale, { maximumFractionDigits: 0 }).format(shown);
+      meter.setAttribute('aria-valuenow', String(shown));
+      lastShown = shown;
+    }
+    ring.style.strokeDashoffset = String(circumference * (1 - progress / 100));
+    progressBar.style.width = progress + '%';
+
+    if (isReady && progress >= 100 && performance.now() - startedAt >= 950) {
+      loader.classList.add('is-complete');
+      loader.setAttribute('aria-hidden', 'true');
+      window.setTimeout(() => loader.remove(), 800);
+      return;
+    }
+    window.requestAnimationFrame(animate);
+  };
+  window.requestAnimationFrame(animate);
+}
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initSiteLoader, { once: true });
+} else {
+  initSiteLoader();
+}
