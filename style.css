@@ -3460,3 +3460,34 @@ body::after {
   }
   .cinematic-camera-backdrop img { transform: scale(1.06); }
 }
+
+
+/* Make the cinematic camera art a clear full-hero background */
+.hero {
+  position: relative;
+  isolation: isolate;
+}
+.hero > .cinematic-camera-backdrop {
+  z-index: 0;
+  inset: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  opacity: 1;
+}
+.hero > .cinematic-camera-backdrop img {
+  filter: brightness(.5) contrast(1.08) saturate(.82) blur(1.4px);
+  animation-duration: 34s;
+}
+.hero > .cinematic-camera-backdrop::before {
+  background:
+    linear-gradient(90deg, rgba(5, 7, 10, .72), rgba(5, 7, 10, .43) 44%, rgba(5, 7, 10, .16)),
+    linear-gradient(180deg, rgba(5, 7, 10, .34), rgba(5, 7, 10, .1) 48%, rgba(5, 7, 10, .72)),
+    linear-gradient(100deg, rgba(239, 143, 69, .15), transparent 39%, rgba(66, 143, 205, .12) 88%);
+}
+.hero > .hero-copy,
+.hero > .hero-visual {
+  position: relative;
+  z-index: 2;
+}
+.hero > .scroll-cue { z-index: 3; }
