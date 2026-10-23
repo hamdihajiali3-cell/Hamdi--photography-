@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css?v=camera-background-removed-20261023">
+  <link rel="stylesheet" href="style.css?v=loading-ring-20261023">
   <script type="importmap">
   {
     "imports": {
@@ -19,10 +19,34 @@
     }
   }
   </script>
-  <script type="module" src="script.js?v=counter-removed-20261023"></script>
+  <script type="module" src="script.js?v=loading-ring-20261023"></script>
 </head>
 
 <body>
+  <noscript><style>.site-loader { display: none !important; }</style></noscript>
+  <div class="site-loader" id="siteLoader" role="status" aria-live="polite" data-i18n-aria-label="loadingLabel">
+    <div class="loader-backdrop" aria-hidden="true"></div>
+    <div class="loader-card">
+      <span class="loader-brand">HAMDI <b>PHOTOGRAPHY</b></span>
+      <div class="loader-meter" role="progressbar" aria-label="تقدم تحميل الموقع" data-i18n-aria-label="loadingProgress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <svg class="loader-ring" viewBox="0 0 160 160" aria-hidden="true">
+          <defs>
+            <linearGradient id="loaderRingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#f1d7a0"/>
+              <stop offset="54%" stop-color="#bd9353"/>
+              <stop offset="100%" stop-color="#719bc2"/>
+            </linearGradient>
+          </defs>
+          <circle class="loader-ring-track" cx="80" cy="80" r="68"/>
+          <circle class="loader-ring-progress" id="loaderRingProgress" cx="80" cy="80" r="68"/>
+        </svg>
+        <div class="loader-reading" aria-hidden="true"><strong id="loaderPercent">0</strong><span>%</span></div>
+      </div>
+      <span class="loader-caption" data-i18n="loaderLabel">جارٍ تجهيز تجربتك البصرية</span>
+      <span class="loader-progress-track" aria-hidden="true"><i id="loaderProgressBar"></i></span>
+      <span class="loader-subcaption" data-i18n="loadingSubtext">لحظات ونبدأ الحكاية</span>
+    </div>
+  </div>
   <div class="noise"></div>
   <div class="flash-atmosphere" aria-hidden="true">
     <span class="ambient-lightwave"></span>
