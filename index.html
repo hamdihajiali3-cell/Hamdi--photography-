@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css?v=cinematic-rail-20261023">
+  <link rel="stylesheet" href="style.css?v=booking-request-20261023">
   <script type="importmap">
   {
     "imports": {
@@ -19,7 +19,7 @@
     }
   }
   </script>
-  <script type="module" src="script.js?v=cinematic-rail-20261023"></script>
+  <script type="module" src="script.js?v=booking-request-20261023"></script>
 </head>
 
 <body>
@@ -264,6 +264,22 @@
           <option value="تصوير مناسبة" data-i18n="opt4" data-i18n-value="opt4">تصوير مناسبة</option>
           <option value="طلب آخر" data-i18n="opt5" data-i18n-value="opt5">طلب آخر</option>
         </select>
+
+        <div class="booking-field" id="preferredDateField">
+          <label class="booking-label" for="preferredDate" data-i18n="dateLabel">التاريخ المفضّل</label>
+          <input type="date" id="preferredDate" class="contact-field" required aria-describedby="contactFormHint">
+        </div>
+
+        <div class="booking-field" id="preferredTimeField">
+          <label class="booking-label" for="preferredTime" data-i18n="timeLabel">الفترة المفضّلة</label>
+          <select id="preferredTime" class="contact-field" required aria-describedby="contactFormHint">
+            <option value="" disabled selected data-i18n="timePlaceholder">اختر وقتًا مناسبًا</option>
+            <option value="timeMorning" data-i18n="timeMorning">الصباح · 10:00–13:00</option>
+            <option value="timeAfternoon" data-i18n="timeAfternoon">بعد الظهر · 13:00–17:00</option>
+            <option value="timeEvening" data-i18n="timeEvening">المساء · 17:00–20:00</option>
+            <option value="timeFlexible" data-i18n="timeFlexible">أي وقت يناسبني</option>
+          </select>
+        </div>
 
         <label class="sr-only" for="clientMsg" data-i18n="messageLabel">احكيلي عن فكرتك</label>
         <textarea id="clientMsg" class="contact-field contact-message" data-i18n-placeholder="msgPlaceholder" placeholder="ما الفكرة أو اللحظة التي تريد تصويرها؟" rows="4" required aria-describedby="contactFormHint"></textarea>
