@@ -285,6 +285,27 @@ img {
 
 
 
+.orbit {
+  position: absolute;
+  border: 1px solid rgba(216,182,117,.19);
+  border-radius: 50%;
+  left: 10%;
+  top: 13%;
+  width: 80%;
+  height: 70%;
+  transform: rotate(-24deg);
+  pointer-events: none;
+}
+
+.orbit-two {
+  left: 20%;
+  top: 5%;
+  width: 65%;
+  height: 86%;
+  transform: rotate(48deg);
+  border-color: rgba(255,255,255,.08);
+}
+
 .floating-label {
   position: absolute;
   z-index: 4;
@@ -1686,6 +1707,271 @@ body::after {
 }
 
 
+/* Premium cinematic flash atmosphere */
+.flash-atmosphere {
+  position: fixed;
+  z-index: -1;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  contain: strict;
+}
+
+.flash-aura {
+  position: absolute;
+  top: 13%;
+  left: 58%;
+  width: min(48vw, 570px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  opacity: .13;
+  background: radial-gradient(
+    circle,
+    rgba(255, 244, 220, .32) 0,
+    rgba(216, 182, 117, .2) 14%,
+    rgba(96, 159, 174, .1) 34%,
+    transparent 70%
+  );
+  filter: blur(22px);
+  animation: luxury-aura-breathe 13s ease-in-out infinite;
+}
+
+.flash-ray {
+  position: absolute;
+  top: 26%;
+  left: 23%;
+  width: 84vw;
+  height: 1px;
+  opacity: 0;
+  transform: rotate(-27deg) scaleX(.3);
+  transform-origin: center;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(216, 182, 117, .08) 28%,
+    rgba(255, 244, 220, .62) 51%,
+    rgba(121, 184, 196, .18) 67%,
+    transparent
+  );
+  filter: blur(.6px);
+  animation: luxury-flash-ray 13s ease-in-out infinite;
+}
+
+.flash-star {
+  position: absolute;
+  top: 18%;
+  left: 65%;
+  width: 118px;
+  aspect-ratio: 1;
+  opacity: 0;
+  transform: rotate(-18deg) scale(.55);
+  filter: drop-shadow(0 0 13px rgba(255, 236, 198, .5));
+  animation: luxury-flash-star 13s ease-in-out infinite;
+}
+
+.flash-star::before,
+.flash-star::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  border-radius: 50%;
+  background: linear-gradient(90deg, transparent, rgba(255, 245, 220, .86), transparent);
+  transform: translate(-50%, -50%);
+}
+
+.flash-star::before {
+  width: 100%;
+  height: 1px;
+}
+
+.flash-star::after {
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(180deg, transparent, rgba(255, 245, 220, .72), transparent);
+}
+
+.flash-bokeh {
+  position: absolute;
+  width: var(--flash-bokeh-size, 28px);
+  aspect-ratio: 1;
+  border: 1px solid rgba(228, 203, 157, .23);
+  border-radius: 50%;
+  opacity: .42;
+  background: radial-gradient(circle at 35% 30%, rgba(255, 245, 220, .28), rgba(126, 176, 188, .08) 46%, transparent 74%);
+  box-shadow: 0 0 22px rgba(179, 213, 220, .08);
+  animation: luxury-bokeh-drift var(--flash-bokeh-speed, 16s) ease-in-out infinite alternate;
+}
+
+.flash-bokeh-one {
+  top: 24%;
+  left: 18%;
+  --flash-bokeh-size: 25px;
+  --flash-bokeh-speed: 17s;
+}
+
+.flash-bokeh-two {
+  top: 67%;
+  left: 82%;
+  --flash-bokeh-size: 17px;
+  --flash-bokeh-speed: 21s;
+  animation-delay: -7s;
+}
+
+.flash-bokeh-three {
+  top: 78%;
+  left: 31%;
+  --flash-bokeh-size: 11px;
+  --flash-bokeh-speed: 14s;
+  animation-delay: -4s;
+}
+
+@keyframes luxury-aura-breathe {
+  0%, 68%, 100% { opacity: .11; transform: scale(.92); }
+  74% { opacity: .3; transform: scale(1.08); }
+  80% { opacity: .16; transform: scale(1.14); }
+}
+
+@keyframes luxury-flash-ray {
+  0%, 70%, 100% { opacity: 0; transform: rotate(-27deg) scaleX(.3); }
+  74% { opacity: .72; transform: rotate(-27deg) scaleX(1); }
+  78% { opacity: .16; transform: rotate(-27deg) scaleX(1.12); }
+  82% { opacity: 0; transform: rotate(-27deg) scaleX(1.2); }
+}
+
+@keyframes luxury-flash-star {
+  0%, 71%, 100% { opacity: 0; transform: rotate(-18deg) scale(.55); }
+  75% { opacity: .78; transform: rotate(-18deg) scale(1); }
+  79% { opacity: .2; transform: rotate(-18deg) scale(1.12); }
+  83% { opacity: 0; transform: rotate(-18deg) scale(1.25); }
+}
+
+@keyframes luxury-bokeh-drift {
+  from { transform: translate3d(-8px, 5px, 0) scale(.88); }
+  to { transform: translate3d(12px, -16px, 0) scale(1.12); }
+}
+
+@media (max-width: 600px) {
+  .flash-aura {
+    top: 19%;
+    left: 29%;
+    width: 78vw;
+  }
+
+  .flash-ray {
+    top: 25%;
+    left: -15%;
+    width: 125vw;
+  }
+
+  .flash-star {
+    top: 17%;
+    left: 57%;
+    width: 82px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flash-aura,
+  .flash-ray,
+  .flash-star,
+  .flash-bokeh {
+    animation: none !important;
+  }
+
+  .flash-aura { opacity: .14; transform: none; }
+  .flash-ray { opacity: .1; transform: rotate(-27deg); }
+  .flash-star { opacity: .12; transform: rotate(-18deg) scale(.7); }
+  .flash-bokeh { transform: none; }
+}
+
+
+/* Staggered luxury flash bursts */
+.flash-pop {
+  position: absolute;
+  width: var(--flash-pop-size, 112px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle,
+    rgba(255, 250, 237, .9) 0 1%,
+    rgba(255, 235, 194, .62) 2%,
+    rgba(231, 194, 124, .24) 10%,
+    rgba(121, 184, 196, .09) 30%,
+    transparent 72%
+  );
+  filter: blur(3px) drop-shadow(0 0 18px rgba(255, 225, 169, .32));
+  animation: luxury-flash-pop 12s ease-out infinite;
+}
+
+.flash-pop::before,
+.flash-pop::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(90deg, transparent, rgba(255, 246, 224, .82), transparent);
+}
+
+.flash-pop::before {
+  width: 150%;
+  height: 1px;
+}
+
+.flash-pop::after {
+  width: 1px;
+  height: 150%;
+  background: linear-gradient(180deg, transparent, rgba(255, 246, 224, .64), transparent);
+}
+
+.flash-pop-one {
+  top: 24%;
+  left: 24%;
+  --flash-pop-size: 100px;
+  animation-delay: 0s;
+}
+
+.flash-pop-two {
+  top: 46%;
+  left: 75%;
+  --flash-pop-size: 132px;
+  animation-delay: -4s;
+}
+
+.flash-pop-three {
+  top: 73%;
+  left: 48%;
+  --flash-pop-size: 84px;
+  animation-delay: -8s;
+}
+
+@keyframes luxury-flash-pop {
+  0%, 100% { opacity: 0; transform: scale(.38) rotate(-18deg); }
+  4% { opacity: .82; transform: scale(1) rotate(-18deg); }
+  7% { opacity: .18; transform: scale(1.32) rotate(-18deg); }
+  10% { opacity: .46; transform: scale(1.5) rotate(-18deg); }
+  14% { opacity: 0; transform: scale(1.85) rotate(-18deg); }
+}
+
+@media (max-width: 600px) {
+  .flash-pop-one { top: 25%; left: 12%; --flash-pop-size: 82px; }
+  .flash-pop-two { top: 49%; left: 72%; --flash-pop-size: 100px; }
+  .flash-pop-three { top: 76%; left: 42%; --flash-pop-size: 70px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flash-pop {
+    animation: none !important;
+    opacity: .08;
+    transform: none;
+  }
+}
+
+
 /* Interactive copy, services, and booking controls */
 .language-switcher { display: flex; align-items: center; gap: 6px; }
 .language-button {
@@ -2064,3 +2350,105 @@ section[id] { scroll-margin-top: 104px; }
 
 
 
+/* Cinematic translucent aperture atmosphere */
+.ambient-aperture,
+.ambient-lightwave,
+.ambient-dust {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.ambient-aperture {
+  inset: auto;
+  left: 50%;
+  top: 53%;
+  width: min(122vw, 150vh, 1320px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  opacity: .34;
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 0 22px rgba(101, 175, 206, .08));
+  will-change: transform;
+}
+.ambient-aperture-main {
+  background: repeating-conic-gradient(
+    from 8deg,
+    rgba(112, 198, 231, .16) 0deg 7deg,
+    rgba(217, 183, 119, .085) 7deg 12deg,
+    transparent 12deg 45deg
+  );
+  -webkit-mask: radial-gradient(circle, transparent 0 41%, #000 43% 50%, transparent 57%);
+  mask: radial-gradient(circle, transparent 0 41%, #000 43% 50%, transparent 57%);
+  animation: atmosphere-aperture-turn 105s linear infinite;
+}
+.ambient-aperture-detail {
+  width: min(148vw, 178vh, 1680px);
+  opacity: .22;
+  background: repeating-conic-gradient(
+    from 2deg,
+    rgba(238, 220, 183, .34) 0deg 1deg,
+    transparent 1deg 22.5deg
+  );
+  -webkit-mask: radial-gradient(circle, transparent 0 53%, #000 53.15% 53.45%, transparent 54%);
+  mask: radial-gradient(circle, transparent 0 53%, #000 53.15% 53.45%, transparent 54%);
+  animation: atmosphere-aperture-turn-reverse 150s linear infinite;
+}
+.ambient-lightwave {
+  inset: -35% -25%;
+  opacity: .52;
+  background: linear-gradient(
+    108deg,
+    transparent 36%,
+    rgba(83, 172, 213, .015) 44%,
+    rgba(124, 195, 224, .055) 49%,
+    rgba(225, 193, 136, .075) 52%,
+    rgba(145, 127, 206, .035) 57%,
+    transparent 65%
+  );
+  filter: blur(28px);
+  transform: rotate(-12deg) translate3d(-5%, 0, 0);
+  mix-blend-mode: screen;
+  animation: atmosphere-lightwave 26s ease-in-out infinite alternate;
+}
+.ambient-dust {
+  opacity: .18;
+  background-image:
+    radial-gradient(circle, rgba(255, 247, 226, .76) 0 1px, transparent 1.6px),
+    radial-gradient(circle, rgba(139, 213, 239, .72) 0 .8px, transparent 1.5px),
+    radial-gradient(circle, rgba(219, 183, 119, .68) 0 .7px, transparent 1.4px);
+  background-size: 181px 151px, 257px 223px, 337px 281px;
+  background-position: 17px 31px, 83px 63px, 9px 177px;
+  -webkit-mask-image: linear-gradient(180deg, transparent 2%, #000 18%, #000 86%, transparent);
+  mask-image: linear-gradient(180deg, transparent 2%, #000 18%, #000 86%, transparent);
+  animation: atmosphere-dust-drift 58s linear infinite;
+}
+@keyframes atmosphere-aperture-turn {
+  from { transform: translate3d(-50%, -50%, 0) rotate(0); }
+  to { transform: translate3d(-50%, -50%, 0) rotate(1turn); }
+}
+@keyframes atmosphere-aperture-turn-reverse {
+  from { transform: translate3d(-50%, -50%, 0) rotate(1turn); }
+  to { transform: translate3d(-50%, -50%, 0) rotate(0); }
+}
+@keyframes atmosphere-lightwave {
+  from { transform: rotate(-12deg) translate3d(-5%, 0, 0) scaleX(.94); }
+  to { transform: rotate(-12deg) translate3d(5%, 1%, 0) scaleX(1.06); }
+}
+@keyframes atmosphere-dust-drift {
+  from { background-position: 17px 31px, 83px 63px, 9px 177px; }
+  to { background-position: 17px -120px, 83px -160px, 9px 20px; }
+}
+@media (max-width: 600px) {
+  .ambient-aperture { width: 170vw; top: 47%; opacity: .25; }
+  .ambient-aperture-detail { width: 195vw; top: 47%; opacity: .16; }
+  .ambient-lightwave { inset: -20% -70%; opacity: .36; }
+  .ambient-dust { opacity: .13; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ambient-aperture,
+  .ambient-lightwave,
+  .ambient-dust {
+    animation: none !important;
+    will-change: auto;
+  }
+}
