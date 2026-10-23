@@ -356,20 +356,6 @@ async function initThreeScene() {
   const rig = new THREE.Group();
   scene.add(rig);
 
-  const lensComponents = [];
-  function registerLensComponent(mesh, separation, rotation, scaleFactor = 1) {
-    const baseScale = mesh.scale.clone();
-    lensComponents.push({
-      mesh,
-      basePosition: mesh.position.clone(),
-      baseRotation: mesh.rotation.clone(),
-      baseScale,
-      offset: new THREE.Vector3(...separation),
-      rotationOffset: new THREE.Vector3(...rotation),
-      explodedScale: baseScale.clone().multiplyScalar(scaleFactor)
-    });
-  }
-
   const cameraBody = new THREE.Mesh(
     new THREE.BoxGeometry(2.7, 1.78, 0.52),
     new THREE.MeshStandardMaterial({ color: 0x171816, metalness: 0.78, roughness: 0.3 })
@@ -391,7 +377,6 @@ async function initThreeScene() {
   lensBarrel.rotation.x = Math.PI / 2;
   lensBarrel.position.z = 0.18;
   rig.add(lensBarrel);
-  registerLensComponent(lensBarrel, [0, 0, 0.25], [0, 0, 0], 1.02);
 
   const lensGlass = document.createElement('canvas');
   lensGlass.width = 512;
@@ -483,7 +468,6 @@ async function initThreeScene() {
   );
   glass.position.z = 0.414;
   rig.add(glass);
-  registerLensComponent(glass, [-0.03, 0.05, 1.28], [0.045, -0.035, 0.02], 0.86);
 
   const outerRim = new THREE.Mesh(
     new THREE.TorusGeometry(1.13, 0.055, 18, 96),
@@ -491,7 +475,6 @@ async function initThreeScene() {
   );
   outerRim.position.z = 0.43;
   rig.add(outerRim);
-  registerLensComponent(outerRim, [-0.08, 0.02, 0.68], [0.02, -0.02, -0.07], 1.04);
 
   const innerRim = new THREE.Mesh(
     new THREE.TorusGeometry(0.96, 0.018, 12, 80),
@@ -499,7 +482,6 @@ async function initThreeScene() {
   );
   innerRim.position.z = 0.45;
   rig.add(innerRim);
-  registerLensComponent(innerRim, [0.08, 0.02, 1.02], [-0.035, 0.025, 0.06], 0.96);
 
   const opticalGlassMaterial = new THREE.MeshPhysicalMaterial({
     color: 0x75b9e5,
@@ -515,7 +497,6 @@ async function initThreeScene() {
   const opticalElementRear = new THREE.Mesh(new THREE.CircleGeometry(0.77, 88), opticalGlassMaterial);
   opticalElementRear.position.z = 0.49;
   rig.add(opticalElementRear);
-  registerLensComponent(opticalElementRear, [-0.06, 0.04, 1.48], [0.04, -0.02, -0.04], 0.94);
 
   const opticalElementFront = new THREE.Mesh(
     new THREE.CircleGeometry(0.59, 88),
@@ -533,7 +514,6 @@ async function initThreeScene() {
   );
   opticalElementFront.position.z = 0.53;
   rig.add(opticalElementFront);
-  registerLensComponent(opticalElementFront, [0.08, -0.06, 1.9], [-0.035, 0.03, 0.075], 0.82);
 
   const coatingRing = new THREE.Mesh(
     new THREE.TorusGeometry(0.84, 0.009, 10, 88),
@@ -541,7 +521,6 @@ async function initThreeScene() {
   );
   coatingRing.position.z = 0.545;
   rig.add(coatingRing);
-  registerLensComponent(coatingRing, [0.03, 0.04, 2.04], [0.02, -0.03, -0.04], 0.96);
 
   const floatingLensRim = new THREE.Mesh(
     new THREE.TorusGeometry(0.78, 0.027, 14, 88),
@@ -549,7 +528,6 @@ async function initThreeScene() {
   );
   floatingLensRim.position.z = 0.55;
   rig.add(floatingLensRim);
-  registerLensComponent(floatingLensRim, [0.03, -0.04, 2.18], [0.025, 0.02, -0.08], 1.03);
 
   const focusLensRim = new THREE.Mesh(
     new THREE.TorusGeometry(0.58, 0.016, 12, 80),
@@ -557,7 +535,6 @@ async function initThreeScene() {
   );
   focusLensRim.position.z = 0.57;
   rig.add(focusLensRim);
-  registerLensComponent(focusLensRim, [-0.04, 0.05, 2.48], [-0.05, 0.025, 0.05], 0.9);
 
   const irisAssembly = new THREE.Group();
   irisAssembly.position.z = 0.585;
@@ -614,7 +591,6 @@ async function initThreeScene() {
   apertureEdge.position.z = 0.027;
   irisAssembly.add(apertureEdge);
   rig.add(irisAssembly);
-  registerLensComponent(irisAssembly, [0.01, -0.02, 1.62], [0.035, -0.025, 0.07], 0.92);
 
   const secondaryCoatingRing = new THREE.Mesh(
     new THREE.TorusGeometry(0.48, 0.008, 10, 72),
@@ -622,7 +598,6 @@ async function initThreeScene() {
   );
   secondaryCoatingRing.position.z = 0.62;
   rig.add(secondaryCoatingRing);
-  registerLensComponent(secondaryCoatingRing, [-0.025, 0.045, 2.32], [-0.02, 0.04, -0.055], 0.94);
 
   const lensPulseLight = new THREE.PointLight(0x8de7ff, 0, 5);
   lensPulseLight.position.set(0, 0, 2.7);
@@ -763,16 +738,6 @@ async function initThreeScene() {
 
   let frameId = 0;
   let previousTime = 0;
-  function lensSeparationAt(time) {
-    const phase = (time % 14000) / 14000;
-    const smooth = (value) => value * value * (3 - 2 * value);
-    if (phase < 0.15) return 0;
-    if (phase < 0.37) return smooth((phase - 0.15) / 0.22);
-    if (phase < 0.54) return 1;
-    if (phase < 0.78) return 1 - smooth((phase - 0.54) / 0.24);
-    return 0;
-  }
-
   function animate(time) {
     frameId = window.requestAnimationFrame(animate);
     if (document.hidden || reducedMotion) return;
@@ -783,16 +748,6 @@ async function initThreeScene() {
     rig.rotation.y += delta * 0.035;
     orbitalRing.rotation.z += delta * 0.09;
 
-    const separation = lensSeparationAt(time);
-    lensComponents.forEach((component) => {
-      component.mesh.position.copy(component.basePosition).addScaledVector(component.offset, separation);
-      component.mesh.rotation.set(
-        component.baseRotation.x + component.rotationOffset.x * separation,
-        component.baseRotation.y + component.rotationOffset.y * separation,
-        component.baseRotation.z + component.rotationOffset.z * separation
-      );
-      component.mesh.scale.copy(component.baseScale).lerp(component.explodedScale, separation);
-    });
     const apertureMotion = Math.sin(time * 0.0011);
     irisAssembly.rotation.z = irisAssembly.userData.baseRotationZ + apertureMotion * 0.018;
     irisBlades.forEach((blade) => {
