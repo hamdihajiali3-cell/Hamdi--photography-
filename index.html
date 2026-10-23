@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css?v=localized-booking-calendar-20261023">
+  <link rel="stylesheet" href="style.css?v=custom-arabic-calendar-20261023">
   <script type="importmap">
   {
     "imports": {
@@ -19,7 +19,7 @@
     }
   }
   </script>
-  <script type="module" src="script.js?v=localized-booking-calendar-20261023"></script>
+  <script type="module" src="script.js?v=custom-arabic-calendar-20261023"></script>
 </head>
 
 <body>
@@ -267,7 +267,7 @@
 
         <div class="booking-field" id="preferredDateField">
           <label class="booking-label" for="preferredDate" data-i18n="dateLabel">التاريخ المفضّل</label>
-          <input type="date" id="preferredDate" class="contact-field" lang="ar" dir="rtl" required aria-describedby="contactFormHint">
+          <input type="text" id="preferredDate" class="contact-field" lang="ar" dir="rtl" data-i18n-placeholder="datePlaceholder" placeholder="اختر التاريخ" autocomplete="off" readonly required aria-haspopup="dialog" aria-expanded="false" aria-controls="bookingCalendar" aria-describedby="contactFormHint">
         </div>
 
         <div class="booking-field" id="preferredTimeField">
