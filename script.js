@@ -36,11 +36,11 @@ const translations = {
     contactTitle: "خلّي فكرتك<br><em>تصير صورة.</em>",
     contactDesc: "اختر نوع التصوير واكتب لنا فكرتك. سنجهّز رسالة واتساب لتراجعها قبل إرسالها.",
     nameLabel: "اسمك", sessionLabel: "نوع التصوير", messageLabel: "احكيلي عن فكرتك",
-    namePlaceholder: "اكتب اسمك", msgPlaceholder: "ما الفكرة أو اللحظة التي تريد تصويرها؟",
-    contactFormHint: "ستفتح واتساب برسالة جاهزة؛ راجعها وعدّلها ثم أرسلها.",
+    namePlaceholder: "اكتب اسمك", dateLabel: "التاريخ المفضّل", timeLabel: "الفترة المفضّلة", timePlaceholder: "اختر وقتًا مناسبًا", timeMorning: "الصباح · 10:00–13:00", timeAfternoon: "بعد الظهر · 13:00–17:00", timeEvening: "المساء · 17:00–20:00", timeFlexible: "أي وقت يناسبني", msgPlaceholder: "ما الفكرة أو اللحظة التي تريد تصويرها؟",
+    contactFormHint: "اختر تاريخًا وفترة مناسبة؛ سيفتح واتساب بطلب الحجز لتأكيد الموعد معك.",
     opt1: "جلسة بورتريه", opt2: "تصوير تخرّج", opt3: "تصوير تجاري", opt4: "تصوير مناسبة", opt5: "طلب آخر",
     sendBtn: "تابع إلى واتساب", locationText: "غازي عنتاب، تركيا · بموعد مسبق",
-    waIntro: "مرحباً حمدي، أنا", waBooking: "أرغب بحجز", waDetails: "تفاصيل فكرتي",
+    waIntro: "مرحباً حمدي، أنا", waBooking: "أرغب بحجز", waDate: "التاريخ المقترح", waTime: "الفترة المناسبة", waDetails: "تفاصيل فكرتي",
     rightsText: "جميع الحقوق محفوظة.", backTop: "العودة لأعلى الصفحة ↑"
   },
   tr: {
@@ -80,11 +80,11 @@ const translations = {
     contactTitle: "Fikrini<br><em>kareye dönüştür.</em>",
     contactDesc: "Çekim türünü seç ve fikrini yaz. Göndermeden önce incelemen için WhatsApp mesajı hazırlayalım.",
     nameLabel: "Adın", sessionLabel: "Çekim türü", messageLabel: "Fikrini anlat",
-    namePlaceholder: "Adını yaz", msgPlaceholder: "Nasıl bir çekim hayal ediyorsun?",
-    contactFormHint: "Hazır mesaj WhatsApp'ta açılır; kontrol edip düzenledikten sonra gönderebilirsin.",
+    namePlaceholder: "Adını yaz", dateLabel: "Tercih edilen tarih", timeLabel: "Tercih edilen saat aralığı", timePlaceholder: "Bir saat aralığı seç", timeMorning: "Sabah · 10:00–13:00", timeAfternoon: "Öğleden sonra · 13:00–17:00", timeEvening: "Akşam · 17:00–20:00", timeFlexible: "Bana uygun herhangi bir saat", msgPlaceholder: "Nasıl bir çekim hayal ediyorsun?",
+    contactFormHint: "Bir tarih ve saat aralığı seç; randevuyu onaylamak için WhatsApp talebin açılacak.",
     opt1: "Portre çekimi", opt2: "Mezuniyet çekimi", opt3: "Ticari çekim", opt4: "Etkinlik çekimi", opt5: "Diğer",
     sendBtn: "WhatsApp'ta devam et", locationText: "Gaziantep, Türkiye · Randevu ile",
-    waIntro: "Merhaba Hamdi, ben", waBooking: "Çekim için randevu almak istiyorum", waDetails: "Fikrimin detayları",
+    waIntro: "Merhaba Hamdi, ben", waBooking: "Çekim için randevu almak istiyorum", waDate: "Tercih edilen tarih", waTime: "Tercih edilen saat aralığı", waDetails: "Fikrimin detayları",
     rightsText: "Tüm hakları saklıdır.", backTop: "Sayfanın başına dön ↑"
   },
   en: {
@@ -124,11 +124,11 @@ const translations = {
     contactTitle: "Let's turn your idea<br><em>into a frame.</em>",
     contactDesc: "Choose a shoot type and share your idea. We'll prepare a WhatsApp message for you to review before sending.",
     nameLabel: "Your name", sessionLabel: "Type of shoot", messageLabel: "Tell me about your idea",
-    namePlaceholder: "Write your name", msgPlaceholder: "What would you like to photograph?",
-    contactFormHint: "A prepared message opens in WhatsApp; review or edit it before sending.",
+    namePlaceholder: "Write your name", dateLabel: "Preferred date", timeLabel: "Preferred time", timePlaceholder: "Choose a time window", timeMorning: "Morning · 10:00–13:00", timeAfternoon: "Afternoon · 13:00–17:00", timeEvening: "Evening · 17:00–20:00", timeFlexible: "Any time that works for me", msgPlaceholder: "What would you like to photograph?",
+    contactFormHint: "Choose a preferred date and time; WhatsApp will open so the appointment can be confirmed with you.",
     opt1: "Portrait session", opt2: "Graduation shoot", opt3: "Commercial shoot", opt4: "Event coverage", opt5: "Other",
     sendBtn: "Continue to WhatsApp", locationText: "Gaziantep, Türkiye · By appointment",
-    waIntro: "Hi Hamdi, I'm", waBooking: "I'd like to book", waDetails: "My idea",
+    waIntro: "Hi Hamdi, I'm", waBooking: "I'd like to book", waDate: "Preferred date", waTime: "Preferred time", waDetails: "My idea",
     rightsText: "All rights reserved.", backTop: "Back to top ↑"
   }
 };
@@ -299,13 +299,24 @@ document.addEventListener("DOMContentLoaded", () => {
   if (directForm) {
     directForm.addEventListener('submit', function(e) {
       e.preventDefault();
-      const name = document.getElementById('clientName').value;
+      const name = document.getElementById('clientName').value.trim();
       const session = document.getElementById('sessionType').value;
-      const msg = document.getElementById('clientMsg').value;
+      const preferredDate = document.getElementById('preferredDate').value;
+      const preferredTime = document.getElementById('preferredTime').value;
+      const msg = document.getElementById('clientMsg').value.trim();
 
       const copy = translations[document.documentElement.lang] || translations.en;
       const lineBreak = String.fromCharCode(10);
-      const text = copy.waIntro + ' ' + name + lineBreak + copy.waBooking + ': ' + session + lineBreak + copy.waDetails + ': ' + msg;
+      const dateLocale = { ar: 'ar', tr: 'tr-TR', en: 'en-US' }[document.documentElement.lang] || 'en-US';
+      const dateLabel = new Intl.DateTimeFormat(dateLocale, { dateStyle: 'long' }).format(new Date(preferredDate + 'T12:00:00'));
+      const timeLabel = copy[preferredTime] || preferredTime;
+      const text = [
+        copy.waIntro + ' ' + name,
+        copy.waBooking + ': ' + session,
+        copy.waDate + ': ' + dateLabel,
+        copy.waTime + ': ' + timeLabel,
+        copy.waDetails + ': ' + msg
+      ].join(lineBreak);
       const whatsappUrl = `https://wa.me/905377423671?text=${encodeURIComponent(text)}`;
       
       window.open(whatsappUrl, '_blank');
@@ -1083,3 +1094,16 @@ function initImmersiveGallery() {
 }
 
 document.addEventListener('DOMContentLoaded', initImmersiveGallery);
+
+
+function initBookingDateMinimum() {
+  const dateInput = document.getElementById('preferredDate');
+  if (!dateInput) return;
+  const today = new Date();
+  dateInput.min = [
+    today.getFullYear(),
+    String(today.getMonth() + 1).padStart(2, '0'),
+    String(today.getDate()).padStart(2, '0')
+  ].join('-');
+}
+document.addEventListener('DOMContentLoaded', initBookingDateMinimum);
