@@ -1037,40 +1037,59 @@ function initSelectionSound() {
   if (!AudioContextClass) return;
 
   let audioContext;
-  const playSelectionSound = () => {
+  const unlockAudio = () => {
     try {
       audioContext ||= new AudioContextClass();
-      if (audioContext.state === 'suspended') void audioContext.resume().catch(() => {});
-      const now = audioContext.currentTime;
-      const output = audioContext.createGain();
-      output.gain.setValueAtTime(0.0001, now);
-      output.gain.exponentialRampToValueAtTime(0.035, now + 0.006);
-      output.gain.exponentialRampToValueAtTime(0.0001, now + 0.095);
-      output.connect(audioContext.destination);
-
-      const click = audioContext.createOscillator();
-      click.type = 'triangle';
-      click.frequency.setValueAtTime(1480, now);
-      click.frequency.exponentialRampToValueAtTime(620, now + 0.07);
-      click.connect(output);
-      click.start(now);
-      click.stop(now + 0.1);
-
-      const sparkle = audioContext.createOscillator();
-      const sparkleGain = audioContext.createGain();
-      sparkle.type = 'sine';
-      sparkle.frequency.setValueAtTime(1760, now + 0.012);
-      sparkle.frequency.exponentialRampToValueAtTime(1180, now + 0.055);
-      sparkleGain.gain.setValueAtTime(0.0001, now);
-      sparkleGain.gain.exponentialRampToValueAtTime(0.22, now + 0.018);
-      sparkleGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.065);
-      sparkle.connect(sparkleGain);
-      sparkleGain.connect(output);
-      sparkle.start(now + 0.012);
-      sparkle.stop(now + 0.07);
+      if (audioContext.state !== 'running') void audioContext.resume().catch(() => {});
     } catch (error) {
-      // Audio is an optional enhancement; keep all selections working if it is unavailable.
+      // Audio is optional; never block site interactions.
     }
+  };
+  document.addEventListener('pointerdown', unlockAudio, { capture: true, passive: true });
+  document.addEventListener('keydown', unlockAudio, true);
+
+  const getRunningAudioContext = async () => {
+    audioContext ||= new AudioContextClass();
+    if (audioContext.state !== 'running') await audioContext.resume();
+    if (audioContext.state !== 'running') throw new Error('Audio context is not running.');
+    return audioContext;
+  };
+
+  const playSelectionSound = () => {
+    void (async () => {
+      try {
+        const context = await getRunningAudioContext();
+        const now = context.currentTime + 0.008;
+        const output = context.createGain();
+        output.gain.setValueAtTime(0.0001, now);
+        output.gain.exponentialRampToValueAtTime(0.11, now + 0.006);
+        output.gain.exponentialRampToValueAtTime(0.0001, now + 0.11);
+        output.connect(context.destination);
+
+        const click = context.createOscillator();
+        click.type = 'triangle';
+        click.frequency.setValueAtTime(1480, now);
+        click.frequency.exponentialRampToValueAtTime(620, now + 0.07);
+        click.connect(output);
+        click.start(now);
+        click.stop(now + 0.11);
+
+        const sparkle = context.createOscillator();
+        const sparkleGain = context.createGain();
+        sparkle.type = 'sine';
+        sparkle.frequency.setValueAtTime(1760, now + 0.012);
+        sparkle.frequency.exponentialRampToValueAtTime(1180, now + 0.055);
+        sparkleGain.gain.setValueAtTime(0.0001, now);
+        sparkleGain.gain.exponentialRampToValueAtTime(0.27, now + 0.018);
+        sparkleGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.07);
+        sparkle.connect(sparkleGain);
+        sparkleGain.connect(output);
+        sparkle.start(now + 0.012);
+        sparkle.stop(now + 0.075);
+      } catch (error) {
+        // Keep selections working if audio is blocked by the browser or device.
+      }
+    })();
   };
 
   document.addEventListener('click', (event) => {
@@ -1089,36 +1108,37 @@ function initSelectionSound() {
   const playTypingSound = (event) => {
     if (!event.isTrusted || event.isComposing) return;
     const stamp = performance.now();
-    if (stamp - lastTypingSoundAt < 28) return;
+    if (stamp - lastTypingSoundAt < 24) return;
     lastTypingSoundAt = stamp;
 
-    try {
-      audioContext ||= new AudioContextClass();
-      if (audioContext.state === 'suspended') void audioContext.resume().catch(() => {});
-      const now = audioContext.currentTime;
-      const filter = audioContext.createBiquadFilter();
-      filter.type = 'lowpass';
-      filter.frequency.setValueAtTime(1500, now);
-      filter.Q.setValueAtTime(0.65, now);
+    void (async () => {
+      try {
+        const context = await getRunningAudioContext();
+        const now = context.currentTime + 0.004;
+        const filter = context.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(1850, now);
+        filter.Q.setValueAtTime(0.7, now);
 
-      const envelope = audioContext.createGain();
-      envelope.gain.setValueAtTime(0.0001, now);
-      envelope.gain.exponentialRampToValueAtTime(0.045, now + 0.002);
-      envelope.gain.exponentialRampToValueAtTime(0.0001, now + 0.038);
-      filter.connect(envelope);
-      envelope.connect(audioContext.destination);
+        const envelope = context.createGain();
+        envelope.gain.setValueAtTime(0.0001, now);
+        envelope.gain.exponentialRampToValueAtTime(0.085, now + 0.002);
+        envelope.gain.exponentialRampToValueAtTime(0.0001, now + 0.04);
+        filter.connect(envelope);
+        envelope.connect(context.destination);
 
-      const keyTap = audioContext.createOscillator();
-      keyTap.type = 'triangle';
-      keyTap.frequency.setValueAtTime(470 + (typingSoundIndex % 5) * 22, now);
-      keyTap.frequency.exponentialRampToValueAtTime(210, now + 0.034);
-      keyTap.connect(filter);
-      keyTap.start(now);
-      keyTap.stop(now + 0.04);
-      typingSoundIndex += 1;
-    } catch (error) {
-      // Keep typing available when audio is blocked or unsupported.
-    }
+        const keyTap = context.createOscillator();
+        keyTap.type = 'triangle';
+        keyTap.frequency.setValueAtTime(470 + (typingSoundIndex % 5) * 22, now);
+        keyTap.frequency.exponentialRampToValueAtTime(210, now + 0.036);
+        keyTap.connect(filter);
+        keyTap.start(now);
+        keyTap.stop(now + 0.042);
+        typingSoundIndex += 1;
+      } catch (error) {
+        // Keep typing available when audio is blocked or unsupported.
+      }
+    })();
   };
 
   document.querySelectorAll('.contact-field').forEach((field) => {
