@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css?v=gallery-no3-20261023">
+  <link rel="stylesheet" href="style.css?v=cinematic-rail-20261023">
   <script type="importmap">
   {
     "imports": {
@@ -19,7 +19,7 @@
     }
   }
   </script>
-  <script type="module" src="script.js?v=ac7e81e2"></script>
+  <script type="module" src="script.js?v=cinematic-rail-20261023"></script>
 </head>
 
 <body>
@@ -138,7 +138,16 @@
         </p>
       </div>
 
-      <div class="gallery">
+      <div class="gallery-rail">
+        <div class="gallery-navigation">
+          <div class="gallery-count" aria-live="polite"><span id="galleryCurrent">01</span><span>/</span><span>04</span></div>
+          <div class="gallery-progress" id="galleryProgress" role="progressbar" aria-label="تقدم المعرض" aria-valuemin="0" aria-valuemax="4" aria-valuenow="1"><span></span></div>
+          <div class="gallery-controls">
+            <button type="button" data-gallery-step="-1" data-i18n-aria-label="galleryPrev" aria-label="الصورة السابقة"><span aria-hidden="true">←</span></button>
+            <button type="button" data-gallery-step="1" data-i18n-aria-label="galleryNext" aria-label="الصورة التالية"><span aria-hidden="true">→</span></button>
+          </div>
+        </div>
+        <div class="gallery" data-immersive-gallery tabindex="0" data-i18n-aria-label="galleryLabel" aria-label="معرض الصور التفاعلي">
         <div class="gallery-card card-tall" role="button" tabindex="0" aria-haspopup="dialog">
           <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1000&q=85" alt="بورتريه بتعبير هادئ" data-i18n-alt="g1Alt">
           <span class="image-shade"></span>
@@ -155,7 +164,6 @@
 
         <div class="gallery-card card-wide" role="button" tabindex="0" aria-haspopup="dialog">
           <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1200&q=85" alt="صورة أزياء بطابع تحريري" data-i18n-alt="g3Alt">
-          <span class="gallery-feature-mark" aria-hidden="true"><b>03</b><span>FRAME / FEATURED</span></span>
           <span class="image-shade"></span>
           <span class="card-number">03 / <span data-i18n="g3">إيديتوريال</span></span>
           <span class="card-caption"><span data-i18n="gc3">دراسة في الثقة</span> <b>↗</b></span>
@@ -168,7 +176,8 @@
           <span class="card-caption"><span data-i18n="gc4">الضوء الأول</span> <b>↗</b></span>
         </div>
       </div>
-      <p class="gallery-note" data-i18n="galleryHint">حرّك المؤشر فوق الصور لمتابعة إطار التركيز، واضغط الصورة لعرضها كاملة. على الهاتف، المس الصورة.</p>
+      </div>
+      <p class="gallery-note" data-i18n="galleryHint">اسحب المعرض بالأسهم أو اسحب الصور يمينًا ويسارًا، واضغط على الصورة لفتح العرض السينمائي.</p>
     </section>
 
     <section class="manifesto" id="about">
