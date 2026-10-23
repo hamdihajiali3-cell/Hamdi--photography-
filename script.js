@@ -36,7 +36,7 @@ const translations = {
     contactTitle: "خلّي فكرتك<br><em>تصير صورة.</em>",
     contactDesc: "اختر نوع التصوير واكتب لنا فكرتك. سنجهّز رسالة واتساب لتراجعها قبل إرسالها.",
     nameLabel: "اسمك", sessionLabel: "نوع التصوير", messageLabel: "احكيلي عن فكرتك",
-    namePlaceholder: "اكتب اسمك", dateLabel: "التاريخ المفضّل", timeLabel: "الفترة المفضّلة", timePlaceholder: "اختر وقتًا مناسبًا", timeMorning: "الصباح · 10:00–13:00", timeAfternoon: "بعد الظهر · 13:00–17:00", timeEvening: "المساء · 17:00–20:00", timeFlexible: "أي وقت يناسبني", msgPlaceholder: "ما الفكرة أو اللحظة التي تريد تصويرها؟",
+    namePlaceholder: "اكتب اسمك", dateLabel: "التاريخ المفضّل", datePlaceholder: "اختر التاريخ", calendarTitle: "اختر تاريخاً", calendarPrev: "الشهر السابق", calendarNext: "الشهر التالي", calendarToday: "اليوم", timeLabel: "الفترة المفضّلة", timePlaceholder: "اختر وقتًا مناسبًا", timeMorning: "الصباح · 10:00–13:00", timeAfternoon: "بعد الظهر · 13:00–17:00", timeEvening: "المساء · 17:00–20:00", timeFlexible: "أي وقت يناسبني", msgPlaceholder: "ما الفكرة أو اللحظة التي تريد تصويرها؟",
     contactFormHint: "اختر تاريخًا وفترة مناسبة؛ سيفتح واتساب بطلب الحجز لتأكيد الموعد معك.",
     opt1: "جلسة بورتريه", opt2: "تصوير تخرّج", opt3: "تصوير تجاري", opt4: "تصوير مناسبة", opt5: "طلب آخر",
     sendBtn: "تابع إلى واتساب", locationText: "غازي عنتاب، تركيا · بموعد مسبق",
@@ -80,7 +80,7 @@ const translations = {
     contactTitle: "Fikrini<br><em>kareye dönüştür.</em>",
     contactDesc: "Çekim türünü seç ve fikrini yaz. Göndermeden önce incelemen için WhatsApp mesajı hazırlayalım.",
     nameLabel: "Adın", sessionLabel: "Çekim türü", messageLabel: "Fikrini anlat",
-    namePlaceholder: "Adını yaz", dateLabel: "Tercih edilen tarih", timeLabel: "Tercih edilen saat aralığı", timePlaceholder: "Bir saat aralığı seç", timeMorning: "Sabah · 10:00–13:00", timeAfternoon: "Öğleden sonra · 13:00–17:00", timeEvening: "Akşam · 17:00–20:00", timeFlexible: "Bana uygun herhangi bir saat", msgPlaceholder: "Nasıl bir çekim hayal ediyorsun?",
+    namePlaceholder: "Adını yaz", dateLabel: "Tercih edilen tarih", datePlaceholder: "Takvimden tarih seç", calendarTitle: "Tarih seç", calendarPrev: "Önceki ay", calendarNext: "Sonraki ay", calendarToday: "Bugün", timeLabel: "Tercih edilen saat aralığı", timePlaceholder: "Bir saat aralığı seç", timeMorning: "Sabah · 10:00–13:00", timeAfternoon: "Öğleden sonra · 13:00–17:00", timeEvening: "Akşam · 17:00–20:00", timeFlexible: "Bana uygun herhangi bir saat", msgPlaceholder: "Nasıl bir çekim hayal ediyorsun?",
     contactFormHint: "Bir tarih ve saat aralığı seç; randevuyu onaylamak için WhatsApp talebin açılacak.",
     opt1: "Portre çekimi", opt2: "Mezuniyet çekimi", opt3: "Ticari çekim", opt4: "Etkinlik çekimi", opt5: "Diğer",
     sendBtn: "WhatsApp'ta devam et", locationText: "Gaziantep, Türkiye · Randevu ile",
@@ -124,7 +124,7 @@ const translations = {
     contactTitle: "Let's turn your idea<br><em>into a frame.</em>",
     contactDesc: "Choose a shoot type and share your idea. We'll prepare a WhatsApp message for you to review before sending.",
     nameLabel: "Your name", sessionLabel: "Type of shoot", messageLabel: "Tell me about your idea",
-    namePlaceholder: "Write your name", dateLabel: "Preferred date", timeLabel: "Preferred time", timePlaceholder: "Choose a time window", timeMorning: "Morning · 10:00–13:00", timeAfternoon: "Afternoon · 13:00–17:00", timeEvening: "Evening · 17:00–20:00", timeFlexible: "Any time that works for me", msgPlaceholder: "What would you like to photograph?",
+    namePlaceholder: "Write your name", dateLabel: "Preferred date", datePlaceholder: "Choose a date", calendarTitle: "Choose a date", calendarPrev: "Previous month", calendarNext: "Next month", calendarToday: "Today", timeLabel: "Preferred time", timePlaceholder: "Choose a time window", timeMorning: "Morning · 10:00–13:00", timeAfternoon: "Afternoon · 13:00–17:00", timeEvening: "Evening · 17:00–20:00", timeFlexible: "Any time that works for me", msgPlaceholder: "What would you like to photograph?",
     contactFormHint: "Choose a preferred date and time; WhatsApp will open so the appointment can be confirmed with you.",
     opt1: "Portrait session", opt2: "Graduation shoot", opt3: "Commercial shoot", opt4: "Event coverage", opt5: "Other",
     sendBtn: "Continue to WhatsApp", locationText: "Gaziantep, Türkiye · By appointment",
@@ -176,6 +176,7 @@ window.setLanguage = function(lang) {
     button.setAttribute('aria-pressed', String(active));
   });
   try { window.localStorage.setItem('hamdiLanguage', lang); } catch (error) {}
+  window.refreshBookingCalendarLocale?.();
 };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -308,7 +309,7 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       const name = document.getElementById('clientName').value.trim();
       const session = document.getElementById('sessionType').value;
-      const preferredDate = document.getElementById('preferredDate').value;
+      const preferredDate = document.getElementById('preferredDate').dataset.isoDate;
       const preferredTime = document.getElementById('preferredTime').value;
       const msg = document.getElementById('clientMsg').value.trim();
 
@@ -1103,14 +1104,210 @@ function initImmersiveGallery() {
 document.addEventListener('DOMContentLoaded', initImmersiveGallery);
 
 
-function initBookingDateMinimum() {
+function initBookingDatePicker() {
   const dateInput = document.getElementById('preferredDate');
-  if (!dateInput) return;
+  const field = document.getElementById('preferredDateField');
+  if (!dateInput || !field) return;
+
   const today = new Date();
-  dateInput.min = [
-    today.getFullYear(),
-    String(today.getMonth() + 1).padStart(2, '0'),
-    String(today.getDate()).padStart(2, '0')
+  today.setHours(0, 0, 0, 0);
+  const formatISO = (year, month, day) => [
+    year,
+    String(month + 1).padStart(2, '0'),
+    String(day).padStart(2, '0')
   ].join('-');
+  const todayISO = formatISO(today.getFullYear(), today.getMonth(), today.getDate());
+  const firstAllowedMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+  let visibleMonth = new Date(firstAllowedMonth);
+
+  const currentLocale = () => ({
+    ar: 'ar',
+    tr: 'tr-TR',
+    en: 'en-US'
+  }[document.documentElement.lang] || 'en-US');
+  const currentCopy = () => translations[document.documentElement.lang] || translations.en;
+  const parseISO = (iso) => {
+    const [year, month, day] = iso.split('-').map(Number);
+    return new Date(Date.UTC(year, month - 1, day, 12));
+  };
+  const formatLocalizedDate = (iso) => new Intl.DateTimeFormat(currentLocale(), {
+    dateStyle: 'long',
+    calendar: 'gregory',
+    timeZone: 'UTC'
+  }).format(parseISO(iso));
+
+  const calendar = document.createElement('div');
+  calendar.id = 'bookingCalendar';
+  calendar.className = 'booking-calendar';
+  calendar.setAttribute('role', 'dialog');
+  calendar.setAttribute('aria-modal', 'false');
+  calendar.hidden = true;
+  calendar.innerHTML =
+    '<div class="booking-calendar-heading">' +
+      '<button type="button" class="booking-calendar-nav" data-calendar-action="previous" aria-label=""><span aria-hidden="true">‹</span></button>' +
+      '<strong class="booking-calendar-month" aria-live="polite"></strong>' +
+      '<button type="button" class="booking-calendar-nav" data-calendar-action="next" aria-label=""><span aria-hidden="true">›</span></button>' +
+    '</div>' +
+    '<div class="booking-calendar-weekdays" aria-hidden="true"></div>' +
+    '<div class="booking-calendar-days"></div>' +
+    '<div class="booking-calendar-footer"><button type="button" class="booking-calendar-today" data-calendar-action="today"></button></div>';
+  field.appendChild(calendar);
+
+  const monthTitle = calendar.querySelector('.booking-calendar-month');
+  const weekdayRow = calendar.querySelector('.booking-calendar-weekdays');
+  const dayGrid = calendar.querySelector('.booking-calendar-days');
+  const previousButton = calendar.querySelector('[data-calendar-action="previous"]');
+  const nextButton = calendar.querySelector('[data-calendar-action="next"]');
+  const todayButton = calendar.querySelector('[data-calendar-action="today"]');
+
+  function renderCalendar() {
+    const locale = currentLocale();
+    const copy = currentCopy();
+    calendar.lang = locale;
+    calendar.dir = document.documentElement.dir;
+    calendar.setAttribute('aria-label', copy.calendarTitle);
+    previousButton.setAttribute('aria-label', copy.calendarPrev);
+    nextButton.setAttribute('aria-label', copy.calendarNext);
+    todayButton.textContent = copy.calendarToday;
+
+    const year = visibleMonth.getFullYear();
+    const month = visibleMonth.getMonth();
+    const monthDate = new Date(Date.UTC(year, month, 1, 12));
+    monthTitle.textContent = new Intl.DateTimeFormat(locale, {
+      month: 'long',
+      year: 'numeric',
+      calendar: 'gregory',
+      timeZone: 'UTC'
+    }).format(monthDate);
+
+    let firstDay = document.documentElement.lang === 'ar' ? 6 : document.documentElement.lang === 'tr' ? 1 : 0;
+    try {
+      const localeInfo = new Intl.Locale(locale);
+      const localeFirstDay = localeInfo.weekInfo?.firstDay || localeInfo.getWeekInfo?.().firstDay;
+      if (localeFirstDay) firstDay = localeFirstDay % 7;
+    } catch (error) {}
+
+    weekdayRow.replaceChildren();
+    const weekdayFormatter = new Intl.DateTimeFormat(locale, { weekday: 'short', timeZone: 'UTC' });
+    for (let index = 0; index < 7; index += 1) {
+      const weekdayIndex = (firstDay + index) % 7;
+      const weekday = document.createElement('span');
+      weekday.textContent = weekdayFormatter.format(new Date(Date.UTC(2023, 0, 1 + weekdayIndex, 12)));
+      weekdayRow.appendChild(weekday);
+    }
+
+    dayGrid.replaceChildren();
+    const leadingDays = (new Date(year, month, 1).getDay() - firstDay + 7) % 7;
+    for (let index = 0; index < leadingDays; index += 1) {
+      const spacer = document.createElement('span');
+      spacer.setAttribute('aria-hidden', 'true');
+      dayGrid.appendChild(spacer);
+    }
+
+    const dayFormatter = new Intl.NumberFormat(locale, { useGrouping: false });
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    for (let day = 1; day <= daysInMonth; day += 1) {
+      const iso = formatISO(year, month, day);
+      const dateButton = document.createElement('button');
+      dateButton.type = 'button';
+      dateButton.className = 'booking-calendar-day';
+      dateButton.textContent = dayFormatter.format(day);
+      dateButton.dataset.date = iso;
+      dateButton.setAttribute('aria-label', formatLocalizedDate(iso));
+      dateButton.setAttribute('aria-pressed', String(iso === dateInput.dataset.isoDate));
+      dateButton.disabled = iso < todayISO;
+      if (iso === todayISO) dateButton.classList.add('is-today');
+      if (iso === dateInput.dataset.isoDate) dateButton.classList.add('is-selected');
+      dayGrid.appendChild(dateButton);
+    }
+
+    const firstAllowed = visibleMonth.getFullYear() === firstAllowedMonth.getFullYear() &&
+      visibleMonth.getMonth() === firstAllowedMonth.getMonth();
+    previousButton.disabled = firstAllowed;
+  }
+
+  function closeCalendar(returnFocus) {
+    calendar.hidden = true;
+    dateInput.setAttribute('aria-expanded', 'false');
+    if (returnFocus) dateInput.focus();
+  }
+
+  function openCalendar(fromKeyboard) {
+    const selectedISO = dateInput.dataset.isoDate;
+    if (selectedISO) {
+      const selectedDate = parseISO(selectedISO);
+      visibleMonth = new Date(selectedDate.getUTCFullYear(), selectedDate.getUTCMonth(), 1);
+    } else {
+      visibleMonth = new Date(firstAllowedMonth);
+    }
+    renderCalendar();
+    calendar.hidden = false;
+    dateInput.setAttribute('aria-expanded', 'true');
+    if (fromKeyboard) {
+      window.requestAnimationFrame(() => {
+        const focusDate = dateInput.dataset.isoDate || todayISO;
+        const target = calendar.querySelector('[data-date="' + focusDate + '"]:not(:disabled)') ||
+          calendar.querySelector('.booking-calendar-day:not(:disabled)');
+        if (target) target.focus();
+      });
+    }
+  }
+
+  dateInput.addEventListener('click', () => {
+    if (calendar.hidden) openCalendar(false);
+    else closeCalendar(false);
+  });
+  dateInput.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !calendar.hidden) {
+      event.preventDefault();
+      closeCalendar(true);
+    } else if (event.key === 'Enter' || event.key === ' ' || event.key === 'ArrowDown') {
+      event.preventDefault();
+      if (calendar.hidden) openCalendar(true);
+    }
+  });
+
+  calendar.addEventListener('click', (event) => {
+    const actionButton = event.target.closest('[data-calendar-action]');
+    if (actionButton) {
+      const action = actionButton.dataset.calendarAction;
+      if (action === 'previous' && !actionButton.disabled) {
+        visibleMonth = new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() - 1, 1);
+        renderCalendar();
+      } else if (action === 'next') {
+        visibleMonth = new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() + 1, 1);
+        renderCalendar();
+      } else if (action === 'today') {
+        selectDate(todayISO);
+      }
+      return;
+    }
+
+    const dayButton = event.target.closest('[data-date]');
+    if (dayButton && !dayButton.disabled) selectDate(dayButton.dataset.date);
+  });
+
+  function selectDate(iso) {
+    dateInput.dataset.isoDate = iso;
+    dateInput.value = formatLocalizedDate(iso);
+    dateInput.removeAttribute('aria-invalid');
+    dateInput.dispatchEvent(new Event('input', { bubbles: true }));
+    dateInput.dispatchEvent(new Event('change', { bubbles: true }));
+    closeCalendar(true);
+  }
+
+  document.addEventListener('pointerdown', (event) => {
+    if (!field.contains(event.target) && !calendar.hidden) closeCalendar(false);
+  });
+
+  window.refreshBookingCalendarLocale = () => {
+    const selectedISO = dateInput.dataset.isoDate;
+    dateInput.lang = currentLocale();
+    dateInput.dir = document.documentElement.dir;
+    if (selectedISO) dateInput.value = formatLocalizedDate(selectedISO);
+    renderCalendar();
+  };
+
+  renderCalendar();
 }
-document.addEventListener('DOMContentLoaded', initBookingDateMinimum);
+document.addEventListener('DOMContentLoaded', initBookingDatePicker);
