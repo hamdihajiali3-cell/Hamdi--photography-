@@ -3275,3 +3275,54 @@ body::after {
   .booking-calendar-day,
   .booking-calendar-days > span { min-height: 34px; }
 }
+
+/* Premium Hamdi lens monogram */
+.brand-emblem {
+  display: inline-grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  flex: 0 0 46px;
+  color: var(--gold);
+  filter: drop-shadow(0 5px 12px rgba(216, 182, 117, .16));
+  transition: filter .35s ease, transform .35s ease;
+}
+.brand-emblem-art { display: block; width: 100%; height: 100%; overflow: visible; }
+.brand-emblem-frame {
+  fill: rgba(216, 182, 117, .035);
+  stroke: #b99a62;
+  stroke-width: 1.2;
+}
+.brand-emblem-lens {
+  fill: rgba(216, 182, 117, .035);
+  stroke: rgba(230, 207, 162, .85);
+  stroke-width: 1.1;
+}
+.brand-emblem-inner {
+  fill: rgba(7, 7, 6, .72);
+  stroke: rgba(216, 182, 117, .4);
+  stroke-width: .7;
+}
+.brand-emblem-monogram {
+  fill: #f0dfbd;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -1.4px;
+}
+.brand-emblem-glint {
+  fill: none;
+  stroke: #f4e5c5;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  opacity: .9;
+}
+.brand:hover .brand-emblem,
+.brand:focus-visible .brand-emblem {
+  filter: drop-shadow(0 0 13px rgba(216, 182, 117, .38));
+  transform: translateY(-1px) rotate(-3deg);
+}
+.footer .brand-emblem { width: 40px; height: 40px; flex-basis: 40px; }
+@media (prefers-reduced-motion: reduce) {
+  .brand-emblem { transition: none; }
+}
