@@ -599,9 +599,6 @@ async function initThreeScene() {
   secondaryCoatingRing.position.z = 0.62;
   rig.add(secondaryCoatingRing);
 
-  const lensPulseLight = new THREE.PointLight(0x8de7ff, 0, 5);
-  lensPulseLight.position.set(0, 0, 2.7);
-  rig.add(lensPulseLight);
 
 
   const orbitalRing = new THREE.Mesh(
@@ -662,20 +659,6 @@ async function initThreeScene() {
     rig.add(card);
     photoCards.push(card);
   });
-
-  const specklePositions = new Float32Array(150 * 3);
-  for (let i = 0; i < 150; i += 1) {
-    specklePositions[i * 3] = (Math.random() - 0.5) * 7.2;
-    specklePositions[i * 3 + 1] = (Math.random() - 0.5) * 5.5;
-    specklePositions[i * 3 + 2] = -2.4 - Math.random() * 2;
-  }
-  const specklesGeometry = new THREE.BufferGeometry();
-  specklesGeometry.setAttribute('position', new THREE.BufferAttribute(specklePositions, 3));
-  const speckles = new THREE.Points(
-    specklesGeometry,
-    new THREE.PointsMaterial({ color: 0xdcc38e, size: 0.018, transparent: true, opacity: 0.76 })
-  );
-  scene.add(speckles);
 
   let targetX = 0;
   let targetY = 0;
@@ -755,13 +738,9 @@ async function initThreeScene() {
       blade.mesh.rotation.z = blade.baseRotation + bladeMotion;
       blade.mesh.scale.setScalar(0.99 + (apertureMotion + 1) * 0.006);
     });
-    const phase = (time % 14000) / 14000;
-    const flash = Math.max(0, 1 - Math.abs(phase - 0.77) / 0.035);
-    lensPulseLight.intensity = flash * 1.8;
     photoCards.forEach((card) => {
       card.position.y = card.userData.baseY + Math.sin(time * 0.0007 + card.userData.phase) * 0.055;
     });
-    speckles.rotation.z += delta * 0.008;
     render();
   }
   if (!reducedMotion) frameId = window.requestAnimationFrame(animate);
