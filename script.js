@@ -1031,3 +1031,65 @@ function initServiceBookingLinks() {
   select.addEventListener('change', () => select.classList.remove('service-prefilled'));
 }
 document.addEventListener('DOMContentLoaded', initServiceBookingLinks);
+
+function initSelectionSound() {
+  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContextClass) return;
+
+  let audioContext;
+  const playSelectionSound = () => {
+    try {
+      audioContext ||= new AudioContextClass();
+      if (audioContext.state === 'suspended') void audioContext.resume().catch(() => {});
+      const now = audioContext.currentTime;
+      const output = audioContext.createGain();
+      output.gain.setValueAtTime(0.0001, now);
+      output.gain.exponentialRampToValueAtTime(0.035, now + 0.006);
+      output.gain.exponentialRampToValueAtTime(0.0001, now + 0.095);
+      output.connect(audioContext.destination);
+
+      const click = audioContext.createOscillator();
+      click.type = 'triangle';
+      click.frequency.setValueAtTime(1480, now);
+      click.frequency.exponentialRampToValueAtTime(620, now + 0.07);
+      click.connect(output);
+      click.start(now);
+      click.stop(now + 0.1);
+
+      const sparkle = audioContext.createOscillator();
+      const sparkleGain = audioContext.createGain();
+      sparkle.type = 'sine';
+      sparkle.frequency.setValueAtTime(1760, now + 0.012);
+      sparkle.frequency.exponentialRampToValueAtTime(1180, now + 0.055);
+      sparkleGain.gain.setValueAtTime(0.0001, now);
+      sparkleGain.gain.exponentialRampToValueAtTime(0.22, now + 0.018);
+      sparkleGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.065);
+      sparkle.connect(sparkleGain);
+      sparkleGain.connect(output);
+      sparkle.start(now + 0.012);
+      sparkle.stop(now + 0.07);
+    } catch (error) {
+      // Audio is an optional enhancement; keep all selections working if it is unavailable.
+    }
+  };
+
+  document.addEventListener('click', (event) => {
+    const target = event.target instanceof Element ? event.target : null;
+    if (!target) return;
+    const languageButton = target.closest('.language-button');
+    if (languageButton && !languageButton.classList.contains('is-active')) {
+      playSelectionSound();
+      return;
+    }
+    if (target.closest('.gallery-card, [data-select-service]')) playSelectionSound();
+  }, true);
+
+  const sessionType = document.getElementById('sessionType');
+  sessionType?.addEventListener('change', playSelectionSound);
+
+  window.addEventListener('pagehide', () => {
+    if (audioContext && audioContext.state !== 'closed') void audioContext.close();
+  }, { once: true });
+}
+document.addEventListener('DOMContentLoaded', initSelectionSound);
+
