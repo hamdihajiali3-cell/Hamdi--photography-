@@ -9,7 +9,6 @@ const translations = {
     heroDesc: "من جلسة البورتريه إلى يومك المميز، أصنع صوراً تهتم بالضوء والتفاصيل وتحفظ إحساس اللحظة. تصوير شخصي ومناسبات ومشاريع تجارية في غازي عنتاب.",
     heroBtn1: "اكتشف المعرض", heroBtn2: "خطّط لجلسة",
     meta1: "لقطة تشبهك", meta2: "ضوء يصنع فرقاً", meta3: "ذكرى تدوم",
-    visitCounterLabel: "عدد زياراتك من هذا المتصفح",
     visualLabel1: "خلف كل لقطة — 2026", visualLabel2: "قصتك تستحق إطاراً",
     scrollCue: "انزل واستكشف",
     t1: "بورتريه", t2: "مناسبات", t3: "تصوير تجاري", t4: "قصص بصرية",
@@ -58,7 +57,6 @@ const translations = {
     heroDesc: "Portrelerden özel günlere, ışığa ve ayrıntılara özen göstererek anın duygusunu koruyan kareler üretiyorum. Gaziantep'te kişisel, etkinlik ve ticari çekimler.",
     heroBtn1: "Portfolyoyu Gör", heroBtn2: "Çekimini Planla",
     meta1: "SANA ÖZEL KARE", meta2: "IŞIĞIN GÜCÜ", meta3: "KALICI ANILAR",
-    visitCounterLabel: "Bu tarayıcıdan ziyaret sayın",
     visualLabel1: "HER KARENİN ARDINDA — 2026", visualLabel2: "HİKÂYENİ ÇERÇEVELE",
     scrollCue: "KEŞFETMEK İÇİN KAYDIR",
     t1: "PORTRE", t2: "ETKİNLİK", t3: "TİCARİ ÇEKİM", t4: "GÖRSEL HİKÂYELER",
@@ -107,7 +105,6 @@ const translations = {
     heroDesc: "From portraits to the days you want to remember, I shape light and detail into honest photographs. Personal, event, and commercial shoots in Gaziantep.",
     heroBtn1: "Explore the portfolio", heroBtn2: "Plan your shoot",
     meta1: "MADE TO FEEL", meta2: "LIGHT WITH INTENT", meta3: "MEMORIES THAT LAST",
-    visitCounterLabel: "Visits from this browser",
     visualLabel1: "BEHIND EVERY FRAME — 2026", visualLabel2: "FRAME YOUR STORY",
     scrollCue: "SCROLL TO EXPLORE",
     t1: "PORTRAITS", t2: "EVENTS", t3: "COMMERCIAL", t4: "VISUAL STORIES",
@@ -192,7 +189,6 @@ window.setLanguage = function(lang) {
   });
   try { window.localStorage.setItem('hamdiLanguage', lang); } catch (error) {}
   window.refreshBookingCalendarLocale?.();
-  window.refreshVisitCounterLocale?.();
 };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -1331,35 +1327,3 @@ function initBookingDatePicker() {
 }
 document.addEventListener('DOMContentLoaded', initBookingDatePicker);
 
-function initVisitCounter() {
-  const output = document.getElementById('visitCounterValue');
-  if (!output) return;
-
-  const countKey = 'hamdi-photography:visit-count:v1';
-  const sessionKey = 'hamdi-photography:visit-counted-session:v1';
-  let count = 1;
-  try {
-    const savedCount = Number.parseInt(window.localStorage.getItem(countKey) || '0', 10);
-    const currentCount = Number.isFinite(savedCount) && savedCount > 0 ? savedCount : 0;
-    if (window.sessionStorage.getItem(sessionKey) !== '1') {
-      count = currentCount + 1;
-      window.localStorage.setItem(countKey, String(count));
-      window.sessionStorage.setItem(sessionKey, '1');
-    } else {
-      count = Math.max(currentCount, 1);
-    }
-  } catch (error) {
-    count = 1;
-  }
-
-  const formatCount = () => {
-    const lang = document.documentElement.lang;
-    const locale = { ar: 'ar', tr: 'tr-TR', en: 'en-US' }[lang] || 'en-US';
-    output.textContent = new Intl.NumberFormat(locale, { maximumFractionDigits: 0 }).format(count);
-  };
-
-  formatCount();
-  window.refreshVisitCounterLocale = formatCount;
-}
-
-document.addEventListener('DOMContentLoaded', initVisitCounter);
