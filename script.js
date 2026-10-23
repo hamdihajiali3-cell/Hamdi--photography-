@@ -1362,7 +1362,7 @@ function initSiteLoader() {
     if (!isReady) target = Math.min(92, target + 4);
   }, 240);
 
-  const fallbackTimer = window.setTimeout(finishLoading, 1800);
+  const fallbackTimer = window.setTimeout(finishLoading, 3800);
   if (document.readyState === 'complete') finishLoading();
   else window.addEventListener('load', finishLoading, { once: true });
 
