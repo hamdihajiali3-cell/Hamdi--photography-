@@ -3575,3 +3575,24 @@ body::after {
   text-wrap: balance;
   text-shadow: 0 3px 24px rgba(216, 182, 117, .16);
 }
+
+/* Brand monogram centered at the top of the loading welcome card. */
+.loader-emblem {
+  width: 62px;
+  height: 62px;
+  flex: 0 0 62px;
+  margin-bottom: -3px;
+  color: #d9bc83;
+  filter: drop-shadow(0 0 18px rgba(216, 182, 117, .31));
+  animation: loader-emblem-glow 4.8s ease-in-out infinite;
+}
+@keyframes loader-emblem-glow {
+  0%, 100% { filter: drop-shadow(0 0 12px rgba(216, 182, 117, .2)); transform: translateY(0); }
+  50% { filter: drop-shadow(0 0 22px rgba(216, 182, 117, .4)); transform: translateY(-2px); }
+}
+@media (max-width: 600px) {
+  .loader-emblem { width: 56px; height: 56px; flex-basis: 56px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .loader-emblem { animation: none; }
+}
