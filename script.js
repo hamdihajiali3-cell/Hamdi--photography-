@@ -601,20 +601,6 @@ async function initThreeScene() {
 
 
 
-  const specklePositions = new Float32Array(150 * 3);
-  for (let i = 0; i < 150; i += 1) {
-    specklePositions[i * 3] = (Math.random() - 0.5) * 7.2;
-    specklePositions[i * 3 + 1] = (Math.random() - 0.5) * 5.5;
-    specklePositions[i * 3 + 2] = -2.4 - Math.random() * 2;
-  }
-  const specklesGeometry = new THREE.BufferGeometry();
-  specklesGeometry.setAttribute('position', new THREE.BufferAttribute(specklePositions, 3));
-  const speckles = new THREE.Points(
-    specklesGeometry,
-    new THREE.PointsMaterial({ color: 0xdcc38e, size: 0.018, transparent: true, opacity: 0.76 })
-  );
-  scene.add(speckles);
-
   let targetX = 0;
   let targetY = 0;
   let dragging = false;
