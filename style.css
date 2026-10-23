@@ -3026,3 +3026,106 @@ body::after {
     grid-row: auto;
   }
 }
+
+ 
+/* Full-page moving studio light rig */
+.flash-atmosphere {
+  z-index: 11;
+}
+.flash-atmosphere::before,
+.flash-atmosphere::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  inset: -48% -62%;
+  mix-blend-mode: screen;
+  will-change: transform;
+}
+.flash-atmosphere::before {
+  opacity: .78;
+  filter: blur(18px);
+  background:
+    linear-gradient(108deg, transparent 30%, rgba(218, 177, 108, .025) 42%, rgba(241, 208, 151, .13) 48%, rgba(255, 246, 223, .2) 50%, rgba(218, 177, 108, .08) 53%, transparent 64%),
+    radial-gradient(ellipse 30% 22% at 30% 34%, rgba(230, 185, 112, .11), transparent 76%),
+    radial-gradient(ellipse 28% 20% at 73% 70%, rgba(119, 173, 208, .075), transparent 78%);
+  animation: studio-keylight-sweep 17s cubic-bezier(.45, 0, .3, 1) infinite alternate;
+}
+.flash-atmosphere::after {
+  inset: -55% -80%;
+  opacity: .48;
+  filter: blur(30px);
+  background: linear-gradient(112deg, transparent 39%, rgba(230, 241, 245, .035) 46%, rgba(255, 236, 197, .11) 50%, rgba(230, 241, 245, .045) 54%, transparent 61%);
+  animation: studio-filllight-sweep 23s ease-in-out infinite alternate;
+}
+@keyframes studio-keylight-sweep {
+  0% { transform: translate3d(-15%, -1%, 0) rotate(-8deg) scale(1.03); }
+  48% { transform: translate3d(1%, 2%, 0) rotate(-5deg) scale(1.1); }
+  100% { transform: translate3d(15%, -2%, 0) rotate(-9deg) scale(1.04); }
+}
+@keyframes studio-filllight-sweep {
+  0% { transform: translate3d(11%, 2%, 0) rotate(9deg) scale(1.05); }
+  100% { transform: translate3d(-12%, -2%, 0) rotate(5deg) scale(1.12); }
+}
+
+/* A slow traveling reflection adds motion to the service panels. */
+.service {
+  isolation: isolate;
+  overflow: hidden;
+}
+.service::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -45% -65%;
+  pointer-events: none;
+  opacity: .62;
+  background: linear-gradient(112deg, transparent 45%, rgba(216, 182, 117, .045) 49%, rgba(255, 241, 209, .095) 50%, rgba(216, 182, 117, .035) 52%, transparent 56%);
+  transform: translate3d(-48%, 0, 0);
+  animation: service-light-pass 9s ease-in-out infinite;
+}
+.service:nth-child(2)::after { animation-delay: -3s; }
+.service:nth-child(3)::after { animation-delay: -6s; }
+@keyframes service-light-pass {
+  0%, 22% { transform: translate3d(-48%, 0, 0); }
+  78%, 100% { transform: translate3d(48%, 0, 0); }
+}
+
+/* Warm reflected light glides over the main booking and gallery actions. */
+.button-gold {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.button-gold::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: -55% auto -55% -42%;
+  width: 28%;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .46), transparent);
+  transform: skewX(-20deg);
+  animation: button-light-glint 7.5s ease-in-out infinite;
+}
+.button-gold > * {
+  position: relative;
+  z-index: 1;
+}
+@keyframes button-light-glint {
+  0%, 68% { left: -42%; }
+  100% { left: 125%; }
+}
+
+@media (max-width: 700px) {
+  .flash-atmosphere::before { opacity: .55; filter: blur(24px); }
+  .flash-atmosphere::after { opacity: .3; filter: blur(34px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .flash-atmosphere::before,
+  .flash-atmosphere::after,
+  .service::after,
+  .button-gold::after {
+    animation: none !important;
+    will-change: auto;
+  }
+}
