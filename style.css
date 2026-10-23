@@ -3564,3 +3564,14 @@ body::after {
   .loader-ring-progress,
   .loader-progress-track i { transition: none; }
 }
+
+
+.loader-welcome {
+  margin: 0 0 1px;
+  color: #f0e2c9;
+  font: 500 clamp(20px, 4vw, 25px)/1.2 var(--serif);
+  letter-spacing: .15px;
+  text-align: center;
+  text-wrap: balance;
+  text-shadow: 0 3px 24px rgba(216, 182, 117, .16);
+}
