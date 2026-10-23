@@ -20,14 +20,23 @@ html {
 
 body {
   margin: 0;
-  background:
-    url("https://lexus.jp/brand/jms2025/assets/img/common/bg_pc.jpg") center / cover fixed,
-    linear-gradient(145deg, #080808 0%, #15110c 48%, #70491f 100%);
-  background-repeat: no-repeat, no-repeat;
   background-color: var(--bg);
+  background-image:
+    linear-gradient(180deg, rgba(4, 4, 4, .06), rgba(5, 5, 5, .04) 52%, rgba(6, 6, 6, .14)),
+    linear-gradient(132deg, #050505 0%, #0d0c09 34%, #261a0e 68%, #68451f 100%),
+    linear-gradient(110deg, transparent 16%, rgba(216, 182, 117, .16) 48%, transparent 78%);
+  background-size: 100% 100%, 170% 170%, 240% 100%;
+  background-position: 0 0, 50% 0%, 0% 50%;
+  background-attachment: fixed, fixed, fixed;
+  animation: cinematic-background-flow 32s ease-in-out infinite alternate;
   color: var(--text);
   font-family: var(--sans);
   overflow-x: hidden;
+}
+@keyframes cinematic-background-flow {
+  0% { background-position: 0 0, 50% 0%, 0% 50%; }
+  50% { background-position: 0 0, 50% 70%, 100% 50%; }
+  100% { background-position: 0 0, 50% 100%, 0% 50%; }
 }
 
 a {
@@ -2084,20 +2093,19 @@ section[id] { scroll-margin-top: 104px; }
   position: absolute;
   inset: -35% -25%;
   pointer-events: none;
-  opacity: .52;
+  opacity: .26;
   background: linear-gradient(
     108deg,
-    transparent 36%,
-    rgba(83, 172, 213, .015) 44%,
-    rgba(124, 195, 224, .055) 49%,
-    rgba(225, 193, 136, .075) 52%,
-    rgba(145, 127, 206, .035) 57%,
-    transparent 65%
+    transparent 34%,
+    rgba(150, 105, 52, .015) 44%,
+    rgba(190, 142, 78, .045) 50%,
+    rgba(236, 205, 149, .035) 54%,
+    transparent 66%
   );
-  filter: blur(28px);
+  filter: blur(38px);
   transform: rotate(-12deg) translate3d(-5%, 0, 0);
   mix-blend-mode: screen;
-  animation: atmosphere-lightwave 26s ease-in-out infinite alternate;
+  animation: atmosphere-lightwave 30s ease-in-out infinite alternate;
 }
 @keyframes atmosphere-lightwave {
   from { transform: rotate(-12deg) translate3d(-5%, 0, 0) scaleX(.94); }
