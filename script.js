@@ -10,7 +10,7 @@ const translations = {
     heroBtn1: "اكتشف المعرض", heroBtn2: "خطّط لجلسة",
     meta1: "لقطة تشبهك", meta2: "ضوء يصنع فرقاً", meta3: "ذكرى تدوم",
     loaderLabel: "جارٍ تجهيز تجربتك البصرية", loadingSubtext: "لحظات ونبدأ الحكاية", loadingProgress: "تقدم تحميل الموقع", welcomeVisitors: "أهلاً وسهلاً بالزائرين",
-    visualLabel1: "خلف كل لقطة — 2026", visualLabel2: "قصتك تستحق إطاراً",
+    visualLabel1: "خلف كل لقطة — 2026", visualLabel2: "قصتك تستحق إطاراً", albumMotionCue: "حرّك المؤشر لتقليب الحكاية",
     scrollCue: "انزل واستكشف",
     t1: "بورتريه", t2: "مناسبات", t3: "تصوير تجاري", t4: "قصص بصرية",
     workEyebrow: "مختارات بعدسة حمدي / 2024—2026",
@@ -59,7 +59,7 @@ const translations = {
     heroBtn1: "Portfolyoyu Gör", heroBtn2: "Çekimini Planla",
     meta1: "SANA ÖZEL KARE", meta2: "IŞIĞIN GÜCÜ", meta3: "KALICI ANILAR",
     loaderLabel: "Görsel deneyimin hazırlanıyor", loadingSubtext: "Birazdan başlıyoruz", loadingProgress: "Site yükleme durumu", welcomeVisitors: "Ziyaretçilerimize hoş geldiniz",
-    visualLabel1: "HER KARENİN ARDINDA — 2026", visualLabel2: "HİKÂYENİ ÇERÇEVELE",
+    visualLabel1: "HER KARENİN ARDINDA — 2026", visualLabel2: "HİKÂYENİ ÇERÇEVELE", albumMotionCue: "Sayfayı çevirmek için imleci oynat",
     scrollCue: "KEŞFETMEK İÇİN KAYDIR",
     t1: "PORTRE", t2: "ETKİNLİK", t3: "TİCARİ ÇEKİM", t4: "GÖRSEL HİKÂYELER",
     workEyebrow: "HAMDI'NİN SEÇKİSİ / 2024—2026",
@@ -108,7 +108,7 @@ const translations = {
     heroBtn1: "Explore the portfolio", heroBtn2: "Plan your shoot",
     meta1: "MADE TO FEEL", meta2: "LIGHT WITH INTENT", meta3: "MEMORIES THAT LAST",
     loaderLabel: "Preparing your visual experience", loadingSubtext: "Your story is about to begin", loadingProgress: "Website loading progress", welcomeVisitors: "Welcome, visitors",
-    visualLabel1: "BEHIND EVERY FRAME — 2026", visualLabel2: "FRAME YOUR STORY",
+    visualLabel1: "BEHIND EVERY FRAME — 2026", visualLabel2: "FRAME YOUR STORY", albumMotionCue: "MOVE TO TURN THE PAGE",
     scrollCue: "SCROLL TO EXPLORE",
     t1: "PORTRAITS", t2: "EVENTS", t3: "COMMERCIAL", t4: "VISUAL STORIES",
     workEyebrow: "SELECTED BY HAMDI / 2024—2026",
@@ -1395,4 +1395,40 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initSiteLoader, { once: true });
 } else {
   initSiteLoader();
+}
+
+
+/* The hero photo album gently tilts and turns a page as the visitor explores it. */
+function initSignatureAlbumInteraction() {
+  const visual = document.querySelector('.hero-visual');
+  const scene = visual?.querySelector('.album-scene');
+  if (!visual || !scene) return;
+
+  const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (!finePointer.matches || reducedMotion.matches) return;
+
+  const reset = () => {
+    visual.classList.remove('is-album-engaged');
+    scene.style.setProperty('--album-pointer-x', '0deg');
+    scene.style.setProperty('--album-pointer-y', '0deg');
+  };
+
+  visual.addEventListener('pointermove', (event) => {
+    const bounds = visual.getBoundingClientRect();
+    if (!bounds.width || !bounds.height) return;
+    const x = ((event.clientX - bounds.left) / bounds.width - 0.5) * 2;
+    const y = ((event.clientY - bounds.top) / bounds.height - 0.5) * 2;
+    scene.style.setProperty('--album-pointer-x', (y * -4.5).toFixed(2) + 'deg');
+    scene.style.setProperty('--album-pointer-y', (x * 6).toFixed(2) + 'deg');
+    visual.classList.add('is-album-engaged');
+  }, { passive: true });
+
+  visual.addEventListener('pointerleave', reset);
+  visual.addEventListener('pointercancel', reset);
+}
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initSignatureAlbumInteraction, { once: true });
+} else {
+  initSignatureAlbumInteraction();
 }
