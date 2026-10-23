@@ -3596,3 +3596,55 @@ body::after {
 @media (prefers-reduced-motion: reduce) {
   .loader-emblem { animation: none; }
 }
+
+
+/* Signature interaction: let the archive album answer the visitor's pointer. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .album-scene {
+    transform: rotateX(var(--album-pointer-x, 0deg)) rotateY(var(--album-pointer-y, 0deg));
+    transform-style: preserve-3d;
+    transition: transform .32s cubic-bezier(.2, .7, .2, 1);
+  }
+  .hero-visual.is-album-engaged .album-page-turn {
+    animation-duration: 3.6s;
+  }
+  .album-motion-cue {
+    position: absolute;
+    z-index: 4;
+    bottom: 4%;
+    left: 50%;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 11px;
+    border: 1px solid rgba(224, 201, 163, .2);
+    border-radius: 999px;
+    color: rgba(232, 220, 198, .8);
+    background: rgba(9, 9, 8, .48);
+    font: 500 8px var(--sans);
+    letter-spacing: .65px;
+    white-space: nowrap;
+    opacity: .72;
+    pointer-events: none;
+    transform: translateX(-50%);
+    transition: opacity .3s ease, transform .3s ease;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+  .album-motion-cue::before {
+    content: "";
+    width: 4px;
+    height: 4px;
+    flex: 0 0 4px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 8px rgba(216, 182, 117, .46);
+  }
+  .hero-visual.is-album-engaged .album-motion-cue {
+    opacity: .38;
+    transform: translateX(-50%) translateY(3px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .album-scene { transition: none; }
+}
