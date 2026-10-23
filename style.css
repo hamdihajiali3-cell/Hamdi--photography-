@@ -2548,3 +2548,129 @@ section[id] { scroll-margin-top: 104px; }
 @media (prefers-reduced-motion: reduce) {
   .studio-softbox { animation: none; opacity: .62; }
 }
+
+/* Full-page animated photography studio */
+.moving-studio-wall,
+.moving-studio-light,
+.moving-studio-sweep,
+.moving-studio-floor,
+.moving-studio-dust {
+  position: absolute;
+  pointer-events: none;
+}
+.moving-studio-wall {
+  inset: 0;
+  opacity: .88;
+  background:
+    radial-gradient(ellipse at 50% 24%, rgba(118, 165, 183, .105), transparent 47%),
+    radial-gradient(ellipse at 50% 52%, rgba(216, 182, 117, .065), transparent 58%),
+    linear-gradient(180deg, rgba(14, 19, 22, .12), transparent 38%, rgba(5, 6, 7, .3));
+}
+.moving-studio-light {
+  top: 8%;
+  width: clamp(58px, 7.5vw, 112px);
+  height: clamp(150px, 35vh, 360px);
+  border: 1px solid rgba(240, 224, 194, .44);
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(255, 249, 231, .72), rgba(210, 226, 227, .32) 48%, rgba(216, 182, 117, .5));
+  box-shadow:
+    inset 0 0 24px rgba(255, 255, 244, .48),
+    0 0 22px rgba(227, 206, 164, .28),
+    0 0 90px rgba(91, 172, 204, .15);
+  opacity: .64;
+  animation: moving-studio-light-pulse 8s ease-in-out infinite alternate;
+}
+.moving-studio-light::before {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border: 1px solid rgba(255, 255, 255, .32);
+  border-radius: 4px;
+  background: linear-gradient(180deg, rgba(255, 255, 248, .35), rgba(238, 215, 174, .12));
+}
+.moving-studio-light::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 76%;
+  left: -180%;
+  width: 460%;
+  height: 160vh;
+  clip-path: polygon(42% 0, 58% 0, 100% 100%, 0 100%);
+  background: linear-gradient(180deg, rgba(255, 238, 198, .15), rgba(113, 180, 205, .045) 42%, transparent 76%);
+  filter: blur(10px);
+}
+.moving-studio-light-left { left: 5%; }
+.moving-studio-light-right {
+  right: 5%;
+  animation-delay: -4s;
+}
+.moving-studio-sweep {
+  inset: -48% -55%;
+  opacity: .66;
+  background: linear-gradient(
+    110deg,
+    transparent 35%,
+    rgba(95, 181, 215, .015) 43%,
+    rgba(105, 194, 223, .13) 48%,
+    rgba(236, 208, 153, .17) 51%,
+    rgba(174, 147, 215, .07) 55%,
+    transparent 63%
+  );
+  filter: blur(32px);
+  transform: rotate(-14deg) translate3d(-18%, 0, 0);
+  animation: moving-studio-sweep 19s ease-in-out infinite alternate;
+}
+.moving-studio-floor {
+  left: -8%;
+  right: -8%;
+  bottom: -2%;
+  height: 32vh;
+  opacity: .72;
+  border-top: 1px solid rgba(221, 199, 164, .16);
+  border-radius: 50% 50% 0 0 / 11% 11% 0 0;
+  background:
+    radial-gradient(ellipse at 50% 0, rgba(228, 194, 130, .14), transparent 58%),
+    linear-gradient(180deg, rgba(91, 135, 151, .045), transparent 72%);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 20%, #000 100%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 20%, #000 100%);
+}
+.moving-studio-dust {
+  inset: 0;
+  opacity: .2;
+  background-image:
+    radial-gradient(circle, rgba(255, 245, 221, .8) 0 1px, transparent 1.7px),
+    radial-gradient(circle, rgba(131, 205, 231, .7) 0 .8px, transparent 1.5px);
+  background-size: 193px 173px, 277px 239px;
+  background-position: 23px 17px, 111px 91px;
+  animation: moving-studio-dust-drift 34s linear infinite;
+  -webkit-mask-image: linear-gradient(180deg, #000, transparent 94%);
+  mask-image: linear-gradient(180deg, #000, transparent 94%);
+}
+@keyframes moving-studio-light-pulse {
+  from { opacity: .46; filter: brightness(.86); }
+  to { opacity: .78; filter: brightness(1.12); }
+}
+@keyframes moving-studio-sweep {
+  from { transform: rotate(-14deg) translate3d(-18%, 1%, 0) scaleX(.92); }
+  to { transform: rotate(-14deg) translate3d(18%, -1%, 0) scaleX(1.08); }
+}
+@keyframes moving-studio-dust-drift {
+  from { background-position: 23px 17px, 111px 91px; }
+  to { background-position: 23px -156px, 111px -148px; }
+}
+@media (max-width: 600px) {
+  .moving-studio-light { top: 10%; width: 48px; height: 24vh; }
+  .moving-studio-light-left { left: 2%; }
+  .moving-studio-light-right { right: 2%; }
+  .moving-studio-sweep { inset: -25% -82%; opacity: .46; }
+  .moving-studio-floor { height: 26vh; }
+  .moving-studio-dust { opacity: .15; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .moving-studio-light,
+  .moving-studio-sweep,
+  .moving-studio-dust {
+    animation: none !important;
+  }
+}
