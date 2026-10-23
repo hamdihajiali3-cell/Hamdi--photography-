@@ -955,8 +955,8 @@ img {
   width: min(50vw, 320px);
   border: 1px solid rgba(216, 182, 117, .58);
   background:
-    radial-gradient(circle at 38% 32%, rgba(116, 160, 164, .58), transparent 24%),
-    radial-gradient(circle, #17272b 0 30%, #090b0c 55%, #b39151 56% 58%, #1c1a15 59% 64%, transparent 65%);
+    radial-gradient(circle at 38% 30%, rgba(168, 230, 245, .64), transparent 17%),
+    radial-gradient(circle, #02050a 0 18%, #122840 19% 30%, #07111d 31% 46%, #82c9ee 47% 49%, #151b28 50% 57%, #a6b9d3 58% 60%, transparent 65%);
   box-shadow: 0 0 45px rgba(216, 182, 117, .19), inset 0 0 30px rgba(216, 182, 117, .12);
 }
 
@@ -2065,4 +2065,140 @@ html[dir="rtl"] .ticker-track { animation-direction: reverse; }
 @media (prefers-reduced-motion: reduce) {
   .live-dot, .ticker-track { animation: none !important; }
   .service, .service-icon, .service-cta, .language-button { transition: none !important; }
+}
+
+
+/* Refined editorial finish and responsive controls */
+::selection { color: #080808; background: #dfc58f; }
+section[id] { scroll-margin-top: 104px; }
+
+.topbar {
+  position: sticky;
+  top: 0;
+  background: rgba(6, 6, 6, .78);
+  border-bottom-color: rgba(255, 255, 255, .09);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, .16);
+}
+
+.nav a:not(.nav-cta) {
+  position: relative;
+  padding-block: 10px;
+}
+.nav a:not(.nav-cta)::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 2px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform .28s ease;
+}
+.nav a:not(.nav-cta):hover::after,
+.nav a:not(.nav-cta):focus-visible::after,
+.nav a:not(.nav-cta)[aria-current="location"]::after {
+  transform: scaleX(1);
+}
+
+.button-gold {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 26px rgba(216, 182, 117, .12);
+}
+.button-gold::before {
+  content: "";
+  position: absolute;
+  inset: -40% auto -40% -55%;
+  width: 34%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .38), transparent);
+  transform: skewX(-20deg);
+  transition: left .7s ease;
+  pointer-events: none;
+}
+.button-gold:hover::before { left: 125%; }
+
+.hero h1 em,
+.section-heading h2 em,
+.manifesto h2 em,
+.contact-section h2 em {
+  text-shadow: 0 0 34px rgba(216, 182, 117, .12);
+}
+
+.gallery-card {
+  border: 1px solid rgba(237, 218, 180, .13);
+  box-shadow: 0 18px 54px rgba(0, 0, 0, .2);
+}
+.gallery-card:hover,
+.gallery-card:focus-visible {
+  border-color: rgba(216, 182, 117, .58);
+  box-shadow: 0 24px 72px rgba(0, 0, 0, .36), 0 0 26px rgba(216, 182, 117, .08);
+}
+.gallery-card:focus-visible,
+.nav a:focus-visible,
+.text-link:focus-visible,
+.back-top:focus-visible {
+  outline: 2px solid #f0d7a4;
+  outline-offset: 4px;
+}
+.card-caption b {
+  transition: transform .3s ease, text-shadow .3s ease;
+}
+.gallery-card:hover .card-caption b,
+.gallery-card:focus-visible .card-caption b {
+  transform: translate(3px, -3px);
+  text-shadow: 0 0 16px rgba(216, 182, 117, .7);
+}
+
+.manifesto {
+  position: relative;
+  background:
+    radial-gradient(ellipse at 18% 48%, rgba(91, 133, 157, .09), transparent 35%),
+    radial-gradient(ellipse at 84% 55%, rgba(216, 182, 117, .055), transparent 42%),
+    #10100e;
+}
+.manifesto-orb {
+  box-shadow: inset 0 0 55px rgba(216, 182, 117, .08), 0 0 75px rgba(90, 138, 166, .08);
+}
+
+.contact-section {
+  background:
+    radial-gradient(ellipse at 50% 100%, rgba(126, 91, 42, .16), transparent 58%),
+    radial-gradient(ellipse at 50% 0%, rgba(84, 125, 150, .07), transparent 48%),
+    #11110f;
+}
+.contact-submit {
+  box-shadow: 0 12px 34px rgba(216, 182, 117, .14);
+}
+.contact-submit:hover {
+  box-shadow: 0 16px 42px rgba(216, 182, 117, .24);
+}
+.contact-field {
+  border-radius: 4px;
+}
+.footer {
+  background: linear-gradient(90deg, rgba(216, 182, 117, .025), transparent 50%, rgba(113, 157, 180, .03));
+}
+
+@media (max-width: 520px) {
+  .topbar { gap: 8px; padding-inline: 4%; }
+  .brand { gap: 8px; }
+  .brand-mark { font-size: 30px; }
+  .brand-name { font-size: 9px; letter-spacing: 1px; }
+  .brand-name small { letter-spacing: 2px; }
+  .language-switcher { gap: 4px; }
+  .language-button { min-width: 31px; min-height: 31px; padding-inline: 6px; }
+  .menu-toggle { padding: 4px; font-size: 21px; }
+  .nav { top: 74px; }
+  .section { padding-block: 72px; }
+  .hero-visual { min-height: 330px; }
+}
+@media (max-width: 360px) {
+  .brand-name { display: none; }
+  .hero-meta { gap: 11px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button-gold::before { display: none; }
+  .card-caption b { transition: none; }
 }
