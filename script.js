@@ -599,41 +599,85 @@ async function initThreeScene() {
   secondaryCoatingRing.position.z = 0.62;
   rig.add(secondaryCoatingRing);
 
+  const lensPulseLight = new THREE.PointLight(0x8de7ff, 0, 5);
+  lensPulseLight.position.set(0, 0, 2.7);
+  rig.add(lensPulseLight);
 
+
+  const orbitalRing = new THREE.Mesh(
+    new THREE.TorusGeometry(1.82, 0.009, 8, 140),
+    new THREE.MeshBasicMaterial({ color: 0x9ac9ef, transparent: true, opacity: 0.62 })
+  );
+  orbitalRing.rotation.set(1.13, 0.12, -0.25);
+  orbitalRing.position.z = -0.72;
+  rig.add(orbitalRing);
+
+  const imageUrls = [
+    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=700&q=80',
+    'https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=700&q=80',
+    'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=700&q=80',
+    'https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=700&q=80'
+  ];
+  const photoPositions = [
+    [-2.05, 1.35, -1.08, -0.2, 0.12],
+    [2.02, 1.28, -1.16, 0.2, -0.1],
+    [-2.12, -1.32, -1.0, 0.22, -0.1],
+    [2.06, -1.35, -1.08, -0.18, 0.1]
+  ];
+  const loader = new THREE.TextureLoader();
+  loader.crossOrigin = 'anonymous';
+  const photoCards = [];
+
+  imageUrls.forEach((url, index) => {
+    const [x, y, z, tilt, roll] = photoPositions[index];
+    const card = new THREE.Group();
+    card.position.set(x, y, z);
+    card.rotation.set(roll, tilt, index % 2 ? -0.035 : 0.035);
+    card.userData.baseY = y;
+    card.userData.phase = index * 1.35;
+
+    const isPortrait = index === 0 || index === 2;
+    const width = isPortrait ? 0.9 : 1.25;
+    const height = isPortrait ? 1.22 : 0.9;
+    const frame = new THREE.Mesh(
+      new THREE.BoxGeometry(width + 0.11, height + 0.11, 0.075),
+      new THREE.MeshStandardMaterial({ color: 0xd0b779, metalness: 0.64, roughness: 0.3 })
+    );
+    card.add(frame);
+
+    const photoSurface = new THREE.Mesh(
+      new THREE.PlaneGeometry(width, height),
+      new THREE.MeshBasicMaterial({ color: 0x786e5c })
+    );
+    photoSurface.position.z = 0.041;
+    card.add(photoSurface);
+
+    loader.load(url, (texture) => {
+      texture.colorSpace = THREE.SRGBColorSpace;
+      photoSurface.material.map = texture;
+      photoSurface.material.color.set(0xffffff);
+      photoSurface.material.needsUpdate = true;
+    });
+
+    rig.add(card);
+    photoCards.push(card);
+  });
+
+  const specklePositions = new Float32Array(150 * 3);
+  for (let i = 0; i < 150; i += 1) {
+    specklePositions[i * 3] = (Math.random() - 0.5) * 7.2;
+    specklePositions[i * 3 + 1] = (Math.random() - 0.5) * 5.5;
+    specklePositions[i * 3 + 2] = -2.4 - Math.random() * 2;
+  }
+  const specklesGeometry = new THREE.BufferGeometry();
+  specklesGeometry.setAttribute('position', new THREE.BufferAttribute(specklePositions, 3));
+  const speckles = new THREE.Points(
+    specklesGeometry,
+    new THREE.PointsMaterial({ color: 0xdcc38e, size: 0.018, transparent: true, opacity: 0.76 })
+  );
+  scene.add(speckles);
 
   let targetX = 0;
-  let targetY = 0;
-  let dragging = false;
-  let previousPointer = { x: 0, y: 0 };
-  const pointerStart = (event) => {
-    dragging = true;
-    previousPointer = { x: event.clientX, y: event.clientY };
-    mount.classList.add('is-dragging');
-    if (mount.setPointerCapture) mount.setPointerCapture(event.pointerId);
-  };
-  const pointerMove = (event) => {
-    const bounds = mount.getBoundingClientRect();
-    if (dragging) {
-      targetY += (event.clientX - previousPointer.x) * 0.006;
-      targetX += (event.clientY - previousPointer.y) * 0.004;
-      targetY = THREE.MathUtils.clamp(targetY, -0.48, 0.48);
-      targetX = THREE.MathUtils.clamp(targetX, -0.28, 0.28);
-      previousPointer = { x: event.clientX, y: event.clientY };
-    } else {
-      const x = (event.clientX - bounds.left) / bounds.width * 2 - 1;
-      const y = (event.clientY - bounds.top) / bounds.height * 2 - 1;
-      targetY = x * 0.14;
-      targetX = y * 0.09;
-    }
-    if (reducedMotion) render();
-  };
-  const pointerEnd = () => {
-    dragging = false;
-    mount.classList.remove('is-dragging');
-  };
-  mount.addEventListener('pointerdown', pointerStart);
-  mount.addEventListener('pointermove', pointerMove);
-  mount.addEventListener('pointerup', pointer  let targetX = 0;
   let targetY = 0;
   let dragging = false;
   let previousPointer = { x: 0, y: 0 };
@@ -702,6 +746,7 @@ async function initThreeScene() {
     rig.rotation.y += (targetY - rig.rotation.y) * 0.045;
     rig.rotation.x += (targetX - rig.rotation.x) * 0.045;
     rig.rotation.y += delta * 0.035;
+    orbitalRing.rotation.z += delta * 0.09;
 
     const apertureMotion = Math.sin(time * 0.0011);
     irisAssembly.rotation.z = irisAssembly.userData.baseRotationZ + apertureMotion * 0.018;
@@ -710,6 +755,13 @@ async function initThreeScene() {
       blade.mesh.rotation.z = blade.baseRotation + bladeMotion;
       blade.mesh.scale.setScalar(0.99 + (apertureMotion + 1) * 0.006);
     });
+    const phase = (time % 14000) / 14000;
+    const flash = Math.max(0, 1 - Math.abs(phase - 0.77) / 0.035);
+    lensPulseLight.intensity = flash * 1.8;
+    photoCards.forEach((card) => {
+      card.position.y = card.userData.baseY + Math.sin(time * 0.0007 + card.userData.phase) * 0.055;
+    });
+    speckles.rotation.z += delta * 0.008;
     render();
   }
   if (!reducedMotion) frameId = window.requestAnimationFrame(animate);
