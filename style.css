@@ -21,8 +21,9 @@ html {
 body {
   margin: 0;
   background:
-    linear-gradient(rgba(8, 8, 8, .82), rgba(8, 8, 8, .88)),
-    url("https://lexus.jp/brand/jms2025/assets/img/common/bg_pc.jpg") center / cover fixed;
+    linear-gradient(rgba(8, 8, 8, .38), rgba(8, 8, 8, .46)),
+    url("https://lexus.jp/brand/jms2025/assets/img/common/bg_pc.jpg") center / cover fixed,
+    linear-gradient(145deg, #080808 0%, #11100d 52%, #332313 100%);
   background-color: var(--bg);
   color: var(--text);
   font-family: var(--sans);
@@ -136,6 +137,11 @@ img {
   grid-template-columns: 1fr 1fr;
   align-items: center;
   overflow: hidden;
+  background:
+    linear-gradient(rgba(8, 8, 8, .24), rgba(8, 8, 8, .34)),
+    url("https://lexus.jp/brand/jms2025/assets/img/common/bg_pc.jpg") center / cover no-repeat,
+    linear-gradient(145deg, #080808 0%, #15120d 55%, #493019 100%);
+  background-color: var(--bg);
 }
 
 .hero-copy {
