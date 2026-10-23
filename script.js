@@ -10,6 +10,7 @@ const translations = {
     heroBtn1: "اكتشف المعرض", heroBtn2: "خطّط لجلسة",
     meta1: "لقطة تشبهك", meta2: "ضوء يصنع فرقاً", meta3: "ذكرى تدوم",
     visualLabel1: "خلف كل لقطة — 2026", visualLabel2: "قصتك تستحق إطاراً",
+    lensExplode: "فكّك العدسة", lensAssemble: "أعد تركيب العدسة",
     scrollCue: "انزل واستكشف",
     t1: "بورتريه", t2: "مناسبات", t3: "تصوير تجاري", t4: "قصص بصرية",
     workEyebrow: "مختارات بعدسة حمدي / 2024—2026",
@@ -53,6 +54,7 @@ const translations = {
     heroBtn1: "Portfolyoyu Gör", heroBtn2: "Çekimini Planla",
     meta1: "SANA ÖZEL KARE", meta2: "IŞIĞIN GÜCÜ", meta3: "KALICI ANILAR",
     visualLabel1: "HER KARENİN ARDINDA — 2026", visualLabel2: "HİKÂYENİ ÇERÇEVELE",
+    lensExplode: "Lensi ayır", lensAssemble: "Lensi birleştir",
     scrollCue: "KEŞFETMEK İÇİN KAYDIR",
     t1: "PORTRE", t2: "ETKİNLİK", t3: "TİCARİ ÇEKİM", t4: "GÖRSEL HİKÂYELER",
     workEyebrow: "HAMDI'NİN SEÇKİSİ / 2024—2026",
@@ -96,6 +98,7 @@ const translations = {
     heroBtn1: "Explore the portfolio", heroBtn2: "Plan your shoot",
     meta1: "MADE TO FEEL", meta2: "LIGHT WITH INTENT", meta3: "MEMORIES THAT LAST",
     visualLabel1: "BEHIND EVERY FRAME — 2026", visualLabel2: "FRAME YOUR STORY",
+    lensExplode: "Explore the lens", lensAssemble: "Reassemble the lens",
     scrollCue: "SCROLL TO EXPLORE",
     t1: "PORTRAITS", t2: "EVENTS", t3: "COMMERCIAL", t4: "VISUAL STORIES",
     workEyebrow: "SELECTED BY HAMDI / 2024—2026",
@@ -763,6 +766,49 @@ async function initThreeScene() {
 
   let frameId = 0;
   let previousTime = 0;
+  let manualLensTarget = null;
+  let currentLensSeparation = 0;
+  let manualLensExpanded = false;
+
+  const lensControl = document.getElementById('lens-control');
+  const applyLensSeparation = (separation) => {
+    lensComponents.forEach((component) => {
+      component.mesh.position.copy(component.basePosition).addScaledVector(component.offset, separation);
+      component.mesh.rotation.set(
+        component.baseRotation.x + component.rotationOffset.x * separation,
+        component.baseRotation.y + component.rotationOffset.y * separation,
+        component.baseRotation.z + component.rotationOffset.z * separation
+      );
+      component.mesh.scale.copy(component.baseScale).lerp(component.explodedScale, separation);
+    });
+  };
+
+  if (lensControl) {
+    lensControl.addEventListener('click', () => {
+      manualLensExpanded = !manualLensExpanded;
+      manualLensTarget = manualLensExpanded ? 1 : 0;
+      lensControl.setAttribute('aria-pressed', String(manualLensExpanded));
+      lensControl.classList.toggle('is-open', manualLensExpanded);
+      mount.closest('.hero-visual')?.classList.toggle('lens-unlocked', manualLensExpanded);
+
+      const language = translations[document.documentElement.lang] ? document.documentElement.lang : 'ar';
+      const labelKey = manualLensExpanded ? 'lensAssemble' : 'lensExplode';
+      const label = lensControl.querySelector('.lens-control-label');
+      if (label) {
+        label.setAttribute('data-i18n', labelKey);
+        label.textContent = translations[language][labelKey];
+      }
+      lensControl.setAttribute('data-i18n-aria-label', labelKey);
+      lensControl.setAttribute('aria-label', translations[language][labelKey]);
+
+      if (reducedMotion) {
+        currentLensSeparation = manualLensTarget;
+        applyLensSeparation(currentLensSeparation);
+        render();
+      }
+    });
+  }
+
   function lensSeparationAt(time) {
     const phase = (time % 14000) / 14000;
     const smooth = (value) => value * value * (3 - 2 * value);
@@ -783,16 +829,10 @@ async function initThreeScene() {
     rig.rotation.y += delta * 0.035;
     orbitalRing.rotation.z += delta * 0.09;
 
-    const separation = lensSeparationAt(time);
-    lensComponents.forEach((component) => {
-      component.mesh.position.copy(component.basePosition).addScaledVector(component.offset, separation);
-      component.mesh.rotation.set(
-        component.baseRotation.x + component.rotationOffset.x * separation,
-        component.baseRotation.y + component.rotationOffset.y * separation,
-        component.baseRotation.z + component.rotationOffset.z * separation
-      );
-      component.mesh.scale.copy(component.baseScale).lerp(component.explodedScale, separation);
-    });
+    const targetSeparation = manualLensTarget === null ? lensSeparationAt(time) : manualLensTarget;
+    currentLensSeparation += (targetSeparation - currentLensSeparation) * Math.min(1, delta * 4.5);
+    const separation = currentLensSeparation;
+    applyLensSeparation(separation);
     const apertureMotion = Math.sin(time * 0.0011);
     irisAssembly.rotation.z = irisAssembly.userData.baseRotationZ + apertureMotion * 0.018;
     irisBlades.forEach((blade) => {
@@ -1100,7 +1140,7 @@ function initSelectionSound() {
       playSelectionSound();
       return;
     }
-    if (target.closest('.gallery-card, [data-select-service]')) playSelectionSound();
+    if (target.closest('.gallery-card, [data-select-service], .lens-control')) playSelectionSound();
   }, true);
 
   let lastTypingSoundAt = 0;
