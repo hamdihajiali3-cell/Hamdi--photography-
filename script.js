@@ -138,6 +138,13 @@ window.setLanguage = function(lang) {
   document.documentElement.lang = lang;
   document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
 
+  const preferredDateField = document.getElementById('preferredDate');
+  if (preferredDateField) {
+    const dateLocale = { ar: 'ar', tr: 'tr-TR', en: 'en-US' }[lang] || lang;
+    preferredDateField.setAttribute('lang', dateLocale);
+    preferredDateField.dir = lang === 'ar' ? 'rtl' : 'ltr';
+  }
+
   const copy = translations[lang];
   document.title = copy.pageTitle;
   const description = document.querySelector('meta[name="description"]');
