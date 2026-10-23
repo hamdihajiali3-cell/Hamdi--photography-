@@ -3002,3 +3002,27 @@ body::after {
     animation: none !important;
   }
 }
+
+
+/* Booking request fields */
+#contact .contact-form .booking-field {
+  display: grid;
+  grid-row: 2;
+  gap: 8px;
+  min-width: 0;
+  text-align: start;
+}
+#contact .contact-form #preferredDateField { grid-column: 1; }
+#contact .contact-form #preferredTimeField { grid-column: 2; }
+#contact .booking-label {
+  color: #d7c9b2;
+  font-size: 10px;
+  font-weight: 600;
+}
+#contact #preferredDate { color-scheme: dark; }
+@media (max-width: 600px) {
+  #contact .contact-form .booking-field {
+    grid-column: 1;
+    grid-row: auto;
+  }
+}
