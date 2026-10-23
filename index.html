@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css?v=d0d7bf3f">
+  <link rel="stylesheet" href="style.css?v=618fdb27">
   <script type="importmap">
   {
     "imports": {
@@ -19,7 +19,7 @@
     }
   }
   </script>
-  <script type="module" src="script.js?v=e9670e7b"></script>
+  <script type="module" src="script.js?v=1c9d9e55"></script>
 </head>
 
 <body>
@@ -43,13 +43,13 @@
     </a>
 
     <!-- محدد اللغات الثلاث -->
-    <div class="language-switcher" style="display: flex; gap: 8px; font-size: 11px; color: var(--gold);">
-      <button onclick="setLanguage('ar')" style="background:none; border:none; color:inherit; cursor:pointer; font-weight:bold;">AR</button> |
-      <button onclick="setLanguage('tr')" style="background:none; border:none; color:inherit; cursor:pointer;">TR</button> |
-      <button onclick="setLanguage('en')" style="background:none; border:none; color:inherit; cursor:pointer;">EN</button>
+    <div class="language-switcher" role="group" aria-label="لغة الموقع" data-i18n-aria-label="languageLabel">
+      <button type="button" class="language-button is-active" data-language="ar" aria-pressed="true" onclick="setLanguage('ar')">AR</button>
+      <button type="button" class="language-button" data-language="tr" aria-pressed="false" onclick="setLanguage('tr')">TR</button>
+      <button type="button" class="language-button" data-language="en" aria-pressed="false" onclick="setLanguage('en')">EN</button>
     </div>
 
-    <button class="menu-toggle" aria-label="Open menu" aria-expanded="false">☰</button>
+    <button class="menu-toggle" aria-label="فتح القائمة" data-i18n-aria-label="menuLabel" aria-expanded="false">☰</button>
 
     <nav class="nav">
       <a href="#work" data-i18n="navWork">معرض الصور</a>
@@ -77,7 +77,7 @@
           <a class="button button-gold" href="#work" data-i18n="heroBtn1">
             استعرض أعمالي <span>↘</span>
           </a>
-          <a class="text-link" href="#about" data-i18n="heroBtn2">
+          <a class="text-link" href="#contact" data-i18n="heroBtn2">
             اكتشف الرؤية <span>→</span>
           </a>
         </div>
@@ -138,33 +138,34 @@
 
       <div class="gallery">
         <div class="gallery-card card-tall" role="button" tabindex="0" aria-haspopup="dialog">
-          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1000&q=85" alt="بورتريه">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1000&q=85" alt="بورتريه بتعبير هادئ" data-i18n-alt="g1Alt">
           <span class="image-shade"></span>
           <span class="card-number">01 / <span data-i18n="g1">بورتريه</span></span>
           <span class="card-caption"><span data-i18n="gc1">النظرة الهادئة</span> <b>↗</b></span>
         </div>
 
         <div class="gallery-card card-wide" role="button" tabindex="0" aria-haspopup="dialog">
-          <img src="https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=1200&q=85" alt="أجواء سينمائية">
+          <img src="https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=1200&q=85" alt="سماء ليلية بألوان سينمائية" data-i18n-alt="g2Alt">
           <span class="image-shade"></span>
           <span class="card-number">02 / <span data-i18n="g2">أجواء</span></span>
           <span class="card-caption"><span data-i18n="gc2">بعد الساعة الزرقاء</span> <b>↗</b></span>
         </div>
 
         <div class="gallery-card card-wide" role="button" tabindex="0" aria-haspopup="dialog">
-          <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1200&q=85" alt="تصوير أزياء">
+          <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1200&q=85" alt="صورة أزياء بطابع تحريري" data-i18n-alt="g3Alt">
           <span class="image-shade"></span>
           <span class="card-number">03 / <span data-i18n="g3">إيديتوريال</span></span>
           <span class="card-caption"><span data-i18n="gc3">دراسة في الثقة</span> <b>↗</b></span>
         </div>
 
         <div class="gallery-card card-tall" role="button" tabindex="0" aria-haspopup="dialog">
-          <img src="https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=1000&q=85" alt="مناظر طبيعية">
+          <img src="https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=1000&q=85" alt="ضوء الصباح فوق مشهد طبيعي" data-i18n-alt="g4Alt">
           <span class="image-shade"></span>
           <span class="card-number">04 / <span data-i18n="g4">طبيعة</span></span>
           <span class="card-caption"><span data-i18n="gc4">الضوء الأول</span> <b>↗</b></span>
         </div>
       </div>
+      <p class="gallery-note" data-i18n="galleryHint">حرّك المؤشر فوق الصور لمتابعة إطار التركيز، واضغط الصورة لعرضها كاملة. على الهاتف، المس الصورة.</p>
     </section>
 
     <section class="manifesto" id="about">
@@ -205,7 +206,7 @@
           <div class="service-icon">◉</div>
           <h3 data-i18n="s1Title">جلسات البورتريه</h3>
           <p data-i18n="s1Desc">بورتريهات شخصية معبرة بإضاءة طبيعية ولمسة فنية مميزة.</p>
-          <span class="service-arrow">↗</span>
+          <a class="service-cta" href="#contact" data-select-service="opt1"><span data-i18n="serviceCta">ابدأ طلب هذه الخدمة</span><span aria-hidden="true">↗</span></a>
         </article>
 
         <article class="service">
@@ -213,7 +214,7 @@
           <div class="service-icon">▧</div>
           <h3 data-i18n="s2Title">التصوير التجاري</h3>
           <p data-i18n="s2Desc">صور إبداعية للعلامات التجارية، الفنانين، والحملات البصرية.</p>
-          <span class="service-arrow">↗</span>
+          <a class="service-cta" href="#contact" data-select-service="opt3"><span data-i18n="serviceCta">ابدأ طلب هذه الخدمة</span><span aria-hidden="true">↗</span></a>
         </article>
 
         <article class="service">
@@ -221,7 +222,7 @@
           <div class="service-icon">✳</div>
           <h3 data-i18n="s3Title">الفعاليات والقصص</h3>
           <p data-i18n="s3Desc">اللحظات الحقيقية موثقة بعناية فائقة واهتمام بأدق التفاصيل.</p>
-          <span class="service-arrow">↗</span>
+          <a class="service-cta" href="#contact" data-select-service="opt4"><span data-i18n="serviceCta">ابدأ طلب هذه الخدمة</span><span aria-hidden="true">↗</span></a>
         </article>
       </div>
     </section>
@@ -239,19 +240,24 @@
         أخبرني بما تتخيله. دعنا نحول فكرتك إلى عمل فني يستحق الاحتفاظ به.
       </p>
 
-      <form id="directContactForm" style="max-width: 500px; margin: 30px auto; display: flex; flex-direction: column; gap: 15px; text-align: right;">
-        <input type="text" id="clientName" data-i18n-placeholder="namePlaceholder" placeholder="اسمك الكريم" required style="padding: 12px; background: #1a1a18; border: 1px solid var(--line); color: white; border-radius: 4px;">
-        
-        <select id="sessionType" style="padding: 12px; background: #1a1a18; border: 1px solid var(--line); color: white; border-radius: 4px;">
-          <option value="جلسة بورتريه" data-i18n="opt1">جلسة بورتريه</option>
-          <option value="تصوير تخرج" data-i18n="opt2">تصوير تخرج</option>
-          <option value="تصوير تجاري" data-i18n="opt3">تصوير تجاري</option>
-          <option value="أخرى" data-i18n="opt4">أخرى</option>
+      <form id="directContactForm" class="contact-form">
+        <label class="sr-only" for="clientName" data-i18n="nameLabel">اسمك</label>
+        <input type="text" id="clientName" class="contact-field" data-i18n-placeholder="namePlaceholder" placeholder="اكتب اسمك" autocomplete="name" required>
+
+        <label class="sr-only" for="sessionType" data-i18n="sessionLabel">نوع التصوير</label>
+        <select id="sessionType" class="contact-field" required>
+          <option value="جلسة بورتريه" data-i18n="opt1" data-i18n-value="opt1">جلسة بورتريه</option>
+          <option value="تصوير تخرّج" data-i18n="opt2" data-i18n-value="opt2">تصوير تخرّج</option>
+          <option value="تصوير تجاري" data-i18n="opt3" data-i18n-value="opt3">تصوير تجاري</option>
+          <option value="تصوير مناسبة" data-i18n="opt4" data-i18n-value="opt4">تصوير مناسبة</option>
+          <option value="طلب آخر" data-i18n="opt5" data-i18n-value="opt5">طلب آخر</option>
         </select>
 
-        <textarea id="clientMsg" data-i18n-placeholder="msgPlaceholder" placeholder="تفاصيل الطلب أو الرسالة..." rows="4" required style="padding: 12px; background: #1a1a18; border: 1px solid var(--line); color: white; border-radius: 4px; resize: none;"></textarea>
-        
-        <button type="submit" class="button button-gold" style="width: 100%; cursor: pointer;"><span data-i18n="sendBtn">إرسال الطلب</span> <span>↗</span></button>
+        <label class="sr-only" for="clientMsg" data-i18n="messageLabel">احكيلي عن فكرتك</label>
+        <textarea id="clientMsg" class="contact-field contact-message" data-i18n-placeholder="msgPlaceholder" placeholder="ما الفكرة أو اللحظة التي تريد تصويرها؟" rows="4" required aria-describedby="contactFormHint"></textarea>
+        <p id="contactFormHint" class="contact-form-hint" data-i18n="contactFormHint">ستفتح واتساب برسالة جاهزة؛ راجعها وعدّلها ثم أرسلها.</p>
+
+        <button type="submit" class="button button-gold contact-submit"><span data-i18n="sendBtn">تابع إلى واتساب</span><span aria-hidden="true">↗</span></button>
       </form>
 
       <div class="contact-details">
