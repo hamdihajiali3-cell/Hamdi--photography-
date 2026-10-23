@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css?v=hamdi-emblem-20261023">
+  <link rel="stylesheet" href="style.css?v=gallery-expansion-20261023">
   <script type="importmap">
   {
     "imports": {
@@ -19,7 +19,7 @@
     }
   }
   </script>
-  <script type="module" src="script.js?v=hamdi-emblem-20261023"></script>
+  <script type="module" src="script.js?v=gallery-expansion-20261023"></script>
 </head>
 
 <body>
@@ -140,8 +140,8 @@
 
       <div class="gallery-rail">
         <div class="gallery-navigation">
-          <div class="gallery-count" aria-live="polite"><span id="galleryCurrent">01</span><span>/</span><span>04</span></div>
-          <div class="gallery-progress" id="galleryProgress" role="progressbar" aria-label="تقدم المعرض" data-i18n-aria-label="galleryProgress" aria-valuemin="0" aria-valuemax="4" aria-valuenow="1"><span></span></div>
+          <div class="gallery-count" aria-live="polite"><span id="galleryCurrent">01</span><span>/</span><span id="galleryTotal">08</span></div>
+          <div class="gallery-progress" id="galleryProgress" role="progressbar" aria-label="تقدم المعرض" data-i18n-aria-label="galleryProgress" aria-valuemin="0" aria-valuemax="8" aria-valuenow="1"><span></span></div>
           <div class="gallery-controls">
             <button type="button" data-gallery-step="-1" data-i18n-aria-label="galleryPrev" aria-label="الصورة السابقة"><span aria-hidden="true">←</span></button>
             <button type="button" data-gallery-step="1" data-i18n-aria-label="galleryNext" aria-label="الصورة التالية"><span aria-hidden="true">→</span></button>
@@ -174,6 +174,34 @@
           <span class="image-shade"></span>
           <span class="card-number">04 / <span data-i18n="g4">طبيعة</span></span>
           <span class="card-caption"><span data-i18n="gc4">الضوء الأول</span> <b>↗</b></span>
+        </div>
+
+        <div class="gallery-card card-wide" role="button" tabindex="0" aria-haspopup="dialog">
+          <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1500&q=85" alt="لحظة زفاف تحت ضوء دافئ" data-i18n-alt="g5Alt">
+          <span class="image-shade"></span>
+          <span class="card-number">05 / <span data-i18n="g5">مناسبات</span></span>
+          <span class="card-caption"><span data-i18n="gc5">فرحٌ يُروى بصورة</span> <b>↗</b></span>
+        </div>
+
+        <div class="gallery-card card-tall" role="button" tabindex="0" aria-haspopup="dialog">
+          <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=1200&q=85" alt="بورتريه رجالي بإضاءة طبيعية" data-i18n-alt="g6Alt">
+          <span class="image-shade"></span>
+          <span class="card-number">06 / <span data-i18n="g6">بورتريه</span></span>
+          <span class="card-caption"><span data-i18n="gc6">ملامح من حكاية</span> <b>↗</b></span>
+        </div>
+
+        <div class="gallery-card card-wide" role="button" tabindex="0" aria-haspopup="dialog">
+          <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1500&q=85" alt="أجواء حفل موسيقي وأضواء الجمهور" data-i18n-alt="g7Alt">
+          <span class="image-shade"></span>
+          <span class="card-number">07 / <span data-i18n="g7">فعاليات</span></span>
+          <span class="card-caption"><span data-i18n="gc7">لحظة في قلب المشهد</span> <b>↗</b></span>
+        </div>
+
+        <div class="gallery-card card-wide" role="button" tabindex="0" aria-haspopup="dialog">
+          <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1500&q=85" alt="ساعة يد بتكوين تصوير تجاري أنيق" data-i18n-alt="g8Alt">
+          <span class="image-shade"></span>
+          <span class="card-number">08 / <span data-i18n="g8">تجاري</span></span>
+          <span class="card-caption"><span data-i18n="gc8">تفاصيل تصنع الفرق</span> <b>↗</b></span>
         </div>
       </div>
       </div>
