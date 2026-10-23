@@ -15,7 +15,8 @@ const translations = {
     workEyebrow: "مختارات بعدسة حمدي / 2024—2026",
     workTitle: "لحظاتك<br><em>تستحق أن تُروى.</em>",
     workIntro: "تفاصيل صادقة، ضوء مدروس، وصور تحفظ الإحساس قبل الشكل.",
-    galleryHint: "حرّك المؤشر فوق الصور لمتابعة إطار التركيز، واضغط الصورة لعرضها كاملة. على الهاتف، المس الصورة.",
+    galleryHint: "اسحب المعرض بالأسهم أو اسحب الصور يمينًا ويسارًا، واضغط على الصورة لفتح العرض السينمائي.",
+    galleryLabel: "معرض الصور التفاعلي", galleryPrev: "الصورة السابقة", galleryNext: "الصورة التالية", galleryProgress: "تقدم المعرض",
     g1: "بورتريه", gc1: "نظرة تحكي الكثير", g1Alt: "صورة بورتريه بتعبير هادئ",
     g2: "أجواء", gc2: "بعد الساعة الزرقاء", g2Alt: "سماء ليلية بألوان سينمائية",
     g3: "إيديتوريال", gc3: "حضور وثقة", g3Alt: "صورة أزياء بطابع تحريري",
@@ -58,7 +59,8 @@ const translations = {
     workEyebrow: "HAMDI'NİN SEÇKİSİ / 2024—2026",
     workTitle: "Anların<br><em>hikâyeni anlatsın.</em>",
     workIntro: "Gerçek duygular, özenli ışık ve her karede sana ait ayrıntılar.",
-    galleryHint: "Odak çerçevesini görmek için görselin üzerinde gezinin; tam ekran için tıklayın. Telefonda görsele dokunun.",
+    galleryHint: "Oklarla ilerleyin veya fotoğrafları sağa sola sürükleyin. Sinematik görünüm için fotoğrafa dokunun.",
+    galleryLabel: "Etkileşimli fotoğraf galerisi", galleryPrev: "Önceki fotoğraf", galleryNext: "Sonraki fotoğraf", galleryProgress: "Galeri ilerlemesi",
     g1: "PORTRE", gc1: "Sessiz bir bakış", g1Alt: "Sakin ifadeli portre fotoğrafı",
     g2: "ATMOSFER", gc2: "Mavi saatten sonra", g2Alt: "Sinematik renklerde gece gökyüzü",
     g3: "EDİTORYAL", gc3: "Duruş ve özgüven", g3Alt: "Editoryal tarzda moda fotoğrafı",
@@ -101,7 +103,8 @@ const translations = {
     workEyebrow: "SELECTED BY HAMDI / 2024—2026",
     workTitle: "Moments worth<br><em>holding onto.</em>",
     workIntro: "Honest feeling, thoughtful light, and details that make the image yours.",
-    galleryHint: "Move over a photo to see the focus frame. Click to view it full size; on a phone, tap the image.",
+    galleryHint: "Use the arrows or drag the photos sideways. Select a frame to open the cinematic viewer.",
+    galleryLabel: "Interactive photo gallery", galleryPrev: "Previous photo", galleryNext: "Next photo", galleryProgress: "Gallery progress",
     g1: "PORTRAIT", gc1: "A quiet gaze", g1Alt: "Portrait with a calm expression",
     g2: "ATMOSPHERE", gc2: "After the blue hour", g2Alt: "Night sky in cinematic colors",
     g3: "EDITORIAL", gc3: "Presence & confidence", g3Alt: "Fashion photograph in an editorial style",
@@ -959,3 +962,124 @@ document.addEventListener('DOMContentLoaded', initServiceBookingLinks);
 
 
 
+
+
+function initImmersiveGallery() {
+  const gallery = document.querySelector('[data-immersive-gallery]');
+  if (!gallery) return;
+  const cards = Array.from(gallery.querySelectorAll('.gallery-card'));
+  const current = document.getElementById('galleryCurrent');
+  const progress = document.getElementById('galleryProgress');
+  const progressFill = progress?.querySelector('span');
+  const buttons = Array.from(document.querySelectorAll('[data-gallery-step]'));
+  if (!cards.length) return;
+
+  let activeIndex = 0;
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const updateActive = (index) => {
+    const safeIndex = Math.max(0, Math.min(cards.length - 1, index));
+    if (safeIndex === activeIndex && cards[safeIndex].classList.contains('is-active')) return;
+    activeIndex = safeIndex;
+    cards.forEach((card, cardIndex) => {
+      const isActive = cardIndex === activeIndex;
+      card.classList.toggle('is-active', isActive);
+      if (isActive) card.setAttribute('aria-current', 'true');
+      else card.removeAttribute('aria-current');
+    });
+    if (current) current.textContent = String(activeIndex + 1).padStart(2, '0');
+    if (progressFill) progressFill.style.transform = 'scaleX(' + ((activeIndex + 1) / cards.length) + ')';
+    if (progress) progress.setAttribute('aria-valuenow', String(activeIndex + 1));
+    buttons.forEach((button) => {
+      const step = Number(button.getAttribute('data-gallery-step'));
+      button.disabled = step < 0 ? activeIndex === 0 : activeIndex === cards.length - 1;
+    });
+  };
+
+  const goTo = (index) => {
+    const nextIndex = Math.max(0, Math.min(cards.length - 1, index));
+    cards[nextIndex].scrollIntoView({
+      behavior: reducedMotion ? 'auto' : 'smooth',
+      block: 'nearest',
+      inline: 'center'
+    });
+    updateActive(nextIndex);
+  };
+
+  buttons.forEach((button) => {
+    button.addEventListener('click', () => goTo(activeIndex + Number(button.getAttribute('data-gallery-step'))));
+  });
+
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (visible) updateActive(cards.indexOf(visible.target));
+    }, { root: gallery, threshold: [0.2, 0.45, 0.65, 0.82] });
+    cards.forEach((card) => observer.observe(card));
+  } else {
+    gallery.addEventListener('scroll', () => {
+      const center = gallery.getBoundingClientRect().left + gallery.clientWidth / 2;
+      let closest = 0;
+      cards.forEach((card, index) => {
+        const box = card.getBoundingClientRect();
+        if (Math.abs(box.left + box.width / 2 - center) < Math.abs(cards[closest].getBoundingClientRect().left + cards[closest].getBoundingClientRect().width / 2 - center)) closest = index;
+      });
+      updateActive(closest);
+    }, { passive: true });
+  }
+
+  gallery.addEventListener('keydown', (event) => {
+    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+    event.preventDefault();
+    goTo(activeIndex + (event.key === 'ArrowRight' ? 1 : -1));
+  });
+
+  let pointerDown = false;
+  let dragged = false;
+  let startX = 0;
+  let startScroll = 0;
+  let suppressClick = false;
+  gallery.addEventListener('pointerdown', (event) => {
+    if (event.pointerType !== 'mouse' || event.button !== 0 || event.target.closest('button')) return;
+    pointerDown = true;
+    dragged = false;
+    startX = event.clientX;
+    startScroll = gallery.scrollLeft;
+  });
+  gallery.addEventListener('pointermove', (event) => {
+    if (!pointerDown) return;
+    const delta = event.clientX - startX;
+    if (!dragged && Math.abs(delta) > 7) {
+      dragged = true;
+      gallery.classList.add('is-dragging');
+      gallery.setPointerCapture?.(event.pointerId);
+    }
+    if (dragged) {
+      gallery.scrollLeft = startScroll - delta;
+      event.preventDefault();
+    }
+  });
+  const finishDrag = (event) => {
+    if (!pointerDown) return;
+    pointerDown = false;
+    gallery.classList.remove('is-dragging');
+    if (dragged) {
+      suppressClick = true;
+      window.setTimeout(() => { suppressClick = false; }, 180);
+    }
+    if (gallery.hasPointerCapture?.(event.pointerId)) gallery.releasePointerCapture(event.pointerId);
+  };
+  gallery.addEventListener('pointerup', finishDrag);
+  gallery.addEventListener('pointercancel', finishDrag);
+  gallery.addEventListener('click', (event) => {
+    if (!suppressClick) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    suppressClick = false;
+  }, true);
+
+  updateActive(0);
+}
+
+document.addEventListener('DOMContentLoaded', initImmersiveGallery);
