@@ -601,14 +601,6 @@ async function initThreeScene() {
 
 
 
-  const orbitalRing = new THREE.Mesh(
-    new THREE.TorusGeometry(1.82, 0.009, 8, 140),
-    new THREE.MeshBasicMaterial({ color: 0x9ac9ef, transparent: true, opacity: 0.62 })
-  );
-  orbitalRing.rotation.set(1.13, 0.12, -0.25);
-  orbitalRing.position.z = -0.72;
-  rig.add(orbitalRing);
-
   const imageUrls = [
     'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=700&q=80',
     'https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=700&q=80',
@@ -729,7 +721,6 @@ async function initThreeScene() {
     rig.rotation.y += (targetY - rig.rotation.y) * 0.045;
     rig.rotation.x += (targetX - rig.rotation.x) * 0.045;
     rig.rotation.y += delta * 0.035;
-    orbitalRing.rotation.z += delta * 0.09;
 
     const apertureMotion = Math.sin(time * 0.0011);
     irisAssembly.rotation.z = irisAssembly.userData.baseRotationZ + apertureMotion * 0.018;
