@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css?v=cinematic-backdrop-20261023">
+  <link rel="stylesheet" href="style.css?v=visit-counter-20261023">
   <script type="importmap">
   {
     "imports": {
@@ -19,7 +19,7 @@
     }
   }
   </script>
-  <script type="module" src="script.js?v=gallery-expansion-20261023"></script>
+  <script type="module" src="script.js?v=visit-counter-20261023"></script>
 </head>
 
 <body>
@@ -78,6 +78,11 @@
           <div><strong>01</strong><span data-i18n="meta1">القصة أولاً</span></div>
           <div><strong>02</strong><span data-i18n="meta2">عشق الإضاءة</span></div>
           <div><strong>03</strong><span data-i18n="meta3">أصالة دائمة</span></div>
+        </div>
+        <div class="visit-counter" role="status" aria-live="polite" aria-atomic="true">
+          <span class="visit-counter-dot live-dot" aria-hidden="true"></span>
+          <span class="visit-counter-label" data-i18n="visitCounterLabel">عدد زياراتك من هذا المتصفح</span>
+          <strong id="visitCounterValue" dir="ltr">1</strong>
         </div>
       </div>
 
