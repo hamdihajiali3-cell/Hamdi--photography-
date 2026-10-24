@@ -3851,121 +3851,54 @@ body::after {
 
 
 
-/* Unified luminous typography with gentle 3D depth across the site. */
+
+/* Readable site-wide text depth with 3D interaction on prominent text. */
 body {
-  text-shadow: 0 1px 0 rgba(0, 0, 0, .42), 0 0 9px rgba(216, 182, 117, .045);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, .42), 0 0 8px rgba(216, 182, 117, .035);
   animation: cinematic-background-flow 32s ease-in-out infinite alternate, hamdi-global-text-glow 11s ease-in-out infinite;
 }
 @keyframes hamdi-global-text-glow {
-  0%, 100% { text-shadow: 0 1px 0 rgba(0, 0, 0, .42), 0 0 8px rgba(216, 182, 117, .025); }
-  50% { text-shadow: 0 1px 0 rgba(0, 0, 0, .42), 0 0 15px rgba(216, 182, 117, .12); }
+  0%, 100% { text-shadow: 0 1px 0 rgba(0, 0, 0, .42), 0 0 7px rgba(216, 182, 117, .02); }
+  50% { text-shadow: 0 1px 0 rgba(0, 0, 0, .42), 0 0 12px rgba(216, 182, 117, .095); }
 }
-:where(h1, h2, h3, em, p, label, strong, small, .eyebrow, .nav a, .text-link,
-  .service-cta, .price-cta, .brand-name, .brand-mark, .card-number, .card-caption,
-  .hero-meta span, .service-no, .price-card-index, .price-option-label, .price-option-price,
-  .contact-top > span, .contact-description, .contact-details, .footer p, .back-top,
-  .scroll-cue, .gallery-note, .contact-form-hint) {
-  background-image: linear-gradient(105deg, currentColor 0%, currentColor 44%, rgba(255, 246, 225, .88) 50%, currentColor 56%, currentColor 100%);
-  background-size: 240% 100%;
-  background-position: 110% 50%;
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: hamdi-global-text-sheen 10.5s ease-in-out infinite;
-}
-@keyframes hamdi-global-text-sheen {
-  0%, 12% { background-position: 110% 50%; }
-  72%, 100% { background-position: -110% 50%; }
-}
-body :is(h1, h2, h3, p, label, strong, small, .eyebrow, .nav a, .text-link,
-  .service-cta, .price-cta, .brand-name, .brand-mark, .card-number, .card-caption,
-  .hero-meta span, .service-no, .price-card-index, .price-option-label, .price-option-price,
-  .contact-top > span, .contact-description, .contact-details, .footer p, .back-top,
-  .scroll-cue, .gallery-note, .contact-form-hint):hover,
-body :is(h1, h2, h3, p, label, strong, small, .eyebrow, .nav a, .text-link,
-  .service-cta, .price-cta, .brand-name, .brand-mark, .card-number, .card-caption,
-  .hero-meta span, .service-no, .price-card-index, .price-option-label, .price-option-price,
-  .contact-top > span, .contact-description, .contact-details, .footer p, .back-top,
-  .scroll-cue, .gallery-note, .contact-form-hint):focus-visible {
-  transform: perspective(1000px) translateZ(11px) rotateX(1deg) rotateY(-1deg);
-  text-shadow: 0 2px 0 rgba(0, 0, 0, .48), 0 5px 14px rgba(216, 182, 117, .18);
+body :is(h1, h2, h3, .eyebrow, .brand-mark, .brand-name, .card-caption,
+  .price-card-index, .price-option-label, .price-option-price, .nav a, .text-link,
+  .service-cta, .price-cta, .service h3, .service-no, .contact-details, .back-top) {
+  transform-style: preserve-3d;
   transition: transform .32s cubic-bezier(.2, .7, .2, 1), text-shadow .32s ease;
 }
-@media (hover: none) {
-  body :is(h1, h2, h3, p, label, strong, small, .eyebrow, .nav a, .text-link,
-    .service-cta, .price-cta, .brand-name, .brand-mark, .card-number, .card-caption,
-    .hero-meta span, .service-no, .price-card-index, .price-option-label, .price-option-price,
-    .contact-top > span, .contact-description, .contact-details, .footer p, .back-top,
-    .scroll-cue, .gallery-note, .contact-form-hint):active {
-    transform: perspective(1000px) translateZ(7px) rotateX(1deg);
-  }
+body :is(h1, h2, h3, .eyebrow, .brand-mark, .brand-name, .card-caption,
+  .price-card-index, .price-option-label, .price-option-price, .nav a, .text-link,
+  .service-cta, .price-cta, .service h3, .service-no, .contact-details, .back-top):hover,
+body :is(h1, h2, h3, .eyebrow, .brand-mark, .brand-name, .card-caption,
+  .price-card-index, .price-option-label, .price-option-price, .nav a, .text-link,
+  .service-cta, .price-cta, .service h3, .service-no, .contact-details, .back-top):focus-visible {
+  transform: perspective(1100px) translateZ(8px) rotateX(.7deg) rotateY(-.7deg);
+  text-shadow: 0 2px 0 rgba(0, 0, 0, .48), 0 4px 11px rgba(216, 182, 117, .16);
 }
-@supports not ((background-clip: text) or (-webkit-background-clip: text)) {
-  :where(h1, h2, h3, em, p, label, strong, small, .eyebrow, .nav a, .text-link,
-    .service-cta, .price-cta, .brand-name, .brand-mark, .card-number, .card-caption,
-    .hero-meta span, .service-no, .price-card-index, .price-option-label, .price-option-price,
-    .contact-top > span, .contact-description, .contact-details, .footer p, .back-top,
-    .scroll-cue, .gallery-note, .contact-form-hint) {
-    background-image: none;
-    -webkit-text-fill-color: currentColor;
-    animation: none;
+@media (hover: none) {
+  body :is(h1, h2, h3, .eyebrow, .brand-mark, .brand-name, .card-caption,
+    .price-card-index, .price-option-label, .price-option-price, .nav a, .text-link,
+    .service-cta, .price-cta, .service h3, .service-no, .contact-details, .back-top):active {
+    transform: perspective(1100px) translateZ(5px) rotateX(.5deg);
   }
 }
 @media (prefers-reduced-motion: reduce) {
   body { animation: none; }
-  :where(h1, h2, h3, em, p, label, strong, small, .eyebrow, .nav a, .text-link,
-    .service-cta, .price-cta, .brand-name, .brand-mark, .card-number, .card-caption,
-    .hero-meta span, .service-no, .price-card-index, .price-option-label, .price-option-price,
-    .contact-top > span, .contact-description, .contact-details, .footer p, .back-top,
-    .scroll-cue, .gallery-note, .contact-form-hint) {
-    animation: none !important;
-  }
-  body :is(h1, h2, h3, p, label, strong, small, .eyebrow, .nav a, .text-link,
-    .service-cta, .price-cta, .brand-name, .brand-mark, .card-number, .card-caption,
-    .hero-meta span, .service-no, .price-card-index, .price-option-label, .price-option-price,
-    .contact-top > span, .contact-description, .contact-details, .footer p, .back-top,
-    .scroll-cue, .gallery-note, .contact-form-hint):hover,
-  body :is(h1, h2, h3, p, label, strong, small, .eyebrow, .nav a, .text-link,
-    .service-cta, .price-cta, .brand-name, .brand-mark, .card-number, .card-caption,
-    .hero-meta span, .service-no, .price-card-index, .price-option-label, .price-option-price,
-    .contact-top > span, .contact-description, .contact-details, .footer p, .back-top,
-    .scroll-cue, .gallery-note, .contact-form-hint):focus-visible,
-  body :is(h1, h2, h3, p, label, strong, small, .eyebrow, .nav a, .text-link,
-    .service-cta, .price-cta, .brand-name, .brand-mark, .card-number, .card-caption,
-    .hero-meta span, .service-no, .price-card-index, .price-option-label, .price-option-price,
-    .contact-top > span, .contact-description, .contact-details, .footer p, .back-top,
-    .scroll-cue, .gallery-note, .contact-form-hint):active {
-    transform: none;
+  body :is(h1, h2, h3, .eyebrow, .brand-mark, .brand-name, .card-caption,
+    .price-card-index, .price-option-label, .price-option-price, .nav a, .text-link,
+    .service-cta, .price-cta, .service h3, .service-no, .contact-details, .back-top) {
     transition: none;
   }
-}
-
-
-/* Keep nested label text crisp while the enclosing element carries its own sheen. */
-:where(.brand-mark span, .nav a span, .text-link span, .service-cta span, .price-cta span,
-  .card-number span, .card-caption span, .card-caption b, .contact-details span,
-  .footer p span, .button span:not([aria-hidden="true"])) {
-  background-image: linear-gradient(105deg, currentColor 0%, currentColor 44%, rgba(255, 246, 225, .88) 50%, currentColor 56%, currentColor 100%);
-  background-size: 240% 100%;
-  background-position: 110% 50%;
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: hamdi-global-text-sheen 10.5s ease-in-out infinite;
-}
-@supports not ((background-clip: text) or (-webkit-background-clip: text)) {
-  :where(.brand-mark span, .nav a span, .text-link span, .service-cta span, .price-cta span,
-    .card-number span, .card-caption span, .card-caption b, .contact-details span,
-    .footer p span, .button span:not([aria-hidden="true"])) {
-    background-image: none;
-    -webkit-text-fill-color: currentColor;
-    animation: none;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  :where(.brand-mark span, .nav a span, .text-link span, .service-cta span, .price-cta span,
-    .card-number span, .card-caption span, .card-caption b, .contact-details span,
-    .footer p span, .button span:not([aria-hidden="true"])) {
-    animation: none !important;
+  body :is(h1, h2, h3, .eyebrow, .brand-mark, .brand-name, .card-caption,
+    .price-card-index, .price-option-label, .price-option-price, .nav a, .text-link,
+    .service-cta, .price-cta, .service h3, .service-no, .contact-details, .back-top):hover,
+  body :is(h1, h2, h3, .eyebrow, .brand-mark, .brand-name, .card-caption,
+    .price-card-index, .price-option-label, .price-option-price, .nav a, .text-link,
+    .service-cta, .price-cta, .service h3, .service-no, .contact-details, .back-top):focus-visible,
+  body :is(h1, h2, h3, .eyebrow, .brand-mark, .brand-name, .card-caption,
+    .price-card-index, .price-option-label, .price-option-price, .nav a, .text-link,
+    .service-cta, .price-cta, .service h3, .service-no, .contact-details, .back-top):active {
+    transform: none;
   }
 }
