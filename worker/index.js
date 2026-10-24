@@ -92,7 +92,7 @@ export default {
         "Vary": "Origin"
       }});
     }
-    if (origin && !ALLOWED_ORIGINS.has(origin)) return json({ error: "Origin not allowed." }, 403, origin);
+    if (!ALLOWED_ORIGINS.has(origin)) return json({ error: "Origin not allowed." }, 403, origin);
     if (request.method !== "POST") return json({ error: "Use POST /chat." }, 405, origin);
 
     const url = new URL(request.url);
