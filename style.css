@@ -3849,3 +3849,93 @@ body::after {
   }
 }
 
+
+
+/* Unified luminous typography with gentle 3D depth across the site. */
+body {
+  text-shadow: 0 1px 0 rgba(0, 0, 0, .42), 0 0 9px rgba(216, 182, 117, .045);
+  animation: cinematic-background-flow 32s ease-in-out infinite alternate, hamdi-global-text-glow 11s ease-in-out infinite;
+}
+@keyframes hamdi-global-text-glow {
+  0%, 100% { text-shadow: 0 1px 0 rgba(0, 0, 0, .42), 0 0 8px rgba(216, 182, 117, .025); }
+  50% { text-shadow: 0 1px 0 rgba(0, 0, 0, .42), 0 0 15px rgba(216, 182, 117, .12); }
+}
+:where(h1, h2, h3, em, p, label, strong, small, .eyebrow, .nav a, .text-link,
+  .service-cta, .price-cta, .brand-name, .brand-mark, .card-number, .card-caption,
+  .hero-meta span, .service-no, .price-card-index, .price-option-label, .price-option-price,
+  .contact-top > span, .contact-description, .contact-details, .footer p, .back-top,
+  .scroll-cue, .gallery-note, .contact-form-hint) {
+  background-image: linear-gradient(105deg, currentColor 0%, currentColor 44%, rgba(255, 246, 225, .88) 50%, currentColor 56%, currentColor 100%);
+  background-size: 240% 100%;
+  background-position: 110% 50%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: hamdi-global-text-sheen 10.5s ease-in-out infinite;
+}
+@keyframes hamdi-global-text-sheen {
+  0%, 12% { background-position: 110% 50%; }
+  72%, 100% { background-position: -110% 50%; }
+}
+body :is(h1, h2, h3, p, label, strong, small, .eyebrow, .nav a, .text-link,
+  .service-cta, .price-cta, .brand-name, .brand-mark, .card-number, .card-caption,
+  .hero-meta span, .service-no, .price-card-index, .price-option-label, .price-option-price,
+  .contact-top > span, .contact-description, .contact-details, .footer p, .back-top,
+  .scroll-cue, .gallery-note, .contact-form-hint):hover,
+body :is(h1, h2, h3, p, label, strong, small, .eyebrow, .nav a, .text-link,
+  .service-cta, .price-cta, .brand-name, .brand-mark, .card-number, .card-caption,
+  .hero-meta span, .service-no, .price-card-index, .price-option-label, .price-option-price,
+  .contact-top > span, .contact-description, .contact-details, .footer p, .back-top,
+  .scroll-cue, .gallery-note, .contact-form-hint):focus-visible {
+  transform: perspective(1000px) translateZ(11px) rotateX(1deg) rotateY(-1deg);
+  text-shadow: 0 2px 0 rgba(0, 0, 0, .48), 0 5px 14px rgba(216, 182, 117, .18);
+  transition: transform .32s cubic-bezier(.2, .7, .2, 1), text-shadow .32s ease;
+}
+@media (hover: none) {
+  body :is(h1, h2, h3, p, label, strong, small, .eyebrow, .nav a, .text-link,
+    .service-cta, .price-cta, .brand-name, .brand-mark, .card-number, .card-caption,
+    .hero-meta span, .service-no, .price-card-index, .price-option-label, .price-option-price,
+    .contact-top > span, .contact-description, .contact-details, .footer p, .back-top,
+    .scroll-cue, .gallery-note, .contact-form-hint):active {
+    transform: perspective(1000px) translateZ(7px) rotateX(1deg);
+  }
+}
+@supports not ((background-clip: text) or (-webkit-background-clip: text)) {
+  :where(h1, h2, h3, em, p, label, strong, small, .eyebrow, .nav a, .text-link,
+    .service-cta, .price-cta, .brand-name, .brand-mark, .card-number, .card-caption,
+    .hero-meta span, .service-no, .price-card-index, .price-option-label, .price-option-price,
+    .contact-top > span, .contact-description, .contact-details, .footer p, .back-top,
+    .scroll-cue, .gallery-note, .contact-form-hint) {
+    background-image: none;
+    -webkit-text-fill-color: currentColor;
+    animation: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  body { animation: none; }
+  :where(h1, h2, h3, em, p, label, strong, small, .eyebrow, .nav a, .text-link,
+    .service-cta, .price-cta, .brand-name, .brand-mark, .card-number, .card-caption,
+    .hero-meta span, .service-no, .price-card-index, .price-option-label, .price-option-price,
+    .contact-top > span, .contact-description, .contact-details, .footer p, .back-top,
+    .scroll-cue, .gallery-note, .contact-form-hint) {
+    animation: none !important;
+  }
+  body :is(h1, h2, h3, p, label, strong, small, .eyebrow, .nav a, .text-link,
+    .service-cta, .price-cta, .brand-name, .brand-mark, .card-number, .card-caption,
+    .hero-meta span, .service-no, .price-card-index, .price-option-label, .price-option-price,
+    .contact-top > span, .contact-description, .contact-details, .footer p, .back-top,
+    .scroll-cue, .gallery-note, .contact-form-hint):hover,
+  body :is(h1, h2, h3, p, label, strong, small, .eyebrow, .nav a, .text-link,
+    .service-cta, .price-cta, .brand-name, .brand-mark, .card-number, .card-caption,
+    .hero-meta span, .service-no, .price-card-index, .price-option-label, .price-option-price,
+    .contact-top > span, .contact-description, .contact-details, .footer p, .back-top,
+    .scroll-cue, .gallery-note, .contact-form-hint):focus-visible,
+  body :is(h1, h2, h3, p, label, strong, small, .eyebrow, .nav a, .text-link,
+    .service-cta, .price-cta, .brand-name, .brand-mark, .card-number, .card-caption,
+    .hero-meta span, .service-no, .price-card-index, .price-option-label, .price-option-price,
+    .contact-top > span, .contact-description, .contact-details, .footer p, .back-top,
+    .scroll-cue, .gallery-note, .contact-form-hint):active {
+    transform: none;
+    transition: none;
+  }
+}
