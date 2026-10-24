@@ -48,6 +48,23 @@ const translations = {
     priceEventDesc: "تغطية مناسبة مع صور معدّلة مختارة حسب الباقة.",
     priceWeddingTitle: "خطوبة وزفاف",
     priceWeddingDesc: "تغطية خطوبة أو زفاف؛ الألبوم المطبوع والفيديو بعرض منفصل.",
+    pricePortraitFifteen: "15 صورة معدّلة",
+    pricePortraitTwenty: "20 صورة معدّلة",
+    priceGraduationFive: "5 صور تخرج",
+    priceGraduationFifteen: "15 صورة تخرج",
+    priceGraduationThirty: "30 صورة تخرج",
+    priceProductOne: "صورة منتج واحدة",
+    priceProductFifteen: "15 صورة منتجات",
+    priceProductTwenty: "20 صورة منتجات",
+    priceEventTen: "10 صور · حتى ساعة",
+    priceEventThirty: "30 صورة · حتى 3 ساعات",
+    priceEventSixty: "60 صورة · حتى 6 ساعات",
+    priceWeddingTwenty: "20 صورة · حتى ساعتين",
+    priceWeddingSixty: "60 صورة · حتى 6 ساعات",
+    priceWeddingHundred: "100 صورة · حتى 10 ساعات",
+    priceColorTen: "10 صور معدّلة ألوانيًا",
+    priceColorTwenty: "20 صورة معدّلة ألوانيًا",
+    priceCustomThirty: "30 صورة",
     photoCountLabel: "عدد الصور والباقة",
     photoCountPlaceholder: "اختر عدد الصور",
     packageCustom: "عدد الصور وسعرها يُحددان بعد مراجعة الطلب",
@@ -135,6 +152,23 @@ const translations = {
     priceEventDesc: "Pakete göre etkinlik çekimi ve düzenlenmiş seçili fotoğraflar.",
     priceWeddingTitle: "Nişan ve düğün",
     priceWeddingDesc: "Nişan veya düğün çekimi; basılı albüm ve video ayrıca fiyatlandırılır.",
+    pricePortraitFifteen: "15 düzenlenmiş fotoğraf",
+    pricePortraitTwenty: "20 düzenlenmiş fotoğraf",
+    priceGraduationFive: "5 mezuniyet fotoğrafı",
+    priceGraduationFifteen: "15 mezuniyet fotoğrafı",
+    priceGraduationThirty: "30 mezuniyet fotoğrafı",
+    priceProductOne: "1 ürün fotoğrafı",
+    priceProductFifteen: "15 ürün fotoğrafı",
+    priceProductTwenty: "20 ürün fotoğrafı",
+    priceEventTen: "10 fotoğraf · 1 saate kadar",
+    priceEventThirty: "30 fotoğraf · 3 saate kadar",
+    priceEventSixty: "60 fotoğraf · 6 saate kadar",
+    priceWeddingTwenty: "20 fotoğraf · 2 saate kadar",
+    priceWeddingSixty: "60 fotoğraf · 6 saate kadar",
+    priceWeddingHundred: "100 fotoğraf · 10 saate kadar",
+    priceColorTen: "10 fotoğraf için renk düzenleme",
+    priceColorTwenty: "20 fotoğraf için renk düzenleme",
+    priceCustomThirty: "30 fotoğraf",
     photoCountLabel: "Fotoğraf sayısı ve paket",
     photoCountPlaceholder: "Fotoğraf sayısını seç",
     packageCustom: "Fotoğraf sayısı ve fiyatı talep incelendikten sonra belirlenir",
@@ -222,6 +256,23 @@ const translations = {
     priceEventDesc: "Event coverage with selected edited photos, based on the package.",
     priceWeddingTitle: "Engagement & wedding",
     priceWeddingDesc: "Engagement or wedding coverage; printed albums and video are quoted separately.",
+    pricePortraitFifteen: "15 edited photos",
+    pricePortraitTwenty: "20 edited photos",
+    priceGraduationFive: "5 graduation photos",
+    priceGraduationFifteen: "15 graduation photos",
+    priceGraduationThirty: "30 graduation photos",
+    priceProductOne: "1 product photo",
+    priceProductFifteen: "15 product photos",
+    priceProductTwenty: "20 product photos",
+    priceEventTen: "10 photos · up to 1 hour",
+    priceEventThirty: "30 photos · up to 3 hours",
+    priceEventSixty: "60 photos · up to 6 hours",
+    priceWeddingTwenty: "20 photos · up to 2 hours",
+    priceWeddingSixty: "60 photos · up to 6 hours",
+    priceWeddingHundred: "100 photos · up to 10 hours",
+    priceColorTen: "Color correction for 10 photos",
+    priceColorTwenty: "Color correction for 20 photos",
+    priceCustomThirty: "30 photos",
     photoCountLabel: "Photo count and package",
     photoCountPlaceholder: "Choose a photo count",
     packageCustom: "Photo count and price will be confirmed after reviewing the request",
@@ -1125,33 +1176,50 @@ function initPhotoPackageSelector() {
   const packagesBySession = {
     opt1: [
       { value: 'portrait-five', key: 'pricePortraitFive', price: '₺ 2.000' },
-      { value: 'portrait-ten', key: 'pricePortraitTen', price: '₺ 3.500' }
+      { value: 'portrait-ten', key: 'pricePortraitTen', price: '₺ 3.500' },
+      { value: 'portrait-fifteen', key: 'pricePortraitFifteen', price: '₺ 5.000' },
+      { value: 'portrait-twenty', key: 'pricePortraitTwenty', price: '₺ 6.500' }
     ],
     opt2: [
+      { value: 'graduation-five', key: 'priceGraduationFive', price: '₺ 1.800' },
       { value: 'graduation-ten', key: 'priceGraduationTen', price: '₺ 3.000' },
-      { value: 'graduation-twenty', key: 'priceGraduationTwenty', price: '₺ 5.000' }
+      { value: 'graduation-fifteen', key: 'priceGraduationFifteen', price: '₺ 4.000' },
+      { value: 'graduation-twenty', key: 'priceGraduationTwenty', price: '₺ 5.000' },
+      { value: 'graduation-thirty', key: 'priceGraduationThirty', price: '₺ 7.000' }
     ],
     opt3: [
+      { value: 'product-one', key: 'priceProductOne', price: '₺ 1.000' },
       { value: 'product-five', key: 'priceProductFive', price: '₺ 3.500' },
-      { value: 'product-ten', key: 'priceProductTen', price: '₺ 6.000' }
+      { value: 'product-ten', key: 'priceProductTen', price: '₺ 6.000' },
+      { value: 'product-fifteen', key: 'priceProductFifteen', price: '₺ 8.500' },
+      { value: 'product-twenty', key: 'priceProductTwenty', price: '₺ 11.000' }
     ],
     opt4: [
+      { value: 'event-ten', key: 'priceEventTen', price: '₺ 3.000' },
       { value: 'event-twenty', key: 'priceEventTwenty', price: '₺ 5.000' },
-      { value: 'event-forty', key: 'priceEventForty', price: '₺ 8.500' }
+      { value: 'event-thirty', key: 'priceEventThirty', price: '₺ 7.000' },
+      { value: 'event-forty', key: 'priceEventForty', price: '₺ 8.500' },
+      { value: 'event-sixty', key: 'priceEventSixty', price: '₺ 12.000' }
     ],
     opt5: [
       { value: 'color-one', key: 'priceColorOne', price: '₺ 200' },
       { value: 'color-five', key: 'priceColorFive', price: '₺ 900' },
-      { value: 'color-fifteen', key: 'priceColorFifteen', price: '₺ 2.400' }
+      { value: 'color-ten', key: 'priceColorTen', price: '₺ 1.700' },
+      { value: 'color-fifteen', key: 'priceColorFifteen', price: '₺ 2.400' },
+      { value: 'color-twenty', key: 'priceColorTwenty', price: '₺ 3.000' }
     ],
     opt6: [
+      { value: 'wedding-twenty', key: 'priceWeddingTwenty', price: '₺ 5.000' },
       { value: 'wedding-forty', key: 'priceWeddingForty', price: '₺ 8.500' },
-      { value: 'wedding-eighty', key: 'priceWeddingEighty', price: '₺ 15.000' }
+      { value: 'wedding-sixty', key: 'priceWeddingSixty', price: '₺ 12.000' },
+      { value: 'wedding-eighty', key: 'priceWeddingEighty', price: '₺ 15.000' },
+      { value: 'wedding-hundred', key: 'priceWeddingHundred', price: '₺ 18.000' }
     ],
     opt7: [
       { value: 'custom-five', key: 'priceCustomFive', quote: true },
       { value: 'custom-ten', key: 'priceCustomTen', quote: true },
-      { value: 'custom-twenty', key: 'priceCustomTwenty', quote: true }
+      { value: 'custom-twenty', key: 'priceCustomTwenty', quote: true },
+      { value: 'custom-thirty', key: 'priceCustomThirty', quote: true }
     ]
   };
 
