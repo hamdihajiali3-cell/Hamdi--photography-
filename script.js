@@ -48,6 +48,23 @@ const translations = {
     priceEventDesc: "تغطية مناسبة مع صور معدّلة مختارة حسب الباقة.",
     priceWeddingTitle: "خطوبة وزفاف",
     priceWeddingDesc: "تغطية خطوبة أو زفاف؛ الألبوم المطبوع والفيديو بعرض منفصل.",
+    photoCountLabel: "عدد الصور والباقة",
+    photoCountPlaceholder: "اختر عدد الصور",
+    packageCustom: "عدد الصور وسعرها يُحددان بعد مراجعة الطلب",
+    priceQuoteAfterReview: "السعر بعد مراجعة الطلب",
+    waPackage: "الباقة وعدد الصور",
+    priceGraduationTitle: "تخرج",
+    priceGraduationDesc: "صور التخرج مع باقات حسب عدد الصور.",
+    priceGraduationTen: "10 صور تخرج",
+    priceGraduationTwenty: "20 صورة تخرج",
+    priceColorTitle: "تعديل ألوان الصور",
+    priceColorDesc: "تصحيح الإضاءة وتوازن الألوان للصور الرقمية. التنقيح المتقدم يُسعّر منفصلًا.",
+    priceColorOne: "صورة واحدة معدّلة ألوانيًا",
+    priceColorFive: "5 صور معدّلة ألوانيًا",
+    priceColorFifteen: "15 صورة معدّلة ألوانيًا",
+    priceCustomFive: "5 صور",
+    priceCustomTen: "10 صور",
+    priceCustomTwenty: "20 صورة",
     priceWeddingEighty: "80 صورة · حتى 6 ساعات",
     priceWeddingForty: "40 صورة · حتى 4 ساعات",
     priceEventForty: "40 صورة · حتى 4 ساعات",
@@ -61,10 +78,10 @@ const translations = {
     contactTop1: "جاهز تحوّل فكرتك لصورة؟", contactTop2: "ابدأ طلبك عبر واتساب",
     contactTitle: "خلّي فكرتك<br><em>تصير صورة.</em>",
     contactDesc: "اختر نوع التصوير واكتب لنا فكرتك. سنجهّز رسالة واتساب لتراجعها قبل إرسالها.",
-    nameLabel: "اسمك", sessionLabel: "نوع التصوير", messageLabel: "احكيلي عن فكرتك",
+    nameLabel: "اسمك", sessionLabel: "نوع الخدمة", messageLabel: "احكيلي عن فكرتك",
     namePlaceholder: "اكتب اسمك", dateLabel: "التاريخ المفضّل", datePlaceholder: "اختر التاريخ", calendarTitle: "اختر تاريخاً", calendarPrev: "الشهر السابق", calendarNext: "الشهر التالي", calendarToday: "اليوم", timeLabel: "الفترة المفضّلة", timePlaceholder: "اختر وقتًا مناسبًا", timeMorning: "الصباح · 10:00–13:00", timeAfternoon: "بعد الظهر · 13:00–17:00", timeEvening: "المساء · 17:00–20:00", timeFlexible: "أي وقت يناسبني", msgPlaceholder: "ما الفكرة أو اللحظة التي تريد تصويرها؟",
-    contactFormHint: "اختر تاريخًا وفترة مناسبة؛ سيفتح واتساب بطلب الحجز لتأكيد الموعد معك.",
-    opt1: "جلسة بورتريه", opt2: "تصوير تخرّج", opt3: "تصوير تجاري", opt4: "تصوير مناسبة", opt5: "طلب آخر",
+    contactFormHint: "اختر نوع الخدمة والباقة والتاريخ؛ سيفتح واتساب برسالة جاهزة لتأكيد طلبك.",
+    opt1: "جلسة بورتريه", opt2: "تصوير تخرّج", opt3: "تصوير تجاري", opt4: "تصوير مناسبة", opt5: "تعديل ألوان الصور", opt6: "خطوبة وزفاف", opt7: "طلب آخر",
     sendBtn: "تابع إلى واتساب", locationText: "غازي عنتاب، تركيا · بموعد مسبق",
     waIntro: "مرحباً حمدي، أنا", waBooking: "أرغب بحجز", waDate: "التاريخ المقترح", waTime: "الفترة المناسبة", waDetails: "تفاصيل فكرتي",
     rightsText: "جميع الحقوق محفوظة.", backTop: "العودة لأعلى الصفحة ↑"
@@ -118,6 +135,23 @@ const translations = {
     priceEventDesc: "Pakete göre etkinlik çekimi ve düzenlenmiş seçili fotoğraflar.",
     priceWeddingTitle: "Nişan ve düğün",
     priceWeddingDesc: "Nişan veya düğün çekimi; basılı albüm ve video ayrıca fiyatlandırılır.",
+    photoCountLabel: "Fotoğraf sayısı ve paket",
+    photoCountPlaceholder: "Fotoğraf sayısını seç",
+    packageCustom: "Fotoğraf sayısı ve fiyatı talep incelendikten sonra belirlenir",
+    priceQuoteAfterReview: "Talep incelendikten sonra fiyatlandırılır",
+    waPackage: "Paket ve fotoğraf sayısı",
+    priceGraduationTitle: "Mezuniyet",
+    priceGraduationDesc: "Fotoğraf sayısına göre mezuniyet paketleri.",
+    priceGraduationTen: "10 mezuniyet fotoğrafı",
+    priceGraduationTwenty: "20 mezuniyet fotoğrafı",
+    priceColorTitle: "Fotoğraf renk düzenleme",
+    priceColorDesc: "Dijital fotoğraflar için ışık ve renk dengesi. İleri düzey rötuş ayrıca fiyatlandırılır.",
+    priceColorOne: "1 fotoğraf için renk düzenleme",
+    priceColorFive: "5 fotoğraf için renk düzenleme",
+    priceColorFifteen: "15 fotoğraf için renk düzenleme",
+    priceCustomFive: "5 fotoğraf",
+    priceCustomTen: "10 fotoğraf",
+    priceCustomTwenty: "20 fotoğraf",
     priceWeddingEighty: "80 fotoğraf · 6 saate kadar",
     priceWeddingForty: "40 fotoğraf · 4 saate kadar",
     priceEventForty: "40 fotoğraf · 4 saate kadar",
@@ -131,10 +165,10 @@ const translations = {
     contactTop1: "Fikrini bir kareye dönüştürelim mi?", contactTop2: "WhatsApp üzerinden talep oluştur",
     contactTitle: "Fikrini<br><em>kareye dönüştür.</em>",
     contactDesc: "Çekim türünü seç ve fikrini yaz. Göndermeden önce incelemen için WhatsApp mesajı hazırlayalım.",
-    nameLabel: "Adın", sessionLabel: "Çekim türü", messageLabel: "Fikrini anlat",
+    nameLabel: "Adın", sessionLabel: "Hizmet türü", messageLabel: "Fikrini anlat",
     namePlaceholder: "Adını yaz", dateLabel: "Tercih edilen tarih", datePlaceholder: "Takvimden tarih seç", calendarTitle: "Tarih seç", calendarPrev: "Önceki ay", calendarNext: "Sonraki ay", calendarToday: "Bugün", timeLabel: "Tercih edilen saat aralığı", timePlaceholder: "Bir saat aralığı seç", timeMorning: "Sabah · 10:00–13:00", timeAfternoon: "Öğleden sonra · 13:00–17:00", timeEvening: "Akşam · 17:00–20:00", timeFlexible: "Bana uygun herhangi bir saat", msgPlaceholder: "Nasıl bir çekim hayal ediyorsun?",
-    contactFormHint: "Bir tarih ve saat aralığı seç; randevuyu onaylamak için WhatsApp talebin açılacak.",
-    opt1: "Portre çekimi", opt2: "Mezuniyet çekimi", opt3: "Ticari çekim", opt4: "Etkinlik çekimi", opt5: "Diğer",
+    contactFormHint: "Hizmet türünü, paketi ve tarihi seç; talebini onaylamak için WhatsApp mesajı açılır.",
+    opt1: "Portre çekimi", opt2: "Mezuniyet çekimi", opt3: "Ticari çekim", opt4: "Etkinlik çekimi", opt5: "Fotoğraf renk düzenleme", opt6: "Nişan ve düğün", opt7: "Diğer",
     sendBtn: "WhatsApp'ta devam et", locationText: "Gaziantep, Türkiye · Randevu ile",
     waIntro: "Merhaba Hamdi, ben", waBooking: "Çekim için randevu almak istiyorum", waDate: "Tercih edilen tarih", waTime: "Tercih edilen saat aralığı", waDetails: "Fikrimin detayları",
     rightsText: "Tüm hakları saklıdır.", backTop: "Sayfanın başına dön ↑"
@@ -188,6 +222,23 @@ const translations = {
     priceEventDesc: "Event coverage with selected edited photos, based on the package.",
     priceWeddingTitle: "Engagement & wedding",
     priceWeddingDesc: "Engagement or wedding coverage; printed albums and video are quoted separately.",
+    photoCountLabel: "Photo count and package",
+    photoCountPlaceholder: "Choose a photo count",
+    packageCustom: "Photo count and price will be confirmed after reviewing the request",
+    priceQuoteAfterReview: "Price after reviewing the request",
+    waPackage: "Package and photo count",
+    priceGraduationTitle: "Graduation",
+    priceGraduationDesc: "Graduation packages based on the number of edited photos.",
+    priceGraduationTen: "10 graduation photos",
+    priceGraduationTwenty: "20 graduation photos",
+    priceColorTitle: "Photo color correction",
+    priceColorDesc: "Light and color correction for digital photos. Advanced retouching is quoted separately.",
+    priceColorOne: "Color correction for 1 photo",
+    priceColorFive: "Color correction for 5 photos",
+    priceColorFifteen: "Color correction for 15 photos",
+    priceCustomFive: "5 photos",
+    priceCustomTen: "10 photos",
+    priceCustomTwenty: "20 photos",
     priceWeddingEighty: "80 photos · up to 6 hours",
     priceWeddingForty: "40 photos · up to 4 hours",
     priceEventForty: "40 photos · up to 4 hours",
@@ -201,10 +252,10 @@ const translations = {
     contactTop1: "Ready to turn an idea into a photograph?", contactTop2: "Start your request on WhatsApp",
     contactTitle: "Let's turn your idea<br><em>into a frame.</em>",
     contactDesc: "Choose a shoot type and share your idea. We'll prepare a WhatsApp message for you to review before sending.",
-    nameLabel: "Your name", sessionLabel: "Type of shoot", messageLabel: "Tell me about your idea",
+    nameLabel: "Your name", sessionLabel: "Type of service", messageLabel: "Tell me about your idea",
     namePlaceholder: "Write your name", dateLabel: "Preferred date", datePlaceholder: "Choose a date", calendarTitle: "Choose a date", calendarPrev: "Previous month", calendarNext: "Next month", calendarToday: "Today", timeLabel: "Preferred time", timePlaceholder: "Choose a time window", timeMorning: "Morning · 10:00–13:00", timeAfternoon: "Afternoon · 13:00–17:00", timeEvening: "Evening · 17:00–20:00", timeFlexible: "Any time that works for me", msgPlaceholder: "What would you like to photograph?",
-    contactFormHint: "Choose a preferred date and time; WhatsApp will open so the appointment can be confirmed with you.",
-    opt1: "Portrait session", opt2: "Graduation shoot", opt3: "Commercial shoot", opt4: "Event coverage", opt5: "Other",
+    contactFormHint: "Choose a service, package, and date; WhatsApp will open with your request.",
+    opt1: "Portrait session", opt2: "Graduation shoot", opt3: "Commercial shoot", opt4: "Event coverage", opt5: "Photo color correction", opt6: "Engagement & wedding", opt7: "Other",
     sendBtn: "Continue to WhatsApp", locationText: "Gaziantep, Türkiye · By appointment",
     waIntro: "Hi Hamdi, I'm", waBooking: "I'd like to book", waDate: "Preferred date", waTime: "Preferred time", waDetails: "My idea",
     rightsText: "All rights reserved.", backTop: "Back to top ↑"
@@ -254,6 +305,7 @@ window.setLanguage = function(lang) {
     button.setAttribute('aria-pressed', String(active));
   });
   try { window.localStorage.setItem('hamdiLanguage', lang); } catch (error) {}
+  window.refreshPhotoPackageLocale?.();
   window.refreshBookingCalendarLocale?.();
 };
 
@@ -387,11 +439,16 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       const name = document.getElementById('clientName').value.trim();
       const session = document.getElementById('sessionType').value;
+      const packageSelect = document.getElementById('photoPackage');
+      const packageChoice = packageSelect && !packageSelect.disabled && packageSelect.selectedIndex > 0
+        ? packageSelect.options[packageSelect.selectedIndex].textContent
+        : '';
       const preferredDate = document.getElementById('preferredDate').dataset.isoDate;
       const preferredTime = document.getElementById('preferredTime').value;
       const msg = document.getElementById('clientMsg').value.trim();
 
       const copy = translations[document.documentElement.lang] || translations.en;
+      const packageLabel = packageChoice || copy.packageCustom;
       const lineBreak = String.fromCharCode(10);
       const dateLocale = { ar: 'ar', tr: 'tr-TR', en: 'en-US' }[document.documentElement.lang] || 'en-US';
       const dateLabel = new Intl.DateTimeFormat(dateLocale, { dateStyle: 'long' }).format(new Date(preferredDate + 'T12:00:00'));
@@ -399,6 +456,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const text = [
         copy.waIntro + ' ' + name,
         copy.waBooking + ': ' + session,
+        copy.waPackage + ': ' + packageLabel,
         copy.waDate + ': ' + dateLabel,
         copy.waTime + ': ' + timeLabel,
         copy.waDetails + ': ' + msg
@@ -1050,12 +1108,104 @@ function initServiceBookingLinks() {
       const option = Array.from(select.options).find((item) => item.getAttribute('data-i18n-value') === key);
       if (!option) return;
       select.value = option.value;
+      select.dispatchEvent(new Event('change', { bubbles: true }));
       select.classList.add('service-prefilled');
     });
   });
   select.addEventListener('change', () => select.classList.remove('service-prefilled'));
 }
 document.addEventListener('DOMContentLoaded', initServiceBookingLinks);
+
+
+function initPhotoPackageSelector() {
+  const sessionSelect = document.getElementById('sessionType');
+  const packageSelect = document.getElementById('photoPackage');
+  if (!sessionSelect || !packageSelect) return;
+
+  const packagesBySession = {
+    opt1: [
+      { value: 'portrait-five', key: 'pricePortraitFive', price: '₺ 2.000' },
+      { value: 'portrait-ten', key: 'pricePortraitTen', price: '₺ 3.500' }
+    ],
+    opt2: [
+      { value: 'graduation-ten', key: 'priceGraduationTen', price: '₺ 3.000' },
+      { value: 'graduation-twenty', key: 'priceGraduationTwenty', price: '₺ 5.000' }
+    ],
+    opt3: [
+      { value: 'product-five', key: 'priceProductFive', price: '₺ 3.500' },
+      { value: 'product-ten', key: 'priceProductTen', price: '₺ 6.000' }
+    ],
+    opt4: [
+      { value: 'event-twenty', key: 'priceEventTwenty', price: '₺ 5.000' },
+      { value: 'event-forty', key: 'priceEventForty', price: '₺ 8.500' }
+    ],
+    opt5: [
+      { value: 'color-one', key: 'priceColorOne', price: '₺ 200' },
+      { value: 'color-five', key: 'priceColorFive', price: '₺ 900' },
+      { value: 'color-fifteen', key: 'priceColorFifteen', price: '₺ 2.400' }
+    ],
+    opt6: [
+      { value: 'wedding-forty', key: 'priceWeddingForty', price: '₺ 8.500' },
+      { value: 'wedding-eighty', key: 'priceWeddingEighty', price: '₺ 15.000' }
+    ],
+    opt7: [
+      { value: 'custom-five', key: 'priceCustomFive', quote: true },
+      { value: 'custom-ten', key: 'priceCustomTen', quote: true },
+      { value: 'custom-twenty', key: 'priceCustomTwenty', quote: true }
+    ]
+  };
+
+  function currentCopy() {
+    return translations[document.documentElement.lang] || translations.en;
+  }
+
+  function refreshPackageLabels() {
+    const copy = currentCopy();
+    Array.from(packageSelect.options).forEach((option) => {
+      if (option.dataset.i18nKey) {
+        const priceText = option.dataset.quote === 'true' ? copy.priceQuoteAfterReview : option.dataset.price;
+        option.textContent = (copy[option.dataset.i18nKey] || '') + ' — ' + priceText;
+      } else if (!option.value) {
+        option.textContent = copy.photoCountPlaceholder;
+      }
+    });
+  }
+
+  function updatePackageOptions() {
+    const selected = sessionSelect.options[sessionSelect.selectedIndex];
+    const sessionKey = selected ? selected.getAttribute('data-i18n-value') : '';
+    const packageOptions = packagesBySession[sessionKey] || [];
+    const copy = currentCopy();
+    packageSelect.innerHTML = '';
+
+    const placeholder = document.createElement('option');
+    placeholder.value = '';
+    placeholder.disabled = true;
+    placeholder.selected = true;
+    placeholder.textContent = copy.photoCountPlaceholder;
+    packageSelect.appendChild(placeholder);
+
+    packageOptions.forEach((item) => {
+      const option = document.createElement('option');
+      option.value = item.value;
+      option.dataset.i18nKey = item.key;
+      if (item.price) option.dataset.price = item.price;
+      if (item.quote) option.dataset.quote = 'true';
+      option.textContent = copy[item.key] || item.key;
+      packageSelect.appendChild(option);
+    });
+
+    packageSelect.disabled = false;
+    packageSelect.required = true;
+    refreshPackageLabels();
+  }
+
+  sessionSelect.addEventListener('change', updatePackageOptions);
+  window.refreshPhotoPackageLocale = refreshPackageLabels;
+  updatePackageOptions();
+}
+document.addEventListener('DOMContentLoaded', initPhotoPackageSelector);
+
 
 
 
