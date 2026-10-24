@@ -58,8 +58,6 @@ const translations = {
     pricePortraitFive: "5 صور معدّلة",
     priceStarting: "يبدأ من",
     priceCta: "اسأل عن الباقة",
-    priceDisclaimer: "كل باقة تشمل العدد الموضح من الصور الرقمية المعدّلة. الصور الإضافية والألبوم والفيديو تُتفق بشكل منفصل عبر واتساب.",
-    priceSourceLabel: "مرجع تقدير الأسعار:
     contactTop1: "جاهز تحوّل فكرتك لصورة؟", contactTop2: "ابدأ طلبك عبر واتساب",
     contactTitle: "خلّي فكرتك<br><em>تصير صورة.</em>",
     contactDesc: "اختر نوع التصوير واكتب لنا فكرتك. سنجهّز رسالة واتساب لتراجعها قبل إرسالها.",
@@ -130,8 +128,6 @@ const translations = {
     pricePortraitFive: "5 düzenlenmiş fotoğraf",
     priceStarting: "başlangıç",
     priceCta: "Paketi sor",
-    priceDisclaimer: "Her paket belirtilen sayıda düzenlenmiş dijital fotoğraf içerir. Ek fotoğraflar, albüm ve video WhatsApp üzerinden ayrıca kararlaştırılır.",
-    priceSourceLabel: "Fiyat başlangıçlarını belirlerken 2026 Türkiye ve Gaziantep piyasa aralıkları dikkate alınmıştır:
     contactTop1: "Fikrini bir kareye dönüştürelim mi?", contactTop2: "WhatsApp üzerinden talep oluştur",
     contactTitle: "Fikrini<br><em>kareye dönüştür.</em>",
     contactDesc: "Çekim türünü seç ve fikrini yaz. Göndermeden önce incelemen için WhatsApp mesajı hazırlayalım.",
@@ -202,8 +198,6 @@ const translations = {
     pricePortraitFive: "5 edited photos",
     priceStarting: "starting at",
     priceCta: "Ask about package",
-    priceDisclaimer: "Each package includes the listed number of edited digital photos. Extra photos, albums, and video are agreed separately on WhatsApp.",
-    priceSourceLabel: "Starting prices were calibrated against 2026 Türkiye and Gaziantep market estimates:
     contactTop1: "Ready to turn an idea into a photograph?", contactTop2: "Start your request on WhatsApp",
     contactTitle: "Let's turn your idea<br><em>into a frame.</em>",
     contactDesc: "Choose a shoot type and share your idea. We'll prepare a WhatsApp message for you to review before sending.",
