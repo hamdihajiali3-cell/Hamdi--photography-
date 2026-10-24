@@ -3902,3 +3902,20 @@ body :is(h1, h2, h3, .eyebrow, .brand-mark, .brand-name, .card-caption,
     transform: none;
   }
 }
+
+
+/* Protect Arabic pricing-title glyphs from tight line height and negative tracking. */
+.price-guide .section-heading h2 {
+  letter-spacing: normal;
+  line-height: 1.2;
+  padding-top: .12em;
+  padding-bottom: .24em;
+  overflow: visible;
+}
+.price-guide .section-heading h2 em {
+  display: inline-block;
+  font-style: normal;
+  letter-spacing: normal;
+  line-height: 1.24;
+  padding: .04em .08em .14em;
+}
