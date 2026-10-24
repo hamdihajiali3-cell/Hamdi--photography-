@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css?v=square-packages-clean-20261024">
+  <link rel="stylesheet" href="style.css?v=session-photo-counts-color-edit-20261024">
   <script type="importmap">
   {
     "imports": {
@@ -19,7 +19,7 @@
     }
   }
   </script>
-  <script type="module" src="script.js?v=square-packages-clean-20261024"></script>
+  <script type="module" src="script.js?v=session-photo-counts-color-edit-20261024"></script>
 </head>
 
 <body>
@@ -385,15 +385,24 @@
           <option value="تصوير تخرّج" data-i18n="opt2" data-i18n-value="opt2">تصوير تخرّج</option>
           <option value="تصوير تجاري" data-i18n="opt3" data-i18n-value="opt3">تصوير تجاري</option>
           <option value="تصوير مناسبة" data-i18n="opt4" data-i18n-value="opt4">تصوير مناسبة</option>
-          <option value="طلب آخر" data-i18n="opt5" data-i18n-value="opt5">طلب آخر</option>
+          <option value="تعديل ألوان الصور" data-i18n="opt5" data-i18n-value="opt5">تعديل ألوان الصور</option>
+          <option value="خطوبة وزفاف" data-i18n="opt6" data-i18n-value="opt6">خطوبة وزفاف</option>
+          <option value="طلب آخر" data-i18n="opt7" data-i18n-value="opt7">طلب آخر</option>
         </select>
+
+        <div class="booking-field" id="photoPackageField">
+          <label class="booking-label" for="photoPackage" data-i18n="photoCountLabel">عدد الصور والباقة</label>
+          <select id="photoPackage" class="contact-field" required disabled aria-describedby="contactFormHint">
+            <option value="" disabled selected data-i18n="photoCountPlaceholder">اختر عدد الصور</option>
+          </select>
+        </div>
 
         <div class="booking-field" id="preferredDateField">
           <label class="booking-label" for="preferredDate" data-i18n="dateLabel">التاريخ المفضّل</label>
           <input type="text" id="preferredDate" class="contact-field" lang="ar" dir="rtl" data-i18n-placeholder="datePlaceholder" placeholder="اختر التاريخ" autocomplete="off" readonly required aria-haspopup="dialog" aria-expanded="false" aria-controls="bookingCalendar" aria-describedby="contactFormHint">
         </div>
 
-                <section class="price-guide section" id="pricing">
+                        <section class="price-guide section" id="pricing">
           <div class="section-heading">
             <div>
               <p class="eyebrow" data-i18n="priceEyebrow">باقات تصوير · غازي عنتاب</p>
@@ -415,9 +424,20 @@
                 <a class="price-cta" href="#contact" data-select-service="opt1"><span data-i18n="priceCta">اسأل عن الباقة</span><span aria-hidden="true">↗</span></a>
               </div>
             </article>
-
             <article class="price-card">
-              <span class="price-card-index">02 / COMMERCIAL</span>
+              <span class="price-card-index">02 / GRADUATION</span>
+              <h3 data-i18n="priceGraduationTitle">تخرج</h3>
+              <p data-i18n="priceGraduationDesc">صور التخرج مع باقات حسب عدد الصور.</p>
+              <div class="price-card-bottom">
+                <div class="price-options" role="list">
+                  <div class="price-option" role="listitem"><span class="price-option-label" data-i18n="priceGraduationTen">10 صور تخرج</span><strong class="price-option-price" dir="ltr">₺ 3.000</strong></div>
+                  <div class="price-option" role="listitem"><span class="price-option-label" data-i18n="priceGraduationTwenty">20 صورة تخرج</span><strong class="price-option-price" dir="ltr">₺ 5.000</strong></div>
+                </div>
+                <a class="price-cta" href="#contact" data-select-service="opt2"><span data-i18n="priceCta">اسأل عن الباقة</span><span aria-hidden="true">↗</span></a>
+              </div>
+            </article>
+            <article class="price-card">
+              <span class="price-card-index">03 / COMMERCIAL</span>
               <h3 data-i18n="priceProductTitle">منتجات وتجاري</h3>
               <p data-i18n="priceProductDesc">صور منتجات بخلفية بسيطة؛ الزوايا أو التنسيق الإضافي تُسعّر منفصلًا.</p>
               <div class="price-card-bottom">
@@ -428,9 +448,8 @@
                 <a class="price-cta" href="#contact" data-select-service="opt3"><span data-i18n="priceCta">اسأل عن الباقة</span><span aria-hidden="true">↗</span></a>
               </div>
             </article>
-
             <article class="price-card price-card-featured">
-              <span class="price-card-index">03 / EVENT</span>
+              <span class="price-card-index">04 / EVENT</span>
               <h3 data-i18n="priceEventTitle">مناسبة وفعالية</h3>
               <p data-i18n="priceEventDesc">تغطية مناسبة مع صور معدّلة مختارة حسب الباقة.</p>
               <div class="price-card-bottom">
@@ -441,9 +460,8 @@
                 <a class="price-cta" href="#contact" data-select-service="opt4"><span data-i18n="priceCta">اسأل عن الباقة</span><span aria-hidden="true">↗</span></a>
               </div>
             </article>
-
             <article class="price-card">
-              <span class="price-card-index">04 / WEDDING</span>
+              <span class="price-card-index">05 / WEDDING</span>
               <h3 data-i18n="priceWeddingTitle">خطوبة وزفاف</h3>
               <p data-i18n="priceWeddingDesc">تغطية خطوبة أو زفاف؛ الألبوم المطبوع والفيديو بعرض منفصل.</p>
               <div class="price-card-bottom">
@@ -451,12 +469,23 @@
                   <div class="price-option" role="listitem"><span class="price-option-label" data-i18n="priceWeddingForty">40 صورة · حتى 4 ساعات</span><strong class="price-option-price" dir="ltr">₺ 8.500</strong></div>
                   <div class="price-option" role="listitem"><span class="price-option-label" data-i18n="priceWeddingEighty">80 صورة · حتى 6 ساعات</span><strong class="price-option-price" dir="ltr">₺ 15.000</strong></div>
                 </div>
-                <a class="price-cta" href="#contact" data-select-service="opt4"><span data-i18n="priceCta">اسأل عن الباقة</span><span aria-hidden="true">↗</span></a>
+                <a class="price-cta" href="#contact" data-select-service="opt6"><span data-i18n="priceCta">اسأل عن الباقة</span><span aria-hidden="true">↗</span></a>
+              </div>
+            </article>
+            <article class="price-card">
+              <span class="price-card-index">06 / COLOR</span>
+              <h3 data-i18n="priceColorTitle">تعديل ألوان الصور</h3>
+              <p data-i18n="priceColorDesc">تصحيح الإضاءة وتوازن الألوان للصور الرقمية.</p>
+              <div class="price-card-bottom">
+                <div class="price-options" role="list">
+                  <div class="price-option" role="listitem"><span class="price-option-label" data-i18n="priceColorOne">صورة واحدة معدّلة ألوانيًا</span><strong class="price-option-price" dir="ltr">₺ 200</strong></div>
+                  <div class="price-option" role="listitem"><span class="price-option-label" data-i18n="priceColorFive">5 صور معدّلة ألوانيًا</span><strong class="price-option-price" dir="ltr">₺ 900</strong></div>
+                  <div class="price-option" role="listitem"><span class="price-option-label" data-i18n="priceColorFifteen">15 صورة معدّلة ألوانيًا</span><strong class="price-option-price" dir="ltr">₺ 2.400</strong></div>
+                </div>
+                <a class="price-cta" href="#contact" data-select-service="opt5"><span data-i18n="priceCta">اسأل عن الباقة</span><span aria-hidden="true">↗</span></a>
               </div>
             </article>
           </div>
-
-          
         </section>
 
         <div class="booking-field" id="preferredTimeField">
