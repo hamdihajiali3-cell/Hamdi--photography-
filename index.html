@@ -19,7 +19,7 @@
     }
   }
   </script>
-  <script type="module" src="script.js?v=signature-album-20261023"></script>
+  <script type="module" src="script.js?v=loader-counter-fixed-20261024"></script>
 </head>
 
 <body>
@@ -49,6 +49,71 @@
       <span class="loader-subcaption" data-i18n="loadingSubtext">لحظات ونبدأ الحكاية</span>
     </div>
   </div>
+  <script>
+  (function () {
+    var loader = document.getElementById('siteLoader');
+    if (!loader) return;
+
+    var meter = loader.querySelector('.loader-meter');
+    var ring = document.getElementById('loaderRingProgress');
+    var number = document.getElementById('loaderPercent');
+    var progressBar = document.getElementById('loaderProgressBar');
+    var startedAt = Date.now();
+    var duration = 5000;
+    var circumference = 2 * Math.PI * 68;
+    var completed = false;
+    var intervalId = 0;
+    var fallbackId = 0;
+
+    function render(progress) {
+      var shown = Math.min(100, Math.floor(progress));
+      if (number) {
+        var locale = ({ ar: 'ar', tr: 'tr-TR', en: 'en-US' })[document.documentElement.lang] || 'en-US';
+        try {
+          number.textContent = new Intl.NumberFormat(locale, { maximumFractionDigits: 0 }).format(shown);
+        } catch (error) {
+          number.textContent = String(shown);
+        }
+      }
+      if (meter) meter.setAttribute('aria-valuenow', String(shown));
+      if (ring) ring.style.strokeDashoffset = String(circumference * (1 - progress / 100));
+      if (progressBar) progressBar.style.width = progress + '%';
+    }
+
+    function complete() {
+      if (completed) return;
+      completed = true;
+      render(100);
+      if (intervalId) window.clearInterval(intervalId);
+      if (fallbackId) window.clearTimeout(fallbackId);
+      loader.classList.add('is-complete');
+      loader.setAttribute('aria-hidden', 'true');
+      window.setTimeout(function () {
+        if (loader.parentNode) loader.parentNode.removeChild(loader);
+      }, 820);
+    }
+
+    function tick() {
+      if (completed) return;
+      var progress = Math.min(100, ((Date.now() - startedAt) / duration) * 100);
+      render(progress);
+      if (progress >= 100) complete();
+    }
+
+    if (typeof window.requestAnimationFrame === 'function') {
+      function frame() {
+        tick();
+        if (!completed) window.requestAnimationFrame(frame);
+      }
+      window.requestAnimationFrame(frame);
+    } else {
+      intervalId = window.setInterval(tick, 32);
+      tick();
+    }
+
+    fallbackId = window.setTimeout(complete, 5800);
+  }());
+  </script>
   <div class="noise"></div>
   <div class="flash-atmosphere" aria-hidden="true">
     <span class="ambient-lightwave"></span>
