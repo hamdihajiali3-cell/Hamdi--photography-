@@ -3672,6 +3672,14 @@ body::after {
   position: relative;
   display: inline-block;
   padding-bottom: .12em;
+  color: var(--text);
+  background: linear-gradient(105deg, #f4ead8 8%, #ead9b4 30%, #fff5df 47%, #d6b879 63%, #8ba8c0 82%, #f4ead8 100%);
+  background-size: 230% 100%;
+  background-position: 100% 50%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: hamdi-price-title-shimmer 6.2s ease-in-out infinite;
 }
 .price-guide .section-heading h2 em {
   color: var(--gold);
