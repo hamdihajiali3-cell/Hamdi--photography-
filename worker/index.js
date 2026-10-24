@@ -126,10 +126,6 @@ export default {
     if (!safeMessages.length || safeMessages[safeMessages.length - 1].role !== "user") {
       return json({ error: "A user message is required." }, 400, origin);
     }
-    if (!checkRateLimit) {
-      return json({ error: "Try again later." }, 429, origin);
-    }
-
     try {
       const upstream = await fetch("https://api.openai.com/v1/responses", {
         method: "POST",
