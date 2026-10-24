@@ -3939,3 +3939,33 @@ body :is(h1, h2, h3, p, label, strong, small, .eyebrow, .nav a, .text-link,
     transition: none;
   }
 }
+
+
+/* Keep nested label text crisp while the enclosing element carries its own sheen. */
+:where(.brand-mark span, .nav a span, .text-link span, .service-cta span, .price-cta span,
+  .card-number span, .card-caption span, .card-caption b, .contact-details span,
+  .footer p span, .button span:not([aria-hidden="true"])) {
+  background-image: linear-gradient(105deg, currentColor 0%, currentColor 44%, rgba(255, 246, 225, .88) 50%, currentColor 56%, currentColor 100%);
+  background-size: 240% 100%;
+  background-position: 110% 50%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: hamdi-global-text-sheen 10.5s ease-in-out infinite;
+}
+@supports not ((background-clip: text) or (-webkit-background-clip: text)) {
+  :where(.brand-mark span, .nav a span, .text-link span, .service-cta span, .price-cta span,
+    .card-number span, .card-caption span, .card-caption b, .contact-details span,
+    .footer p span, .button span:not([aria-hidden="true"])) {
+    background-image: none;
+    -webkit-text-fill-color: currentColor;
+    animation: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :where(.brand-mark span, .nav a span, .text-link span, .service-cta span, .price-cta span,
+    .card-number span, .card-caption span, .card-caption b, .contact-details span,
+    .footer p span, .button span:not([aria-hidden="true"])) {
+    animation: none !important;
+  }
+}
