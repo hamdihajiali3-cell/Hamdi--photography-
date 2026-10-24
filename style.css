@@ -3765,22 +3765,3 @@ body::after {
 @media (prefers-reduced-motion: reduce) {
   .price-card, .price-cta, .price-cta span:last-child { transition: none; }
 }
-
-
-/* Keep booking controls compact while the price cards span the form width. */
-.contact-form {
-  max-width: 980px;
-  align-items: center;
-}
-.contact-form > .contact-field,
-.contact-form > .booking-field,
-.contact-form > .contact-form-hint,
-.contact-form > .contact-submit {
-  width: min(500px, 100%);
-}
-.contact-form > .price-guide {
-  width: 100%;
-  max-width: none;
-  align-self: stretch;
-  margin: 20px 0 12px;
-}
