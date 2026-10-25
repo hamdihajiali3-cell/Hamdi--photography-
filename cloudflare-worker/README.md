@@ -1,24 +1,22 @@
-# Hamdi Photography AI Worker
+# تفعيل مساعد Hamdi Photography بأمان
 
-This Worker keeps the OpenAI API key on the server. Never place the key in the website, GitHub files, browser storage, or a chat message.
+الموقع يبقى على GitHub Pages، بينما يتصل المساعد بخادم Cloudflare Worker. **لا تضع مفتاح OpenAI في GitHub أو ملفات الموقع ولا ترسله في المحادثة.**
 
-## Set up and deploy
+## النشر من لوحة Cloudflare
 
-1. Install Node.js, then open a terminal in `cloudflare-worker`.
-2. Run `npx wrangler login` and sign in to your Cloudflare account.
-3. Create a **new** OpenAI API key after revoking any key shared in a message or repository.
-4. Run `npx wrangler secret put OPENAI_API_KEY`. Paste the new key into the terminal's hidden prompt. Do not paste it into GitHub or this conversation.
-5. Run `npx wrangler deploy`. Wrangler prints the public Worker address, for example `https://hamdi-photography-ai.<your-account>.workers.dev`.
-6. Set `window.HAMDI_AI_ENDPOINT` in the repository's `ai-config.js` to that address plus `/api/chat`, then publish the site.
+1. افتح [Cloudflare Dashboard](https://dash.cloudflare.com/) وسجّل الدخول أو أنشئ حسابًا.
+2. افتح **Workers & Pages** ثم **Create application** واختر **GitHub**.
+3. اربط حساب GitHub واختر المستودع `hamdihajiali3-cell/Hamdi--photography-`.
+4. اضبط فرع النشر على `main`، ومجلد المشروع على `cloudflare-worker`. اترك أمر البناء فارغًا، واستخدم أمر النشر `npx wrangler deploy`. ثم اختر **Save and Deploy**.
+5. بعد ظهور الـWorker، افتحه ثم **Settings → Variables and Secrets → Add → Secret**. اسم السر `OPENAI_API_KEY`، والقيمة هي مفتاح OpenAI الجديد. احفظه وانشر التغيير. هذه القيمة لا تظهر لزوار الموقع.
+6. انسخ عنوان Worker الذي ينتهي بـ `.workers.dev` وأرسله إلى مساعد Codex فقط. أرسل العنوان العام، **ولا ترسل مفتاح OpenAI**. سأضع العنوان في `ai-config.js` ليتصل زر المساعد بالموقع.
 
-The website only sends chat text to this Worker. The OpenAI key stays in Cloudflare's encrypted secret storage. The Worker allows requests only from the GitHub Pages site, limits message size and history, uses the cost-efficient GPT-6 Luna model, and applies a Cloudflare per-IP rate limit of 10 requests per minute. Cloudflare's rate limit is approximate and can be shared by visitors behind the same network.
+إذا لم يظهر خيار GitHub أو واجهت شاشة مختلفة، أرسل صورة للشاشة بعد إخفاء أي مفاتيح أو بيانات سرية.
 
-## Local development
+## ملاحظات
 
-For local testing only, create `.dev.vars` in this folder with:
-
-```dotenv
-OPENAI_API_KEY="your-new-key"
-```
-
-Delete it after use. The repository ignores `.dev.vars`; never commit the key. 
+- احذف أي مفتاح سبق إرساله في محادثة أو إضافته إلى مستودع، ثم راجع صفحة الاستخدام.
+- واجهة المساعد مخفية حتى إضافة عنوان Worker؛ لذلك لن يظهر زر معطّل قبل اكتمال الربط.
+- يستخدم الخادم GPT-6 Luna، ويقبل الطلبات من موقع GitHub Pages فقط، ويحد طول الرسائل والسجل، ويضبط حدًا تقريبيًا قدره 10 طلبات في الدقيقة لكل عنوان IP.
+- عنوان الموقع المسموح مضبوط في `wrangler.toml` على `https://hamdihajiali3-cell.github.io`.
+- لا تضع أي سر داخل `ai-config.js`؛ هذا الملف يحتوي عنوان Worker العام فقط.
