@@ -142,9 +142,19 @@ export default {
     }
 
     if (!upstream.ok) {
-      // Do not pass provider response bodies or credentials back to the public website.
-      const status = upstream.status === 429 ? 503 : 502;
-      return json({ error: upstream.status === 429 ? "temporarily_unavailable" : "upstream_error" }, status, allowedOrigin);
+      // Expose only a safe error category; never forward provider response bodies or credentials.
+      const statusCode = upstream.status;
+      const error = statusCode === 401 || statusCode === 403
+        ? "openai_key_or_permissions"
+        : statusCode === 429
+          ? "openai_quota_or_rate_limit"
+          : statusCode === 404
+            ? "openai_model_unavailable"
+            : statusCode === 400
+              ? "openai_request_invalid"
+              : "upstream_error";
+      console.error("OpenAI request failed", { status: statusCode });
+      return json({ error }, statusCode === 429 ? 503 : 502, allowedOrigin);
     }
 
     let result;
