@@ -1647,3 +1647,56 @@ if (document.readyState === 'loading') {
 } else {
   initSignatureAlbumInteraction();
 }
+
+/* AI assistant uses only a public Worker URL; no API key is sent to the browser. */
+(() => {
+  const endpoint = typeof window.HAMDI_AI_ENDPOINT === 'string' ? window.HAMDI_AI_ENDPOINT.trim() : '';
+  const root = document.getElementById('hamdiAi');
+  if (!root || !endpoint) return;
+  root.hidden = false;
+  const panel = document.getElementById('hamdiAiPanel'), launch = document.getElementById('hamdiAiLaunch');
+  const input = document.getElementById('hamdiAiInput'), send = document.getElementById('hamdiAiSend');
+  const messages = document.getElementById('hamdiAiMessages'), suggestions = document.getElementById('hamdiAiSuggestions');
+  const history = [];
+  const copy = {
+    ar: {launcher:'مساعد حمدي',title:'مساعد حمدي',subtitle:'مساعدك للتصوير والحجوزات',close:'إغلاق المساعد',placeholder:'اكتب سؤالك...',send:'إرسال',note:'تُرسل رسالتك إلى المساعد للإجابة فقط.',greeting:'أهلاً! أنا مساعد حمدي. اسألني عن الباقات أو الحجز أو تعديل الألوان.',buttons:['أسعار الجلسات','تعديل الألوان','طريقة الحجز'],questions:['ما أسعار باقات التصوير؟','ما أسعار تعديل ألوان الصور؟','كيف أحجز جلسة تصوير؟'],busy:'عم بكتب لك...',error:'ما قدرت أوصل للمساعد الآن. جرّب مرة ثانية أو تواصل مع حمدي عبر واتساب.'},
+    tr: {launcher:'Hamdi Asistan',title:'Hamdi Asistan',subtitle:'Fotoğraf ve randevu yardımcınız',close:'Asistanı kapat',placeholder:'Sorunuzu yazın...',send:'Gönder',note:'Mesajınız yalnızca yanıt üretmek için gönderilir.',greeting:'Merhaba! Ben Hamdi’nin asistanıyım. Paketler, randevu veya renk düzenleme hakkında sorabilirsiniz.',buttons:['Çekim fiyatları','Renk düzenleme','Nasıl randevu alırım?'],questions:['Fotoğraf çekimi paketlerinin fiyatları nedir?','Renk düzenleme fiyatları nedir?','Nasıl fotoğraf çekimi randevusu alabilirim?'],busy:'Yanıt hazırlanıyor...',error:'Şu anda asistana ulaşılamıyor. Tekrar deneyin veya WhatsApp’tan Hamdi’ye yazın.'},
+    en: {launcher:'Hamdi assistant',title:'Hamdi assistant',subtitle:'Photography and booking help',close:'Close assistant',placeholder:'Type your question...',send:'Send',note:'Your message is sent only to generate a reply.',greeting:'Hi! I’m Hamdi’s assistant. Ask me about packages, booking, or color editing.',buttons:['Session prices','Color editing','How to book'],questions:['What are the photography package prices?','What are the color-editing prices?','How can I book a photography session?'],busy:'Writing a reply...',error:'I could not reach the assistant. Try again or contact Hamdi on WhatsApp.'}
+  };
+  const lang=()=>copy[document.documentElement.lang] ? document.documentElement.lang : 'ar';
+  const t=()=>copy[lang()];
+  function translate(){
+    root.querySelectorAll('[data-ai]').forEach(el=>{const key=el.dataset.ai;if(t()[key])el.textContent=t()[key];});
+    input.placeholder=t().placeholder;
+    input.setAttribute('aria-label',t().placeholder);
+    document.getElementById('hamdiAiClose').setAttribute('aria-label',t().close);
+    send.setAttribute('aria-label',t().send);
+    root.querySelectorAll('[data-ai-suggestion]').forEach((el,i)=>el.textContent=t().buttons[i]);
+    root.querySelector('.hamdi-ai-note').textContent=t().note;
+  }
+  function add(text,role,error=false){const el=document.createElement('div');el.className='hamdi-ai-message '+(role==='user'?'is-user':'is-assistant')+(error?' is-error':'');el.textContent=text;messages.appendChild(el);messages.scrollTop=messages.scrollHeight;return el;}
+  function open(){panel.hidden=false;launch.setAttribute('aria-expanded','true');if(!messages.childElementCount)add(t().greeting,'assistant');input.focus();}
+  function close(){panel.hidden=true;launch.setAttribute('aria-expanded','false');launch.focus();}
+  launch.addEventListener('click',()=>panel.hidden?open():close());
+  document.getElementById('hamdiAiClose').addEventListener('click',close);
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!panel.hidden)close();});
+  async function ask(value){
+    const message=String(value||'').trim();if(!message||send.disabled)return;
+    suggestions.hidden=true;add(message,'user');input.value='';input.style.height='';send.disabled=true;
+    const pending=add(t().busy,'assistant');
+    const abort=new AbortController(),timer=setTimeout(()=>abort.abort(),30000);
+    try{
+      const response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message,history:history.slice(-8),language:lang()}),signal:abort.signal});
+      const data=await response.json().catch(()=>({}));
+      pending.remove();if(!response.ok||typeof data.reply!=='string')throw new Error('request_failed');
+      add(data.reply,'assistant');history.push({role:'user',content:message},{role:'assistant',content:data.reply});if(history.length>8)history.splice(0,history.length-8);
+    }catch(e){pending.remove();add(t().error,'assistant',true);suggestions.hidden=false;}
+    finally{clearTimeout(timer);send.disabled=false;input.focus();}
+  }
+  document.getElementById('hamdiAiForm').addEventListener('submit',e=>{e.preventDefault();ask(input.value);});
+  input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();document.getElementById('hamdiAiForm').requestSubmit();}});
+  input.addEventListener('input',()=>{input.style.height='auto';input.style.height=Math.min(input.scrollHeight,100)+'px';});
+  suggestions.addEventListener('click',e=>{const button=e.target.closest('[data-ai-suggestion]');if(!button)return;const i={prices:0,color:1,booking:2}[button.dataset.aiSuggestion];ask(t().questions[i]);});
+  translate();
+  new MutationObserver(translate).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
+})();
