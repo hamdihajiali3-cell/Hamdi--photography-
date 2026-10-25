@@ -7,6 +7,9 @@ workers_dev = true
 ALLOWED_ORIGIN = "https://hamdihajiali3-cell.github.io"
 OPENAI_MODEL = "gpt-6-luna"
 
+[secrets]
+required = ["OPENAI_API_KEY"]
+
 [[ratelimits]]
 name = "CHAT_RATE_LIMITER"
 namespace_id = "202610251"
