@@ -2,16 +2,27 @@
 
 الموقع يبقى على GitHub Pages، بينما يتصل المساعد بخادم Cloudflare Worker. **لا تضع مفتاح OpenAI في GitHub أو ملفات الموقع ولا ترسله في المحادثة.**
 
-## النشر من لوحة Cloudflare
+## إصلاح إعداد النشر الحالي
 
-1. افتح [Cloudflare Dashboard](https://dash.cloudflare.com/) وسجّل الدخول أو أنشئ حسابًا.
-2. افتح **Workers & Pages** ثم **Create application** واختر **GitHub**.
-3. اربط حساب GitHub واختر المستودع `hamdihajiali3-cell/Hamdi--photography-`.
-4. اضبط فرع النشر على `main`، ومجلد المشروع على `cloudflare-worker`. اترك أمر البناء فارغًا، واستخدم أمر النشر `npx wrangler deploy`. ثم اختر **Save and Deploy**.
-5. بعد ظهور الـWorker، افتحه ثم **Settings → Variables and Secrets → Add → Secret**. اسم السر `OPENAI_API_KEY`، والقيمة هي مفتاح OpenAI الجديد. احفظه وانشر التغيير. هذه القيمة لا تظهر لزوار الموقع.
-6. انسخ عنوان Worker الذي ينتهي بـ `.workers.dev` وأرسله إلى مساعد Codex فقط. أرسل العنوان العام، **ولا ترسل مفتاح OpenAI**. سأضع العنوان في `ai-config.js` ليتصل زر المساعد بالموقع.
+Cloudflare أنشأ Worker باسم `hamdi--photography`، لكن أول نشر استخدم مجلد الموقع الرئيسي. نحتاج توجيه البناء إلى مجلد الخادم:
 
-إذا لم يظهر خيار GitHub أو واجهت شاشة مختلفة، أرسل صورة للشاشة بعد إخفاء أي مفاتيح أو بيانات سرية.
+1. في صفحة Worker افتح **Settings → Builds**.
+2. غيّر **Root directory** من `/` إلى `cloudflare-worker`.
+3. اترك **Build command** فارغًا، وخلي **Deploy command** كما هو: `npx wrangler deploy`.
+4. تأكد أن الفرع `main`، ثم احفظ الإعدادات وأعد النشر.
+
+اسم Worker مضبوط في `wrangler.toml` على `hamdi--photography` لمطابقة الاسم الذي أنشأه Cloudflare.
+
+## إضافة مفتاح OpenAI سرًّا
+
+بعد نجاح نشر مجلد `cloudflare-worker`:
+
+1. افتح Worker ثم **Settings → Variables and Secrets → Add → Secret**.
+2. اسم السر `OPENAI_API_KEY`، والقيمة مفتاح OpenAI الجديد. احفظه وانشر التغيير. السر لن يظهر لزوار الموقع.
+3. لا ترسل المفتاح في GitHub أو المحادثة. أرسل لي فقط عنوان Worker العام الذي ينتهي بـ `.workers.dev`.
+4. سأضع العنوان في `ai-config.js` ليظهر المساعد على الموقع.
+
+إذا واجهت صفحة مختلفة، أرسل نص الخيارات الظاهرة أو صورة بعد إخفاء أي مفاتيح أو بيانات سرية.
 
 ## ملاحظات
 
