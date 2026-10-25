@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css?v=hamdi-pricing-arabic-heading-fix-20261024">
+  <link rel="stylesheet" href="style.css?v=secure-ai-assistant-20261025">
   <script type="importmap">
   {
     "imports": {
@@ -19,7 +19,8 @@
     }
   }
   </script>
-  <script type="module" src="script.js?v=more-photo-count-options-20261024"></script>
+  <script src="ai-config.js?v=secure-ai-assistant-20261025"></script>
+  <script type="module" src="script.js?v=secure-ai-assistant-20261025"></script>
 </head>
 
 <body>
@@ -524,5 +525,29 @@
     <p>© <span id="year"></span> Hamdi Photography. <span data-i18n="rightsText">جميع الحقوق محفوظة.</span></p>
     <a href="#home" class="back-top" data-i18n="backTop">العودة للاعلى ↑</a>
   </footer>
+  <div class="hamdi-ai" id="hamdiAi" hidden>
+    <button class="hamdi-ai-launch" id="hamdiAiLaunch" type="button" aria-expanded="false" aria-controls="hamdiAiPanel">
+      <span class="hamdi-ai-mark" aria-hidden="true">✦</span><span data-ai="launcher">مساعد حمدي</span>
+    </button>
+    <section class="hamdi-ai-panel" id="hamdiAiPanel" role="dialog" aria-modal="false" aria-labelledby="hamdiAiTitle" hidden>
+      <header class="hamdi-ai-head">
+        <span class="hamdi-ai-avatar" aria-hidden="true">HP</span>
+        <div><strong id="hamdiAiTitle" data-ai="title">مساعد حمدي</strong><small data-ai="subtitle">مساعدك للتصوير والحجوزات</small></div>
+        <button class="hamdi-ai-close" id="hamdiAiClose" type="button" aria-label="إغلاق المساعد">×</button>
+      </header>
+      <div class="hamdi-ai-messages" id="hamdiAiMessages" role="log" aria-live="polite"></div>
+      <div class="hamdi-ai-suggestions" id="hamdiAiSuggestions">
+        <button type="button" data-ai-suggestion="prices">أسعار الجلسات</button>
+        <button type="button" data-ai-suggestion="color">تعديل الألوان</button>
+        <button type="button" data-ai-suggestion="booking">طريقة الحجز</button>
+      </div>
+      <form class="hamdi-ai-form" id="hamdiAiForm">
+        <label class="visually-hidden" for="hamdiAiInput">اكتب سؤالك</label>
+        <textarea id="hamdiAiInput" rows="1" maxlength="1200" placeholder="اكتب سؤالك..." required></textarea>
+        <button type="submit" id="hamdiAiSend" aria-label="إرسال">↑</button>
+      </form>
+      <p class="hamdi-ai-note" data-ai="note">تُرسل رسالتك إلى المساعد للإجابة فقط.</p>
+    </section>
+  </div>
 </body>
 </html>
