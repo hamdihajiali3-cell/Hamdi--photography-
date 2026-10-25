@@ -60,7 +60,8 @@
     var number = document.getElementById('loaderPercent');
     var progressBar = document.getElementById('loaderProgressBar');
     var startedAt = Date.now();
-    var duration = 5000;
+    var compactScreen = window.matchMedia && window.matchMedia('(max-width: 700px), (pointer: coarse)').matches;
+    var duration = compactScreen ? 1800 : 5000;
     var circumference = 2 * Math.PI * 68;
     var completed = false;
     var intervalId = 0;
@@ -112,7 +113,7 @@
       tick();
     }
 
-    fallbackId = window.setTimeout(complete, 5800);
+    fallbackId = window.setTimeout(complete, duration + 1000);
   }());
   </script>
   <div class="noise"></div>
@@ -243,56 +244,56 @@
         </div>
         <div class="gallery" data-immersive-gallery tabindex="0" data-i18n-aria-label="galleryLabel" aria-label="معرض الصور التفاعلي">
         <div class="gallery-card card-tall" role="button" tabindex="0" aria-haspopup="dialog">
-          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1000&q=85" alt="بورتريه بتعبير هادئ" data-i18n-alt="g1Alt">
+          <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1000&q=80" alt="بورتريه بتعبير هادئ" data-i18n-alt="g1Alt">
           <span class="image-shade"></span>
           <span class="card-number">01 / <span data-i18n="g1">بورتريه</span></span>
           <span class="card-caption"><span data-i18n="gc1">النظرة الهادئة</span> <b>↗</b></span>
         </div>
 
         <div class="gallery-card card-wide" role="button" tabindex="0" aria-haspopup="dialog">
-          <img src="https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=1200&q=85" alt="سماء ليلية بألوان سينمائية" data-i18n-alt="g2Alt">
+          <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=1000&q=80" alt="سماء ليلية بألوان سينمائية" data-i18n-alt="g2Alt">
           <span class="image-shade"></span>
           <span class="card-number">02 / <span data-i18n="g2">أجواء</span></span>
           <span class="card-caption"><span data-i18n="gc2">بعد الساعة الزرقاء</span> <b>↗</b></span>
         </div>
 
         <div class="gallery-card card-wide" role="button" tabindex="0" aria-haspopup="dialog">
-          <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1200&q=85" alt="صورة أزياء بطابع تحريري" data-i18n-alt="g3Alt">
+          <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1000&q=80" alt="صورة أزياء بطابع تحريري" data-i18n-alt="g3Alt">
           <span class="image-shade"></span>
           <span class="card-number">03 / <span data-i18n="g3">إيديتوريال</span></span>
           <span class="card-caption"><span data-i18n="gc3">دراسة في الثقة</span> <b>↗</b></span>
         </div>
 
         <div class="gallery-card card-tall" role="button" tabindex="0" aria-haspopup="dialog">
-          <img src="https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=1000&q=85" alt="ضوء الصباح فوق مشهد طبيعي" data-i18n-alt="g4Alt">
+          <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=1000&q=80" alt="ضوء الصباح فوق مشهد طبيعي" data-i18n-alt="g4Alt">
           <span class="image-shade"></span>
           <span class="card-number">04 / <span data-i18n="g4">طبيعة</span></span>
           <span class="card-caption"><span data-i18n="gc4">الضوء الأول</span> <b>↗</b></span>
         </div>
 
         <div class="gallery-card card-wide" role="button" tabindex="0" aria-haspopup="dialog">
-          <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1500&q=85" alt="لحظة زفاف تحت ضوء دافئ" data-i18n-alt="g5Alt">
+          <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1000&q=80" alt="لحظة زفاف تحت ضوء دافئ" data-i18n-alt="g5Alt">
           <span class="image-shade"></span>
           <span class="card-number">05 / <span data-i18n="g5">مناسبات</span></span>
           <span class="card-caption"><span data-i18n="gc5">فرحٌ يُروى بصورة</span> <b>↗</b></span>
         </div>
 
         <div class="gallery-card card-tall" role="button" tabindex="0" aria-haspopup="dialog">
-          <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=1200&q=85" alt="بورتريه رجالي بإضاءة طبيعية" data-i18n-alt="g6Alt">
+          <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=1000&q=80" alt="بورتريه رجالي بإضاءة طبيعية" data-i18n-alt="g6Alt">
           <span class="image-shade"></span>
           <span class="card-number">06 / <span data-i18n="g6">بورتريه</span></span>
           <span class="card-caption"><span data-i18n="gc6">ملامح من حكاية</span> <b>↗</b></span>
         </div>
 
         <div class="gallery-card card-wide" role="button" tabindex="0" aria-haspopup="dialog">
-          <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1500&q=85" alt="أجواء حفل موسيقي وأضواء الجمهور" data-i18n-alt="g7Alt">
+          <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1000&q=80" alt="أجواء حفل موسيقي وأضواء الجمهور" data-i18n-alt="g7Alt">
           <span class="image-shade"></span>
           <span class="card-number">07 / <span data-i18n="g7">فعاليات</span></span>
           <span class="card-caption"><span data-i18n="gc7">لحظة في قلب المشهد</span> <b>↗</b></span>
         </div>
 
         <div class="gallery-card card-wide" role="button" tabindex="0" aria-haspopup="dialog">
-          <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1500&q=85" alt="ساعة يد بتكوين تصوير تجاري أنيق" data-i18n-alt="g8Alt">
+          <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1000&q=80" alt="ساعة يد بتكوين تصوير تجاري أنيق" data-i18n-alt="g8Alt">
           <span class="image-shade"></span>
           <span class="card-number">08 / <span data-i18n="g8">تجاري</span></span>
           <span class="card-caption"><span data-i18n="gc8">تفاصيل تصنع الفرق</span> <b>↗</b></span>
