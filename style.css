@@ -3950,3 +3950,96 @@ body :is(h1, h2, h3, .eyebrow, .brand-mark, .brand-name, .card-caption,
 .visually-hidden { position:absolute!important; width:1px!important; height:1px!important; padding:0!important; margin:-1px!important; overflow:hidden!important; clip:rect(0,0,0,0)!important; white-space:nowrap!important; border:0!important; }
 @media(max-width:600px) { .hamdi-ai { right:14px; bottom:14px; } .hamdi-ai-launch { min-height:48px; padding:0 15px; font-size:12px; } .hamdi-ai-panel { bottom:60px; width:min(370px,calc(100vw - 28px)); height:min(540px,calc(100dvh - 92px)); min-height:320px; border-radius:16px; } }
 @media(prefers-reduced-motion:reduce) { .hamdi-ai-launch { transition:none; } .hamdi-ai-launch:hover { transform:none; } }
+
+
+/* Mobile performance: keep the cinematic look without continuous full-screen effects. */
+@media (max-width: 700px), (hover: none) and (pointer: coarse) {
+  body {
+    animation: none !important;
+    background-attachment: scroll, scroll, scroll;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, .42);
+  }
+
+  .noise {
+    display: none !important;
+  }
+
+  .flash-atmosphere::before,
+  .flash-atmosphere::after,
+  .ambient-lightwave {
+    animation: none !important;
+    filter: none !important;
+    will-change: auto !important;
+  }
+
+  .flash-atmosphere::before {
+    inset: 0;
+    opacity: .22;
+    transform: none;
+  }
+
+  .flash-atmosphere::after {
+    inset: 0;
+    opacity: .12;
+    transform: none;
+  }
+
+  .ambient-lightwave {
+    inset: 0;
+    opacity: .12;
+    transform: none;
+  }
+
+  .hero-visual::before,
+  .hero-visual::after {
+    animation: none !important;
+    filter: none !important;
+  }
+
+  .album,
+  .album-page-turn,
+  .album-shadow {
+    animation: none !important;
+    will-change: auto !important;
+  }
+
+  .album {
+    transform: translate3d(0, 0, 0) rotateX(12deg) rotateY(-5deg) rotateZ(-2deg);
+  }
+
+  .album-page-turn {
+    transform: rotateY(-20deg);
+  }
+
+  .album-shadow {
+    filter: none;
+    opacity: .42;
+  }
+
+  .topbar {
+    -webkit-backdrop-filter: blur(12px) saturate(110%);
+    backdrop-filter: blur(12px) saturate(110%);
+  }
+
+  .manifesto,
+  .contact-section {
+    -webkit-backdrop-filter: blur(8px) saturate(105%);
+    backdrop-filter: blur(8px) saturate(105%);
+  }
+
+  .manifesto-orb::before,
+  .manifesto-orb::after,
+  .orb-inner,
+  .orb-inner::before,
+  .orb-inner::after {
+    animation: none !important;
+    will-change: auto !important;
+  }
+
+  .service::after,
+  .button-gold::after,
+  .price-card::after {
+    animation: none !important;
+    will-change: auto !important;
+  }
+}
