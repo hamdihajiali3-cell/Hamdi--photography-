@@ -97,10 +97,12 @@ const translations = {
     contactDesc: "اختر نوع التصوير واكتب لنا فكرتك. سنجهّز رسالة واتساب لتراجعها قبل إرسالها.",
     nameLabel: "اسمك", sessionLabel: "نوع الخدمة", messageLabel: "احكيلي عن فكرتك",
     namePlaceholder: "اكتب اسمك", dateLabel: "التاريخ المفضّل", datePlaceholder: "اختر التاريخ", calendarTitle: "اختر تاريخاً", calendarPrev: "الشهر السابق", calendarNext: "الشهر التالي", calendarToday: "اليوم", timeLabel: "الفترة المفضّلة", timePlaceholder: "اختر وقتًا مناسبًا", timeMorning: "الصباح · 10:00–13:00", timeAfternoon: "بعد الظهر · 13:00–17:00", timeEvening: "المساء · 17:00–20:00", timeFlexible: "أي وقت يناسبني", msgPlaceholder: "ما الفكرة أو اللحظة التي تريد تصويرها؟",
-    contactFormHint: "اختر واتساب أو SMS؛ ستفتح رسالة جاهزة لتراجعها وترسلها بنفسك.",
+    contactFormHint: "اختر طريقة الإرسال؛ ستفتح رسالة جاهزة لتراجعها وترسلها بنفسك. البريد يفتح تطبيق البريد على جهازك.",
+    channelLabel: "كيف تريد إرسال طلبك؟", channelWhatsapp: "واتساب", channelSms: "رسالة SMS", channelEmail: "البريد الإلكتروني",
+    emailLabel: "بريدك الإلكتروني", emailPlaceholder: "أدخل بريدًا يمكن لحمدي الرد عليه",
     opt1: "جلسة بورتريه", opt2: "تصوير تخرّج", opt3: "تصوير تجاري", opt4: "تصوير مناسبة", opt5: "تعديل ألوان الصور", opt6: "خطوبة وزفاف", opt7: "طلب آخر",
-    sendBtn: "إرسال عبر واتساب", sendSmsBtn: "إرسال عبر SMS", locationText: "غازي عنتاب، تركيا · بموعد مسبق",
-    waIntro: "مرحباً حمدي، أنا", waBooking: "أرغب بحجز", waDate: "التاريخ المقترح", waTime: "الفترة المناسبة", waDetails: "تفاصيل فكرتي",
+    sendBtn: "متابعة لإرسال الطلب", locationText: "غازي عنتاب، تركيا · بموعد مسبق",
+    waIntro: "مرحباً حمدي، أنا", waBooking: "أرغب بحجز", waEmail: "بريد الزبون", emailSubject: "طلب حجز تصوير من الموقع", waDate: "التاريخ المقترح", waTime: "الفترة المناسبة", waDetails: "تفاصيل فكرتي",
     rightsText: "جميع الحقوق محفوظة.", backTop: "العودة لأعلى الصفحة ↑"
   },
   tr: {
@@ -201,10 +203,12 @@ const translations = {
     contactDesc: "Çekim türünü seç ve fikrini yaz. Göndermeden önce incelemen için WhatsApp mesajı hazırlayalım.",
     nameLabel: "Adın", sessionLabel: "Hizmet türü", messageLabel: "Fikrini anlat",
     namePlaceholder: "Adını yaz", dateLabel: "Tercih edilen tarih", datePlaceholder: "Takvimden tarih seç", calendarTitle: "Tarih seç", calendarPrev: "Önceki ay", calendarNext: "Sonraki ay", calendarToday: "Bugün", timeLabel: "Tercih edilen saat aralığı", timePlaceholder: "Bir saat aralığı seç", timeMorning: "Sabah · 10:00–13:00", timeAfternoon: "Öğleden sonra · 13:00–17:00", timeEvening: "Akşam · 17:00–20:00", timeFlexible: "Bana uygun herhangi bir saat", msgPlaceholder: "Nasıl bir çekim hayal ediyorsun?",
-    contactFormHint: "WhatsApp veya SMS'i seçin; hazır mesajı kontrol edip kendiniz gönderin.",
+    contactFormHint: "Gönderim yöntemini seçin; hazır mesajı kontrol edip kendiniz gönderin. E-posta cihazınızdaki posta uygulamasını açar.",
+    channelLabel: "Talebinizi nasıl göndermek istersiniz?", channelWhatsapp: "WhatsApp", channelSms: "SMS", channelEmail: "E-posta",
+    emailLabel: "E-posta adresiniz", emailPlaceholder: "you@example.com",
     opt1: "Portre çekimi", opt2: "Mezuniyet çekimi", opt3: "Ticari çekim", opt4: "Etkinlik çekimi", opt5: "Fotoğraf renk düzenleme", opt6: "Nişan ve düğün", opt7: "Diğer",
-    sendBtn: "WhatsApp ile gönder", sendSmsBtn: "SMS ile gönder", locationText: "Gaziantep, Türkiye · Randevu ile",
-    waIntro: "Merhaba Hamdi, ben", waBooking: "Çekim için randevu almak istiyorum", waDate: "Tercih edilen tarih", waTime: "Tercih edilen saat aralığı", waDetails: "Fikrimin detayları",
+    sendBtn: "Talebi göndermeye devam et", locationText: "Gaziantep, Türkiye · Randevu ile",
+    waIntro: "Merhaba Hamdi, ben", waBooking: "Çekim için randevu almak istiyorum", waEmail: "Müşteri e-postası", emailSubject: "Fotoğraf çekimi randevu talebi", waDate: "Tercih edilen tarih", waTime: "Tercih edilen saat aralığı", waDetails: "Fikrimin detayları",
     rightsText: "Tüm hakları saklıdır.", backTop: "Sayfanın başına dön ↑"
   },
   en: {
@@ -305,10 +309,12 @@ const translations = {
     contactDesc: "Choose a shoot type and share your idea. We'll prepare a WhatsApp message for you to review before sending.",
     nameLabel: "Your name", sessionLabel: "Type of service", messageLabel: "Tell me about your idea",
     namePlaceholder: "Write your name", dateLabel: "Preferred date", datePlaceholder: "Choose a date", calendarTitle: "Choose a date", calendarPrev: "Previous month", calendarNext: "Next month", calendarToday: "Today", timeLabel: "Preferred time", timePlaceholder: "Choose a time window", timeMorning: "Morning · 10:00–13:00", timeAfternoon: "Afternoon · 13:00–17:00", timeEvening: "Evening · 17:00–20:00", timeFlexible: "Any time that works for me", msgPlaceholder: "What would you like to photograph?",
-    contactFormHint: "Choose WhatsApp or SMS; review the prefilled message and send it yourself.",
+    contactFormHint: "Choose a delivery method; review the prepared message and send it yourself. Email opens your device's mail app.",
+    channelLabel: "How would you like to send your request?", channelWhatsapp: "WhatsApp", channelSms: "SMS", channelEmail: "Email",
+    emailLabel: "Your email address", emailPlaceholder: "you@example.com",
     opt1: "Portrait session", opt2: "Graduation shoot", opt3: "Commercial shoot", opt4: "Event coverage", opt5: "Photo color correction", opt6: "Engagement & wedding", opt7: "Other",
-    sendBtn: "Send via WhatsApp", sendSmsBtn: "Send via SMS", locationText: "Gaziantep, Türkiye · By appointment",
-    waIntro: "Hi Hamdi, I'm", waBooking: "I'd like to book", waDate: "Preferred date", waTime: "Preferred time", waDetails: "My idea",
+    sendBtn: "Continue to send request", locationText: "Gaziantep, Türkiye · By appointment",
+    waIntro: "Hi Hamdi, I'm", waBooking: "I'd like to book", waEmail: "Customer email", emailSubject: "Photography booking request", waDate: "Preferred date", waTime: "Preferred time", waDetails: "My idea",
     rightsText: "All rights reserved.", backTop: "Back to top ↑"
   }
 };
@@ -486,6 +492,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const directForm = document.getElementById('directContactForm');
   if (directForm) {
+    const contactChannel = document.getElementById('contactChannel');
+    const clientEmailField = document.getElementById('clientEmailField');
+    const clientEmailInput = document.getElementById('clientEmail');
+    const updateEmailVisibility = function() {
+      const emailSelected = contactChannel.value === 'email';
+      clientEmailField.hidden = !emailSelected;
+      clientEmailInput.required = emailSelected;
+      if (!emailSelected) clientEmailInput.value = '';
+    };
+    if (contactChannel && clientEmailField && clientEmailInput) {
+      contactChannel.addEventListener('change', updateEmailVisibility);
+      updateEmailVisibility();
+    }
+
     directForm.addEventListener('submit', function(e) {
       e.preventDefault();
       const name = document.getElementById('clientName').value.trim();
@@ -497,6 +517,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const preferredDate = document.getElementById('preferredDate').dataset.isoDate;
       const preferredTime = document.getElementById('preferredTime').value;
       const msg = document.getElementById('clientMsg').value.trim();
+      const contactChannelSelect = document.getElementById('contactChannel');
+      const emailInput = document.getElementById('clientEmail');
+      const channel = contactChannelSelect
+        ? contactChannelSelect.value
+        : (e.submitter && e.submitter.value === 'sms' ? 'sms' : 'whatsapp');
+      const clientEmail = emailInput ? emailInput.value.trim() : '';
 
       const copy = translations[document.documentElement.lang] || translations.en;
       const packageLabel = packageChoice || copy.packageCustom;
@@ -512,12 +538,14 @@ document.addEventListener("DOMContentLoaded", () => {
         copy.waTime + ': ' + timeLabel,
         copy.waDetails + ': ' + msg
       ].join(lineBreak);
-      const encodedText = encodeURIComponent(text);
-      const channel = e.submitter && e.submitter.value === 'sms' ? 'sms' : 'whatsapp';
-      if (channel === 'sms') {
-        window.location.href = 'sms:+905377423671?body=' + encodedText;
+      if (channel === 'email') {
+        const emailBody = text + lineBreak + copy.waEmail + ': ' + clientEmail;
+        const emailUrl = 'mailto:hamdihajiali76@gmail.com?subject=' + encodeURIComponent(copy.emailSubject) + '&body=' + encodeURIComponent(emailBody);
+        window.location.href = emailUrl;
+      } else if (channel === 'sms') {
+        window.location.href = 'sms:+905377423671?body=' + encodeURIComponent(text);
       } else {
-        const whatsappUrl = 'https://wa.me/905377423671?text=' + encodedText;
+        const whatsappUrl = 'https://wa.me/905377423671?text=' + encodeURIComponent(text);
         window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
       }
 
