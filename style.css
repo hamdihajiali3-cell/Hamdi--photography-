@@ -4636,3 +4636,9 @@ body :is(h1, h2, h3, .eyebrow, .brand-mark, .brand-name, .card-caption,
   .language-button.is-active,
   .language-button.is-active::after { animation: none; }
 }
+
+
+#contact #photoPackage:disabled {
+  cursor: not-allowed;
+  opacity: .58;
+}
