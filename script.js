@@ -365,7 +365,6 @@ window.setLanguage = function(lang) {
     button.setAttribute('aria-pressed', String(active));
   });
   try { window.localStorage.setItem('hamdiLanguage', lang); } catch (error) {}
-  window.refreshPhotoPackageLocale?.();
   window.refreshBookingCalendarLocale?.();
 };
 
@@ -513,13 +512,6 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       const name = document.getElementById('clientName').value.trim();
       const session = document.getElementById('sessionType').value;
-      const selectedPackage = directForm.querySelector('input[name="photoPackage"]:checked');
-      const packageSelect = document.getElementById('photoPackage');
-      const packageChoice = selectedPackage
-        ? selectedPackage.dataset.packageText
-        : packageSelect && !packageSelect.disabled && packageSelect.selectedIndex > 0
-          ? packageSelect.options[packageSelect.selectedIndex].textContent
-          : '';
       const preferredDate = document.getElementById('preferredDate').dataset.isoDate;
       const preferredTime = document.getElementById('preferredTime').value;
       const msg = document.getElementById('clientMsg').value.trim();
@@ -532,7 +524,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const clientEmail = emailInput ? emailInput.value.trim() : '';
 
       const copy = translations[document.documentElement.lang] || translations.en;
-      const packageLabel = packageChoice || copy.packageCustom;
       const lineBreak = String.fromCharCode(10);
       const dateLocale = { ar: 'ar', tr: 'tr-TR', en: 'en-US' }[document.documentElement.lang] || 'en-US';
       const dateLabel = new Intl.DateTimeFormat(dateLocale, { dateStyle: 'long' }).format(new Date(preferredDate + 'T12:00:00'));
@@ -541,7 +532,6 @@ document.addEventListener("DOMContentLoaded", () => {
         copy.waIntro + ' ' + name,
         copy.waBooking + ': ' + session,
         clientPhone ? copy.waPhone + ': ' + clientPhone : '',
-        copy.waPackage + ': ' + packageLabel,
         copy.waDate + ': ' + dateLabel,
         copy.waTime + ': ' + timeLabel,
         copy.waDetails + ': ' + msg
@@ -1212,167 +1202,6 @@ function initServiceBookingLinks() {
 document.addEventListener('DOMContentLoaded', initServiceBookingLinks);
 
 
-function initPhotoPackageSelector() {
-  const sessionSelect = document.getElementById('sessionType');
-  const packageSelect = document.getElementById('photoPackage');
-  const packageOptions = document.getElementById('photoPackageOptions');
-  if (!sessionSelect || (!packageSelect && !packageOptions)) return;
-
-  const packagesBySession = {
-    opt1: [
-      { value: 'portrait-five', key: 'pricePortraitFive', price: '₺ 2.000' },
-      { value: 'portrait-ten', key: 'pricePortraitTen', price: '₺ 3.500' },
-      { value: 'portrait-fifteen', key: 'pricePortraitFifteen', price: '₺ 5.000' },
-      { value: 'portrait-twenty', key: 'pricePortraitTwenty', price: '₺ 6.500' }
-    ],
-    opt2: [
-      { value: 'graduation-five', key: 'priceGraduationFive', price: '₺ 1.800' },
-      { value: 'graduation-ten', key: 'priceGraduationTen', price: '₺ 3.000' },
-      { value: 'graduation-fifteen', key: 'priceGraduationFifteen', price: '₺ 4.000' },
-      { value: 'graduation-twenty', key: 'priceGraduationTwenty', price: '₺ 5.000' },
-      { value: 'graduation-thirty', key: 'priceGraduationThirty', price: '₺ 7.000' }
-    ],
-    opt3: [
-      { value: 'product-one', key: 'priceProductOne', price: '₺ 1.000' },
-      { value: 'product-five', key: 'priceProductFive', price: '₺ 3.500' },
-      { value: 'product-ten', key: 'priceProductTen', price: '₺ 6.000' },
-      { value: 'product-fifteen', key: 'priceProductFifteen', price: '₺ 8.500' },
-      { value: 'product-twenty', key: 'priceProductTwenty', price: '₺ 11.000' }
-    ],
-    opt4: [
-      { value: 'event-ten', key: 'priceEventTen', price: '₺ 3.000' },
-      { value: 'event-twenty', key: 'priceEventTwenty', price: '₺ 5.000' },
-      { value: 'event-thirty', key: 'priceEventThirty', price: '₺ 7.000' },
-      { value: 'event-forty', key: 'priceEventForty', price: '₺ 8.500' },
-      { value: 'event-sixty', key: 'priceEventSixty', price: '₺ 12.000' }
-    ],
-    opt5: [
-      { value: 'color-one', key: 'priceColorOne', price: '₺ 200' },
-      { value: 'color-five', key: 'priceColorFive', price: '₺ 900' },
-      { value: 'color-ten', key: 'priceColorTen', price: '₺ 1.700' },
-      { value: 'color-fifteen', key: 'priceColorFifteen', price: '₺ 2.400' },
-      { value: 'color-twenty', key: 'priceColorTwenty', price: '₺ 3.000' }
-    ],
-    opt6: [
-      { value: 'wedding-twenty', key: 'priceWeddingTwenty', price: '₺ 5.000' },
-      { value: 'wedding-forty', key: 'priceWeddingForty', price: '₺ 8.500' },
-      { value: 'wedding-sixty', key: 'priceWeddingSixty', price: '₺ 12.000' },
-      { value: 'wedding-eighty', key: 'priceWeddingEighty', price: '₺ 15.000' },
-      { value: 'wedding-hundred', key: 'priceWeddingHundred', price: '₺ 18.000' }
-    ],
-    opt7: [
-      { value: 'custom-five', key: 'priceCustomFive', quote: true },
-      { value: 'custom-ten', key: 'priceCustomTen', quote: true },
-      { value: 'custom-twenty', key: 'priceCustomTwenty', quote: true },
-      { value: 'custom-thirty', key: 'priceCustomThirty', quote: true }
-    ]
-  };
-
-  function currentCopy() {
-    return translations[document.documentElement.lang] || translations.en;
-  }
-
-  function selectedSessionKey() {
-    const selected = sessionSelect.options[sessionSelect.selectedIndex];
-    return selected ? selected.getAttribute('data-i18n-value') : '';
-  }
-
-  function renderPackageCards(preserveSelection) {
-    const copy = currentCopy();
-    const sessionKey = selectedSessionKey();
-    const choices = packagesBySession[sessionKey] || [];
-    const previous = preserveSelection && packageOptions.querySelector('input[name="photoPackage"]:checked');
-    const previousValue = previous ? previous.value : '';
-    packageOptions.replaceChildren();
-    if (!sessionKey || !choices.length) {
-      const message = document.createElement('p');
-      message.className = 'photo-package-placeholder';
-      message.textContent = copy.chooseSessionFirst;
-      packageOptions.appendChild(message);
-      return;
-    }
-    choices.forEach((item) => {
-      const label = document.createElement('label');
-      label.className = 'photo-package-card';
-      const radio = document.createElement('input');
-      radio.type = 'radio';
-      radio.name = 'photoPackage';
-      radio.value = item.value;
-      radio.required = true;
-      radio.className = 'photo-package-radio';
-      const packageName = copy[item.key] || item.key;
-      const selectedSession = sessionSelect.options[sessionSelect.selectedIndex];
-      const sessionName = selectedSession ? selectedSession.textContent.trim() : '';
-      const displayName = sessionName ? sessionName + ' · ' + packageName : packageName;
-      const packagePrice = item.quote ? copy.priceQuoteAfterReview : item.price;
-      const priceText = displayName + ' — ' + packagePrice;
-      radio.dataset.packageText = priceText;
-      radio.setAttribute('aria-label', priceText);
-      radio.checked = previousValue === item.value;
-      const name = document.createElement('span');
-      name.className = 'photo-package-card-name';
-      name.textContent = displayName;
-      const price = document.createElement('strong');
-      price.className = 'photo-package-card-price';
-      price.textContent = packagePrice;
-      label.append(radio, name, price);
-      packageOptions.appendChild(label);
-    });
-  }
-
-  function refreshLegacyOptions() {
-    const copy = currentCopy();
-    const selectedSession = sessionSelect.options[sessionSelect.selectedIndex];
-    const sessionName = selectedSession ? selectedSession.textContent.trim() : '';
-    Array.from(packageSelect.options).forEach((option) => {
-      if (option.dataset.i18nKey) {
-        const priceText = option.dataset.quote === 'true' ? copy.priceQuoteAfterReview : option.dataset.price;
-        const packageName = copy[option.dataset.i18nKey] || '';
-        const displayName = [sessionName, packageName].filter(Boolean).join(' · ');
-        option.textContent = displayName + ' — ' + priceText;
-      } else if (!option.value) {
-        option.textContent = packageSelect.disabled ? copy.chooseSessionFirst : copy.photoCountPlaceholder;
-      }
-    });
-  }
-
-  function updatePackageOptions() {
-    const sessionKey = selectedSessionKey();
-    const choices = packagesBySession[sessionKey] || [];
-    if (packageOptions) {
-      renderPackageCards(false);
-      return;
-    }
-    const copy = currentCopy();
-    packageSelect.innerHTML = '';
-    const placeholder = document.createElement('option');
-    placeholder.value = '';
-    placeholder.disabled = true;
-    placeholder.selected = true;
-    placeholder.textContent = copy.photoCountPlaceholder;
-    packageSelect.appendChild(placeholder);
-    choices.forEach((item) => {
-      const option = document.createElement('option');
-      option.value = item.value;
-      option.dataset.i18nKey = item.key;
-      if (item.price) option.dataset.price = item.price;
-      if (item.quote) option.dataset.quote = 'true';
-      option.textContent = copy[item.key] || item.key;
-      packageSelect.appendChild(option);
-    });
-    packageSelect.disabled = !sessionKey || choices.length === 0;
-    packageSelect.required = true;
-    refreshLegacyOptions();
-  }
-
-  sessionSelect.addEventListener('change', updatePackageOptions);
-  window.refreshPhotoPackageLocale = function() {
-    if (packageOptions) renderPackageCards(true);
-    else refreshLegacyOptions();
-  };
-  updatePackageOptions();
-}
-document.addEventListener('DOMContentLoaded', initPhotoPackageSelector);
 
 
 
