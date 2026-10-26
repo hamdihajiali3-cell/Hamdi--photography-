@@ -66,7 +66,7 @@ const translations = {
     priceColorTwenty: "20 صورة معدّلة ألوانيًا",
     priceCustomThirty: "30 صورة",
     photoCountLabel: "عدد الصور والباقة",
-    photoCountPlaceholder: "اختر عدد الصور",
+    photoCountPlaceholder: "اختر عدد الصور", chooseSessionFirst: "اختر الجلسة أولًا لتظهر باقاتها وأسعارها",
     packageCustom: "عدد الصور وسعرها يُحددان بعد مراجعة الطلب",
     priceQuoteAfterReview: "السعر بعد مراجعة الطلب",
     waPackage: "الباقة وعدد الصور",
@@ -95,7 +95,7 @@ const translations = {
     contactTop1: "جاهز تحوّل فكرتك لصورة؟", contactTop2: "ابدأ طلبك عبر واتساب",
     contactTitle: "خلّي فكرتك<br><em>تصير صورة.</em>",
     contactDesc: "اختر نوع التصوير واكتب لنا فكرتك. سنجهّز رسالة واتساب لتراجعها قبل إرسالها.",
-    nameLabel: "اسمك", sessionLabel: "نوع الخدمة", messageLabel: "احكيلي عن فكرتك",
+    nameLabel: "اسمك", sessionLabel: "نوع الجلسة", sessionPlaceholder: "اختر نوع الجلسة", messageLabel: "احكيلي عن فكرتك",
     namePlaceholder: "اكتب اسمك", dateLabel: "التاريخ المفضّل", datePlaceholder: "اختر التاريخ", calendarTitle: "اختر تاريخاً", calendarPrev: "الشهر السابق", calendarNext: "الشهر التالي", calendarToday: "اليوم", timeLabel: "الفترة المفضّلة", timePlaceholder: "اختر وقتًا مناسبًا", timeMorning: "الصباح · 10:00–13:00", timeAfternoon: "بعد الظهر · 13:00–17:00", timeEvening: "المساء · 17:00–20:00", timeFlexible: "أي وقت يناسبني", msgPlaceholder: "ما الفكرة أو اللحظة التي تريد تصويرها؟",
     contactFormHint: "اختر طريقة الإرسال؛ ستفتح رسالة جاهزة لتراجعها وترسلها بنفسك. البريد يفتح تطبيق البريد على جهازك.",
     channelLabel: "كيف تريد إرسال طلبك؟", channelWhatsapp: "واتساب", channelSms: "رسالة SMS", channelEmail: "البريد الإلكتروني",
@@ -172,7 +172,7 @@ const translations = {
     priceColorTwenty: "20 fotoğraf için renk düzenleme",
     priceCustomThirty: "30 fotoğraf",
     photoCountLabel: "Fotoğraf sayısı ve paket",
-    photoCountPlaceholder: "Fotoğraf sayısını seç",
+    photoCountPlaceholder: "Fotoğraf sayısını seç", chooseSessionFirst: "Paket ve fiyatları görmek için önce çekim türünü seçin",
     packageCustom: "Fotoğraf sayısı ve fiyatı talep incelendikten sonra belirlenir",
     priceQuoteAfterReview: "Talep incelendikten sonra fiyatlandırılır",
     waPackage: "Paket ve fotoğraf sayısı",
@@ -201,7 +201,7 @@ const translations = {
     contactTop1: "Fikrini bir kareye dönüştürelim mi?", contactTop2: "WhatsApp üzerinden talep oluştur",
     contactTitle: "Fikrini<br><em>kareye dönüştür.</em>",
     contactDesc: "Çekim türünü seç ve fikrini yaz. Göndermeden önce incelemen için WhatsApp mesajı hazırlayalım.",
-    nameLabel: "Adın", sessionLabel: "Hizmet türü", messageLabel: "Fikrini anlat",
+    nameLabel: "Adın", sessionLabel: "Çekim türü", sessionPlaceholder: "Çekim türünü seçin", messageLabel: "Fikrini anlat",
     namePlaceholder: "Adını yaz", dateLabel: "Tercih edilen tarih", datePlaceholder: "Takvimden tarih seç", calendarTitle: "Tarih seç", calendarPrev: "Önceki ay", calendarNext: "Sonraki ay", calendarToday: "Bugün", timeLabel: "Tercih edilen saat aralığı", timePlaceholder: "Bir saat aralığı seç", timeMorning: "Sabah · 10:00–13:00", timeAfternoon: "Öğleden sonra · 13:00–17:00", timeEvening: "Akşam · 17:00–20:00", timeFlexible: "Bana uygun herhangi bir saat", msgPlaceholder: "Nasıl bir çekim hayal ediyorsun?",
     contactFormHint: "Gönderim yöntemini seçin; hazır mesajı kontrol edip kendiniz gönderin. E-posta cihazınızdaki posta uygulamasını açar.",
     channelLabel: "Talebinizi nasıl göndermek istersiniz?", channelWhatsapp: "WhatsApp", channelSms: "SMS", channelEmail: "E-posta",
@@ -278,7 +278,7 @@ const translations = {
     priceColorTwenty: "Color correction for 20 photos",
     priceCustomThirty: "30 photos",
     photoCountLabel: "Photo count and package",
-    photoCountPlaceholder: "Choose a photo count",
+    photoCountPlaceholder: "Choose a photo count", chooseSessionFirst: "Choose a session first to see its packages and prices",
     packageCustom: "Photo count and price will be confirmed after reviewing the request",
     priceQuoteAfterReview: "Price after reviewing the request",
     waPackage: "Package and photo count",
@@ -307,7 +307,7 @@ const translations = {
     contactTop1: "Ready to turn an idea into a photograph?", contactTop2: "Start your request on WhatsApp",
     contactTitle: "Let's turn your idea<br><em>into a frame.</em>",
     contactDesc: "Choose a shoot type and share your idea. We'll prepare a WhatsApp message for you to review before sending.",
-    nameLabel: "Your name", sessionLabel: "Type of service", messageLabel: "Tell me about your idea",
+    nameLabel: "Your name", sessionLabel: "Session type", sessionPlaceholder: "Choose a session type", messageLabel: "Tell me about your idea",
     namePlaceholder: "Write your name", dateLabel: "Preferred date", datePlaceholder: "Choose a date", calendarTitle: "Choose a date", calendarPrev: "Previous month", calendarNext: "Next month", calendarToday: "Today", timeLabel: "Preferred time", timePlaceholder: "Choose a time window", timeMorning: "Morning · 10:00–13:00", timeAfternoon: "Afternoon · 13:00–17:00", timeEvening: "Evening · 17:00–20:00", timeFlexible: "Any time that works for me", msgPlaceholder: "What would you like to photograph?",
     contactFormHint: "Choose a delivery method; review the prepared message and send it yourself. Email opens your device's mail app.",
     channelLabel: "How would you like to send your request?", channelWhatsapp: "WhatsApp", channelSms: "SMS", channelEmail: "Email",
@@ -1267,7 +1267,7 @@ function initPhotoPackageSelector() {
         const priceText = option.dataset.quote === 'true' ? copy.priceQuoteAfterReview : option.dataset.price;
         option.textContent = (copy[option.dataset.i18nKey] || '') + ' — ' + priceText;
       } else if (!option.value) {
-        option.textContent = copy.photoCountPlaceholder;
+        option.textContent = packageSelect.disabled ? copy.chooseSessionFirst : copy.photoCountPlaceholder;
       }
     });
   }
@@ -1296,7 +1296,7 @@ function initPhotoPackageSelector() {
       packageSelect.appendChild(option);
     });
 
-    packageSelect.disabled = false;
+    packageSelect.disabled = !sessionKey || packageOptions.length === 0;
     packageSelect.required = true;
     refreshPackageLabels();
   }
