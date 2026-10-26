@@ -40,7 +40,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css?v=customer-phone-field-20261026">
+  <link rel="stylesheet" href="style.css?v=booking-select-date-compact-20261026">
   <script type="importmap">
   {
     "imports": {
@@ -517,10 +517,10 @@
         </div>
 
         <div class="booking-field" id="photoPackageField">
-          <span class="booking-label" id="photoCountLabel" data-i18n="photoCountLabel">عدد الصور والباقة</span>
-          <div id="photoPackageOptions" class="photo-package-options" role="radiogroup" aria-labelledby="photoCountLabel" aria-describedby="contactFormHint">
-            <p class="photo-package-placeholder" data-i18n="chooseSessionFirst">اختر الجلسة أولًا لتظهر باقاتها وأسعارها</p>
-          </div>
+          <label class="booking-label" id="photoCountLabel" for="photoPackage" data-i18n="photoCountLabel">عدد الصور والباقة</label>
+          <select id="photoPackage" class="contact-field" required disabled aria-describedby="contactFormHint">
+            <option value="" disabled selected data-i18n="photoCountPlaceholder">اختر عدد الصور</option>
+          </select>
         </div>
 
         <div class="booking-field" id="preferredDateField">
