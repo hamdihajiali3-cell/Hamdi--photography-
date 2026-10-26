@@ -4736,3 +4736,21 @@ body :is(h1, h2, h3, .eyebrow, .brand-mark, .brand-name, .card-caption,
   .photo-package-card { transition: none; }
   .photo-package-card:hover { transform: none; }
 }
+
+
+/* Optional customer phone field */
+#contact .contact-form #clientPhoneField {
+  grid-column: 1 / -1;
+  grid-row: 7;
+}
+#contact .contact-form #clientPhoneField input {
+  width: 100%;
+  direction: ltr;
+  text-align: start;
+}
+@media (max-width: 600px) {
+  #contact .contact-form #clientPhoneField {
+    grid-column: 1;
+    grid-row: auto;
+  }
+}
