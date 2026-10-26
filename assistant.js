@@ -140,6 +140,12 @@
       if (has(value, ["الوان","لون","color","colour","renk"])) return words.color;
       return words.prices;
     }
+    if (has(value, ["بورتريه","عائله","portrait","family","portre","aile"])) return words.portrait;
+    if (has(value, ["تخرج","graduation","mezun"])) return words.graduation;
+    if (has(value, ["منتج","تجاري","product","commercial","urun","ticari"])) return words.products;
+    if (has(value, ["مناسبه","فعاليه","event","etkinlik"])) return words.events;
+    if (has(value, ["زفاف","عرس","خطوبه","wedding","dugun","nisan","engagement"])) return words.wedding;
+    if (has(value, ["لون","الوان","color","colour","renk"])) return words.color;
     if (has(value, ["معرض","نماذج","gallery","portfolio","portfolyo"])) return words.gallery;
     if (has(value, ["whatsapp","واتساب","sms","رقم","تواصل","اتصل","iletisim","telefon","contact","call","phone"])) return words.contact;
     if (has(value, ["غازي عنتاب","gaziantep","location","where","nerede","مكانكم"])) return words.location;
