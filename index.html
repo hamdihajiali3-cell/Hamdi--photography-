@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css?v=offline-pricing-selector-20261026">
+  <link rel="stylesheet" href="style.css?v=offline-email-booking-20261026">
   <script type="importmap">
   {
     "imports": {
@@ -19,8 +19,8 @@
     }
   }
   </script>
-  <script defer src="assistant.js?v=offline-pricing-selector-20261026"></script>
-  <script type="module" src="script.js?v=offline-assistant-20261026"></script>
+  <script defer src="assistant.js?v=offline-email-booking-20261026"></script>
+  <script type="module" src="script.js?v=offline-email-booking-20261026"></script>
 </head>
 
 <body>
@@ -513,10 +513,20 @@
         <textarea id="clientMsg" class="contact-field contact-message" data-i18n-placeholder="msgPlaceholder" placeholder="ما الفكرة أو اللحظة التي تريد تصويرها؟" rows="4" required aria-describedby="contactFormHint"></textarea>
         <p id="contactFormHint" class="contact-form-hint" data-i18n="contactFormHint">ستفتح واتساب برسالة جاهزة؛ راجعها وعدّلها ثم أرسلها.</p>
 
-        <div class="contact-send-options">
-          <button type="submit" name="contactChannel" value="whatsapp" class="button button-gold contact-submit"><span data-i18n="sendBtn">إرسال عبر واتساب</span><span aria-hidden="true">↗</span></button>
-          <button type="submit" name="contactChannel" value="sms" class="button contact-submit contact-submit-sms"><span data-i18n="sendSmsBtn">إرسال عبر SMS</span><span aria-hidden="true">↗</span></button>
+        <div class="booking-field contact-channel-field" id="contactChannelField">
+          <label class="booking-label" for="contactChannel" data-i18n="channelLabel">كيف تريد إرسال طلبك؟</label>
+          <select id="contactChannel" class="contact-field" required aria-describedby="contactFormHint">
+            <option value="whatsapp" data-i18n="channelWhatsapp">واتساب</option>
+            <option value="sms" data-i18n="channelSms">رسالة SMS</option>
+            <option value="email" data-i18n="channelEmail">البريد الإلكتروني</option>
+          </select>
         </div>
+
+        <div class="booking-field contact-email-field" id="clientEmailField" hidden>
+          <label class="booking-label" for="clientEmail" data-i18n="emailLabel">بريدك الإلكتروني</label>
+          <input type="email" id="clientEmail" class="contact-field" data-i18n-placeholder="emailPlaceholder" placeholder="you@example.com" autocomplete="email" aria-describedby="contactFormHint">
+        </div>
+        <button type="submit" class="button button-gold contact-submit"><span data-i18n="sendBtn">متابعة لإرسال الطلب</span><span aria-hidden="true">↗</span></button>
       </form>
 
       <div class="contact-details">
