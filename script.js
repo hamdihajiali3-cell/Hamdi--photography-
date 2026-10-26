@@ -97,9 +97,9 @@ const translations = {
     contactDesc: "اختر نوع التصوير واكتب لنا فكرتك. سنجهّز رسالة واتساب لتراجعها قبل إرسالها.",
     nameLabel: "اسمك", sessionLabel: "نوع الخدمة", messageLabel: "احكيلي عن فكرتك",
     namePlaceholder: "اكتب اسمك", dateLabel: "التاريخ المفضّل", datePlaceholder: "اختر التاريخ", calendarTitle: "اختر تاريخاً", calendarPrev: "الشهر السابق", calendarNext: "الشهر التالي", calendarToday: "اليوم", timeLabel: "الفترة المفضّلة", timePlaceholder: "اختر وقتًا مناسبًا", timeMorning: "الصباح · 10:00–13:00", timeAfternoon: "بعد الظهر · 13:00–17:00", timeEvening: "المساء · 17:00–20:00", timeFlexible: "أي وقت يناسبني", msgPlaceholder: "ما الفكرة أو اللحظة التي تريد تصويرها؟",
-    contactFormHint: "اختر نوع الخدمة والباقة والتاريخ؛ سيفتح واتساب برسالة جاهزة لتأكيد طلبك.",
+    contactFormHint: "اختر واتساب أو SMS؛ ستفتح رسالة جاهزة لتراجعها وترسلها بنفسك.",
     opt1: "جلسة بورتريه", opt2: "تصوير تخرّج", opt3: "تصوير تجاري", opt4: "تصوير مناسبة", opt5: "تعديل ألوان الصور", opt6: "خطوبة وزفاف", opt7: "طلب آخر",
-    sendBtn: "تابع إلى واتساب", locationText: "غازي عنتاب، تركيا · بموعد مسبق",
+    sendBtn: "إرسال عبر واتساب", sendSmsBtn: "إرسال عبر SMS", locationText: "غازي عنتاب، تركيا · بموعد مسبق",
     waIntro: "مرحباً حمدي، أنا", waBooking: "أرغب بحجز", waDate: "التاريخ المقترح", waTime: "الفترة المناسبة", waDetails: "تفاصيل فكرتي",
     rightsText: "جميع الحقوق محفوظة.", backTop: "العودة لأعلى الصفحة ↑"
   },
@@ -201,9 +201,9 @@ const translations = {
     contactDesc: "Çekim türünü seç ve fikrini yaz. Göndermeden önce incelemen için WhatsApp mesajı hazırlayalım.",
     nameLabel: "Adın", sessionLabel: "Hizmet türü", messageLabel: "Fikrini anlat",
     namePlaceholder: "Adını yaz", dateLabel: "Tercih edilen tarih", datePlaceholder: "Takvimden tarih seç", calendarTitle: "Tarih seç", calendarPrev: "Önceki ay", calendarNext: "Sonraki ay", calendarToday: "Bugün", timeLabel: "Tercih edilen saat aralığı", timePlaceholder: "Bir saat aralığı seç", timeMorning: "Sabah · 10:00–13:00", timeAfternoon: "Öğleden sonra · 13:00–17:00", timeEvening: "Akşam · 17:00–20:00", timeFlexible: "Bana uygun herhangi bir saat", msgPlaceholder: "Nasıl bir çekim hayal ediyorsun?",
-    contactFormHint: "Hizmet türünü, paketi ve tarihi seç; talebini onaylamak için WhatsApp mesajı açılır.",
+    contactFormHint: "WhatsApp veya SMS'i seçin; hazır mesajı kontrol edip kendiniz gönderin.",
     opt1: "Portre çekimi", opt2: "Mezuniyet çekimi", opt3: "Ticari çekim", opt4: "Etkinlik çekimi", opt5: "Fotoğraf renk düzenleme", opt6: "Nişan ve düğün", opt7: "Diğer",
-    sendBtn: "WhatsApp'ta devam et", locationText: "Gaziantep, Türkiye · Randevu ile",
+    sendBtn: "WhatsApp ile gönder", sendSmsBtn: "SMS ile gönder", locationText: "Gaziantep, Türkiye · Randevu ile",
     waIntro: "Merhaba Hamdi, ben", waBooking: "Çekim için randevu almak istiyorum", waDate: "Tercih edilen tarih", waTime: "Tercih edilen saat aralığı", waDetails: "Fikrimin detayları",
     rightsText: "Tüm hakları saklıdır.", backTop: "Sayfanın başına dön ↑"
   },
@@ -305,9 +305,9 @@ const translations = {
     contactDesc: "Choose a shoot type and share your idea. We'll prepare a WhatsApp message for you to review before sending.",
     nameLabel: "Your name", sessionLabel: "Type of service", messageLabel: "Tell me about your idea",
     namePlaceholder: "Write your name", dateLabel: "Preferred date", datePlaceholder: "Choose a date", calendarTitle: "Choose a date", calendarPrev: "Previous month", calendarNext: "Next month", calendarToday: "Today", timeLabel: "Preferred time", timePlaceholder: "Choose a time window", timeMorning: "Morning · 10:00–13:00", timeAfternoon: "Afternoon · 13:00–17:00", timeEvening: "Evening · 17:00–20:00", timeFlexible: "Any time that works for me", msgPlaceholder: "What would you like to photograph?",
-    contactFormHint: "Choose a service, package, and date; WhatsApp will open with your request.",
+    contactFormHint: "Choose WhatsApp or SMS; review the prefilled message and send it yourself.",
     opt1: "Portrait session", opt2: "Graduation shoot", opt3: "Commercial shoot", opt4: "Event coverage", opt5: "Photo color correction", opt6: "Engagement & wedding", opt7: "Other",
-    sendBtn: "Continue to WhatsApp", locationText: "Gaziantep, Türkiye · By appointment",
+    sendBtn: "Send via WhatsApp", sendSmsBtn: "Send via SMS", locationText: "Gaziantep, Türkiye · By appointment",
     waIntro: "Hi Hamdi, I'm", waBooking: "I'd like to book", waDate: "Preferred date", waTime: "Preferred time", waDetails: "My idea",
     rightsText: "All rights reserved.", backTop: "Back to top ↑"
   }
@@ -512,9 +512,14 @@ document.addEventListener("DOMContentLoaded", () => {
         copy.waTime + ': ' + timeLabel,
         copy.waDetails + ': ' + msg
       ].join(lineBreak);
-      const whatsappUrl = `https://wa.me/905377423671?text=${encodeURIComponent(text)}`;
-      
-      window.open(whatsappUrl, '_blank');
+      const encodedText = encodeURIComponent(text);
+      const channel = e.submitter && e.submitter.value === 'sms' ? 'sms' : 'whatsapp';
+      if (channel === 'sms') {
+        window.location.href = 'sms:+905377423671?body=' + encodedText;
+      } else {
+        const whatsappUrl = 'https://wa.me/905377423671?text=' + encodedText;
+        window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+      }
 
     });
   }
