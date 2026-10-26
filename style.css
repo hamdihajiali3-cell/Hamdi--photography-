@@ -100,6 +100,47 @@ img {
   margin-top: 4px;
 }
 
+/* Syria and Türkiye flags framed as part of Hamdi's photography mark */
+.brand-flags {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+  margin-inline-start: 2px;
+}
+.brand-flag-frame {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 24px;
+  padding: 2px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background:
+    linear-gradient(#11100e, #11100e) padding-box,
+    linear-gradient(135deg, #f4dfae, #a87b3b 48%, #8db8cf) border-box;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .32), 0 0 12px rgba(211, 179, 119, .16);
+  transform: rotate(-4deg);
+  transition: transform .28s ease, box-shadow .28s ease, filter .28s ease;
+}
+.brand-flag-frame:nth-child(2) { transform: rotate(4deg); }
+.brand-flag-frame svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 5px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .24);
+}
+.brand:hover .brand-flag-frame,
+.brand:focus-visible .brand-flag-frame {
+  transform: translateY(-2px) rotate(0);
+  filter: brightness(1.08);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .38), 0 0 16px rgba(211, 179, 119, .24);
+}
+
+
 .nav {
   display: flex;
   align-items: center;
@@ -1963,6 +2004,8 @@ section[id] { scroll-margin-top: 104px; }
 @media (max-width: 520px) {
   .topbar { gap: 8px; padding-inline: 4%; }
   .brand { gap: 8px; }
+  .brand-flags { gap: 4px; }
+  .brand-flag-frame { width: 28px; height: 21px; }
   .brand-mark { font-size: 30px; }
   .brand-name { font-size: 9px; letter-spacing: 1px; }
   .brand-name small { letter-spacing: 2px; }
@@ -1975,6 +2018,8 @@ section[id] { scroll-margin-top: 104px; }
 }
 @media (max-width: 360px) {
   .brand-name { display: none; }
+  .brand-flags { gap: 3px; }
+  .brand-flag-frame { width: 25px; height: 19px; padding: 1px; }
   .hero-meta { gap: 11px; }
 }
 
