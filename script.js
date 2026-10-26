@@ -12,9 +12,6 @@ const translations = {
     loaderLabel: "جارٍ تجهيز تجربتك البصرية", loadingSubtext: "لحظات ونبدأ الحكاية", loadingProgress: "تقدم تحميل الموقع", welcomeVisitors: "أهلاً وسهلاً بالزائرين",
     visualLabel1: "خلف كل لقطة — 2026", visualLabel2: "قصتك تستحق إطاراً", albumMotionCue: "حرّك المؤشر أو المس الألبوم لتقليب الصفحة",
     scrollCue: "انزل واستكشف",
-    cameraStoryEyebrow: "تجربة العدسة / 01—03",
-    cameraStoryTitle: "كل لقطة تبدأ<br><em>من قلب الكاميرا.</em>",
-    cameraStoryText: "قرّب المشهد واكتشف تفاصيل العدسة وهي تنفصل إلى طبقاتها، بحركة تتبع تمريرك وتترك الصور في صدارة الحكاية.",
     cameraStoryHint: "مرّر لتفكيك العدسة وإعادة تركيبها",
     cameraStageBody: "هيكل الكاميرا",
     cameraStageLens: "تفاصيل العدسة",
@@ -124,9 +121,6 @@ const translations = {
     loaderLabel: "Görsel deneyimin hazırlanıyor", loadingSubtext: "Birazdan başlıyoruz", loadingProgress: "Site yükleme durumu", welcomeVisitors: "Ziyaretçilerimize hoş geldiniz",
     visualLabel1: "HER KARENİN ARDINDA — 2026", visualLabel2: "HİKÂYENİ ÇERÇEVELE", albumMotionCue: "Sayfayı çevirmek için imleci oynatın veya albüme dokunun.",
     scrollCue: "KEŞFETMEK İÇİN KAYDIR",
-    cameraStoryEyebrow: "OBJEKTİF DENEYİMİ / 01—03",
-    cameraStoryTitle: "Her kare<br><em>kameranın kalbinde başlar.</em>",
-    cameraStoryText: "Sahneye yaklaşın ve objektifin katmanlarına ayrılan parçalarını keşfedin. Hareket, kaydırmanızı izler; hikâyenin odağında fotoğraflar kalır.",
     cameraStoryHint: "Objektifi ayırmak ve yeniden birleştirmek için kaydırın",
     cameraStageBody: "Kamera gövdesi",
     cameraStageLens: "Objektif ayrıntıları",
@@ -236,9 +230,6 @@ const translations = {
     loaderLabel: "Preparing your visual experience", loadingSubtext: "Your story is about to begin", loadingProgress: "Website loading progress", welcomeVisitors: "Welcome, visitors",
     visualLabel1: "BEHIND EVERY FRAME — 2026", visualLabel2: "FRAME YOUR STORY", albumMotionCue: "MOVE THE POINTER OR TAP THE ALBUM TO TURN A PAGE",
     scrollCue: "SCROLL TO EXPLORE",
-    cameraStoryEyebrow: "LENS EXPERIENCE / 01—03",
-    cameraStoryTitle: "Every frame<br><em>begins inside the camera.</em>",
-    cameraStoryText: "Move closer and explore the lens as its layers separate. The motion follows your scroll while your photographs stay at the heart of the story.",
     cameraStoryHint: "Scroll to disassemble and reassemble the lens",
     cameraStageBody: "Camera body",
     cameraStageLens: "Lens details",
@@ -1637,65 +1628,6 @@ document.addEventListener('DOMContentLoaded', initBookingDatePicker);
 
 
 
-/* The hero photo album gently tilts and turns a page as the visitor explores it. */
-function initSignatureAlbumInteraction() {
-  const visual = document.querySelector('.hero-visual');
-  const scene = visual?.querySelector('.album-scene');
-  if (!visual || !scene) return;
-
-  const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reducedMotion) return;
-
-  if (!finePointer) {
-    visual.setAttribute('role', 'button');
-    visual.setAttribute('tabindex', '0');
-    let replayTimer = 0;
-
-    const playPageTurn = () => {
-      window.clearTimeout(replayTimer);
-      visual.classList.remove('is-album-engaged');
-      void visual.offsetWidth;
-      visual.classList.add('is-album-engaged');
-      replayTimer = window.setTimeout(() => {
-        visual.classList.remove('is-album-engaged');
-      }, 1550);
-    };
-
-    visual.addEventListener('click', playPageTurn);
-    visual.addEventListener('keydown', (event) => {
-      if (event.key !== 'Enter' && event.key !== ' ') return;
-      event.preventDefault();
-      playPageTurn();
-    });
-    return;
-  }
-
-  const reset = () => {
-    visual.classList.remove('is-album-engaged');
-    scene.style.setProperty('--album-pointer-x', '0deg');
-    scene.style.setProperty('--album-pointer-y', '0deg');
-  };
-
-  visual.addEventListener('pointermove', (event) => {
-    const bounds = visual.getBoundingClientRect();
-    if (!bounds.width || !bounds.height) return;
-    const x = ((event.clientX - bounds.left) / bounds.width - 0.5) * 2;
-    const y = ((event.clientY - bounds.top) / bounds.height - 0.5) * 2;
-    scene.style.setProperty('--album-pointer-x', (y * -4.5).toFixed(2) + 'deg');
-    scene.style.setProperty('--album-pointer-y', (x * 6).toFixed(2) + 'deg');
-    visual.classList.add('is-album-engaged');
-  }, { passive: true });
-
-  visual.addEventListener('pointerleave', reset);
-  visual.addEventListener('pointercancel', reset);
-}
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initSignatureAlbumInteraction, { once: true });
-} else {
-  initSignatureAlbumInteraction();
-}
-
 function initSiteSearch() {
   const trigger = document.getElementById('siteSearchTrigger');
   const dialog = document.getElementById('siteSearchDialog');
@@ -1803,7 +1735,7 @@ document.addEventListener('DOMContentLoaded', initSiteSearch);
 
 /* Original, lightweight 3D camera story. The scene is created locally and starts only near view. */
 function initCameraStory() {
-  const section = document.querySelector('.camera-story');
+  const section = document.querySelector('.camera-experience');
   const canvas = document.getElementById('cameraStoryCanvas');
   const stage = document.getElementById('cameraStoryScene');
   const stageLabel = document.getElementById('cameraStoryStageLabel');
@@ -1839,12 +1771,23 @@ function initCameraStory() {
   function updateProgress() {
     scrollFrame = 0;
     const rect = section.getBoundingClientRect();
-    const travel = window.innerHeight * 0.8 - rect.top;
-    progress = Math.max(0, Math.min(1, travel / (rect.height + window.innerHeight * 0.4)));
+    if (compact) {
+      const copy = section.querySelector('.hero-copy');
+      const copyBottom = copy ? copy.getBoundingClientRect().bottom - rect.top : 0;
+      const gap = Number.parseFloat(getComputedStyle(section).rowGap) || 0;
+      const stickyTop = Number.parseFloat(getComputedStyle(stage).top) || 0;
+      const sectionStart = window.scrollY + rect.top;
+      const animationStart = sectionStart + copyBottom + gap - stickyTop;
+      const animationEnd = window.scrollY + rect.bottom - stage.offsetHeight - stickyTop;
+      progress = Math.max(0, Math.min(1, (window.scrollY - animationStart) / Math.max(1, animationEnd - animationStart)));
+    } else {
+      const travel = -rect.top;
+      const scrollable = Math.max(1, rect.height - window.innerHeight);
+      progress = Math.max(0, Math.min(1, travel / scrollable));
+    }
     updateLabel();
     if (reducedMotion && stage._cameraRenderOnce) stage._cameraRenderOnce();
   }
-
   function scheduleProgress() {
     if (!scrollFrame) scrollFrame = window.requestAnimationFrame(updateProgress);
   }
