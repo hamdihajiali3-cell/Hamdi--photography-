@@ -543,8 +543,11 @@ document.addEventListener("DOMContentLoaded", () => {
       ].join(lineBreak);
       if (channel === 'email') {
         const emailBody = text + lineBreak + copy.waEmail + ': ' + clientEmail;
-        const emailUrl = 'mailto:hamdihajiali76@gmail.com?subject=' + encodeURIComponent(copy.emailSubject) + '&body=' + encodeURIComponent(emailBody);
-        window.location.href = emailUrl;
+        const emailUrl = 'https://mail.google.com/mail/?view=cm&fs=1&to=' +
+          encodeURIComponent('hamdihajiali76@gmail.com') +
+          '&su=' + encodeURIComponent(copy.emailSubject) +
+          '&body=' + encodeURIComponent(emailBody);
+        window.open(emailUrl, '_blank', 'noopener,noreferrer');
       } else if (channel === 'sms') {
         window.location.href = 'sms:+905377423671?body=' + encodeURIComponent(text);
       } else {
