@@ -538,6 +538,13 @@
           </select>
         </div>
 
+        <div class="booking-field" id="photoPackageField">
+          <label class="booking-label" id="photoCountLabel" for="photoPackage" data-i18n="photoCountLabel">عدد الصور والباقة</label>
+          <select id="photoPackage" class="contact-field" required disabled aria-describedby="contactFormHint">
+            <option value="" disabled selected data-i18n="photoCountPlaceholder">اختر الباقة</option>
+          </select>
+        </div>
+
         <div class="booking-field" id="preferredDateField">
           <label class="booking-label" for="preferredDate" data-i18n="dateLabel">التاريخ المفضّل</label>
           <input type="text" id="preferredDate" class="contact-field" lang="ar" dir="rtl" data-i18n-placeholder="datePlaceholder" placeholder="اختر التاريخ" autocomplete="off" readonly required aria-haspopup="dialog" aria-expanded="false" aria-controls="bookingCalendar" aria-describedby="contactFormHint">
