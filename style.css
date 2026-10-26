@@ -2681,9 +2681,9 @@ body::after {
 }
 .contact-form .sr-only { position: absolute; }
 .contact-form #clientName,
-.contact-form #sessionType { grid-row: 1; }
+.contact-form #sessionTypeField { grid-row: 1; }
 .contact-form #clientName { grid-column: 1; }
-.contact-form #sessionType { grid-column: 2; }
+.contact-form #sessionTypeField { grid-column: 2; }
 .contact-form #clientMsg,
 .contact-form .contact-form-hint,
 .contact-form .contact-submit { grid-column: 1 / -1; }
@@ -2781,7 +2781,7 @@ body::after {
   .contact-top { text-align: start; }
   .contact-form { grid-template-columns: 1fr; padding: 15px; }
   .contact-form #clientName,
-  .contact-form #sessionType { grid-column: 1; grid-row: auto; }
+  .contact-form #sessionTypeField { grid-column: 1; grid-row: auto; }
   .contact-form #clientMsg,
   .contact-form .contact-form-hint,
   .contact-form .contact-submit { grid-column: 1; }
