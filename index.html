@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css?v=assistant-live-20261026">
+  <link rel="stylesheet" href="style.css?v=offline-assistant-20261026">
   <script type="importmap">
   {
     "imports": {
@@ -19,9 +19,8 @@
     }
   }
   </script>
-  <script src="ai-config.js?v=assistant-live-20261026"></script>
-  <script defer src="assistant.js?v=assistant-live-20261026"></script>
-  <script type="module" src="script.js?v=assistant-live-20261026"></script>
+  <script defer src="assistant.js?v=offline-assistant-20261026"></script>
+  <script type="module" src="script.js?v=offline-assistant-20261026"></script>
 </head>
 
 <body>
@@ -514,7 +513,10 @@
         <textarea id="clientMsg" class="contact-field contact-message" data-i18n-placeholder="msgPlaceholder" placeholder="ما الفكرة أو اللحظة التي تريد تصويرها؟" rows="4" required aria-describedby="contactFormHint"></textarea>
         <p id="contactFormHint" class="contact-form-hint" data-i18n="contactFormHint">ستفتح واتساب برسالة جاهزة؛ راجعها وعدّلها ثم أرسلها.</p>
 
-        <button type="submit" class="button button-gold contact-submit"><span data-i18n="sendBtn">تابع إلى واتساب</span><span aria-hidden="true">↗</span></button>
+        <div class="contact-send-options">
+          <button type="submit" name="contactChannel" value="whatsapp" class="button button-gold contact-submit"><span data-i18n="sendBtn">إرسال عبر واتساب</span><span aria-hidden="true">↗</span></button>
+          <button type="submit" name="contactChannel" value="sms" class="button contact-submit contact-submit-sms"><span data-i18n="sendSmsBtn">إرسال عبر SMS</span><span aria-hidden="true">↗</span></button>
+        </div>
       </form>
 
       <div class="contact-details">
@@ -574,6 +576,7 @@
       <div class="assistant-prompts">
         <button type="button" data-assistant-prompt="prices">أسعار التصوير</button>
         <button type="button" data-assistant-prompt="booking">حجز جلسة</button>
+        <button type="button" data-assistant-prompt="services">الخدمات</button>
       </div>
       <form class="assistant-form" id="assistantForm">
         <label class="assistant-sr-only" for="assistantInput" data-ai-copy="label">اكتب سؤالك</label>
@@ -581,7 +584,8 @@
         <button class="assistant-send" id="assistantSend" type="submit" data-ai-aria="send" aria-label="إرسال"><span aria-hidden="true">↑</span></button>
       </form>
       <footer class="assistant-panel-footer">
-        <span data-ai-copy="footer">للتأكيد والحجز:</span>
+        <a href="#contact" data-ai-copy="formLink">نموذج الحجز</a>
+        <span aria-hidden="true">·</span>
         <a href="https://wa.me/905377423671" target="_blank" rel="noopener noreferrer" data-ai-copy="whatsapp">واتساب</a>
       </footer>
     </section>
