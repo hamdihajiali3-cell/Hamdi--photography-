@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css?v=photo-package-cards-20261026">
+  <link rel="stylesheet" href="style.css?v=customer-phone-field-20261026">
   <script type="importmap">
   {
     "imports": {
@@ -20,7 +20,7 @@
   }
   </script>
   <script defer src="assistant.js?v=assistant-prices-chip-20261026"></script>
-  <script type="module" src="script.js?v=gmail-booking-email-20261026"></script>
+  <script type="module" src="script.js?v=customer-phone-field-20261026"></script>
 </head>
 
 <body>
@@ -528,6 +528,11 @@
         <div class="booking-field contact-email-field" id="clientEmailField" hidden>
           <label class="booking-label" for="clientEmail" data-i18n="emailLabel">بريدك الإلكتروني</label>
           <input type="email" id="clientEmail" class="contact-field" data-i18n-placeholder="emailPlaceholder" placeholder="you@example.com" autocomplete="email" aria-describedby="contactFormHint">
+        </div>
+
+        <div class="booking-field contact-phone-field" id="clientPhoneField">
+          <label class="booking-label" for="clientPhone" data-i18n="phoneLabel">رقم هاتفك (اختياري)</label>
+          <input type="tel" id="clientPhone" class="contact-field" data-i18n-placeholder="phonePlaceholder" placeholder="مثال: ‎+90 5xx xxx xx xx‎" autocomplete="tel" inputmode="tel" aria-describedby="contactFormHint">
         </div>
         <button type="submit" class="button button-gold contact-submit"><span data-i18n="sendBtn">متابعة لإرسال الطلب</span><span aria-hidden="true">↗</span></button>
       </form>
