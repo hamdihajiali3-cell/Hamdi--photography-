@@ -1301,14 +1301,17 @@ function initPhotoPackageSelector() {
       radio.required = true;
       radio.className = 'photo-package-radio';
       const packageName = copy[item.key] || item.key;
+      const selectedSession = sessionSelect.options[sessionSelect.selectedIndex];
+      const sessionName = selectedSession ? selectedSession.textContent.trim() : '';
+      const displayName = sessionName ? sessionName + ' · ' + packageName : packageName;
       const packagePrice = item.quote ? copy.priceQuoteAfterReview : item.price;
-      const priceText = packageName + ' — ' + packagePrice;
+      const priceText = displayName + ' — ' + packagePrice;
       radio.dataset.packageText = priceText;
       radio.setAttribute('aria-label', priceText);
       radio.checked = previousValue === item.value;
       const name = document.createElement('span');
       name.className = 'photo-package-card-name';
-      name.textContent = packageName;
+      name.textContent = displayName;
       const price = document.createElement('strong');
       price.className = 'photo-package-card-price';
       price.textContent = packagePrice;
@@ -1319,10 +1322,14 @@ function initPhotoPackageSelector() {
 
   function refreshLegacyOptions() {
     const copy = currentCopy();
+    const selectedSession = sessionSelect.options[sessionSelect.selectedIndex];
+    const sessionName = selectedSession ? selectedSession.textContent.trim() : '';
     Array.from(packageSelect.options).forEach((option) => {
       if (option.dataset.i18nKey) {
         const priceText = option.dataset.quote === 'true' ? copy.priceQuoteAfterReview : option.dataset.price;
-        option.textContent = (copy[option.dataset.i18nKey] || '') + ' — ' + priceText;
+        const packageName = copy[option.dataset.i18nKey] || '';
+        const displayName = [sessionName, packageName].filter(Boolean).join(' · ');
+        option.textContent = displayName + ' — ' + priceText;
       } else if (!option.value) {
         option.textContent = packageSelect.disabled ? copy.chooseSessionFirst : copy.photoCountPlaceholder;
       }
