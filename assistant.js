@@ -176,7 +176,8 @@
   widget.addEventListener("click", (event) => {
     const prompt = event.target.closest("[data-assistant-prompt]");
     if (!prompt) return;
-    const key = prompt.dataset.assistantPrompt + "Prompt";
+    const promptType = prompt.dataset.assistantPrompt;
+    const key = (promptType === "prices" ? "price" : promptType) + "Prompt";
     ask(copy[currentLanguage()][key]);
   });
   form.addEventListener("submit", (event) => {
