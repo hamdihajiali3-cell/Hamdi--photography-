@@ -3,7 +3,7 @@ const translations = {
     pageTitle: "Hamdi Photography | صور تحكي قصتك",
     pageDescription: "تصوير بورتريه ومناسبات وتصوير تجاري في غازي عنتاب. صور بتفاصيل مدروسة تحفظ إحساس اللحظة مع حمدي.",
     languageLabel: "لغة الموقع", menuLabel: "فتح القائمة",
-    navWork: "المعرض", navAbout: "قصتي", navServices: "الخدمات", navPricing: "الأسعار", navContact: "احجز جلسة",
+    navWork: "المعرض", navAbout: "قصتي", navServices: "الخدمات", navPricing: "الأسعار", navContact: "احجز جلسة", searchOpen: "البحث في الموقع", searchKicker: "البحث / اكتشف", searchTitle: "ابحث عن صورة أو خدمة أو سعر", searchPlaceholder: "اكتب كلمة للبحث...", searchEmpty: "جرّب: بورتريه، زفاف، تعديل ألوان...", searchNoResults: "ما لقينا نتائج. جرّب كلمة ثانية.", searchClose: "إغلاق البحث", searchGroupGallery: "من المعرض", searchGroupService: "خدمة تصوير", searchGroupPricing: "باقة وسعر",
     heroEyebrow: "<span class=\"live-dot\"></span>حمدي — مصوّر فوتوغرافي وصانع قصص بصرية",
     heroTitle: "كل صورة تحكي<br><em>حكاية تشبهك.</em>",
     heroDesc: "من جلسة البورتريه إلى يومك المميز، أصنع صوراً تهتم بالضوء والتفاصيل وتحفظ إحساس اللحظة. تصوير شخصي ومناسبات ومشاريع تجارية في غازي عنتاب.",
@@ -107,7 +107,7 @@ const translations = {
     pageTitle: "Hamdi Photography | Hikâyeni anlatan kareler",
     pageDescription: "Gaziantep'te portre, etkinlik ve ticari fotoğraf çekimleri. Anın duygusunu koruyan özenli kareler.",
     languageLabel: "Site dili", menuLabel: "Menüyü aç",
-    navWork: "Portfolyo", navAbout: "Hakkımda", navServices: "Hizmetler", navPricing: "Fiyatlar", navContact: "Çekim planla",
+    navWork: "Portfolyo", navAbout: "Hakkımda", navServices: "Hizmetler", navPricing: "Fiyatlar", navContact: "Çekim planla", searchOpen: "Sitede ara", searchKicker: "ARA / KEŞFET", searchTitle: "Fotoğraf, hizmet veya fiyat ara", searchPlaceholder: "Aramak için bir kelime yazın...", searchEmpty: "Portre, düğün veya renk düzenleme deneyin...", searchNoResults: "Sonuç bulunamadı. Başka bir kelime deneyin.", searchClose: "Aramayı kapat", searchGroupGallery: "Galeriden", searchGroupService: "Fotoğraf hizmeti", searchGroupPricing: "Paket ve fiyat",
     heroEyebrow: "<span class=\"live-dot\"></span>HAMDI — fotoğrafçı ve görsel hikâye anlatıcısı",
     heroTitle: "Her kare,<br><em>seni anlatsın.</em>",
     heroDesc: "Portrelerden özel günlere, ışığa ve ayrıntılara özen göstererek anın duygusunu koruyan kareler üretiyorum. Gaziantep'te kişisel, etkinlik ve ticari çekimler.",
@@ -211,7 +211,7 @@ const translations = {
     pageTitle: "Hamdi Photography | Frames with a story",
     pageDescription: "Portrait, event, and commercial photography in Gaziantep. Thoughtful images that hold on to how the moment felt.",
     languageLabel: "Site language", menuLabel: "Open menu",
-    navWork: "Portfolio", navAbout: "About", navServices: "Services", navPricing: "Pricing", navContact: "Plan a shoot",
+    navWork: "Portfolio", navAbout: "About", navServices: "Services", navPricing: "Pricing", navContact: "Plan a shoot", searchOpen: "Search the site", searchKicker: "SEARCH / DISCOVER", searchTitle: "Search photos, services, or prices", searchPlaceholder: "Type to search...", searchEmpty: "Try portrait, wedding, or color editing...", searchNoResults: "No results found. Try another word.", searchClose: "Close search", searchGroupGallery: "From the gallery", searchGroupService: "Photography service", searchGroupPricing: "Package and price",
     heroEyebrow: "<span class=\"live-dot\"></span>HAMDI — photographer & visual storyteller",
     heroTitle: "Every frame,<br><em>a story like yours.</em>",
     heroDesc: "From portraits to the days you want to remember, I shape light and detail into honest photographs. Personal, event, and commercial shoots in Gaziantep.",
@@ -1647,3 +1647,108 @@ if (document.readyState === 'loading') {
 } else {
   initSignatureAlbumInteraction();
 }
+
+
+function initSiteSearch() {
+  const trigger = document.getElementById('siteSearchTrigger');
+  const dialog = document.getElementById('siteSearchDialog');
+  const closeButton = document.getElementById('siteSearchClose');
+  const form = document.getElementById('siteSearchForm');
+  const input = document.getElementById('siteSearchInput');
+  const hint = document.getElementById('siteSearchHint');
+  const results = document.getElementById('siteSearchResults');
+  if (!trigger || !dialog || !form || !input || !results) return;
+
+  const normalize = (value) => String(value || '')
+    .normalize('NFD')
+    .replace(/[\\u0300-\\u036f]/g, '')
+    .toLocaleLowerCase()
+    .replace(/[أإآ]/g, 'ا')
+    .replace(/ى/g, 'ي')
+    .replace(/ة/g, 'ه')
+    .replace(/\\s+/g, ' ')
+    .trim();
+
+  const getEntries = () => Array.from(document.querySelectorAll('#work .gallery-card, #services .service, #pricing .price-card'))
+    .map((node) => {
+      const isGallery = node.matches('#work .gallery-card');
+      const isService = node.matches('#services .service');
+      const title = (node.querySelector('.card-caption, h3')?.textContent || '').replace(/↗/g, '').trim();
+      const imageAlt = node.querySelector('img')?.alt || '';
+      const detail = node.querySelector('.card-number, .price-option, p')?.textContent?.trim() || '';
+      const type = isGallery ? 'searchGroupGallery' : isService ? 'searchGroupService' : 'searchGroupPricing';
+      return { node, title, detail, type, haystack: normalize([node.textContent, imageAlt].join(' ')), isGallery };
+    });
+
+  const labels = () => translations[document.documentElement.lang] || translations.ar;
+
+  function renderResults() {
+    const copy = labels();
+    const query = normalize(input.value);
+    results.replaceChildren();
+    if (!query) {
+      hint.textContent = copy.searchEmpty;
+      return;
+    }
+
+    const terms = query.split(' ').filter(Boolean);
+    const matches = getEntries().filter((entry) => terms.every((term) => entry.haystack.includes(term))).slice(0, 10);
+    if (!matches.length) {
+      hint.textContent = copy.searchNoResults;
+      return;
+    }
+
+    hint.textContent = '';
+    matches.forEach((entry) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'site-search-result';
+      button.setAttribute('role', 'option');
+
+      const content = document.createElement('span');
+      content.className = 'site-search-result-copy';
+      const kind = document.createElement('small');
+      kind.className = 'site-search-result-kind';
+      kind.textContent = copy[entry.type];
+      const title = document.createElement('strong');
+      title.textContent = entry.title || entry.detail || copy[entry.type];
+      const detail = document.createElement('span');
+      detail.className = 'site-search-result-detail';
+      detail.textContent = entry.title && entry.detail !== entry.title ? entry.detail : '';
+      content.append(kind, title, detail);
+
+      const arrow = document.createElement('span');
+      arrow.className = 'site-search-result-arrow';
+      arrow.setAttribute('aria-hidden', 'true');
+      arrow.textContent = '↗';
+      button.append(content, arrow);
+      button.addEventListener('click', () => {
+        dialog.close();
+        entry.node.scrollIntoView({
+          behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+          block: 'center',
+          inline: 'center'
+        });
+        if (entry.isGallery) entry.node.click();
+      });
+      results.appendChild(button);
+    });
+  }
+
+  trigger.addEventListener('click', () => {
+    if (!dialog.open) dialog.showModal();
+    input.value = '';
+    renderResults();
+    window.requestAnimationFrame(() => input.focus());
+  });
+  closeButton?.addEventListener('click', () => dialog.close());
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    renderResults();
+  });
+  input.addEventListener('input', renderResults);
+  dialog.addEventListener('click', (event) => {
+    if (event.target === dialog) dialog.close();
+  });
+}
+document.addEventListener('DOMContentLoaded', initSiteSearch);

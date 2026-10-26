@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css?v=assistant-removed-20261026">
+  <link rel="stylesheet" href="style.css?v=site-search-20261026">
   <script type="importmap">
   {
     "imports": {
@@ -19,7 +19,7 @@
     }
   }
   </script>
-  <script type="module" src="script.js?v=assistant-removed-20261026"></script>
+  <script type="module" src="script.js?v=site-search-20261026"></script>
 </head>
 
 <body>
@@ -132,6 +132,10 @@
       <button type="button" class="language-button" data-language="tr" aria-pressed="false" onclick="setLanguage('tr')">TR</button>
       <button type="button" class="language-button" data-language="en" aria-pressed="false" onclick="setLanguage('en')">EN</button>
     </div>
+
+    <button class="site-search-trigger" id="siteSearchTrigger" type="button" aria-label="البحث في الموقع" data-i18n-aria-label="searchOpen" aria-haspopup="dialog" aria-controls="siteSearchDialog">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.8" cy="10.8" r="6.6"></circle><path d="m16 16 4.2 4.2"></path></svg>
+    </button>
 
     <button class="menu-toggle" aria-label="فتح القائمة" data-i18n-aria-label="menuLabel" aria-expanded="false">☰</button>
 
@@ -525,5 +529,25 @@
     <p>© <span id="year"></span> Hamdi Photography. <span data-i18n="rightsText">جميع الحقوق محفوظة.</span></p>
     <a href="#home" class="back-top" data-i18n="backTop">العودة للاعلى ↑</a>
   </footer>
+
+  <dialog class="site-search-dialog" id="siteSearchDialog" aria-labelledby="siteSearchTitle">
+    <div class="site-search-shell">
+      <div class="site-search-head">
+        <div>
+          <p class="site-search-kicker" data-i18n="searchKicker">البحث / اكتشف</p>
+          <h2 id="siteSearchTitle" data-i18n="searchTitle">ابحث عن صورة أو خدمة أو سعر</h2>
+        </div>
+        <button class="site-search-close" id="siteSearchClose" type="button" aria-label="إغلاق البحث" data-i18n-aria-label="searchClose"><span aria-hidden="true">×</span></button>
+      </div>
+      <form class="site-search-form" id="siteSearchForm" role="search">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.8" cy="10.8" r="6.6"></circle><path d="m16 16 4.2 4.2"></path></svg>
+        <input id="siteSearchInput" type="search" autocomplete="off" enterkeyhint="search" aria-label="اكتب كلمة للبحث" data-i18n-aria-label="searchPlaceholder" data-i18n-placeholder="searchPlaceholder" placeholder="اكتب كلمة للبحث..." />
+        <kbd aria-hidden="true">ESC</kbd>
+      </form>
+      <p class="site-search-hint" id="siteSearchHint" data-i18n="searchEmpty">جرّب: بورتريه، زفاف، تعديل ألوان...</p>
+      <div class="site-search-results" id="siteSearchResults" role="listbox" aria-live="polite"></div>
+    </div>
+  </dialog>
+
 </body>
 </html>
