@@ -12,6 +12,14 @@ const translations = {
     loaderLabel: "جارٍ تجهيز تجربتك البصرية", loadingSubtext: "لحظات ونبدأ الحكاية", loadingProgress: "تقدم تحميل الموقع", welcomeVisitors: "أهلاً وسهلاً بالزائرين",
     visualLabel1: "خلف كل لقطة — 2026", visualLabel2: "قصتك تستحق إطاراً", albumMotionCue: "حرّك المؤشر أو المس الألبوم لتقليب الصفحة",
     scrollCue: "انزل واستكشف",
+    cameraStoryEyebrow: "تجربة العدسة / 01—03",
+    cameraStoryTitle: "كل لقطة تبدأ<br><em>من قلب الكاميرا.</em>",
+    cameraStoryText: "قرّب المشهد واكتشف تفاصيل العدسة وهي تنفصل إلى طبقاتها، بحركة تتبع تمريرك وتترك الصور في صدارة الحكاية.",
+    cameraStoryHint: "مرّر لتفكيك العدسة وإعادة تركيبها",
+    cameraStageBody: "هيكل الكاميرا",
+    cameraStageLens: "تفاصيل العدسة",
+    cameraStageFocus: "جاهزة لالتقاط الحكاية",
+    cameraSceneAlt: "كاميرا ثلاثية الأبعاد تتحرك عدستها مع تمرير الصفحة",
     t1: "بورتريه", t2: "مناسبات", t3: "تصوير تجاري", t4: "قصص بصرية",
     workEyebrow: "مختارات بعدسة حمدي / 2024—2026",
     workTitle: "لحظاتك<br><em>تستحق أن تُروى.</em>",
@@ -116,6 +124,14 @@ const translations = {
     loaderLabel: "Görsel deneyimin hazırlanıyor", loadingSubtext: "Birazdan başlıyoruz", loadingProgress: "Site yükleme durumu", welcomeVisitors: "Ziyaretçilerimize hoş geldiniz",
     visualLabel1: "HER KARENİN ARDINDA — 2026", visualLabel2: "HİKÂYENİ ÇERÇEVELE", albumMotionCue: "Sayfayı çevirmek için imleci oynatın veya albüme dokunun.",
     scrollCue: "KEŞFETMEK İÇİN KAYDIR",
+    cameraStoryEyebrow: "OBJEKTİF DENEYİMİ / 01—03",
+    cameraStoryTitle: "Her kare<br><em>kameranın kalbinde başlar.</em>",
+    cameraStoryText: "Sahneye yaklaşın ve objektifin katmanlarına ayrılan parçalarını keşfedin. Hareket, kaydırmanızı izler; hikâyenin odağında fotoğraflar kalır.",
+    cameraStoryHint: "Objektifi ayırmak ve yeniden birleştirmek için kaydırın",
+    cameraStageBody: "Kamera gövdesi",
+    cameraStageLens: "Objektif ayrıntıları",
+    cameraStageFocus: "Hikâyenizi çekmeye hazır",
+    cameraSceneAlt: "Sayfayı kaydırdıkça objektifi hareket eden üç boyutlu kamera",
     t1: "PORTRE", t2: "ETKİNLİK", t3: "TİCARİ ÇEKİM", t4: "GÖRSEL HİKÂYELER",
     workEyebrow: "HAMDI'NİN SEÇKİSİ / 2024—2026",
     workTitle: "Anların<br><em>hikâyeni anlatsın.</em>",
@@ -220,6 +236,14 @@ const translations = {
     loaderLabel: "Preparing your visual experience", loadingSubtext: "Your story is about to begin", loadingProgress: "Website loading progress", welcomeVisitors: "Welcome, visitors",
     visualLabel1: "BEHIND EVERY FRAME — 2026", visualLabel2: "FRAME YOUR STORY", albumMotionCue: "MOVE THE POINTER OR TAP THE ALBUM TO TURN A PAGE",
     scrollCue: "SCROLL TO EXPLORE",
+    cameraStoryEyebrow: "LENS EXPERIENCE / 01—03",
+    cameraStoryTitle: "Every frame<br><em>begins inside the camera.</em>",
+    cameraStoryText: "Move closer and explore the lens as its layers separate. The motion follows your scroll while your photographs stay at the heart of the story.",
+    cameraStoryHint: "Scroll to disassemble and reassemble the lens",
+    cameraStageBody: "Camera body",
+    cameraStageLens: "Lens details",
+    cameraStageFocus: "Ready to capture your story",
+    cameraSceneAlt: "A three-dimensional camera whose lens moves as you scroll",
     t1: "PORTRAITS", t2: "EVENTS", t3: "COMMERCIAL", t4: "VISUAL STORIES",
     workEyebrow: "SELECTED BY HAMDI / 2024—2026",
     workTitle: "Moments worth<br><em>holding onto.</em>",
@@ -1775,3 +1799,285 @@ function initSiteSearch() {
   });
 }
 document.addEventListener('DOMContentLoaded', initSiteSearch);
+
+
+/* Original, lightweight 3D camera story. The scene is created locally and starts only near view. */
+function initCameraStory() {
+  const section = document.querySelector('.camera-story');
+  const canvas = document.getElementById('cameraStoryCanvas');
+  const stage = document.getElementById('cameraStoryScene');
+  const stageLabel = document.getElementById('cameraStoryStageLabel');
+  const stageIndex = section?.querySelector('.camera-story-stage-index');
+  if (!section || !canvas || !stage) return;
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const compact = window.matchMedia('(max-width: 700px), (pointer: coarse)').matches;
+  let renderer;
+  let camera;
+  let assembly;
+  let lensParts = [];
+  let visible = false;
+  let started = false;
+  let frameId = 0;
+  let lastFrame = 0;
+  let scrollFrame = 0;
+  let progress = 0;
+  let previousStage = -1;
+
+  function updateLabel() {
+    if (!stageLabel) return;
+    const next = progress < 0.28 ? 0 : progress < 0.72 ? 1 : 2;
+    if (next === previousStage) return;
+    previousStage = next;
+    const lang = document.documentElement.lang || 'ar';
+    const copy = translations[lang] || translations.ar;
+    stageLabel.textContent = [copy.cameraStageBody, copy.cameraStageLens, copy.cameraStageFocus][next];
+    stage.dataset.progress = String(next + 1);
+    if (stageIndex) stageIndex.textContent = '0' + (next + 1);
+  }
+
+  function updateProgress() {
+    scrollFrame = 0;
+    const rect = section.getBoundingClientRect();
+    const travel = window.innerHeight * 0.8 - rect.top;
+    progress = Math.max(0, Math.min(1, travel / (rect.height + window.innerHeight * 0.4)));
+    updateLabel();
+    if (reducedMotion && stage._cameraRenderOnce) stage._cameraRenderOnce();
+  }
+
+  function scheduleProgress() {
+    if (!scrollFrame) scrollFrame = window.requestAnimationFrame(updateProgress);
+  }
+
+  function makeMaterial(THREE, color, metalness, roughness, extra = {}) {
+    return new THREE.MeshStandardMaterial({ color, metalness, roughness, ...extra });
+  }
+
+  async function createScene() {
+    try {
+      const THREE = await import('three');
+      renderer = new THREE.WebGLRenderer({
+        canvas,
+        alpha: true,
+        antialias: !compact,
+        powerPreference: 'low-power'
+      });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, compact ? 0.9 : 1.25));
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.05;
+      renderer.setClearColor(0x000000, 0);
+
+      const scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(34, 1, 0.1, 50);
+      camera.position.set(0, 0.6, compact ? 8.7 : 8.1);
+      scene.add(new THREE.HemisphereLight(0xcbd8e5, 0x111116, 2.0));
+
+      const warm = new THREE.DirectionalLight(0xe7c68a, 3.3);
+      warm.position.set(-4, 4, 5);
+      scene.add(warm);
+      const cool = new THREE.DirectionalLight(0x6da5d0, 2.7);
+      cool.position.set(4, 1, -1);
+      scene.add(cool);
+      const front = new THREE.PointLight(0xffffff, 1.7, 18);
+      front.position.set(0, 1, 6);
+      scene.add(front);
+
+      assembly = new THREE.Group();
+      assembly.rotation.set(-0.08, -0.24, 0);
+      scene.add(assembly);
+
+      const shell = makeMaterial(THREE, 0x202226, 0.82, 0.29);
+      const edge = makeMaterial(THREE, 0x45494f, 0.8, 0.25);
+      const rubber = makeMaterial(THREE, 0x101114, 0.18, 0.72);
+      const bronze = makeMaterial(THREE, 0xc49b5c, 0.76, 0.25);
+      const glass = makeMaterial(THREE, 0x193a50, 0.84, 0.12, {
+        emissive: 0x0b1e2b,
+        emissiveIntensity: 0.45,
+        transparent: true,
+        opacity: 0.94
+      });
+
+      const body = new THREE.Mesh(new THREE.BoxGeometry(2.65, 1.58, 0.94), shell);
+      assembly.add(body);
+
+      const grip = new THREE.Mesh(new THREE.BoxGeometry(0.5, 1.32, 0.91), rubber);
+      grip.position.set(1.45, -0.02, 0.01);
+      assembly.add(grip);
+
+      const topHousing = new THREE.Mesh(new THREE.BoxGeometry(0.86, 0.34, 0.55), edge);
+      topHousing.position.set(-0.28, 0.93, -0.03);
+      assembly.add(topHousing);
+
+      const prism = new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.49, 0.5, 6), shell);
+      prism.scale.set(1.45, 0.72, 0.95);
+      prism.position.set(-0.25, 1.05, 0);
+      assembly.add(prism);
+
+      const viewFinder = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.22, 0.26), rubber);
+      viewFinder.position.set(-0.25, 1.3, 0.02);
+      assembly.add(viewFinder);
+
+      const screen = new THREE.Mesh(new THREE.BoxGeometry(0.76, 0.54, 0.035), rubber);
+      screen.position.set(-0.39, 0.12, -0.49);
+      assembly.add(screen);
+
+      const screenGlass = new THREE.Mesh(
+        new THREE.BoxGeometry(0.63, 0.41, 0.012),
+        makeMaterial(THREE, 0x18303e, 0.42, 0.27, { emissive: 0x122532, emissiveIntensity: 0.32 })
+      );
+      screenGlass.position.set(-0.39, 0.12, -0.514);
+      assembly.add(screenGlass);
+
+      for (const x of [-0.74, -0.47, -0.2]) {
+        const dial = new THREE.Mesh(new THREE.CylinderGeometry(0.105, 0.105, 0.1, 20), bronze);
+        dial.position.set(x, 1.0, 0.14);
+        assembly.add(dial);
+      }
+
+      const shutter = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.13, 0.12, 24), bronze);
+      shutter.position.set(0.36, 1.02, 0.02);
+      assembly.add(shutter);
+
+      const lens = new THREE.Group();
+      assembly.add(lens);
+      const cylinder = (radius, depth, material, z, radiusBack = radius) => {
+        const mesh = new THREE.Mesh(new THREE.CylinderGeometry(radius, radiusBack, depth, 48), material);
+        mesh.rotation.x = Math.PI / 2;
+        mesh.position.z = z;
+        return mesh;
+      };
+
+      const lensBody = new THREE.Group();
+      lensBody.position.z = 0.9;
+      lensBody.add(cylinder(0.66, 0.44, rubber, 0.1, 0.58));
+      lensBody.add(cylinder(0.59, 0.12, edge, 0.33, 0.59));
+      lens.add(lensBody);
+
+      const specs = [
+        { z: 1.32, spread: -0.46, radius: 0.61, tube: 0.055, color: edge },
+        { z: 1.47, spread: -0.25, radius: 0.57, tube: 0.035, color: bronze },
+        { z: 1.61, spread: 0.02, radius: 0.53, tube: 0.052, color: edge },
+        { z: 1.75, spread: 0.3, radius: 0.49, tube: 0.035, color: bronze },
+        { z: 1.88, spread: 0.55, radius: 0.445, tube: 0.042, color: edge }
+      ];
+
+      for (const spec of specs) {
+        const component = new THREE.Group();
+        component.position.z = spec.z;
+        const ring = new THREE.Mesh(new THREE.TorusGeometry(spec.radius, spec.tube, 10, compact ? 40 : 56), spec.color);
+        component.add(ring);
+        const innerBarrel = cylinder(spec.radius - 0.055, 0.09, rubber, -0.02, spec.radius - 0.055);
+        component.add(innerBarrel);
+        lens.add(component);
+        lensParts.push({ component, baseZ: spec.z, spread: spec.spread });
+      }
+
+      const frontGlass = new THREE.Group();
+      frontGlass.position.z = 2.02;
+      frontGlass.add(cylinder(0.407, 0.075, glass, 0));
+      const frontRim = new THREE.Mesh(new THREE.TorusGeometry(0.45, 0.035, 10, 56), bronze);
+      frontRim.position.z = 0.048;
+      frontGlass.add(frontRim);
+      const aperture = new THREE.Mesh(
+        new THREE.CircleGeometry(0.19, 36),
+        makeMaterial(THREE, 0x050b11, 0.68, 0.12, { emissive: 0x102d40, emissiveIntensity: 0.6 })
+      );
+      aperture.position.z = 0.043;
+      frontGlass.add(aperture);
+      lens.add(frontGlass);
+      lensParts.push({ component: frontGlass, baseZ: 2.02, spread: 0.76 });
+
+      function resize() {
+        if (!renderer) return;
+        const width = Math.max(1, stage.clientWidth);
+        const height = Math.max(1, stage.clientHeight);
+        renderer.setSize(width, height, false);
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+      }
+
+      function draw(time = 0) {
+        frameId = 0;
+        if (!visible || !renderer || document.hidden) return;
+        const frameInterval = compact ? 50 : 34;
+        if (!reducedMotion && time - lastFrame < frameInterval) {
+          frameId = window.requestAnimationFrame(draw);
+          return;
+        }
+        lastFrame = time;
+        const spread = reducedMotion ? 0 : Math.sin(progress * Math.PI);
+        for (const part of lensParts) {
+          part.component.position.z = part.baseZ + part.spread * spread;
+        }
+        assembly.rotation.y = -0.24 + Math.sin(progress * Math.PI) * 0.34;
+        assembly.rotation.x = -0.08 + Math.sin(progress * Math.PI) * 0.12;
+        if (!reducedMotion) assembly.rotation.y += Math.sin(time * 0.00038) * 0.014;
+        assembly.position.y = Math.sin(progress * Math.PI) * 0.08;
+        renderer.render(scene, camera);
+        if (reducedMotion) frameId = 0;
+        else frameId = window.requestAnimationFrame(draw);
+      }
+
+      function renderOnce() {
+        if (!renderer) return;
+        if (frameId) window.cancelAnimationFrame(frameId);
+        frameId = window.requestAnimationFrame(draw);
+      }
+
+      resize();
+      updateProgress();
+      stage.classList.add('is-ready');
+      window.addEventListener('resize', resize, { passive: true });
+      stage._cameraRenderOnce = renderOnce;
+      renderOnce();
+    } catch (error) {
+      canvas.hidden = true;
+      stage.classList.add('is-fallback');
+    }
+  }
+
+  function activate() {
+    visible = true;
+    if (!started) {
+      started = true;
+      createScene();
+      return;
+    }
+    if (stage._cameraRenderOnce) stage._cameraRenderOnce();
+  }
+
+  function deactivate() {
+    visible = false;
+    if (frameId) window.cancelAnimationFrame(frameId);
+    frameId = 0;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      if (entry.isIntersecting) activate();
+      else deactivate();
+    }
+  }, { rootMargin: '140px 0px' });
+  observer.observe(section);
+  const languageObserver = new MutationObserver(() => {
+    previousStage = -1;
+    updateLabel();
+  });
+  languageObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
+
+  window.addEventListener('scroll', scheduleProgress, { passive: true });
+  window.addEventListener('resize', scheduleProgress, { passive: true });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) deactivate();
+    else if (visible && stage._cameraRenderOnce) stage._cameraRenderOnce();
+  });
+  scheduleProgress();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initCameraStory, { once: true });
+} else {
+  initCameraStory();
+}
+
