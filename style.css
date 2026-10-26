@@ -3109,7 +3109,6 @@ body::after {
 /* Booking request fields */
 #contact .contact-form .booking-field {
   display: grid;
-  grid-row: 2;
   gap: 8px;
   min-width: 0;
   text-align: start;
@@ -4601,7 +4600,8 @@ body :is(h1, h2, h3, .eyebrow, .brand-mark, .brand-name, .card-caption,
 }
 
 
-/* Keep booking package, date, and time controls in distinct grid cells. */
+/* Keep every booking field in its own grid cell. */
+#contact .contact-form #sessionTypeField { grid-column: 2; grid-row: 1; }
 #contact .contact-form #photoPackageField { grid-column: 1; grid-row: 2; }
 #contact .contact-form #preferredDateField { grid-column: 2; grid-row: 2; }
 #contact .contact-form #preferredTimeField { grid-column: 1 / -1; grid-row: 3; }
@@ -4718,6 +4718,10 @@ body :is(h1, h2, h3, .eyebrow, .brand-mark, .brand-name, .card-caption,
   font-size: 15px;
 }
 @media (max-width: 600px) {
+  #contact .contact-form #sessionTypeField {
+    grid-column: 1;
+    grid-row: auto;
+  }
   #contact .contact-form #photoPackageField,
   #contact .contact-form #preferredDateField {
     grid-column: 1;
