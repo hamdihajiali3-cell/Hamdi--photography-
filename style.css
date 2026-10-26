@@ -4539,3 +4539,17 @@ body :is(h1, h2, h3, .eyebrow, .brand-mark, .brand-name, .card-caption,
   .contact-send-options { grid-column: 1; gap: 8px; }
   .contact-send-options .contact-submit { padding-inline: 12px; font-size: 11px; }
 }
+
+
+/* Keep booking package, date, and time controls in distinct grid cells. */
+#contact .contact-form #photoPackageField { grid-column: 1; grid-row: 2; }
+#contact .contact-form #preferredDateField { grid-column: 2; grid-row: 2; }
+#contact .contact-form #preferredTimeField { grid-column: 1 / -1; grid-row: 3; }
+@media (max-width: 600px) {
+  #contact .contact-form #photoPackageField,
+  #contact .contact-form #preferredDateField,
+  #contact .contact-form #preferredTimeField {
+    grid-column: 1;
+    grid-row: auto;
+  }
+}
