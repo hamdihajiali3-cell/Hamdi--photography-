@@ -65,11 +65,11 @@ const translations = {
     priceColorTen: "10 صور معدّلة ألوانيًا",
     priceColorTwenty: "20 صورة معدّلة ألوانيًا",
     priceCustomThirty: "30 صورة",
-    photoCountLabel: "عدد الصور والباقة",
-    photoCountPlaceholder: "اختر الباقة", chooseSessionFirst: "اختر الجلسة أولًا لتظهر باقاتها وأسعارها",
+    photoCountLabel: "عدد الصور",
+    photoCountPlaceholder: "اختر عدد الصور", chooseSessionFirst: "اختر الجلسة أولًا لتظهر باقاتها وأسعارها",
     packageCustom: "عدد الصور وسعرها يُحددان بعد مراجعة الطلب",
     priceQuoteAfterReview: "السعر بعد مراجعة الطلب",
-    waPackage: "الباقة وعدد الصور",
+    waPackage: "عدد الصور",
     priceGraduationTitle: "تخرج",
     priceGraduationDesc: "صور التخرج مع باقات حسب عدد الصور.",
     priceGraduationTen: "10 صور تخرج",
@@ -172,11 +172,11 @@ const translations = {
     priceColorTen: "10 fotoğraf için renk düzenleme",
     priceColorTwenty: "20 fotoğraf için renk düzenleme",
     priceCustomThirty: "30 fotoğraf",
-    photoCountLabel: "Fotoğraf sayısı ve paket",
-    photoCountPlaceholder: "Paketi seçin", chooseSessionFirst: "Paket ve fiyatları görmek için önce çekim türünü seçin",
+    photoCountLabel: "Fotoğraf sayısı",
+    photoCountPlaceholder: "Fotoğraf sayısını seçin", chooseSessionFirst: "Paket ve fiyatları görmek için önce çekim türünü seçin",
     packageCustom: "Fotoğraf sayısı ve fiyatı talep incelendikten sonra belirlenir",
     priceQuoteAfterReview: "Talep incelendikten sonra fiyatlandırılır",
-    waPackage: "Paket ve fotoğraf sayısı",
+    waPackage: "Fotoğraf sayısı",
     priceGraduationTitle: "Mezuniyet",
     priceGraduationDesc: "Fotoğraf sayısına göre mezuniyet paketleri.",
     priceGraduationTen: "10 mezuniyet fotoğrafı",
@@ -279,11 +279,11 @@ const translations = {
     priceColorTen: "Color correction for 10 photos",
     priceColorTwenty: "Color correction for 20 photos",
     priceCustomThirty: "30 photos",
-    photoCountLabel: "Photo count and package",
-    photoCountPlaceholder: "Choose a package", chooseSessionFirst: "Choose a session first to see its packages and prices",
+    photoCountLabel: "Photo count",
+    photoCountPlaceholder: "Choose the number of photos", chooseSessionFirst: "Choose a session first to see its packages and prices",
     packageCustom: "Photo count and price will be confirmed after reviewing the request",
     priceQuoteAfterReview: "Price after reviewing the request",
-    waPackage: "Package and photo count",
+    waPackage: "Photo count",
     priceGraduationTitle: "Graduation",
     priceGraduationDesc: "Graduation packages based on the number of edited photos.",
     priceGraduationTen: "10 graduation photos",
@@ -513,13 +513,10 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       const name = document.getElementById('clientName').value.trim();
       const session = document.getElementById('sessionType').value;
-      const selectedPackage = directForm.querySelector('input[name="photoPackage"]:checked');
       const packageSelect = document.getElementById('photoPackage');
-      const packageChoice = selectedPackage
-        ? selectedPackage.dataset.packageText
-        : packageSelect && !packageSelect.disabled && packageSelect.selectedIndex > 0
-          ? packageSelect.options[packageSelect.selectedIndex].textContent
-          : '';
+      const packageChoice = packageSelect && !packageSelect.disabled && packageSelect.selectedIndex > 0
+        ? packageSelect.options[packageSelect.selectedIndex].textContent
+        : '';
       const preferredDate = document.getElementById('preferredDate').dataset.isoDate;
       const preferredTime = document.getElementById('preferredTime').value;
       const msg = document.getElementById('clientMsg').value.trim();
@@ -532,7 +529,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const clientEmail = emailInput ? emailInput.value.trim() : '';
 
       const copy = translations[document.documentElement.lang] || translations.en;
-      const packageLabel = packageChoice || copy.packageCustom;
+      const packageLabel = packageChoice;
       const lineBreak = String.fromCharCode(10);
       const dateLocale = { ar: 'ar', tr: 'tr-TR', en: 'en-US' }[document.documentElement.lang] || 'en-US';
       const dateLabel = new Intl.DateTimeFormat(dateLocale, { dateStyle: 'long' }).format(new Date(preferredDate + 'T12:00:00'));
@@ -1272,6 +1269,26 @@ function initPhotoPackageSelector() {
     return translations[document.documentElement.lang] || translations.en;
   }
 
+  function formatPhotoCount(value) {
+    const countByToken = {
+      one: 1, five: 5, ten: 10, fifteen: 15, twenty: 20,
+      thirty: 30, forty: 40, sixty: 60, eighty: 80, hundred: 100
+    };
+    const token = String(value || '').split('-').pop();
+    const count = countByToken[token];
+    if (!count) return '';
+    const language = document.documentElement.lang;
+    const locale = { ar: 'ar', tr: 'tr-TR', en: 'en-US' }[language] || 'en-US';
+    const number = new Intl.NumberFormat(locale, { useGrouping: false }).format(count);
+    if (language === 'ar') {
+      if (count === 1) return 'صورة واحدة';
+      if (count === 2) return 'صورتان';
+      return number + (count >= 3 && count <= 10 ? ' صور' : ' صورة');
+    }
+    if (language === 'tr') return number + ' fotoğraf';
+    return number + (count === 1 ? ' photo' : ' photos');
+  }
+
   function selectedSessionKey() {
     const selected = sessionSelect.options[sessionSelect.selectedIndex];
     return selected ? selected.getAttribute('data-i18n-value') : '';
@@ -1322,15 +1339,10 @@ function initPhotoPackageSelector() {
 
   function refreshLegacyOptions() {
     const copy = currentCopy();
-    const selectedSession = sessionSelect.options[sessionSelect.selectedIndex];
-    const sessionName = selectedSession ? selectedSession.textContent.trim() : '';
     Array.from(packageSelect.options).forEach((option) => {
-      if (option.dataset.i18nKey) {
-        const priceText = option.dataset.quote === 'true' ? copy.priceQuoteAfterReview : option.dataset.price;
-        const packageName = copy[option.dataset.i18nKey] || '';
-        const displayName = [sessionName, packageName].filter(Boolean).join(' · ');
-        option.textContent = displayName + ' — ' + priceText;
-      } else if (!option.value) {
+      if (option.value) {
+        option.textContent = formatPhotoCount(option.value);
+      } else {
         option.textContent = packageSelect.disabled ? copy.chooseSessionFirst : copy.photoCountPlaceholder;
       }
     });
@@ -1354,10 +1366,7 @@ function initPhotoPackageSelector() {
     choices.forEach((item) => {
       const option = document.createElement('option');
       option.value = item.value;
-      option.dataset.i18nKey = item.key;
-      if (item.price) option.dataset.price = item.price;
-      if (item.quote) option.dataset.quote = 'true';
-      option.textContent = copy[item.key] || item.key;
+      option.textContent = formatPhotoCount(item.value);
       packageSelect.appendChild(option);
     });
     packageSelect.disabled = !sessionKey || choices.length === 0;
