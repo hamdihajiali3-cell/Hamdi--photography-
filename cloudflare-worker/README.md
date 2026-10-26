@@ -1,33 +1,31 @@
 # تفعيل مساعد Hamdi Photography بأمان
 
-الموقع يبقى على GitHub Pages، بينما يتصل المساعد بخادم Cloudflare Worker. **لا تضع مفتاح OpenAI في GitHub أو ملفات الموقع ولا ترسله في المحادثة.**
+الموقع يبقى على GitHub Pages، والمحادثة تمرّ عبر Cloudflare Worker إلى OpenAI Responses API. مفتاح OpenAI لا يوضع في GitHub أو ملفات الموقع أو المحادثة.
 
-## إصلاح إعداد النشر الحالي
+## إعداد Worker
 
-Cloudflare أنشأ Worker باسم `hamdi--photography`، لكن أول نشر استخدم مجلد الموقع الرئيسي. نحتاج توجيه البناء إلى مجلد الخادم:
+إعداد Cloudflare يجب أن يستخدم المستودع نفسه، فرع main، ومجلد الجذر cloudflare-worker. اترك أمر البناء فارغًا، وأمر النشر:
+    npx wrangler deploy
 
-1. في صفحة Worker افتح **Settings → Builds**.
-2. غيّر **Root directory** من `/` إلى `cloudflare-worker`.
-3. اترك **Build command** فارغًا، وخلي **Deploy command** كما هو: `npx wrangler deploy`.
-4. تأكد أن الفرع `main`، ثم احفظ الإعدادات وأعد النشر.
+ملف wrangler.toml يحدد اسم Worker والعنوان المسموح ونموذج gpt-6-luna. ملف ai-config.js في جذر الموقع يحتوي عنوان Worker العام فقط.
 
-اسم Worker مضبوط في `wrangler.toml` على `hamdi--photography` لمطابقة الاسم الذي أنشأه Cloudflare.
+## مفتاح OpenAI
 
-## إضافة مفتاح OpenAI سرًّا
+1. ألغِ أي مفتاح سبق مشاركته في محادثة أو إضافته إلى مستودع، ثم أنشئ مفتاحًا جديدًا.
+2. إذا اخترت صلاحيات مقيّدة، اسمح بإنشاء Responses (Write). صلاحية القراءة فقط لا تكفي.
+3. من Cloudflare افتح Worker hamdi--photography ثم Settings ثم Variables and Secrets، وأضف Secret باسم OPENAI_API_KEY في Production.
+4. ألصق المفتاح الجديد مباشرة في حقل Cloudflare Secret، ثم احفظ وانشر التغيير. لا تضفه إلى متغيرات البناء أو أي ملف في GitHub.
 
-بعد نجاح نشر مجلد `cloudflare-worker`:
+يمكن بدل لوحة Cloudflare ضبط السر عبر الطرفية:
+    cd cloudflare-worker
+    npx wrangler login
+    npx wrangler secret put OPENAI_API_KEY
+    npx wrangler deploy
 
-1. افتح Worker ثم **Settings → Variables and Secrets → Add → Secret**.
-2. اسم السر `OPENAI_API_KEY`، والقيمة مفتاح OpenAI الجديد. احفظه وانشر التغيير. السر لن يظهر لزوار الموقع.
-3. لا ترسل المفتاح في GitHub أو المحادثة. أرسل لي فقط عنوان Worker العام الذي ينتهي بـ `.workers.dev`.
-4. سأضع العنوان في `ai-config.js` ليظهر المساعد على الموقع.
+لا تضع السر داخل ai-config.js. هذا الملف عام ويحتوي عنوان Worker فقط.
 
-إذا واجهت صفحة مختلفة، أرسل نص الخيارات الظاهرة أو صورة بعد إخفاء أي مفاتيح أو بيانات سرية.
+## الفحص
 
-## ملاحظات
+افتح https://hamdi--photography.hamdihajiali3.workers.dev/api/health؛ يجب أن يظهر {"ok":true}. افتح الموقع وجرب زر المساعد. إذا ظهر خطأ نقص المفتاح، أضف OPENAI_API_KEY كـ Secret في Production ثم أعد النشر.
 
-- احذف أي مفتاح سبق إرساله في محادثة أو إضافته إلى مستودع، ثم راجع صفحة الاستخدام.
-- واجهة المساعد مخفية حتى إضافة عنوان Worker؛ لذلك لن يظهر زر معطّل قبل اكتمال الربط.
-- يستخدم الخادم GPT-6 Luna، ويقبل الطلبات من موقع GitHub Pages فقط، ويحد طول الرسائل والسجل، ويضبط حدًا تقريبيًا قدره 10 طلبات في الدقيقة لكل عنوان IP.
-- عنوان الموقع المسموح مضبوط في `wrangler.toml` على `https://hamdihajiali3-cell.github.io`.
-- لا تضع أي سر داخل `ai-config.js`؛ هذا الملف يحتوي عنوان Worker العام فقط.
+الخادم يسمح بطلبات المحادثة القادمة من أصل GitHub Pages فقط، ويحد طول الرسائل وسجل المحادثة، ويطبّق حدًا تقريبيًا قدره 10 طلبات في الدقيقة لكل عنوان IP عند توفر ربط حد الطلبات. لا يثبت المساعد توفر موعد؛ حمدي يؤكد التفاصيل عبر واتساب.

@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css?v=camera-removed-20261026">
+  <link rel="stylesheet" href="style.css?v=assistant-live-20261026">
   <script type="importmap">
   {
     "imports": {
@@ -19,7 +19,9 @@
     }
   }
   </script>
-  <script type="module" src="script.js?v=camera-removed-20261026"></script>
+  <script src="ai-config.js?v=assistant-live-20261026"></script>
+  <script defer src="assistant.js?v=assistant-live-20261026"></script>
+  <script type="module" src="script.js?v=assistant-live-20261026"></script>
 </head>
 
 <body>
@@ -551,6 +553,39 @@
     </div>
   </dialog>
 
+
+  <div class="assistant-widget" id="assistantWidget" hidden>
+    <button class="assistant-launcher" id="assistantLauncher" type="button" aria-expanded="false" aria-controls="assistantPanel" data-ai-aria="launcher">
+      <span class="assistant-launcher-mark" aria-hidden="true">✦</span>
+      <span data-ai-copy="launcher">المساعد الذكي</span>
+    </button>
+    <section class="assistant-panel" id="assistantPanel" role="dialog" aria-modal="false" aria-labelledby="assistantTitle" hidden>
+      <header class="assistant-panel-header">
+        <div class="assistant-brand-mark" aria-hidden="true">H</div>
+        <div class="assistant-panel-heading">
+          <p data-ai-copy="eyebrow">HAMDI PHOTOGRAPHY · مساعد حمدي</p>
+          <h2 id="assistantTitle" data-ai-copy="title">كيف أقدر أساعدك؟</h2>
+        </div>
+        <button class="assistant-close" id="assistantClose" type="button" data-ai-aria="close" aria-label="إغلاق"><span aria-hidden="true">×</span></button>
+      </header>
+      <div class="assistant-messages" id="assistantMessages" role="log" aria-live="polite" aria-relevant="additions">
+        <p class="assistant-message assistant-message--bot" data-assistant-welcome>أهلًا! اسألني عن الأسعار، أنواع الجلسات أو طريقة الحجز.</p>
+      </div>
+      <div class="assistant-prompts">
+        <button type="button" data-assistant-prompt="prices">أسعار التصوير</button>
+        <button type="button" data-assistant-prompt="booking">حجز جلسة</button>
+      </div>
+      <form class="assistant-form" id="assistantForm">
+        <label class="assistant-sr-only" for="assistantInput" data-ai-copy="label">اكتب سؤالك</label>
+        <textarea id="assistantInput" rows="1" maxlength="1000" enterkeyhint="send" data-ai-placeholder="placeholder" placeholder="اكتب رسالتك هنا..."></textarea>
+        <button class="assistant-send" id="assistantSend" type="submit" data-ai-aria="send" aria-label="إرسال"><span aria-hidden="true">↑</span></button>
+      </form>
+      <footer class="assistant-panel-footer">
+        <span data-ai-copy="footer">للتأكيد والحجز:</span>
+        <a href="https://wa.me/905377423671" target="_blank" rel="noopener noreferrer" data-ai-copy="whatsapp">واتساب</a>
+      </footer>
+    </section>
+  </div>
 </body>
 </html>
 
