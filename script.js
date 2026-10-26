@@ -510,10 +510,13 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       const name = document.getElementById('clientName').value.trim();
       const session = document.getElementById('sessionType').value;
+      const selectedPackage = directForm.querySelector('input[name="photoPackage"]:checked');
       const packageSelect = document.getElementById('photoPackage');
-      const packageChoice = packageSelect && !packageSelect.disabled && packageSelect.selectedIndex > 0
-        ? packageSelect.options[packageSelect.selectedIndex].textContent
-        : '';
+      const packageChoice = selectedPackage
+        ? selectedPackage.dataset.packageText
+        : packageSelect && !packageSelect.disabled && packageSelect.selectedIndex > 0
+          ? packageSelect.options[packageSelect.selectedIndex].textContent
+          : '';
       const preferredDate = document.getElementById('preferredDate').dataset.isoDate;
       const preferredTime = document.getElementById('preferredTime').value;
       const msg = document.getElementById('clientMsg').value.trim();
@@ -1204,7 +1207,8 @@ document.addEventListener('DOMContentLoaded', initServiceBookingLinks);
 function initPhotoPackageSelector() {
   const sessionSelect = document.getElementById('sessionType');
   const packageSelect = document.getElementById('photoPackage');
-  if (!sessionSelect || !packageSelect) return;
+  const packageOptions = document.getElementById('photoPackageOptions');
+  if (!sessionSelect || (!packageSelect && !packageOptions)) return;
 
   const packagesBySession = {
     opt1: [
@@ -1260,7 +1264,52 @@ function initPhotoPackageSelector() {
     return translations[document.documentElement.lang] || translations.en;
   }
 
-  function refreshPackageLabels() {
+  function selectedSessionKey() {
+    const selected = sessionSelect.options[sessionSelect.selectedIndex];
+    return selected ? selected.getAttribute('data-i18n-value') : '';
+  }
+
+  function renderPackageCards(preserveSelection) {
+    const copy = currentCopy();
+    const sessionKey = selectedSessionKey();
+    const choices = packagesBySession[sessionKey] || [];
+    const previous = preserveSelection && packageOptions.querySelector('input[name="photoPackage"]:checked');
+    const previousValue = previous ? previous.value : '';
+    packageOptions.replaceChildren();
+    if (!sessionKey || !choices.length) {
+      const message = document.createElement('p');
+      message.className = 'photo-package-placeholder';
+      message.textContent = copy.chooseSessionFirst;
+      packageOptions.appendChild(message);
+      return;
+    }
+    choices.forEach((item) => {
+      const label = document.createElement('label');
+      label.className = 'photo-package-card';
+      const radio = document.createElement('input');
+      radio.type = 'radio';
+      radio.name = 'photoPackage';
+      radio.value = item.value;
+      radio.required = true;
+      radio.className = 'photo-package-radio';
+      const packageName = copy[item.key] || item.key;
+      const packagePrice = item.quote ? copy.priceQuoteAfterReview : item.price;
+      const priceText = packageName + ' — ' + packagePrice;
+      radio.dataset.packageText = priceText;
+      radio.setAttribute('aria-label', priceText);
+      radio.checked = previousValue === item.value;
+      const name = document.createElement('span');
+      name.className = 'photo-package-card-name';
+      name.textContent = packageName;
+      const price = document.createElement('strong');
+      price.className = 'photo-package-card-price';
+      price.textContent = packagePrice;
+      label.append(radio, name, price);
+      packageOptions.appendChild(label);
+    });
+  }
+
+  function refreshLegacyOptions() {
     const copy = currentCopy();
     Array.from(packageSelect.options).forEach((option) => {
       if (option.dataset.i18nKey) {
@@ -1273,20 +1322,21 @@ function initPhotoPackageSelector() {
   }
 
   function updatePackageOptions() {
-    const selected = sessionSelect.options[sessionSelect.selectedIndex];
-    const sessionKey = selected ? selected.getAttribute('data-i18n-value') : '';
-    const packageOptions = packagesBySession[sessionKey] || [];
+    const sessionKey = selectedSessionKey();
+    const choices = packagesBySession[sessionKey] || [];
+    if (packageOptions) {
+      renderPackageCards(false);
+      return;
+    }
     const copy = currentCopy();
     packageSelect.innerHTML = '';
-
     const placeholder = document.createElement('option');
     placeholder.value = '';
     placeholder.disabled = true;
     placeholder.selected = true;
     placeholder.textContent = copy.photoCountPlaceholder;
     packageSelect.appendChild(placeholder);
-
-    packageOptions.forEach((item) => {
+    choices.forEach((item) => {
       const option = document.createElement('option');
       option.value = item.value;
       option.dataset.i18nKey = item.key;
@@ -1295,14 +1345,16 @@ function initPhotoPackageSelector() {
       option.textContent = copy[item.key] || item.key;
       packageSelect.appendChild(option);
     });
-
-    packageSelect.disabled = !sessionKey || packageOptions.length === 0;
+    packageSelect.disabled = !sessionKey || choices.length === 0;
     packageSelect.required = true;
-    refreshPackageLabels();
+    refreshLegacyOptions();
   }
 
   sessionSelect.addEventListener('change', updatePackageOptions);
-  window.refreshPhotoPackageLocale = refreshPackageLabels;
+  window.refreshPhotoPackageLocale = function() {
+    if (packageOptions) renderPackageCards(true);
+    else refreshLegacyOptions();
+  };
   updatePackageOptions();
 }
 document.addEventListener('DOMContentLoaded', initPhotoPackageSelector);
