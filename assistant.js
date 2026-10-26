@@ -25,13 +25,13 @@
       color:"تعديل الإضاءة وتوازن الألوان: صورة بـ 200، 5 صور بـ 900، 10 بـ 1,700، 15 بـ 2,400، أو 20 صورة بـ 3,000 ليرة. التنقيح المتقدم يُسعّر منفصلًا.",
       services:"الخدمات: بورتريه وعائلة، تخرّج، تصوير منتجات وتجاري، مناسبات وفعاليات، خطوبة وزفاف، وتعديل ألوان الصور.",
       gallery:"شاهد نماذج أعمال حمدي في قسم المعرض بالموقع. إذا عندك أسلوب أو صورة مرجعية، أرسلها مع طلبك عبر نموذج الحجز.",
-      contact:"للحجز أو السؤال الخاص، افتح نموذج الحجز واختر واتساب أو SMS لإرسال رسالة جاهزة إلى حمدي. رقم التواصل: 0537 742 36 71.",
-      booking:"لإرسال طلب حجز، املأ نموذج الحجز واختر الجلسة وعدد الصور والتاريخ والفترة المناسبة. بعدها اختر واتساب أو SMS. الموعد لا يتأكد إلا بعد رد حمدي.",
+      contact:"للحجز أو السؤال الخاص، اختر طريقة الإرسال من النموذج: واتساب أو SMS أو البريد إلى hamdihajiali76@gmail.com. عند اختيار البريد أدخل عنوانك ليظهر في الرسالة.",
+      booking:"لإرسال طلب حجز، املأ نموذج الحجز واختر الجلسة وعدد الصور والتاريخ والفترة المناسبة. بعدها اختر واتساب أو SMS أو البريد الإلكتروني. الموعد لا يتأكد إلا بعد رد حمدي.",
       availability:"ما بقدر أشوف جدول المواعيد أو أؤكد التوفر. أرسل التاريخ والفترة المفضّلة من نموذج الحجز، وحمدي يؤكد لك عبر واتساب أو SMS.",
       location:"التصوير في غازي عنتاب، تركيا، بموعد مسبق. لتحديد التفاصيل أرسل طلبك من نموذج الحجز.",
       delivery:"عدد الصور ومدة التغطية يختلفان حسب الباقة. الألبوم المطبوع والفيديو والتنقيح المتقدم تُسعّر بشكل منفصل.",
       greeting:"أهلًا وسهلًا! اسألني عن الأسعار أو أنواع الجلسات أو الحجز.",
-      fallback:"أقدر أساعدك بمعلومات الخدمات والأسعار والحجز. إذا كان سؤالك يحتاج تأكيدًا خاصًا، اكتب التفاصيل في نموذج الحجز واختر واتساب أو SMS لإرسالها إلى حمدي.",
+      fallback:"أقدر أساعدك بمعلومات الخدمات والأسعار والحجز. إذا كان سؤالك يحتاج تأكيدًا خاصًا، اكتب التفاصيل في نموذج الحجز واختر واتساب أو SMS أو البريد الإلكتروني لإرسالها إلى حمدي.",
       formLink:"نموذج الحجز", whatsapp:"واتساب"
     },
     tr: {
@@ -48,13 +48,13 @@
       color:"Işık ve renk düzenleme: 1 fotoğraf 200 TL, 5 fotoğraf 900, 10 fotoğraf 1.700, 15 fotoğraf 2.400 veya 20 fotoğraf 3.000 TL. İleri rötuş ayrıca fiyatlandırılır.",
       services:"Hizmetler: portre ve aile, mezuniyet, ürün ve ticari çekim, etkinlik, nişan ve düğün, fotoğraflar için renk düzenleme.",
       gallery:"Hamdi'nin örnek çalışmalarını sitedeki galeri bölümünde görebilirsiniz. Beğendiğiniz bir tarz veya referans fotoğraf varsa randevu formuna ekleyin.",
-      contact:"Randevu veya özel sorular için formu açıp Hamdi'ye hazır mesajı WhatsApp ya da SMS ile gönderin. Telefon: 0537 742 36 71.",
-      booking:"Randevu isteği göndermek için formdan çekim türünü, fotoğraf sayısını, tarih ve uygun saat aralığını seçin. Ardından WhatsApp veya SMS ile gönderin. Randevu Hamdi onayladıktan sonra kesinleşir.",
-      availability:"Randevu takvimini göremiyorum ve uygunluğu onaylayamam. Tercih ettiğiniz tarihi formdan gönderin; Hamdi WhatsApp veya SMS ile dönüş yapar.",
+      contact:"Randevu veya özel sorular için formdan WhatsApp, SMS ya da hamdihajiali76@gmail.com adresine e-posta seçin. E-posta seçerseniz kendi adresinizi girin.",
+      booking:"Randevu isteği göndermek için formdan çekim türünü, fotoğraf sayısını, tarih ve uygun saat aralığını seçin. Ardından WhatsApp, SMS veya e-posta ile gönderin. Randevu Hamdi onayladıktan sonra kesinleşir.",
+      availability:"Randevu takvimini göremiyorum ve uygunluğu onaylayamam. Tercih ettiğiniz tarihi formdan gönderin; Hamdi WhatsApp, SMS veya e-posta ile dönüş yapar.",
       location:"Çekimler Gaziantep, Türkiye'de, randevu ile yapılır. Ayrıntılar için formdan talep gönderin.",
       delivery:"Fotoğraf sayısı ve çekim süresi pakete göre değişir. Basılı albüm, video ve ileri rötuş ayrıca fiyatlandırılır.",
       greeting:"Merhaba! Fiyatlar, çekim türleri veya randevu hakkında sorabilirsiniz.",
-      fallback:"Hizmetler, fiyatlar ve randevu konusunda yardımcı olabilirim. Özel bir onay gerekiyorsa formu doldurup WhatsApp veya SMS ile Hamdi'ye gönderin.",
+      fallback:"Hizmetler, fiyatlar ve randevu konusunda yardımcı olabilirim. Özel bir onay gerekiyorsa formu doldurup WhatsApp, SMS veya e-posta ile Hamdi'ye gönderin.",
       formLink:"Randevu formu", whatsapp:"WhatsApp"
     },
     en: {
@@ -71,13 +71,13 @@
       color:"Color correction: 1 photo for TRY 200, 5 for 900, 10 for 1,700, 15 for 2,400, or 20 for 3,000. Advanced retouching is quoted separately.",
       services:"Services include portrait/family, graduation, product/commercial, events, engagement/wedding, and photo color correction.",
       gallery:"Browse Hamdi's work in the gallery section of the site. If you have a preferred style or reference photo, add it to your booking request.",
-      contact:"For a booking or a personal question, open the booking form and send Hamdi the prepared message by WhatsApp or SMS. Phone: 0537 742 36 71.",
-      booking:"To send a booking request, choose the session, photo package, preferred date, and time range in the form. Then choose WhatsApp or SMS. The date is confirmed only after Hamdi replies.",
-      availability:"I can't see the booking calendar or confirm availability. Send your preferred date and time range in the form; Hamdi will reply by WhatsApp or SMS.",
+      contact:"For a booking or personal question, choose WhatsApp, SMS, or email to hamdihajiali76@gmail.com in the form. If you choose email, enter your address so it is included in the message.",
+      booking:"To send a booking request, choose the session, photo package, preferred date, and time range in the form. Then choose WhatsApp, SMS, or email. The date is confirmed only after Hamdi replies.",
+      availability:"I can't see the booking calendar or confirm availability. Send your preferred date and time range in the form; Hamdi will reply by WhatsApp, SMS, or email.",
       location:"Sessions are by appointment in Gaziantep, Türkiye. Use the booking form to send your preferred details.",
       delivery:"Photo counts and session duration depend on the package. Printed albums, video, and advanced retouching are quoted separately.",
       greeting:"Hello! Ask about prices, session types, or booking.",
-      fallback:"I can help with services, prices, and booking. For a detail that needs personal confirmation, fill the form and send it to Hamdi by WhatsApp or SMS.",
+      fallback:"I can help with services, prices, and booking. For a detail that needs personal confirmation, fill the form and send it to Hamdi by WhatsApp, SMS, or email.",
       formLink:"Booking form", whatsapp:"WhatsApp"
     }
   };
@@ -147,7 +147,7 @@
     if (has(value, ["زفاف","عرس","خطوبه","wedding","dugun","nisan","engagement"])) return words.wedding;
     if (has(value, ["لون","الوان","color","colour","renk"])) return words.color;
     if (has(value, ["معرض","نماذج","gallery","portfolio","portfolyo"])) return words.gallery;
-    if (has(value, ["whatsapp","واتساب","sms","رقم","تواصل","اتصل","iletisim","telefon","contact","call","phone"])) return words.contact;
+    if (has(value, ["whatsapp","واتساب","sms","email","e-mail","mail","بريد","ايميل","إيميل","e-posta","رقم","تواصل","اتصل","iletisim","telefon","contact","call","phone"])) return words.contact;
     if (has(value, ["غازي عنتاب","gaziantep","location","where","nerede","مكانكم"])) return words.location;
     if (has(value, ["لون","الوان","color","colour","renk"])) return words.color;
     if (has(value, ["خدمه","خدمات","تصوير","جلسه","جلسات","services","hizmet","shoot","photo session"])) return words.services;
