@@ -4518,7 +4518,7 @@ body :is(h1, h2, h3, .eyebrow, .brand-mark, .brand-name, .card-caption,
   .assistant-launcher { transition: none; }
 }
 
-/* Offline booking channel choices */
+/* Keep the current booking buttons styled during the UI update. */
 .contact-send-options {
   display: flex;
   grid-column: 1 / -1;
@@ -4540,6 +4540,20 @@ body :is(h1, h2, h3, .eyebrow, .brand-mark, .brand-name, .card-caption,
   .contact-send-options .contact-submit { padding-inline: 12px; font-size: 11px; }
 }
 
+/* Booking delivery channel and optional email field */
+.contact-email-field[hidden] { display: none !important; }
+#contact .contact-form #contactChannelField { grid-column: 1 / -1; grid-row: 5; }
+#contact .contact-form #clientEmailField { grid-column: 1 / -1; grid-row: 6; }
+#contact .contact-form #contactChannelField select,
+#contact .contact-form #clientEmailField input { width: 100%; }
+@media (max-width: 600px) {
+  #contact .contact-form #contactChannelField,
+  #contact .contact-form #clientEmailField {
+    grid-column: 1;
+    grid-row: auto;
+  }
+}
+
 
 /* Keep booking package, date, and time controls in distinct grid cells. */
 #contact .contact-form #photoPackageField { grid-column: 1; grid-row: 2; }
@@ -4548,7 +4562,9 @@ body :is(h1, h2, h3, .eyebrow, .brand-mark, .brand-name, .card-caption,
 @media (max-width: 600px) {
   #contact .contact-form #photoPackageField,
   #contact .contact-form #preferredDateField,
-  #contact .contact-form #preferredTimeField {
+  #contact .contact-form #preferredTimeField,
+  #contact .contact-form #contactChannelField,
+  #contact .contact-form #clientEmailField {
     grid-column: 1;
     grid-row: auto;
   }
