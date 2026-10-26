@@ -2,15 +2,3 @@ name = "hamdi--photography"
 main = "src/index.js"
 compatibility_date = "2026-10-25"
 workers_dev = true
-
-[secrets]
-required = ["OPENAI_API_KEY"]
-
-[vars]
-ALLOWED_ORIGIN = "https://hamdihajiali3-cell.github.io"
-OPENAI_MODEL = "gpt-6-luna"
-
-[[ratelimits]]
-name = "CHAT_RATE_LIMITER"
-namespace_id = "202610251"
-simple = { limit = 10, period = 60 }
