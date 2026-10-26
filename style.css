@@ -4600,14 +4600,12 @@ body :is(h1, h2, h3, .eyebrow, .brand-mark, .brand-name, .card-caption,
 }
 
 
-/* Keep session type directly above the preferred date. */
+/* Keep the booking form simple after removing the photo package selector. */
 #contact .contact-form #clientName { grid-column: 1 / -1; grid-row: 1; }
-#contact .contact-form #sessionTypeField { grid-column: 2; grid-row: 2; }
-#contact .contact-form #photoPackageField { grid-column: 1; grid-row: 3; }
-#contact .contact-form #preferredDateField { grid-column: 2; grid-row: 3; }
+#contact .contact-form #sessionTypeField { grid-column: 1 / -1; grid-row: 2; }
+#contact .contact-form #preferredDateField { grid-column: 1 / -1; grid-row: 3; }
 #contact .contact-form #preferredTimeField { grid-column: 1 / -1; grid-row: 4; }
 @media (max-width: 600px) {
-  #contact .contact-form #photoPackageField,
   #contact .contact-form #preferredDateField,
   #contact .contact-form #preferredTimeField,
   #contact .contact-form #contactChannelField,
@@ -4685,22 +4683,9 @@ body :is(h1, h2, h3, .eyebrow, .brand-mark, .brand-name, .card-caption,
 }
 
 
-#contact #photoPackage:disabled {
-  cursor: not-allowed;
-  opacity: .58;
-}
-
-
 /* Compact package selector and date control, below the session choice */
-#contact .contact-form #photoPackageField {
-  grid-column: 1;
-  grid-row: 3;
-}
-#contact #photoPackage {
-  min-height: 48px;
-}
 #contact .contact-form #preferredDateField {
-  grid-column: 2;
+  grid-column: 1 / -1;
   grid-row: 3;
   width: 100%;
   max-width: 235px;
@@ -4723,7 +4708,6 @@ body :is(h1, h2, h3, .eyebrow, .brand-mark, .brand-name, .card-caption,
     grid-column: 1;
     grid-row: auto;
   }
-  #contact .contact-form #photoPackageField,
   #contact .contact-form #preferredDateField {
     grid-column: 1;
     grid-row: auto;
