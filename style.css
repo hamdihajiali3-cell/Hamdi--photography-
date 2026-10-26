@@ -103,10 +103,11 @@ img {
 /* Syria and Türkiye flags framed as part of Hamdi's photography mark */
 .brand-flags {
   display: inline-flex;
+  flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 3px;
   flex: 0 0 auto;
-  margin-inline-start: 2px;
+  order: -1;
 }
 .brand-flag-frame {
   position: relative;
@@ -2004,8 +2005,8 @@ section[id] { scroll-margin-top: 104px; }
 @media (max-width: 520px) {
   .topbar { gap: 8px; padding-inline: 4%; }
   .brand { gap: 8px; }
-  .brand-flags { gap: 4px; }
-  .brand-flag-frame { width: 28px; height: 21px; }
+  .brand-flags { gap: 3px; }
+  .brand-flag-frame { width: 27px; height: 20px; }
   .brand-mark { font-size: 30px; }
   .brand-name { font-size: 9px; letter-spacing: 1px; }
   .brand-name small { letter-spacing: 2px; }
@@ -2018,8 +2019,8 @@ section[id] { scroll-margin-top: 104px; }
 }
 @media (max-width: 360px) {
   .brand-name { display: none; }
-  .brand-flags { gap: 3px; }
-  .brand-flag-frame { width: 25px; height: 19px; padding: 1px; }
+  .brand-flags { gap: 2px; }
+  .brand-flag-frame { width: 24px; height: 18px; padding: 1px; }
   .hero-meta { gap: 11px; }
 }
 
