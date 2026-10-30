@@ -1,12 +1,12 @@
 # Keep implementation and repository documentation out of the public website.
- /cloudflare-worker/
- /worker.js
- /wrangler.jsonc
- /.assetsignore
- /send.php
- /README.md
- /HAMDI-AI-SETUP.md
- *.md
- *.php
- *.toml
- *.jsonc
+/cloudflare-worker/
+/worker.js
+/wrangler.jsonc
+/.assetsignore
+/send.php
+/README.md
+/HAMDI-AI-SETUP.md
+*.md
+*.php
+*.toml
+*.jsonc
