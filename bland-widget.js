@@ -1,27 +1,19 @@
 (() => {
   "use strict";
 
-  /*
-   * Hamdi AI — safe integration placeholder.
-   *
-   * Do not guess Bland's loader URL, global settings object, or widget
-   * attributes. Bland's official web-chat embed code is generated for the
-   * specific widget in the Bland dashboard. Add that exact published snippet
-   * here only after the widget has been created and its allowed domain has
-   * been configured.
-   *
-   * Never put a private Bland API key, phone-provider credential, or
-   * WhatsApp access token in this public GitHub Pages repository.
-   *
-   * Until the official embed snippet is supplied, the existing local
-   * assistant remains active as a fallback.
-   */
+  // Official Bland Web Chat embed configuration for Hamdi Photography.
+  // This public widget ID is intended for browser use; never place private API keys here.
+  window.blandSettings = {
+    widget_id: "617b77cc-7777-4803-bee6-c4babbb74c56"
+  };
 
-  const BLAND_WIDGET_CONFIGURED = false;
+  // Avoid injecting the Bland loader more than once.
+  const loaderSrc = "https://widget.bland.ai/loader.js";
+  const alreadyLoaded = document.querySelector('script[src^="' + loaderSrc + '"]');
+  if (alreadyLoaded) return;
 
-  if (!BLAND_WIDGET_CONFIGURED) {
-    return;
-  }
-
-  // Paste the exact official Bland-generated embed snippet here when ready.
+  const script = document.createElement("script");
+  script.src = loaderSrc;
+  script.defer = true;
+  document.body.appendChild(script);
 })();
