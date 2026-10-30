@@ -192,5 +192,12 @@
   const observer = new MutationObserver(setLanguage);
   observer.observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
   setLanguage();
+
+  // Load the official Bland web-chat embed after the local assistant initializes.
+  const blandScript = document.createElement("script");
+  blandScript.src = "bland-widget.js?v=20261030-live";
+  blandScript.async = true;
+  document.head.appendChild(blandScript);
+
   widget.hidden = false;
 })();
