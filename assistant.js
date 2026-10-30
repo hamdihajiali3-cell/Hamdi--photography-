@@ -193,9 +193,9 @@
   observer.observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
   setLanguage();
 
-  // Load the Bland widget after its public Widget ID has been configured.
+  // Load the official Bland web-chat embed after the local assistant initializes.
   const blandScript = document.createElement("script");
-  blandScript.src = "bland-widget.js?v=20261030";
+  blandScript.src = "bland-widget.js?v=20261030-live";
   blandScript.async = true;
   document.head.appendChild(blandScript);
 
