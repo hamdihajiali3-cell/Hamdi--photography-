@@ -16,7 +16,7 @@ export default {
     if (url.pathname === "/api/health" && request.method === "GET") {
       return json({
         ok: true,
-        service: "hamdi-photography",
+        service: "hamdi--photography",
         assets: Boolean(env.ASSETS)
       });
     }
