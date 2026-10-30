@@ -49,7 +49,6 @@
     }
   }
   </script>
-  <script defer src="assistant.js?v=hamdi-ai-bland-live-20261030"></script>
   <script type="module" src="script.js?v=photo-tier-price-labels-20261026"></script>
   <script defer src="mobile-menu.js?v=20261027"></script>
 </head>
@@ -573,39 +572,8 @@
   </dialog>
 
 
-  <div class="assistant-widget" id="assistantWidget" hidden>
-    <button class="assistant-launcher" id="assistantLauncher" type="button" aria-expanded="false" aria-controls="assistantPanel" data-ai-aria="launcher">
-      <span class="assistant-launcher-mark" aria-hidden="true">✦</span>
-      <span data-ai-copy="launcher">المساعد الذكي</span>
-    </button>
-    <section class="assistant-panel" id="assistantPanel" role="dialog" aria-modal="false" aria-labelledby="assistantTitle" hidden>
-      <header class="assistant-panel-header">
-        <div class="assistant-brand-mark" aria-hidden="true">H</div>
-        <div class="assistant-panel-heading">
-          <p data-ai-copy="eyebrow">HAMDI PHOTOGRAPHY · مساعد حمدي</p>
-          <h2 id="assistantTitle" data-ai-copy="title">كيف أقدر أساعدك؟</h2>
-        </div>
-        <button class="assistant-close" id="assistantClose" type="button" data-ai-aria="close" aria-label="إغلاق"><span aria-hidden="true">×</span></button>
-      </header>
-      <div class="assistant-messages" id="assistantMessages" role="log" aria-live="polite" aria-relevant="additions">
-        <p class="assistant-message assistant-message--bot" data-assistant-welcome>أهلًا! اسألني عن الخدمات، أنواع الجلسات أو طريقة الحجز.</p>
-      </div>
-      <div class="assistant-prompts">
-        <button type="button" data-assistant-prompt="booking">حجز جلسة</button>
-        <button type="button" data-assistant-prompt="services">الخدمات</button>
-      </div>
-      <form class="assistant-form" id="assistantForm">
-        <label class="assistant-sr-only" for="assistantInput" data-ai-copy="label">اكتب سؤالك</label>
-        <textarea id="assistantInput" rows="1" maxlength="1000" enterkeyhint="send" data-ai-placeholder="placeholder" placeholder="اكتب رسالتك هنا..."></textarea>
-        <button class="assistant-send" id="assistantSend" type="submit" data-ai-aria="send" aria-label="إرسال"><span aria-hidden="true">↑</span></button>
-      </form>
-      <footer class="assistant-panel-footer">
-        <a href="#contact" data-ai-copy="formLink">نموذج الحجز</a>
-        <span aria-hidden="true">·</span>
-        <a href="https://wa.me/905377423671" target="_blank" rel="noopener noreferrer" data-ai-copy="whatsapp">واتساب</a>
-      </footer>
-    </section>
-  </div>
+  <!-- Bland AI الرسمي: واجهة محادثة واحدة دون المساعد المحلي المكرر. -->
+  <script defer src="bland-widget.js?v=20261030-live"></script>
 </body>
 </html>
 
