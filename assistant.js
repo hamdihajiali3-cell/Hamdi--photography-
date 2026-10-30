@@ -193,11 +193,5 @@
   observer.observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
   setLanguage();
 
-  // Optional Bland web widget integration. It remains inactive until a widget ID is configured.
-  const blandIntegration = document.createElement("script");
-  blandIntegration.src = "bland-widget.js?v=20261030";
-  blandIntegration.async = true;
-  document.head.appendChild(blandIntegration);
-
   widget.hidden = false;
 })();
