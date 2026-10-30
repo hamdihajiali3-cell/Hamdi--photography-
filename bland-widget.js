@@ -1,39 +1,27 @@
 (() => {
   "use strict";
-  // Replace with the public Widget ID from Bland Dashboard.
-  // Never put a private Bland API key in this public GitHub Pages file.
-  const WIDGET_ID = "ADD_BLAND_WIDGET_ID";
-  if (!WIDGET_ID || WIDGET_ID === "ADD_BLAND_WIDGET_ID") return;
 
-  window.blandSettings = {
-    widget_id: WIDGET_ID,
-    default_chat: false,
-    request_data: {
-      business_name: "Hamdi Photography",
-      business_location: "Gaziantep, Türkiye",
-      supported_languages: ["Arabic", "Turkish"],
-      services: [
-        "Portrait and family photography",
-        "Graduation photography",
-        "Product and commercial photography",
-        "Events",
-        "Engagement and wedding photography",
-        "Photo color correction"
-      ],
-      booking_url: window.location.origin + window.location.pathname + "#contact",
-      website_language: (document.documentElement.lang || "ar").slice(0, 2)
-    }
-  };
+  /*
+   * Hamdi AI — safe integration placeholder.
+   *
+   * Do not guess Bland's loader URL, global settings object, or widget
+   * attributes. Bland's official web-chat embed code is generated for the
+   * specific widget in the Bland dashboard. Add that exact published snippet
+   * here only after the widget has been created and its allowed domain has
+   * been configured.
+   *
+   * Never put a private Bland API key, phone-provider credential, or
+   * WhatsApp access token in this public GitHub Pages repository.
+   *
+   * Until the official embed snippet is supplied, the existing local
+   * assistant remains active as a fallback.
+   */
 
-  const loader = document.createElement("script");
-  loader.src = "https://widget.bland.ai/loader.js";
-  loader.defer = true;
-  loader.onload = () => {
-    const fallback = document.getElementById("assistantWidget");
-    if (fallback) fallback.hidden = true;
-  };
-  loader.onerror = () => {
-    console.error("Bland AI widget could not load; keeping the existing Hamdi assistant visible.");
-  };
-  document.head.appendChild(loader);
+  const BLAND_WIDGET_CONFIGURED = false;
+
+  if (!BLAND_WIDGET_CONFIGURED) {
+    return;
+  }
+
+  // Paste the exact official Bland-generated embed snippet here when ready.
 })();
