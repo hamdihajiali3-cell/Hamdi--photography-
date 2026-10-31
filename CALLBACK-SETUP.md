@@ -7,7 +7,7 @@ This branch adds the server-side post-call callback flow. It does not activate c
 1. A customer calls the Bland inbound number.
 2. Bland posts the completed call payload to `/api/bland/post-call`.
 3. The Worker verifies the HMAC-SHA256 `X-Webhook-Signature` using `BLAND_WEBHOOK_SECRET`.
-4. A KV record prevents duplicate webhook deliveries from generating duplicate callbacks.
+4. A Durable Object claims each call ID atomically, preventing duplicate webhook deliveries from generating duplicate callbacks.
 5. The Worker calls `POST https://api.bland.ai/v1/calls` and asks Hamdi AI to summarize the customer call in Arabic.
 
 ## 1. Create the Cloudflare KV namespace
@@ -36,7 +36,7 @@ npx wrangler secret put OWNER_PHONE_NUMBER
 
 Do not put these values in GitHub, HTML, JavaScript, or this document.
 
-## 3. Deploy the Worker
+## 2. Deploy the Worker
 
 ```bash
 npx wrangler deploy
@@ -56,7 +56,7 @@ GET https://hamdi--photography.<your-workers-subdomain>.workers.dev/api/health
 
 The response must include `"callback_ready": true`.
 
-## 4. Configure Bland
+## 3. Configure Bland
 
 1. In Bland, open the inbound phone number that receives customer calls.
 2. Set its post-call webhook URL to:
