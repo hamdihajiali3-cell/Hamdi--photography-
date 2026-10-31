@@ -41,10 +41,52 @@ async function verifyBlandSignature(rawBody, signature, secret) {
   );
   const digest = new Uint8Array(await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(rawBody)));
   const hex = Array.from(digest, (byte) => byte.toString(16).padStart(2, "0")).join("");
-  if (supplied.length !== hex.length) return false;
+  const base64 = btoa(String.fromCharCode(...digest));
+  return constantTimeEqual(supplied.toLowerCase(), hex) || constantTimeEqual(supplied, base64);
+}
+
+function constantTimeEqual(left, right) {
+  if (left.length !== right.length) return false;
   let mismatch = 0;
-  for (let i = 0; i < hex.length; i++) mismatch |= hex.charCodeAt(i) ^ supplied.toLowerCase().charCodeAt(i);
+  for (let i = 0; i < left.length; i++) mismatch |= left.charCodeAt(i) ^ right.charCodeAt(i);
   return mismatch === 0;
+}
+
+export class CallbackGuard {
+  constructor(ctx) {
+    this.ctx = ctx;
+  }
+
+  async fetch(request) {
+    if (request.method !== "POST") return json({ error: "method_not_allowed" }, 405);
+    let body;
+    try { body = await request.json(); } catch { return json({ error: "invalid_json" }, 400); }
+
+    if (body.action === "claim") {
+      const result = await this.ctx.storage.transaction(async (txn) => {
+        const existing = await txn.get("callback");
+        const stillFresh = existing && Date.now() - existing.at < 7 * 24 * 60 * 60 * 1000;
+        if (stillFresh && existing.state !== "failed") {
+          return { claimed: false, state: existing.state };
+        }
+        await txn.put("callback", { state: "processing", at: Date.now() });
+        return { claimed: true };
+      });
+      return json(result);
+    }
+
+    if (body.action === "finish" || body.action === "fail") {
+      const current = await this.ctx.storage.get("callback");
+      await this.ctx.storage.put("callback", {
+        state: body.action === "finish" ? "queued" : "failed",
+        callback_call_id: clean(body.callback_call_id || "", 160),
+        at: Date.now()
+      });
+      return json({ ok: true, previous_state: current?.state || null });
+    }
+
+    return json({ error: "invalid_action" }, 400);
+  }
 }
 
 function getCustomerPhone(payload) {
@@ -63,7 +105,7 @@ function getCustomerName(payload) {
 
 async function handlePostCall(request, env) {
   if (request.method !== "POST") return json({ error: "method_not_allowed" }, 405);
-  if (!env.BLAND_API_KEY || !env.BLAND_WEBHOOK_SECRET || !env.OWNER_PHONE_NUMBER || !env.CALLBACKS) {
+  if (!env.BLAND_API_KEY || !env.BLAND_WEBHOOK_SECRET || !env.OWNER_PHONE_NUMBER || !env.CALLBACK_GUARD) {
     return json({ error: "server_not_configured" }, 503);
   }
 
@@ -93,20 +135,15 @@ async function handlePostCall(request, env) {
     return json({ error: "call_has_no_summary_or_transcript" }, 422);
   }
 
-  const idempotencyKey = "bland-postcall:" + callId;
-  const existing = await env.CALLBACKS.get(idempotencyKey);
-  if (existing) {
-    let state = "already_processed";
-    try { state = JSON.parse(existing).state || state; } catch {}
-    if (state !== "failed") return json({ ok: true, duplicate: true, state });
-  }
-
-  // Claim the event before dialing so duplicate webhook deliveries do not ring Hamdi twice.
-  await env.CALLBACKS.put(
-    idempotencyKey,
-    JSON.stringify({ state: "processing", received_at: new Date().toISOString() }),
-    { expirationTtl: 60 * 60 * 24 * 7 }
-  );
+  const guardId = env.CALLBACK_GUARD.idFromName(callId);
+  const guard = env.CALLBACK_GUARD.get(guardId);
+  const claimResponse = await guard.fetch("https://callback-guard/claim", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ action: "claim" })
+  });
+  const claim = await claimResponse.json();
+  if (!claim.claimed) return json({ ok: true, duplicate: true, state: claim.state });
 
   const callerPhone = getCustomerPhone(payload);
   const customerName = getCustomerName(payload);
@@ -149,11 +186,11 @@ async function handlePostCall(request, env) {
   try { blandData = JSON.parse(blandText); } catch {}
 
   if (!blandResponse.ok || !blandData.call_id) {
-    await env.CALLBACKS.put(
-      idempotencyKey,
-      JSON.stringify({ state: "failed", failed_at: new Date().toISOString() }),
-      { expirationTtl: 60 * 60 * 24 }
-    );
+    await guard.fetch("https://callback-guard/fail", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "fail" })
+    });
     return json({
       error: "bland_callback_call_failed",
       bland_status: blandResponse.status,
@@ -161,15 +198,11 @@ async function handlePostCall(request, env) {
     }, 502);
   }
 
-  await env.CALLBACKS.put(
-    idempotencyKey,
-    JSON.stringify({
-      state: "queued",
-      callback_call_id: blandData.call_id,
-      queued_at: new Date().toISOString()
-    }),
-    { expirationTtl: 60 * 60 * 24 * 7 }
-  );
+  await guard.fetch("https://callback-guard/finish", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ action: "finish", callback_call_id: blandData.call_id })
+  });
 
   return json({ ok: true, callback_queued: true, callback_call_id: blandData.call_id });
 }
@@ -184,7 +217,7 @@ export default {
         service: "hamdi--photography",
         callback_ready: Boolean(
           env.BLAND_API_KEY && env.BLAND_WEBHOOK_SECRET &&
-          env.OWNER_PHONE_NUMBER && env.CALLBACKS
+          env.OWNER_PHONE_NUMBER && env.CALLBACK_GUARD
         )
       });
     }
