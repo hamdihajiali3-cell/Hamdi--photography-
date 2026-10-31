@@ -3,11 +3,24 @@
   "name": "hamdi--photography",
   "main": "./worker.js",
   "compatibility_date": "2026-10-30",
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "CALLBACK_GUARD",
+        "class_name": "CallbackGuard"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["CallbackGuard"]
+    }
+  ],
   "assets": {
     "directory": "./",
     "binding": "ASSETS",
     "run_worker_first": ["/api/*"],
     "not_found_handling": "404-page"
-  },
-  "previews": {}
+  }
 }
