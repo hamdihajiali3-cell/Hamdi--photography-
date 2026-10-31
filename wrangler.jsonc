@@ -3,10 +3,18 @@
   "name": "hamdi--photography",
   "main": "./worker.js",
   "compatibility_date": "2026-10-30",
-  "kv_namespaces": [
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "CALLBACK_GUARD",
+        "class_name": "CallbackGuard"
+      }
+    ]
+  },
+  "migrations": [
     {
-      "binding": "CALLBACKS",
-      "id": "REPLACE_WITH_CLOUDFLARE_KV_NAMESPACE_ID"
+      "tag": "v1",
+      "new_sqlite_classes": ["CallbackGuard"]
     }
   ],
   "assets": {
