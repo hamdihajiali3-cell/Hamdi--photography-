@@ -123,7 +123,7 @@ function bootGallery(root) {
   function goRoom(index) {
     const targets=[[-9,1.65,-23],[9,1.65,-23],[-9,1.65,4],[9,1.65,4]];
     const [x,y,z]=targets[index];camera.position.set(x,y,z);
-    yaw = index%2===0 ? 0 : Math.PI;
+    yaw = index < 2 ? 0 : Math.PI;
     if(status)status.textContent=rooms[index].name;
     roomButtons.forEach((b,i)=>b.setAttribute("aria-pressed",String(i===index)));
   }
@@ -131,8 +131,8 @@ function bootGallery(root) {
   root.querySelector("[data-gallery-start]")?.addEventListener("click",()=>{camera.position.set(0,1.65,7);yaw=0;});
   root.querySelectorAll("[data-move]").forEach(b=>{
     const key=b.dataset.move;
-    b.addEventListener("pointerdown",()=>keys.add(key));
-    ["pointerup","pointerleave","pointercancel"].forEach(ev=>b.addEventListener(ev,()=>keys.delete(key)));
+    b.addEventListener("pointerdown",e=>{e.preventDefault();keys.add(key);b.setPointerCapture?.(e.pointerId);});
+    ["pointerup","pointerleave","pointercancel","lostpointercapture"].forEach(ev=>b.addEventListener(ev,()=>keys.delete(key)));
   });
   function resize(){
     const w=root.clientWidth,h=root.clientHeight;
