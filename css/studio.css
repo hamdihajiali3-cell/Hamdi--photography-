@@ -55,3 +55,21 @@ footer{position:relative;text-align:center;color:#777;padding:25px;border-top:1p
 .export-actions{grid-template-columns:1.2fr 1fr 1fr;margin-top:20px;padding-top:17px;border-top:1px solid #ffffff12}
 .export-actions button{min-height:47px;font-size:12px}
 @media(max-width:520px){.tool-actions{grid-template-columns:repeat(2,minmax(0,1fr))}.export-actions{grid-template-columns:1fr 1fr}.export-actions #compare{grid-column:1/-1}}
+
+.pro-tools{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:13px;margin:12px 0;border:1px solid #dfbd7c24;border-radius:14px;background:#090b0f88}
+.pro-tool{display:flex;flex-direction:column;gap:7px;min-width:0}
+.pro-tool label,.crop-tools label{font-size:12px;color:#e9dfcc}
+.pro-tool input[type=text]{width:100%;min-width:0;border:1px solid #ffffff22;border-radius:9px;background:#080a0d;color:#fff;padding:10px;font:13px Cairo}
+.pro-tool input[type=color]{width:100%;height:38px;border:1px solid #ffffff22;border-radius:9px;background:#080a0d}
+.pro-tool input[type=range]{width:100%}
+.pro-tools>button{align-self:end;min-height:39px}
+.layer-list{grid-column:1/-1;display:flex;flex-direction:column;gap:6px}
+.layer-item{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;background:#ffffff08;border:1px solid #ffffff12;border-radius:9px;font-size:12px}
+.layer-item button{padding:5px 9px;font-size:11px}
+.crop-tools{align-items:center}
+.crop-tools select{width:100%}
+.project-tools{display:flex;gap:9px;margin:10px 0}
+.project-tools>*{flex:1;text-align:center}
+.project-load{display:inline-flex;justify-content:center;align-items:center;padding:10px;border:1px solid #d8b67555;border-radius:12px;color:var(--gold-bright);font-size:12px;font-weight:700;cursor:pointer}
+.project-load input{display:none}
+@media(max-width:520px){.pro-tools{grid-template-columns:1fr 1fr}.project-tools{flex-direction:column}}
