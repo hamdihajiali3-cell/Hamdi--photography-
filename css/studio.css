@@ -80,3 +80,5 @@ footer{position:relative;text-align:center;color:#777;padding:25px;border-top:1p
 .raw-note strong{font:800 10px 'DM Sans',sans-serif;letter-spacing:1.8px;color:var(--gold-bright)}
 .raw-note span{font:700 11px 'DM Sans',sans-serif;color:#e8d8b9;line-height:1.8;word-break:break-word}
 .raw-note small{font-size:11px;line-height:1.8;color:var(--muted)}
+
+#controls .control input[type=range]{accent-color:#d7b574}
