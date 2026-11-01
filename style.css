@@ -2073,7 +2073,7 @@ section[id] { scroll-margin-top: 104px; }
 .hero-meta span { line-height: 1.5; }
 
 #services .services-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
   border-top: 0;
   perspective: 1400px;
@@ -2159,11 +2159,12 @@ section[id] { scroll-margin-top: 104px; }
 }
 
 @media (max-width: 850px) {
-  #services .services-grid { grid-template-columns: 1fr; gap: 12px; }
+  #services .services-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
   #services .service,
   #services .service + .service { min-height: 260px; }
 }
 @media (max-width: 520px) {
+  #services .services-grid { grid-template-columns: 1fr; }
   .hero-meta { gap: 7px; }
   .hero-meta div { padding: 10px 8px; }
   .hero-meta span { font-size: 7px; letter-spacing: .6px; }
@@ -4624,3 +4625,73 @@ body :is(h1, h2, h3, .eyebrow, .brand-mark, .brand-name, .card-caption,
 .gallery-card .card-number{color:#e8d5ad}
 @media(max-width:700px){.gallery-card:nth-child(n){transform:none}.gallery-disclaimer{margin-bottom:22px}}
 @media(prefers-reduced-motion:reduce){.gallery-card:nth-child(n){transform:none}}
+
+
+/* Extreme virtual studio scene */
+.hero-visual { min-width: 0; }
+.hero-visual .three-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  overflow: hidden;
+  border-radius: 2px;
+  cursor: grab;
+  touch-action: pan-y;
+  isolation: isolate;
+  background:
+    radial-gradient(ellipse at 50% 78%, rgba(185, 137, 65, .16), transparent 42%),
+    linear-gradient(180deg, rgba(3,3,3,.04), rgba(3,3,3,.18));
+}
+.hero-visual .three-stage canvas { position: relative; z-index: 1; display: block; width: 100%; height: 100%; }
+.studio-hud {
+  position: absolute;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: rgba(232, 215, 183, .78);
+  font: 600 8px/1.2 "DM Sans", sans-serif;
+  letter-spacing: 2px;
+  pointer-events: none;
+  text-shadow: 0 2px 12px #000;
+}
+.studio-hud-top { top: 22px; left: 22px; right: 22px; justify-content: space-between; }
+.studio-hud-top i { width: 6px; height: 6px; border-radius: 50%; background: #d6ad68; box-shadow: 0 0 12px #d6ad68; }
+.studio-hud-top span { color: rgba(232,215,183,.48); }
+.studio-hud-bottom { bottom: 22px; left: 22px; right: 22px; justify-content: space-between; color: rgba(232,215,183,.48); }
+.studio-hud-bottom b { color: #d9bd8a; font-weight: 500; }
+.studio-reticle {
+  position: absolute; z-index: 4; width: 22px; height: 22px; left: 50%; top: 50%;
+  transform: translate(-50%,-50%); border: 1px solid rgba(219,184,119,.22); border-radius: 50%;
+  pointer-events: none; opacity: .65;
+}
+.studio-reticle::before,.studio-reticle::after { content:""; position:absolute; background:rgba(219,184,119,.35); }
+.studio-reticle::before { width:34px; height:1px; left:-7px; top:10px; }
+.studio-reticle::after { height:34px; width:1px; top:-7px; left:10px; }
+.studio-loading {
+  position:absolute; z-index:0; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:12px; color:rgba(222,197,153,.58); font:600 8px "DM Sans",sans-serif; letter-spacing:2px;
+}
+.studio-loading span { width:26px; height:26px; border:1px solid rgba(207,169,105,.24); border-top-color:#c9a46a; border-radius:50%; animation:studio-spin 1.2s linear infinite; }
+@keyframes studio-spin { to { transform:rotate(360deg); } }
+.three-stage canvas + .studio-loading { display:none; }
+.three-stage.three-stage-fallback .studio-loading { display:none; }
+.three-stage.three-stage-fallback { background:
+  radial-gradient(ellipse at 50% 75%,rgba(187,143,76,.22),transparent 40%),
+  linear-gradient(145deg,#090909,#17130e 55%,#050505); }
+.three-stage.three-stage-fallback::before {
+  width:min(34vw,220px); border:12px solid #25231f;
+  background:radial-gradient(circle,#050505 0 26%,#173044 27% 42%,#b99a65 43% 46%,#111 47% 62%,#a88750 63% 66%,#080808 67%);
+  box-shadow:0 0 65px rgba(201,163,101,.24),inset 0 0 28px #000;
+}
+.three-stage.three-stage-fallback::after { width:min(48vw,330px); border:1px solid rgba(214,177,112,.38); }
+@media (max-width:700px) {
+  .hero-visual { min-height:390px; height:54vh; }
+  .studio-hud { font-size:7px; letter-spacing:1.25px; }
+  .studio-hud-top { top:15px; left:14px; right:14px; }
+  .studio-hud-bottom { bottom:15px; left:14px; right:14px; }
+  .studio-reticle { opacity:.38; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .studio-loading span { animation:none; }
+}
