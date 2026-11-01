@@ -78,14 +78,15 @@
         await raw.open(new Uint8Array(buffer),{useCameraWb:true,outputColor:1,outputBps:8,halfSize:false,userQual:3});
         const meta=await raw.metadata();
         const decoded=await raw.imageData();
-        const width=Number(decoded.width||meta.width||meta.sizes?.iwidth);
-        const height=Number(decoded.height||meta.height||meta.sizes?.iheight);
-        const pixels=decoded.data;
+        if(!decoded)throw new Error('لم يُرجع المحرك بيانات صورة.');
+        const width=Number(decoded.width),height=Number(decoded.height);
+        const pixels=decoded.data,channels=Number(decoded.colors||3),bits=Number(decoded.bits||8);
         if(!Number.isInteger(width)||!Number.isInteger(height)||width<1||height<1||!pixels)throw new Error('بيانات الصورة المفكوكة غير مكتملة.');
         const count=width*height;
-        if(count>50000000||pixels.length<count*3)throw new Error('أبعاد أو بيانات الصورة تتجاوز الحد المدعوم.');
+        if(count>50000000||![3,4].includes(channels)||pixels.length<count*channels)throw new Error('أبعاد أو قنوات الصورة المفكوكة غير مدعومة.');
         const rgba=new Uint8ClampedArray(count*4);
-        for(let src=0,dst=0;src<count*3;src+=3,dst+=4){rgba[dst]=pixels[src];rgba[dst+1]=pixels[src+1];rgba[dst+2]=pixels[src+2];rgba[dst+3]=255;}
+        const scale=value=>bits>8?Math.round(value/257):value;
+        for(let src=0,dst=0;src<count*channels;src+=channels,dst+=4){rgba[dst]=scale(pixels[src]);rgba[dst+1]=scale(pixels[src+1]);rgba[dst+2]=scale(pixels[src+2]);rgba[dst+3]=channels===4?scale(pixels[src+3]):255;}
         const decodedCanvas=document.createElement('canvas');decodedCanvas.width=width;decodedCanvas.height=height;
         decodedCanvas.getContext('2d').putImageData(new ImageData(rgba,width,height),0,0);
         const blob=await new Promise(resolve=>decodedCanvas.toBlob(resolve,'image/png'));
