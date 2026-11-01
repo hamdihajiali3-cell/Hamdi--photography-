@@ -80,8 +80,8 @@ function bootGallery(root) {
     g.beginPath();g.ellipse(256,260,112,158,0,0,Math.PI*2);g.fill();
     g.globalAlpha=.65;g.strokeStyle="#e5c58e";g.lineWidth=2;
     for(let r=40;r<210;r+=28){g.beginPath();g.arc(256,300,r,-1.2,1.2);g.stroke();}
-    g.globalAlpha=1;g.fillStyle="#ead5b0";g.font="28px Georgia";g.textAlign="center";
-    g.fillText(["GRADUATION","PORTRAIT","COLOR STUDY","IDENTITY"][index%4],256,570);
+    g.globalAlpha=1;g.fillStyle="#ead5b0";g.font="28px Cairo, sans-serif";g.textAlign="center";
+    g.fillText(["التخرج","بورتريه","تعديل الألوان","الوثائق"][index%4],256,570);
     const texture=new THREE.CanvasTexture(c);texture.colorSpace=THREE.SRGBColorSpace;
     return new THREE.MeshBasicMaterial({map:texture});
   }
