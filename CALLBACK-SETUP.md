@@ -67,6 +67,27 @@ The existing website chat widget is not itself an inbound telephone number. The 
 
 ## Privacy and operational notes
 
+## 4. Enable WhatsApp booking notifications
+
+The Worker also sends a WhatsApp template notification to the owner after each completed Bland call. It uses Meta WhatsApp Cloud API Graph v26.0. Because this is a business-initiated notification, Meta requires an approved message template unless a valid 24-hour customer-service window is open.
+
+1. Create a Meta app with the WhatsApp use case and connect a WhatsApp Business Account and sender number.
+2. In WhatsApp Manager, create and get approval for an Arabic **Utility** template named `hamdi_booking_alert` with one body text placeholder, for example:
+   `طلب جديد لـ Hamdi Photography:\n{{1}}`
+   Set the template language to Arabic (`ar`). The template must contain exactly one body variable for the complete booking summary.
+3. Obtain a long-lived System User access token with the required WhatsApp messaging permission, and copy the **Phone Number ID** of the connected WhatsApp Business sender.
+4. Add these Cloudflare Worker secrets (never commit them to GitHub):
+   ```bash
+   npx wrangler secret put WHATSAPP_ACCESS_TOKEN
+   npx wrangler secret put WHATSAPP_PHONE_NUMBER_ID
+   npx wrangler secret put WHATSAPP_TEMPLATE_NAME
+   ```
+   Enter the token, Phone Number ID, and template name `hamdi_booking_alert` when prompted. The existing `OWNER_PHONE_NUMBER` secret is used as the WhatsApp recipient, in international format such as `+905xxxxxxxxx`.
+5. Deploy again with `npx wrangler deploy` and check `GET /api/health`. It should show both `callback_ready: true` and `whatsapp_ready: true`.
+6. Place a test call and check the response/logs for `whatsapp_sent: true`. A successful API response means Meta accepted the message; confirm actual delivery on the owner's WhatsApp.
+
+If Meta rejects the template, confirm its exact name, language code, approval status, and that it has one body placeholder. Do not tell the customer the message was delivered unless the Worker confirms that Meta accepted it.
+
 - The callback includes customer contact details and a short call summary. Limit access to Worker logs and Bland call history.
 - Do not enable recording unless the required notice and consent process is in place.
 - The AI must identify itself as an automated assistant.
