@@ -116,7 +116,7 @@ function bootGallery(root) {
   const onUp=()=>dragging=false;
   canvas.addEventListener("pointerdown",onDown);canvas.addEventListener("pointermove",onMove);
   canvas.addEventListener("pointerup",onUp);canvas.addEventListener("pointercancel",onUp);
-  window.addEventListener("keydown",e=>{if(["w","a","s","d","ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.key)){e.preventDefault();keys.add(e.key.toLowerCase());}});
+  window.addEventListener("keydown",e=>{if(e.target instanceof HTMLElement && e.target.closest("input,textarea,select,button,a"))return;if(["w","a","s","d","ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.key)){e.preventDefault();keys.add(e.key.toLowerCase());}});
   window.addEventListener("keyup",e=>keys.delete(e.key.toLowerCase()));
   canvas.addEventListener("wheel",e=>{e.preventDefault();camera.position.y=clamp(camera.position.y+e.deltaY*.001,.9,2.4);},{passive:false});
 
@@ -128,7 +128,7 @@ function bootGallery(root) {
     roomButtons.forEach((b,i)=>b.setAttribute("aria-pressed",String(i===index)));
   }
   roomButtons.forEach((b)=>b.addEventListener("click",()=>goRoom(Number(b.dataset.room))));
-  root.querySelector("[data-gallery-start]")?.addEventListener("click",()=>{camera.position.set(0,1.65,7);yaw=0;});
+  root.querySelector("[data-gallery-start]")?.addEventListener("click",()=>{camera.position.set(0,1.65,7);yaw=0;pitch=0;if(status)status.textContent="القاعة الرئيسية";roomButtons.forEach(b=>b.setAttribute("aria-pressed","false"));});
   root.querySelectorAll("[data-move]").forEach(b=>{
     const key=b.dataset.move;
     b.addEventListener("pointerdown",e=>{e.preventDefault();keys.add(key);b.setPointerCapture?.(e.pointerId);});
