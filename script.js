@@ -577,7 +577,7 @@ async function initThreeScene() {
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 100);
-  camera.position.set(0, 0, 8.2);
+  camera.position.set(0, 0.12, 9.1);
 
   let renderer;
   try {
@@ -589,7 +589,7 @@ async function initThreeScene() {
   }
 
   renderer.setClearColor(0x000000, 0);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.7));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, window.matchMedia('(max-width: 700px)').matches ? 1.2 : 1.55));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.domElement.setAttribute('aria-hidden', 'true');
   mount.appendChild(renderer.domElement);
@@ -602,6 +602,83 @@ async function initThreeScene() {
   rimLight.position.set(2.5, 1.2, 3.3);
   scene.add(rimLight);
 
+  // Virtual studio environment: cyclorama, reflective floor, and practical lighting rigs.
+  const studioFloor = new THREE.Mesh(
+    new THREE.PlaneGeometry(24, 18),
+    new THREE.MeshStandardMaterial({ color: 0x090909, metalness: 0.72, roughness: 0.27 })
+  );
+  studioFloor.rotation.x = -Math.PI / 2;
+  studioFloor.position.set(0, -2.72, -1.1);
+  scene.add(studioFloor);
+
+  const studioBackWall = new THREE.Mesh(
+    new THREE.PlaneGeometry(18, 9),
+    new THREE.MeshStandardMaterial({ color: 0x101010, metalness: 0.28, roughness: 0.78 })
+  );
+  studioBackWall.position.set(0, 1.1, -3.6);
+  scene.add(studioBackWall);
+
+  const goldStripMaterial = new THREE.MeshStandardMaterial({
+    color: 0x9d7940, metalness: 0.88, roughness: 0.24,
+    emissive: 0x2a1705, emissiveIntensity: 0.5
+  });
+  [-4.7, 4.7].forEach((x) => {
+    const strip = new THREE.Mesh(new THREE.BoxGeometry(0.025, 5.5, 0.035), goldStripMaterial);
+    strip.position.set(x, 0.25, -3.52);
+    scene.add(strip);
+  });
+
+  const practicalLights = [];
+  function createSoftbox(x, y, z, rotationY, power) {
+    const unit = new THREE.Group();
+    unit.position.set(x, y, z);
+    unit.rotation.y = rotationY;
+    const darkMetal = new THREE.MeshStandardMaterial({ color: 0x171717, metalness: 0.82, roughness: 0.3 });
+    const housing = new THREE.Mesh(new THREE.BoxGeometry(0.92, 1.3, 0.18), darkMetal);
+    unit.add(housing);
+    const diffuser = new THREE.Mesh(
+      new THREE.PlaneGeometry(0.78, 1.13),
+      new THREE.MeshBasicMaterial({ color: 0xffe3b0, toneMapped: false })
+    );
+    diffuser.position.z = 0.101;
+    unit.add(diffuser);
+    const rim = new THREE.LineSegments(
+      new THREE.EdgesGeometry(new THREE.BoxGeometry(1.02, 1.4, 0.2)),
+      new THREE.LineBasicMaterial({ color: 0xb99559, transparent: true, opacity: 0.82 })
+    );
+    unit.add(rim);
+    const stand = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.04, 1.8, 12), darkMetal);
+    stand.position.y = -1.52;
+    unit.add(stand);
+    const foot = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.34, 0.055, 3), darkMetal);
+    foot.position.y = -2.43;
+    unit.add(foot);
+    scene.add(unit);
+    const lamp = new THREE.SpotLight(0xffd9a0, power, 13, Math.PI / 5, 0.55, 1.4);
+    lamp.position.set(x, y, z + 0.18);
+    lamp.target.position.set(0, -0.2, 0);
+    scene.add(lamp, lamp.target);
+    practicalLights.push({ unit, lamp, baseY: y, phase: x > 0 ? 1.4 : 0 });
+    return unit;
+  }
+  createSoftbox(-3.55, 1.05, -0.15, 0.24, 48);
+  createSoftbox(3.55, 1.15, -0.55, -0.3, 36);
+
+  const overheadFrame = new THREE.Group();
+  const overheadBar = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 7.2, 12), darkStudioMaterial());
+  overheadBar.rotation.z = Math.PI / 2;
+  overheadBar.position.set(0, 3.0, -0.9);
+  overheadFrame.add(overheadBar);
+  const overheadCable = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 1.2, 8), goldStripMaterial);
+  overheadCable.position.set(0, 2.38, -0.9);
+  overheadFrame.add(overheadCable);
+  scene.add(overheadFrame);
+
+  function darkStudioMaterial() {
+    return new THREE.MeshStandardMaterial({ color: 0x151515, metalness: 0.86, roughness: 0.28 });
+  }
+
+
   const rig = new THREE.Group();
   scene.add(rig);
 
@@ -611,6 +688,33 @@ async function initThreeScene() {
   );
   cameraBody.position.set(0, -0.08, -0.24);
   rig.add(cameraBody);
+
+  // Three-legged camera support, attached to the camera body so it follows the rig.
+  const tripodMetal = new THREE.MeshStandardMaterial({ color: 0x252525, metalness: 0.9, roughness: 0.24 });
+  const tripodGold = new THREE.MeshStandardMaterial({ color: 0x9c7841, metalness: 0.88, roughness: 0.22 });
+  const centerColumn = new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.095, 1.5, 20), tripodMetal);
+  centerColumn.position.set(0, -1.27, -0.18);
+  rig.add(centerColumn);
+  const tripodHead = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.2, 0.17, 24), tripodGold);
+  tripodHead.position.set(0, -0.48, -0.18);
+  rig.add(tripodHead);
+  const addTripodLeg = (endX, endZ) => {
+    const start = new THREE.Vector3(0, -1.85, -0.18);
+    const end = new THREE.Vector3(endX, -3.05, endZ);
+    const direction = new THREE.Vector3().subVectors(end, start);
+    const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.055, direction.length(), 12), tripodMetal);
+    leg.position.copy(start).add(end).multiplyScalar(0.5);
+    leg.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction.normalize());
+    rig.add(leg);
+    const collar = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.11, 16), tripodGold);
+    collar.position.copy(start).lerp(end, 0.72);
+    collar.quaternion.copy(leg.quaternion);
+    rig.add(collar);
+  };
+  addTripodLeg(-0.95, 0.55);
+  addTripodLeg(0.95, 0.55);
+  addTripodLeg(0, -1.05);
+
 
   const topPlate = new THREE.Mesh(
     new THREE.BoxGeometry(0.58, 0.16, 0.56),
@@ -946,7 +1050,7 @@ async function initThreeScene() {
     const width = Math.max(1, mount.clientWidth);
     const height = Math.max(1, mount.clientHeight);
     camera.aspect = width / height;
-    camera.position.z = width < 520 ? 8.9 : 8.2;
+    camera.position.z = width < 520 ? 10.6 : 9.1;
     camera.updateProjectionMatrix();
     renderer.setSize(width, height, false);
     render();
@@ -981,6 +1085,7 @@ async function initThreeScene() {
     photoCards.forEach((card) => {
       card.position.y = card.userData.baseY + Math.sin(time * 0.0007 + card.userData.phase) * 0.055;
     });
+    practicalLights.forEach((item) => { item.unit.rotation.z = Math.sin(time * 0.00045 + item.phase) * 0.012; });
     render();
   }
   if (!reducedMotion) frameId = window.requestAnimationFrame(animate);
