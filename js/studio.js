@@ -65,10 +65,38 @@
     if(!showOriginal&&cropRatio!=='free'){const ratio=Number(cropRatio),w0=canvas.width,h0=canvas.height;let cw=w0,ch=h0;if(w0/h0>ratio)cw=Math.round(h0*ratio);else ch=Math.round(w0/ratio);const sx=Math.round((w0-cw)/2),sy=Math.round((h0-ch)/2),tmp=document.createElement('canvas');tmp.width=cw;tmp.height=ch;tmp.getContext('2d').drawImage(canvas,sx,sy,cw,ch,0,0,cw,ch);canvas.width=cw;canvas.height=ch;ctx.drawImage(tmp,0,0);}
     if(!showOriginal){applyLocalMask();drawPaintStrokes();drawTextLayers();if(cropSelecting&&cropRect){ctx.save();ctx.strokeStyle='#f4d99e';ctx.lineWidth=Math.max(2,canvas.width/700);ctx.setLineDash([10,7]);ctx.strokeRect(cropRect.x*canvas.width,cropRect.y*canvas.height,cropRect.w*canvas.width,cropRect.h*canvas.height);ctx.fillStyle='#f4d99e22';ctx.fillRect(cropRect.x*canvas.width,cropRect.y*canvas.height,cropRect.w*canvas.width,cropRect.h*canvas.height);ctx.restore();}}
   }
-  fileInput.addEventListener('change',()=>{
+  fileInput.addEventListener('change',async()=>{
     const file=fileInput.files&&fileInput.files[0];if(!file)return;
     const rawExt=/\.(dng|cr2|cr3|nef|nrw|arw|srf|sr2|raf|orf|rw2|pef|3fr|fff|iiq|x3f|rwl|erf|kdc|dcr|mef|mos|mrw|raw)$/i;const isRaw=rawExt.test(file.name);
-    if(isRaw){setStatus('تم التعرف على ملف RAW، لكن محرك فك RAW المحلي لم يُدمج بعد. لم نحاول فتح معاينة JPEG المضمنة على أنها بيانات RAW. اختر JPG/PNG/WEBP مؤقتًا، وسيبقى ملف CR2 الأصلي دون تعديل.');return;}
+    if(isRaw){
+      if(file.size>120*1024*1024){setStatus('ملف RAW أكبر من الحد الآمن الحالي (120 ميغابايت).');return;}
+      setStatus('جارٍ فك ملف RAW محليًا… قد يستغرق ذلك بعض الوقت.');
+      try{
+        const {default:LibRaw}=await import('../raw-engine/index.js');
+        const raw=new LibRaw();
+        const buffer=await file.arrayBuffer();
+        await raw.open(new Uint8Array(buffer),{useCameraWb:true,outputColor:1,outputBps:8,halfSize:false,userQual:3});
+        const meta=await raw.metadata();
+        const decoded=await raw.imageData();
+        const width=Number(decoded.width||meta.width||meta.sizes?.iwidth);
+        const height=Number(decoded.height||meta.height||meta.sizes?.iheight);
+        const pixels=decoded.data;
+        if(!Number.isInteger(width)||!Number.isInteger(height)||width<1||height<1||!pixels)throw new Error('بيانات الصورة المفكوكة غير مكتملة.');
+        const count=width*height;
+        if(count>50000000||pixels.length<count*3)throw new Error('أبعاد أو بيانات الصورة تتجاوز الحد المدعوم.');
+        const rgba=new Uint8ClampedArray(count*4);
+        for(let src=0,dst=0;src<count*3;src+=3,dst+=4){rgba[dst]=pixels[src];rgba[dst+1]=pixels[src+1];rgba[dst+2]=pixels[src+2];rgba[dst+3]=255;}
+        const decodedCanvas=document.createElement('canvas');decodedCanvas.width=width;decodedCanvas.height=height;
+        decodedCanvas.getContext('2d').putImageData(new ImageData(rgba,width,height),0,0);
+        const blob=await new Promise(resolve=>decodedCanvas.toBlob(resolve,'image/png'));
+        if(!blob)throw new Error('تعذر تجهيز الصورة المفكوكة.');
+        const url=URL.createObjectURL(blob),img=new Image();
+        img.onload=()=>{original=img;const reader=new FileReader();reader.onload=()=>{originalDataURL=reader.result;};reader.readAsDataURL(blob);rotation=0;flipped=false;flippedV=false;resetValues();textLayers=[];paintStrokes=[];maskStrokes=[];cropRatio='free';cropRect=null;cropSelecting=false;$('#cropRatio').value='free';renderLayers();history.length=0;historyIndex=-1;$('#placeholder').textContent=file.name+' · RAW مفكوك';$('#empty').hidden=true;render();snapshot();const camera=meta.make||meta.camera?.make||'كاميرا غير محددة',model=meta.model||meta.camera?.model||'';setStatus('تم فك RAW بنجاح محليًا: '+camera+' '+model+' · '+width+'×'+height+' بكسل. التعديلات تعمل على نسخة RGB المفكوكة، والملف الأصلي لم يتغير.');URL.revokeObjectURL(url);raw.dispose();};
+        img.onerror=()=>{URL.revokeObjectURL(url);raw.dispose();setStatus('فُك RAW لكن تعذر تحميل الصورة الناتجة.');};
+        img.src=url;
+      }catch(error){console.error('RAW decode failed:',error);setStatus('تعذر فك هذا الملف RAW: '+(error?.message||'خطأ غير معروف')+'. قد تكون صيغة الضغط أو الكاميرا غير مدعومة في هذه النسخة.');}
+      return;
+    }
     if(!['image/jpeg','image/png','image/webp'].includes(file.type)){setStatus('صيغة الصورة غير مدعومة');return;}
     if(file.size>80*1024*1024){setStatus('حجم الصورة يتجاوز الحد الآمن الحالي (80 ميغابايت). صغّر الملف أو استخدم نسخة أصغر.');return;}
     originalDataURL=null;const url=URL.createObjectURL(file),img=new Image();
