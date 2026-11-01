@@ -273,6 +273,38 @@ export default {
       });
     }
 
+    if (url.pathname === "/api/studio/status" && request.method === "GET") {
+      return json({ ok: true, configured: Boolean(env.OPENAI_API_KEY), max_upload_bytes: 12582912, model: "gpt-image-1" });
+    }
+
+    if (url.pathname === "/api/studio/edit" && request.method === "POST") {
+      if (!env.OPENAI_API_KEY) return json({ error: "studio_not_configured", message: "خدمة تعديل الصور غير مفعّلة بعد." }, 503);
+      const form = await request.formData();
+      const file = form.get("image");
+      const prompt = clean(form.get("prompt"), 1800);
+      if (!(file instanceof File) || !/^image\/(png|jpeg|webp)$/.test(file.type)) return json({ error: "image_required" }, 400);
+      if (file.size > 12 * 1024 * 1024) return json({ error: "image_too_large" }, 413);
+      if (!prompt) return json({ error: "prompt_required" }, 400);
+      const payload = new FormData();
+      payload.append("model", "gpt-image-1");
+      payload.append("prompt", prompt);
+      payload.append("image", file, file.name || "photo.png");
+      payload.append("size", "auto");
+      payload.append("quality", "high");
+      const upstream = await fetch("https://api.openai.com/v1/images/edits", {
+        method: "POST",
+        headers: { "Authorization": "Bearer " + env.OPENAI_API_KEY },
+        body: payload
+      });
+      const raw = await upstream.text();
+      let data = {};
+      try { data = JSON.parse(raw); } catch {}
+      if (!upstream.ok) return json({ error: "image_edit_failed", message: clean(data.error?.message || raw, 500) }, upstream.status);
+      const image = data.data?.[0]?.b64_json;
+      if (!image) return json({ error: "empty_image_response" }, 502);
+      return json({ ok: true, image: "data:image/png;base64," + image });
+    }
+
     if (url.pathname === "/api/bland/post-call") {
       return handlePostCall(request, env);
     }
