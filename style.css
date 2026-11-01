@@ -4840,3 +4840,14 @@ body :is(h1, h2, h3, .eyebrow, .brand-mark, .brand-name, .card-caption,
     transition-duration: .01ms !important;
   }
 }
+
+/* Abstract portfolio studies: explicitly illustrative, never presented as client work */
+.gallery-disclaimer{max-width:680px;margin:18px 0 34px;color:rgba(232,213,173,.72);font-size:12px;line-height:1.8;letter-spacing:.02em}
+.gallery-card{background:#111; border:1px solid rgba(216,182,117,.22); box-shadow:0 24px 70px rgba(0,0,0,.34);}
+.gallery-card img{filter:brightness(.82) saturate(.78);}
+.gallery-card:nth-child(odd){transform:perspective(1200px) rotateY(3deg) translateY(10px);}
+.gallery-card:nth-child(even){transform:perspective(1200px) rotateY(-3deg) translateY(-8px);}
+.gallery-card:hover,.gallery-card:focus-visible{transform:perspective(1200px) translateY(-5px) scale(1.012);}
+.gallery-card .card-number{color:#e8d5ad}
+@media(max-width:700px){.gallery-card:nth-child(n){transform:none}.gallery-disclaimer{margin-bottom:22px}}
+@media(prefers-reduced-motion:reduce){.gallery-card:nth-child(n){transform:none}}
