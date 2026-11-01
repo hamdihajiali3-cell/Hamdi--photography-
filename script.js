@@ -5,12 +5,12 @@ const translations = {
     languageLabel: "لغة الموقع", menuLabel: "فتح القائمة",
     navWork: "المعرض", navAbout: "قصتي", navServices: "الخدمات", navContact: "اطلب خدمة", searchOpen: "البحث في الموقع", searchKicker: "البحث / اكتشف", searchTitle: "ابحث عن صورة أو خدمة", searchPlaceholder: "اكتب كلمة للبحث...", searchEmpty: "جرّب: تعديل الألوان، التخرج، قصّات الشعر، صور الجواز...", searchNoResults: "ما لقينا نتائج. جرّب كلمة ثانية.", searchClose: "إغلاق البحث", searchGroupGallery: "من المعرض", searchGroupService: "خدمة تصوير",
     heroEyebrow: "<span class=\"live-dot\"></span>حمدي — مصوّر فوتوغرافي وصانع قصص بصرية",
-    heroTitle: "كل صورة تحكي<br><em>حكاية تشبهك.</em>",
-    heroDesc: "أقدّم أربع خدمات واضحة: تعديل ألوان الصور، تصوير التخرج، تصوير قصّات الشعر وأعمال الحلاقين، وصور جواز السفر والهويات في غازي عنتاب.",
+    heroTitle: "الضوء يصنع<br><em>حكاية لا تُنسى.</em>",
+    heroDesc: "من دقة اللون إلى لحظة التخرج وتفاصيل الحرفة والصورة الرسمية؛ أربع خدمات فوتوغرافية تُقدَّم بعناية، ورؤية تهتم بكل تفصيل.",
     heroBtn1: "اكتشف المعرض", heroBtn2: "اطلب خدمة",
     meta1: "لقطة تشبهك", meta2: "ضوء يصنع فرقاً", meta3: "ذكرى تدوم",
     loadingLabel: "تحميل الموقع", loaderLabel: "جارٍ تجهيز تجربتك البصرية", loadingSubtext: "لحظات ونبدأ الحكاية", loadingProgress: "تقدم تحميل الموقع", welcomeVisitors: "أهلاً وسهلاً بالزائرين",
-    visualLabel1: "خلف كل لقطة — 2026", visualLabel2: "قصتك تستحق إطاراً", albumMotionCue: "حرّك المؤشر أو المس الألبوم لتقليب الصفحة",
+    visualLabel1: "HAMDI PHOTOGRAPHY — 2026", visualLabel2: "LIGHT / FRAME / STORY", albumMotionCue: "اسحب لاستكشاف الاستوديو الافتراضي",
     scrollCue: "انزل واستكشف",
     t1: "تعديل الألوان", t2: "التخرج", t3: "قصّات الشعر", t4: "صور الهوية",
     workEyebrow: "مختارات بعدسة حمدي / 2024—2026",
@@ -59,12 +59,12 @@ const translations = {
     languageLabel: "Site dili", menuLabel: "Menüyü aç",
     navWork: "Portfolyo", navAbout: "Hakkımda", navServices: "Hizmetler", navContact: "Hizmet talep et", searchOpen: "Sitede ara", searchKicker: "ARA / KEŞFET", searchTitle: "Fotoğraf veya hizmet ara", searchPlaceholder: "Aramak için bir kelime yazın...", searchEmpty: "Renk düzenleme, mezuniyet, saç kesimi veya kimlik fotoğrafı arayın...", searchNoResults: "Sonuç bulunamadı. Başka bir kelime deneyin.", searchClose: "Aramayı kapat", searchGroupGallery: "Galeriden", searchGroupService: "Fotoğraf hizmeti",
     heroEyebrow: "<span class=\"live-dot\"></span>HAMDI — fotoğrafçı ve görsel hikâye anlatıcısı",
-    heroTitle: "Her kare,<br><em>seni anlatsın.</em>",
-    heroDesc: "Gaziantep'te dört net hizmet sunuyorum: fotoğraf renk düzenleme, mezuniyet çekimi, berber ve saç kesimi fotoğrafçılığı, pasaport ve kimlik fotoğrafları.",
+    heroTitle: "Işık bir hikâye<br><em>yaratır.</em>",
+    heroDesc: "Renk düzenlemeden mezuniyet anlarına, berber detaylarından resmî portre fotoğraflarına kadar dört hizmet; her ayrıntıya özen gösteren bir fotoğraf yaklaşımı.",
     heroBtn1: "Portfolyoyu Gör", heroBtn2: "Hizmet talep et",
     meta1: "SANA ÖZEL KARE", meta2: "IŞIĞIN GÜCÜ", meta3: "KALICI ANILAR",
     loadingLabel: "Site yükleniyor", loaderLabel: "Görsel deneyimin hazırlanıyor", loadingSubtext: "Birazdan başlıyoruz", loadingProgress: "Site yükleme durumu", welcomeVisitors: "Ziyaretçilerimize hoş geldiniz",
-    visualLabel1: "HER KARENİN ARDINDA — 2026", visualLabel2: "HİKÂYENİ ÇERÇEVELE", albumMotionCue: "Sayfayı çevirmek için imleci oynatın veya albüme dokunun.",
+    visualLabel1: "HAMDI PHOTOGRAPHY — 2026", visualLabel2: "LIGHT / FRAME / STORY", albumMotionCue: "Sanal stüdyoyu keşfetmek için sürükleyin.",
     scrollCue: "KEŞFETMEK İÇİN KAYDIR",
     t1: "RENK DÜZENLEME", t2: "MEZUNİYET", t3: "SAÇ KESİMİ", t4: "KİMLİK FOTOĞRAFI",
     workEyebrow: "HAMDI'NİN SEÇKİSİ / 2024—2026",
@@ -113,12 +113,12 @@ const translations = {
     languageLabel: "Site language", menuLabel: "Open menu",
     navWork: "Portfolio", navAbout: "About", navServices: "Services", navContact: "Request a service", searchOpen: "Search the site", searchKicker: "SEARCH / DISCOVER", searchTitle: "Search photos or services", searchPlaceholder: "Type to search...", searchEmpty: "Try color correction, graduation, barber photos, or passport and ID photos...", searchNoResults: "No results found. Try another word.", searchClose: "Close search", searchGroupGallery: "From the gallery", searchGroupService: "Photography service",
     heroEyebrow: "<span class=\"live-dot\"></span>HAMDI — photographer & visual storyteller",
-    heroTitle: "Every frame,<br><em>a story like yours.</em>",
-    heroDesc: "Four focused services in Gaziantep: photo color correction, graduation photography, barber and hairstyle photography, and passport and ID photos.",
+    heroTitle: "Where light becomes<br><em>lasting stories.</em>",
+    heroDesc: "From precise color work to graduation moments, barber details and official portraits — four focused photography services, shaped with care.",
     heroBtn1: "Explore the portfolio", heroBtn2: "Request a service",
     meta1: "MADE TO FEEL", meta2: "LIGHT WITH INTENT", meta3: "MEMORIES THAT LAST",
     loadingLabel: "Loading the site", loaderLabel: "Preparing your visual experience", loadingSubtext: "Your story is about to begin", loadingProgress: "Website loading progress", welcomeVisitors: "Welcome, visitors",
-    visualLabel1: "BEHIND EVERY FRAME — 2026", visualLabel2: "FRAME YOUR STORY", albumMotionCue: "MOVE THE POINTER OR TAP THE ALBUM TO TURN A PAGE",
+    visualLabel1: "HAMDI PHOTOGRAPHY — 2026", visualLabel2: "LIGHT / FRAME / STORY", albumMotionCue: "DRAG TO EXPLORE THE VIRTUAL STUDIO",
     scrollCue: "SCROLL TO EXPLORE",
     t1: "COLOR EDITING", t2: "GRADUATION", t3: "HAIRSTYLES", t4: "ID PHOTOS",
     workEyebrow: "SELECTED BY HAMDI / 2024—2026",
@@ -433,7 +433,7 @@ async function initThreeScene() {
   const keyLight = new THREE.DirectionalLight(0xffd99a, 3.4);
   keyLight.position.set(-3, 4, 6);
   scene.add(keyLight);
-  const rimLight = new THREE.PointLight(0x73a6bf, 22, 12);
+  const rimLight = new THREE.PointLight(0xd2a45e, 18, 12);
   rimLight.position.set(2.5, 1.2, 3.3);
   scene.add(rimLight);
 
@@ -571,18 +571,18 @@ async function initThreeScene() {
   lensGlass.height = 512;
   const lensContext = lensGlass.getContext('2d');
   const lensGradient = lensContext.createRadialGradient(174, 144, 8, 256, 256, 272);
-  lensGradient.addColorStop(0, '#a8e6f5');
-  lensGradient.addColorStop(0.12, '#467fa4');
-  lensGradient.addColorStop(0.3, '#182c46');
-  lensGradient.addColorStop(0.64, '#08111d');
+  lensGradient.addColorStop(0, '#f4d59a');
+  lensGradient.addColorStop(0.12, '#a77b42');
+  lensGradient.addColorStop(0.3, '#4b3219');
+  lensGradient.addColorStop(0.64, '#171008');
   lensGradient.addColorStop(1, '#020407');
   lensContext.fillStyle = lensGradient;
   lensContext.fillRect(0, 0, 512, 512);
 
   const coatingGlow = lensContext.createRadialGradient(166, 140, 4, 218, 198, 235);
-  coatingGlow.addColorStop(0, 'rgba(151,235,255,.46)');
-  coatingGlow.addColorStop(0.28, 'rgba(76,151,221,.18)');
-  coatingGlow.addColorStop(0.62, 'rgba(147,107,222,.08)');
+  coatingGlow.addColorStop(0, 'rgba(255,219,157,.42)');
+  coatingGlow.addColorStop(0.28, 'rgba(211,158,83,.18)');
+  coatingGlow.addColorStop(0.62, 'rgba(181,131,67,.08)');
   coatingGlow.addColorStop(1, 'rgba(4,8,16,0)');
   lensContext.fillStyle = coatingGlow;
   lensContext.fillRect(0, 0, 512, 512);
@@ -590,9 +590,9 @@ async function initThreeScene() {
   lensContext.globalCompositeOperation = 'screen';
   const reflection = lensContext.createLinearGradient(80, 360, 410, 95);
   reflection.addColorStop(0, 'rgba(94,213,247,0)');
-  reflection.addColorStop(0.48, 'rgba(156,224,255,.2)');
-  reflection.addColorStop(0.56, 'rgba(255,255,255,.44)');
-  reflection.addColorStop(0.68, 'rgba(166,136,255,.14)');
+  reflection.addColorStop(0.48, 'rgba(236,201,140,.2)');
+  reflection.addColorStop(0.56, 'rgba(255,245,220,.44)');
+  reflection.addColorStop(0.68, 'rgba(205,158,91,.14)');
   reflection.addColorStop(1, 'rgba(112,190,255,0)');
   lensContext.fillStyle = reflection;
   lensContext.fillRect(0, 0, 512, 512);
