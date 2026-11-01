@@ -35,6 +35,8 @@ export function setLanguage(lang) {
   window.dispatchEvent(new CustomEvent("hamdi:languagechange", { detail: { lang } }));
 }
 
+window.setLanguage = setLanguage;
+
 export function initLanguage() {
   let initial = translations[document.documentElement.lang] ? document.documentElement.lang : "ar";
   try {
