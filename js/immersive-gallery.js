@@ -118,6 +118,7 @@ function bootGallery(root) {
   canvas.addEventListener("pointerup",onUp);canvas.addEventListener("pointercancel",onUp);
   window.addEventListener("keydown",e=>{if(e.target instanceof HTMLElement && e.target.closest("input,textarea,select,button,a"))return;if(["w","a","s","d","ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.key)){e.preventDefault();keys.add(e.key.toLowerCase());}});
   window.addEventListener("keyup",e=>keys.delete(e.key.toLowerCase()));
+  window.addEventListener("blur",()=>keys.clear());
   canvas.addEventListener("wheel",e=>{e.preventDefault();camera.position.y=clamp(camera.position.y+e.deltaY*.001,.9,2.4);},{passive:false});
 
   function goRoom(index) {
@@ -181,6 +182,6 @@ function bootGallery(root) {
     raf=requestAnimationFrame(animate);
   }
   animate();
-  document.addEventListener("visibilitychange",()=>{active=!document.hidden;if(active){clock.getDelta();animate();}else cancelAnimationFrame(raf);});
+  document.addEventListener("visibilitychange",()=>{active=!document.hidden;if(active){clock.getDelta();animate();}else{keys.clear();cancelAnimationFrame(raf);}});
   window.addEventListener("pagehide",()=>{cancelAnimationFrame(raf);observer.disconnect();renderer.dispose();});
 }
