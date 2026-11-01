@@ -1,4 +1,7 @@
-import("./immersive-gallery.js").catch(() => {\n  const fallback = document.querySelector(".gallery-fallback");\n  if (fallback) fallback.hidden = false;\n});
+import("./immersive-gallery.js").catch(() => {
+  const fallback = document.querySelector(".gallery-fallback");
+  if (fallback) fallback.hidden = false;
+});
 import { initLanguage } from "./language.js";
 import { initServiceLinks } from "./service-links.js";
 import { initContactForm } from "./contact-form.js";
