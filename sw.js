@@ -1,10 +1,14 @@
-const CACHE='hamdi-studio-pwa-v5';
+const CACHE='hamdi-studio-pwa-v6';
 const CORE=[
   './studio.html',
   './css/studio.css',
   './js/studio.js',
   './manifest.webmanifest',
-  './icons/hamdi-studio.svg'
+  './icons/hamdi-studio.svg',
+  './raw-engine/index.js',
+  './raw-engine/libraw.js',
+  './raw-engine/libraw.wasm',
+  './raw-engine/worker.js'
 ];
 
 self.addEventListener('install',event=>{
