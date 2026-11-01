@@ -84,8 +84,8 @@
   $('#compare').addEventListener('click',()=>{if(!original)return;showOriginal=!showOriginal;$('#compare').textContent=showOriginal?'العودة للتعديل':'عرض الأصل';render();});
   function save(type){
     if(!original){setStatus('ارفع صورة أولاً');return;}
-    render();const link=document.createElement('a');link.href=canvas.toDataURL(type,type==='image/jpeg'?0.94:undefined);
-    link.download='hamdi-photography-edit.'+(type==='image/png'?'png':'jpg');link.click();setStatus('تم تجهيز الصورة للتنزيل');
+    const wasShowingOriginal=showOriginal;showOriginal=false;render();const link=document.createElement('a');link.href=canvas.toDataURL(type,type==='image/jpeg'?0.94:undefined);
+    link.download='hamdi-photography-edit.'+(type==='image/png'?'png':'jpg');link.click();showOriginal=wasShowingOriginal;if(showOriginal){$('#compare').textContent='العودة للتعديل';render();}setStatus('تم تجهيز النسخة المعدّلة للتنزيل');
   }
   $('#download').addEventListener('click',()=>save('image/jpeg'));
   $('#png').addEventListener('click',()=>save('image/png'));
