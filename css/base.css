@@ -1,0 +1,4 @@
+/* Global reset, theme tokens, header and navigation */
+:root{--bg:#101010;--surface:#171717;--text:#f4f0e8;--muted:#aaa49a;--gold:#c5a16a;--gold-light:#dfc28f;--line:rgba(255,255,255,.12);--serif:"Playfair Display",Georgia,serif;--sans:"DM Sans","Cairo",Arial,sans-serif}
+
+::selection{background:var(--gold);color:#111}
