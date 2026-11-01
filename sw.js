@@ -1,4 +1,4 @@
-const CACHE='hamdi-studio-pwa-v4';
+const CACHE='hamdi-studio-pwa-v5';
 const CORE=[
   './studio.html',
   './css/studio.css',
