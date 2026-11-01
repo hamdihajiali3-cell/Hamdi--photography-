@@ -68,10 +68,28 @@
   }
   $('#download').addEventListener('click',()=>save('image/jpeg'));
   $('#png').addEventListener('click',()=>save('image/png'));
-  window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPrompt=event;});
+  window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPrompt=event;installButton.textContent='تثبيت التطبيق';setStatus('التطبيق جاهز للتثبيت. اضغط زر تثبيت التطبيق.');});
+  window.addEventListener('appinstalled',()=>{installPrompt=null;installButton.textContent='تم تثبيت التطبيق';installButton.disabled=true;setStatus('تم تثبيت Hamdi Photography Studio بنجاح.');});
   installButton.addEventListener('click',async()=>{
-    if(installPrompt){installPrompt.prompt();await installPrompt.userChoice;installPrompt=null;}
-    else setStatus('على Chrome أو Edge: افتح قائمة المتصفح واختر تثبيت التطبيق أو إضافة إلى الشاشة الرئيسية.');
+    if(installPrompt){
+      installPrompt.prompt();
+      const choice=await installPrompt.userChoice;
+      setStatus(choice&&choice.outcome==='accepted'?'تمت الموافقة على تثبيت التطبيق.':'تم إلغاء التثبيت. يمكنك المحاولة مرة أخرى لاحقًا.');
+      installPrompt=null;
+      return;
+    }
+    const ua=navigator.userAgent;
+    if(/Firefox/i.test(ua)){
+      setStatus('متصفح Firefox لا يعرض نافذة تثبيت PWA عبر هذا الزر. افتح رابط الاستوديو في Google Chrome أو Microsoft Edge، ثم اختر تثبيت التطبيق من قائمة المتصفح.');
+    }else if(/iPhone|iPad|iPod/i.test(ua)){
+      setStatus('على iPhone أو iPad: افتح زر المشاركة في Safari ثم اختر إضافة إلى الشاشة الرئيسية.');
+    }else if(/Android/i.test(ua)){
+      setStatus('افتح قائمة Chrome ⋮ ثم اختر تثبيت التطبيق أو إضافة إلى الشاشة الرئيسية. إذا لم يظهر الخيار، حدّث الصفحة بعد تحميلها بالكامل.');
+    }else if(window.matchMedia('(display-mode: standalone)').matches){
+      setStatus('التطبيق مثبت بالفعل على هذا الجهاز.');
+    }else{
+      setStatus('افتح الموقع في Google Chrome أو Microsoft Edge، ثم من قائمة المتصفح اختر تثبيت التطبيق أو Install app.');
+    }
   });
   if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(error=>console.warn('Service worker:',error)));}
   buildControls();
