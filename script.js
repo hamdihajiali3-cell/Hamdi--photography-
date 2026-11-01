@@ -1,18 +1,18 @@
 const translations = {
   ar: {
     pageTitle: "Hamdi Photography | صور تحكي قصتك",
-    pageDescription: "تصوير بورتريه ومناسبات وتصوير تجاري في غازي عنتاب. صور بتفاصيل مدروسة تحفظ إحساس اللحظة مع حمدي.",
+    pageDescription: "خدمات تصوير في غازي عنتاب: تعديل ألوان الصور، تصوير التخرج، تصوير قصّات الشعر، وصور الجواز والهويات.",
     languageLabel: "لغة الموقع", menuLabel: "فتح القائمة",
-    navWork: "المعرض", navAbout: "قصتي", navServices: "الخدمات", navContact: "احجز جلسة", searchOpen: "البحث في الموقع", searchKicker: "البحث / اكتشف", searchTitle: "ابحث عن صورة أو خدمة", searchPlaceholder: "اكتب كلمة للبحث...", searchEmpty: "جرّب: بورتريه، زفاف، تعديل ألوان...", searchNoResults: "ما لقينا نتائج. جرّب كلمة ثانية.", searchClose: "إغلاق البحث", searchGroupGallery: "من المعرض", searchGroupService: "خدمة تصوير",
+    navWork: "المعرض", navAbout: "قصتي", navServices: "الخدمات", navContact: "اطلب خدمة", searchOpen: "البحث في الموقع", searchKicker: "البحث / اكتشف", searchTitle: "ابحث عن صورة أو خدمة", searchPlaceholder: "اكتب كلمة للبحث...", searchEmpty: "جرّب: تعديل الألوان، التخرج، قصّات الشعر، صور الجواز...", searchNoResults: "ما لقينا نتائج. جرّب كلمة ثانية.", searchClose: "إغلاق البحث", searchGroupGallery: "من المعرض", searchGroupService: "خدمة تصوير",
     heroEyebrow: "<span class=\"live-dot\"></span>حمدي — مصوّر فوتوغرافي وصانع قصص بصرية",
     heroTitle: "كل صورة تحكي<br><em>حكاية تشبهك.</em>",
-    heroDesc: "من جلسة البورتريه إلى يومك المميز، أصنع صوراً تهتم بالضوء والتفاصيل وتحفظ إحساس اللحظة. تصوير شخصي ومناسبات ومشاريع تجارية في غازي عنتاب.",
-    heroBtn1: "اكتشف المعرض", heroBtn2: "خطّط لجلسة",
+    heroDesc: "أقدّم أربع خدمات واضحة: تعديل ألوان الصور، تصوير التخرج، تصوير قصّات الشعر وأعمال الحلاقين، وصور جواز السفر والهويات في غازي عنتاب.",
+    heroBtn1: "اكتشف المعرض", heroBtn2: "اطلب خدمة",
     meta1: "لقطة تشبهك", meta2: "ضوء يصنع فرقاً", meta3: "ذكرى تدوم",
     loadingLabel: "تحميل الموقع", loaderLabel: "جارٍ تجهيز تجربتك البصرية", loadingSubtext: "لحظات ونبدأ الحكاية", loadingProgress: "تقدم تحميل الموقع", welcomeVisitors: "أهلاً وسهلاً بالزائرين",
     visualLabel1: "خلف كل لقطة — 2026", visualLabel2: "قصتك تستحق إطاراً", albumMotionCue: "حرّك المؤشر أو المس الألبوم لتقليب الصفحة",
     scrollCue: "انزل واستكشف",
-    t1: "بورتريه", t2: "مناسبات", t3: "تصوير تجاري", t4: "قصص بصرية",
+    t1: "تعديل الألوان", t2: "التخرج", t3: "قصّات الشعر", t4: "صور الهوية",
     workEyebrow: "مختارات بعدسة حمدي / 2024—2026",
     workTitle: "لحظاتك<br><em>تستحق أن تُروى.</em>",
     workIntro: "تفاصيل صادقة، ضوء مدروس، وصور تحفظ الإحساس قبل الشكل.",
@@ -27,101 +27,46 @@ const translations = {
     g5: "مناسبات", gc5: "فرحٌ يُروى بصورة", g5Alt: "لحظة زفاف تحت ضوء دافئ",
     g6: "بورتريه", gc6: "ملامح من حكاية", g6Alt: "بورتريه رجالي بإضاءة طبيعية",
     g7: "فعاليات", gc7: "لحظة في قلب المشهد", g7Alt: "أجواء حفل موسيقي وأضواء الجمهور",
-    g8: "تجاري", gc8: "تفاصيل تصنع الفرق", g8Alt: "ساعة يد بتكوين تصوير تجاري أنيق",
+    g8: "تفاصيل", gc8: "تفاصيل تصنع الفرق", g8Alt: "ساعة يد بتكوين بصري أنيق",
     aboutBadge: "H / الرؤية", aboutEyebrow: "خلف العدسة",
     aboutTitle: "أبحث عن<br><em>الإحساس قبل اللقطة.</em>",
     aboutDesc: "أنا حمدي. أؤمن أن أجمل الصور لا تكتفي بتوثيق اللحظة، بل تحفظ الإحساس الذي كان فيها. أركّز على الضوء والتفاصيل، وأعمل معك من الفكرة حتى اللقطة لتكون الصورة قريبة منك وتحكي قصتك.",
     aboutLink: "احكيلي عن فكرتك",
     servEyebrow: "كيف أقدر أساعدك؟",
-    servTitle: "فكرتك أولاً،<br><em>والصورة تحكي الباقي.</em>",
-    servIntro: "اختر الخدمة المناسبة؛ اضغط عليها لنجهّز نوع التصوير في نموذج واتساب.",
-    s1Title: "جلسات البورتريه", s1Desc: "جلسة مريحة بطابعك، نختار فيها الضوء والتفاصيل لتطلع صور تشبهك فعلاً.",
-    s2Title: "التصوير التجاري", s2Desc: "صور جذابة تقدّم منتجك أو مشروعك بهوية بصرية واضحة ومتناسقة.",
-    s3Title: "المناسبات والقصص", s3Desc: "نوثّق التفاصيل واللحظات العفوية لتبقى مناسبتك حاضرة بكل إحساسها.",
+    servTitle: "أربع خدمات،<br><em>بعناية واحترافية.</em>",
+    servIntro: "اختر إحدى الخدمات الأربع وأرسل تفاصيل طلبك مباشرة.",
+    s1Title: "تعديل ألوان الصور", s1Desc: "تصحيح الألوان والإضاءة ومنح صورك مظهراً متناسقاً واحترافياً.",
+    s2Title: "تصوير التخرج", s2Desc: "توثيق يوم التخرج بصور شخصية ولقطات تحفظ فرحة الإنجاز.",
+    s3Title: "تصوير الحلاقة وقصّات الشعر", s3Desc: "صور واضحة واحترافية لإبراز تفاصيل القصّات وأعمال الحلاقين.", s4Desc: "صور شخصية وفق المقاس والخلفية التي تطلبها الجهة الرسمية.", s4Title: "صور الجواز والهويات",
     serviceCta: "ابدأ طلب هذه الخدمة",
-    priceEyebrow: "خدمات التصوير · غازي عنتاب",
-    priceTitle: "اختر نوع الجلسة<br><em>الذي يناسبك.</em>",
-    priceIntro: "اختر الخدمة المناسبة وأرسل تفاصيل طلبك من نموذج الحجز.",
-    pricePortraitTitle: "بورتريه وعائلة",
-    pricePortraitDesc: "جلسات بورتريه وعائلة بإضاءة مدروسة ولمسة فنية.",
-    priceProductTitle: "منتجات وتجاري",
-    priceProductDesc: "صور إبداعية للمنتجات والعلامات التجارية والتفاصيل.",
-    priceEventTitle: "مناسبة وفعالية",
-    priceEventDesc: "توثيق المناسبات والفعاليات مع التركيز على لحظاتها المميزة.",
-    priceWeddingTitle: "خطوبة وزفاف",
-    priceWeddingDesc: "تصوير الخطوبة والزفاف لتوثيق تفاصيل اليوم ولحظاته.",
-    pricePortraitFifteen: "15 صورة معدّلة",
-    pricePortraitTwenty: "20 صورة معدّلة",
-    priceGraduationFive: "5 صور تخرج",
-    priceGraduationFifteen: "15 صورة تخرج",
-    priceGraduationThirty: "30 صورة تخرج",
-    priceProductOne: "صورة منتج واحدة",
-    priceProductFifteen: "15 صورة منتجات",
-    priceProductTwenty: "20 صورة منتجات",
-    priceEventTen: "10 صور · حتى ساعة",
-    priceEventThirty: "30 صورة · حتى 3 ساعات",
-    priceEventSixty: "60 صورة · حتى 6 ساعات",
-    priceWeddingTwenty: "20 صورة · حتى ساعتين",
-    priceWeddingSixty: "60 صورة · حتى 6 ساعات",
-    priceWeddingHundred: "100 صورة · حتى 10 ساعات",
-    priceColorTen: "10 صور معدّلة ألوانيًا",
-    priceColorTwenty: "20 صورة معدّلة ألوانيًا",
-    priceCustomThirty: "30 صورة",
-    photoCountLabel: "عدد الصور",
-    photoCountPlaceholder: "اختر عدد الصور", chooseSessionFirst: "اختر نوع الجلسة أولًا لتظهر أعداد الصور المتاحة",
-    packageCustom: "عدد الصور وسعرها يُحددان بعد مراجعة الطلب",
-    priceQuoteAfterReview: "السعر بعد مراجعة الطلب",
-    waPackage: "عدد الصور",
-    priceGraduationTitle: "تخرج",
-    priceGraduationDesc: "جلسة خاصة لتوثيق لحظات التخرج وصور المناسبة.",
-    priceGraduationTen: "10 صور تخرج",
-    priceGraduationTwenty: "20 صورة تخرج",
-    priceColorTitle: "تعديل ألوان الصور",
-    priceColorDesc: "تحسين الإضاءة وتوازن الألوان للصور الرقمية.",
-    priceColorOne: "صورة واحدة معدّلة ألوانيًا",
-    priceColorFive: "5 صور معدّلة ألوانيًا",
-    priceColorFifteen: "15 صورة معدّلة ألوانيًا",
-    priceCustomFive: "5 صور",
-    priceCustomTen: "10 صور",
-    priceCustomTwenty: "20 صورة",
-    priceWeddingEighty: "80 صورة · حتى 6 ساعات",
-    priceWeddingForty: "40 صورة · حتى 4 ساعات",
-    priceEventForty: "40 صورة · حتى 4 ساعات",
-    priceEventTwenty: "20 صورة · حتى ساعتين",
-    priceProductTen: "10 صور منتجات",
-    priceProductFive: "5 صور منتجات",
-    pricePortraitTen: "10 صور معدّلة",
-    pricePortraitFive: "5 صور معدّلة",
-    priceStarting: "يبدأ من",
-    priceCta: "اسأل عن الباقة",
     contactTop1: "جاهز تحوّل فكرتك لصورة؟", contactTop2: "ابدأ طلبك عبر واتساب",
     contactTitle: "خلّي فكرتك<br><em>تصير صورة.</em>",
-    contactDesc: "اختر نوع التصوير واكتب لنا فكرتك. سنجهّز رسالة واتساب لتراجعها قبل إرسالها.",
-    nameLabel: "اسمك", sessionLabel: "نوع الجلسة", sessionPlaceholder: "اختر نوع الجلسة", messageLabel: "احكيلي عن فكرتك",
+    contactDesc: "اختر الخدمة التي تحتاجها واكتب تفاصيل طلبك. سنجهّز رسالة لتراجعها قبل الإرسال.",
+    nameLabel: "اسمك", sessionLabel: "نوع الخدمة", sessionPlaceholder: "اختر نوع الخدمة", messageLabel: "احكيلي عن فكرتك",
     namePlaceholder: "اكتب اسمك", dateLabel: "التاريخ المفضّل", datePlaceholder: "اختر التاريخ", calendarTitle: "اختر تاريخاً", calendarPrev: "الشهر السابق", calendarNext: "الشهر التالي", calendarToday: "اليوم", timeLabel: "الفترة المفضّلة", timePlaceholder: "اختر وقتًا مناسبًا", timeMorning: "الصباح · 10:00–13:00", timeAfternoon: "بعد الظهر · 13:00–17:00", timeEvening: "المساء · 17:00–20:00", timeFlexible: "أي وقت يناسبني", msgPlaceholder: "ما الفكرة أو اللحظة التي تريد تصويرها؟",
     contactFormHint: "اختر طريقة الإرسال؛ ستفتح رسالة جاهزة لتراجعها وترسلها بنفسك. البريد يفتح رسالة جديدة في Gmail.",
     channelLabel: "كيف تريد إرسال طلبك؟", channelWhatsapp: "واتساب", channelSms: "رسالة SMS", channelEmail: "البريد الإلكتروني",
     emailLabel: "بريدك الإلكتروني", emailPlaceholder: "أدخل بريدًا يمكن لحمدي الرد عليه",
     phoneLabel: "رقم هاتفك (اختياري)", phonePlaceholder: "مثال: ‎+90 5xx xxx xx xx‎",
-    opt1: "جلسة بورتريه", opt2: "تصوير تخرّج", opt3: "تصوير تجاري", opt4: "تصوير مناسبة", opt5: "تعديل ألوان الصور", opt6: "خطوبة وزفاف", opt7: "طلب آخر",
+    opt1: "تعديل ألوان الصور", opt2: "تصوير التخرج", opt3: "تصوير الحلاقة وقصّات الشعر", opt4: "صور جواز السفر والهويات",
     sendBtn: "متابعة لإرسال الطلب", locationText: "غازي عنتاب، تركيا · بموعد مسبق",
     waIntro: "مرحباً حمدي، أنا", waPhone: "رقم هاتف الزبون", waBooking: "أرغب بحجز", waEmail: "بريد الزبون", emailSubject: "طلب حجز تصوير من الموقع", waDate: "التاريخ المقترح", waTime: "الفترة المناسبة", waDetails: "تفاصيل فكرتي",
     rightsText: "جميع الحقوق محفوظة.", backTop: "العودة لأعلى الصفحة ↑"
   },
   tr: {
     pageTitle: "Hamdi Photography | Hikâyeni anlatan kareler",
-    pageDescription: "Gaziantep'te portre, etkinlik ve ticari fotoğraf çekimleri. Anın duygusunu koruyan özenli kareler.",
+    pageDescription: "Gaziantep'te dört fotoğraf hizmeti: fotoğraf renk düzenleme, mezuniyet çekimi, berber ve saç kesimi fotoğrafçılığı, pasaport ve kimlik fotoğrafları.",
     languageLabel: "Site dili", menuLabel: "Menüyü aç",
-    navWork: "Portfolyo", navAbout: "Hakkımda", navServices: "Hizmetler", navContact: "Çekim planla", searchOpen: "Sitede ara", searchKicker: "ARA / KEŞFET", searchTitle: "Fotoğraf veya hizmet ara", searchPlaceholder: "Aramak için bir kelime yazın...", searchEmpty: "Portre, düğün veya renk düzenleme deneyin...", searchNoResults: "Sonuç bulunamadı. Başka bir kelime deneyin.", searchClose: "Aramayı kapat", searchGroupGallery: "Galeriden", searchGroupService: "Fotoğraf hizmeti",
+    navWork: "Portfolyo", navAbout: "Hakkımda", navServices: "Hizmetler", navContact: "Hizmet talep et", searchOpen: "Sitede ara", searchKicker: "ARA / KEŞFET", searchTitle: "Fotoğraf veya hizmet ara", searchPlaceholder: "Aramak için bir kelime yazın...", searchEmpty: "Renk düzenleme, mezuniyet, saç kesimi veya kimlik fotoğrafı arayın...", searchNoResults: "Sonuç bulunamadı. Başka bir kelime deneyin.", searchClose: "Aramayı kapat", searchGroupGallery: "Galeriden", searchGroupService: "Fotoğraf hizmeti",
     heroEyebrow: "<span class=\"live-dot\"></span>HAMDI — fotoğrafçı ve görsel hikâye anlatıcısı",
     heroTitle: "Her kare,<br><em>seni anlatsın.</em>",
-    heroDesc: "Portrelerden özel günlere, ışığa ve ayrıntılara özen göstererek anın duygusunu koruyan kareler üretiyorum. Gaziantep'te kişisel, etkinlik ve ticari çekimler.",
-    heroBtn1: "Portfolyoyu Gör", heroBtn2: "Çekimini Planla",
+    heroDesc: "Gaziantep'te dört net hizmet sunuyorum: fotoğraf renk düzenleme, mezuniyet çekimi, berber ve saç kesimi fotoğrafçılığı, pasaport ve kimlik fotoğrafları.",
+    heroBtn1: "Portfolyoyu Gör", heroBtn2: "Hizmet talep et",
     meta1: "SANA ÖZEL KARE", meta2: "IŞIĞIN GÜCÜ", meta3: "KALICI ANILAR",
     loadingLabel: "Site yükleniyor", loaderLabel: "Görsel deneyimin hazırlanıyor", loadingSubtext: "Birazdan başlıyoruz", loadingProgress: "Site yükleme durumu", welcomeVisitors: "Ziyaretçilerimize hoş geldiniz",
     visualLabel1: "HER KARENİN ARDINDA — 2026", visualLabel2: "HİKÂYENİ ÇERÇEVELE", albumMotionCue: "Sayfayı çevirmek için imleci oynatın veya albüme dokunun.",
     scrollCue: "KEŞFETMEK İÇİN KAYDIR",
-    t1: "PORTRE", t2: "ETKİNLİK", t3: "TİCARİ ÇEKİM", t4: "GÖRSEL HİKÂYELER",
+    t1: "RENK DÜZENLEME", t2: "MEZUNİYET", t3: "SAÇ KESİMİ", t4: "KİMLİK FOTOĞRAFI",
     workEyebrow: "HAMDI'NİN SEÇKİSİ / 2024—2026",
     workTitle: "Anların<br><em>hikâyeni anlatsın.</em>",
     workIntro: "Gerçek duygular, özenli ışık ve her karede sana ait ayrıntılar.",
@@ -136,101 +81,46 @@ const translations = {
     g5: "ETKİNLİK", gc5: "Bir kareye sığan mutluluk", g5Alt: "Sıcak ışıkta bir düğün anı",
     g6: "PORTRE", gc6: "Bir hikâyenin yüzü", g6Alt: "Doğal ışıkla çekilmiş erkek portresi",
     g7: "ETKİNLİK", gc7: "Anın tam ortasında", g7Alt: "Konser atmosferi ve seyirci ışıkları",
-    g8: "TİCARİ", gc8: "Ayrıntılar fark yaratır", g8Alt: "Şık bir ticari çekimle fotoğraflanmış kol saati",
+    g8: "AYRINTILAR", gc8: "Ayrıntılar fark yaratır", g8Alt: "Şık bir görsel kompozisyonda kol saati",
     aboutBadge: "H / VİZYON", aboutEyebrow: "LENSİN ARKASINDA",
     aboutTitle: "Önce hissi,<br><em>sonra kareyi ararım.</em>",
     aboutDesc: "Ben Hamdi. İyi bir fotoğrafın yalnızca anı göstermediğine, o anda hissedileni de sakladığına inanıyorum. Işığa ve ayrıntılara odaklanıyor, fikir aşamasından çekime kadar seninle çalışarak hikâyene yakın kareler oluşturuyorum.",
     aboutLink: "Fikrini anlat",
     servEyebrow: "SANA NASIL YARDIMCI OLABİLİRİM?",
-    servTitle: "Önce fikrin,<br><em>sonra hikâyen.</em>",
-    servIntro: "Sana uygun hizmeti seç; çekim türünü WhatsApp formunda senin için hazırlayayım.",
-    s1Title: "Portre çekimleri", s1Desc: "Tarzına uygun, rahat bir çekim. Sana benzeyen kareler için ışığı ve ayrıntıları birlikte seçelim.",
-    s2Title: "Ticari fotoğraf", s2Desc: "Ürününü veya markanı tutarlı bir görsel dille öne çıkaran fotoğraflar.",
-    s3Title: "Etkinlik ve hikâyeler", s3Desc: "Özel gününün ayrıntılarını ve içten anlarını duygusuyla birlikte kaydedelim.",
+    servTitle: "Dört hizmet,<br><em>özenli ve profesyonel.</em>",
+    servIntro: "Dört hizmetten birini seçin ve talep ayrıntılarınızı gönderin.",
+    s1Title: "Fotoğraf renk düzenleme", s1Desc: "Fotoğraflarınızın renk ve ışığını dengeli, profesyonel bir görünüme kavuşturma.",
+    s2Title: "Mezuniyet fotoğrafçılığı", s2Desc: "Mezuniyet gününü ve bu başarının sevincini özel karelerle ölümsüzleştirme.",
+    s3Title: "Berber ve saç kesimi fotoğrafçılığı", s3Desc: "Saç kesimlerinin ayrıntılarını ve berber çalışmalarını profesyonel karelerle öne çıkarma.", s4Desc: "Resmî kurumun istediği ölçü ve arka plan koşullarına uygun fotoğraflar.", s4Title: "Pasaport ve kimlik fotoğrafları",
     serviceCta: "Bu çekim için başla",
-    priceEyebrow: "Fotoğraf hizmetleri · Gaziantep",
-    priceTitle: "Size uygun<br><em>çekim türünü seçin.</em>",
-    priceIntro: "Size uygun hizmeti seçin ve rezervasyon formundan ayrıntıları gönderin.",
-    pricePortraitTitle: "Portre ve aile",
-    pricePortraitDesc: "Özenli ışık ve sanatsal dokunuşlarla portre ve aile çekimleri.",
-    priceProductTitle: "Ürün ve ticari",
-    priceProductDesc: "Ürünler, markalar ve ticari çalışmalar için yaratıcı fotoğraflar.",
-    priceEventTitle: "Etkinlik",
-    priceEventDesc: "Etkinliklerin özel anlarını özenle belgeleyen çekimler.",
-    priceWeddingTitle: "Nişan ve düğün",
-    priceWeddingDesc: "Nişan ve düğün gününüzün ayrıntılarını ve anlarını belgeleyen çekimler.",
-    pricePortraitFifteen: "15 düzenlenmiş fotoğraf",
-    pricePortraitTwenty: "20 düzenlenmiş fotoğraf",
-    priceGraduationFive: "5 mezuniyet fotoğrafı",
-    priceGraduationFifteen: "15 mezuniyet fotoğrafı",
-    priceGraduationThirty: "30 mezuniyet fotoğrafı",
-    priceProductOne: "1 ürün fotoğrafı",
-    priceProductFifteen: "15 ürün fotoğrafı",
-    priceProductTwenty: "20 ürün fotoğrafı",
-    priceEventTen: "10 fotoğraf · 1 saate kadar",
-    priceEventThirty: "30 fotoğraf · 3 saate kadar",
-    priceEventSixty: "60 fotoğraf · 6 saate kadar",
-    priceWeddingTwenty: "20 fotoğraf · 2 saate kadar",
-    priceWeddingSixty: "60 fotoğraf · 6 saate kadar",
-    priceWeddingHundred: "100 fotoğraf · 10 saate kadar",
-    priceColorTen: "10 fotoğraf için renk düzenleme",
-    priceColorTwenty: "20 fotoğraf için renk düzenleme",
-    priceCustomThirty: "30 fotoğraf",
-    photoCountLabel: "Fotoğraf sayısı",
-    photoCountPlaceholder: "Fotoğraf sayısını seçin", chooseSessionFirst: "Fotoğraf sayılarını görmek için önce çekim türünü seçin",
-    packageCustom: "Fotoğraf sayısı ve fiyatı talep incelendikten sonra belirlenir",
-    priceQuoteAfterReview: "Talep incelendikten sonra fiyatlandırılır",
-    waPackage: "Fotoğraf sayısı",
-    priceGraduationTitle: "Mezuniyet",
-    priceGraduationDesc: "Mezuniyet gününü ve özel anlarını belgeleyen çekim.",
-    priceGraduationTen: "10 mezuniyet fotoğrafı",
-    priceGraduationTwenty: "20 mezuniyet fotoğrafı",
-    priceColorTitle: "Fotoğraf renk düzenleme",
-    priceColorDesc: "Dijital fotoğraflarda ışık ve renk dengesini iyileştirme.",
-    priceColorOne: "1 fotoğraf için renk düzenleme",
-    priceColorFive: "5 fotoğraf için renk düzenleme",
-    priceColorFifteen: "15 fotoğraf için renk düzenleme",
-    priceCustomFive: "5 fotoğraf",
-    priceCustomTen: "10 fotoğraf",
-    priceCustomTwenty: "20 fotoğraf",
-    priceWeddingEighty: "80 fotoğraf · 6 saate kadar",
-    priceWeddingForty: "40 fotoğraf · 4 saate kadar",
-    priceEventForty: "40 fotoğraf · 4 saate kadar",
-    priceEventTwenty: "20 fotoğraf · 2 saate kadar",
-    priceProductTen: "10 ürün fotoğrafı",
-    priceProductFive: "5 ürün fotoğrafı",
-    pricePortraitTen: "10 düzenlenmiş fotoğraf",
-    pricePortraitFive: "5 düzenlenmiş fotoğraf",
-    priceStarting: "başlangıç",
-    priceCta: "Paketi sor",
     contactTop1: "Fikrini bir kareye dönüştürelim mi?", contactTop2: "WhatsApp üzerinden talep oluştur",
     contactTitle: "Fikrini<br><em>kareye dönüştür.</em>",
-    contactDesc: "Çekim türünü seç ve fikrini yaz. Göndermeden önce incelemen için WhatsApp mesajı hazırlayalım.",
-    nameLabel: "Adın", sessionLabel: "Çekim türü", sessionPlaceholder: "Çekim türünü seçin", messageLabel: "Fikrini anlat",
+    contactDesc: "İhtiyacınız olan hizmeti seçin ve talebinizin ayrıntılarını yazın. Göndermeden önce incelemeniz için bir mesaj hazırlayalım.",
+    nameLabel: "Adın", sessionLabel: "Hizmet türü", sessionPlaceholder: "Hizmet türünü seçin", messageLabel: "Fikrini anlat",
     namePlaceholder: "Adını yaz", dateLabel: "Tercih edilen tarih", datePlaceholder: "Takvimden tarih seç", calendarTitle: "Tarih seç", calendarPrev: "Önceki ay", calendarNext: "Sonraki ay", calendarToday: "Bugün", timeLabel: "Tercih edilen saat aralığı", timePlaceholder: "Bir saat aralığı seç", timeMorning: "Sabah · 10:00–13:00", timeAfternoon: "Öğleden sonra · 13:00–17:00", timeEvening: "Akşam · 17:00–20:00", timeFlexible: "Bana uygun herhangi bir saat", msgPlaceholder: "Nasıl bir çekim hayal ediyorsun?",
     contactFormHint: "Gönderim yöntemini seçin; hazır mesajı kontrol edip kendiniz gönderin. E-posta Gmail'de yeni bir taslak açar.",
     channelLabel: "Talebinizi nasıl göndermek istersiniz?", channelWhatsapp: "WhatsApp", channelSms: "SMS", channelEmail: "E-posta",
     emailLabel: "E-posta adresiniz", emailPlaceholder: "you@example.com",
     phoneLabel: "Telefon numaranız (isteğe bağlı)", phonePlaceholder: "Örnek: +90 5xx xxx xx xx",
-    opt1: "Portre çekimi", opt2: "Mezuniyet çekimi", opt3: "Ticari çekim", opt4: "Etkinlik çekimi", opt5: "Fotoğraf renk düzenleme", opt6: "Nişan ve düğün", opt7: "Diğer",
+    opt1: "Fotoğraf renk düzenleme", opt2: "Mezuniyet çekimi", opt3: "Berber ve saç kesimi çekimi", opt4: "Pasaport ve kimlik fotoğrafı",
     sendBtn: "Talebi göndermeye devam et", locationText: "Gaziantep, Türkiye · Randevu ile",
     waIntro: "Merhaba Hamdi, ben", waPhone: "Müşteri telefon numarası", waBooking: "Çekim için randevu almak istiyorum", waEmail: "Müşteri e-postası", emailSubject: "Fotoğraf çekimi randevu talebi", waDate: "Tercih edilen tarih", waTime: "Tercih edilen saat aralığı", waDetails: "Fikrimin detayları",
     rightsText: "Tüm hakları saklıdır.", backTop: "Sayfanın başına dön ↑"
   },
   en: {
     pageTitle: "Hamdi Photography | Frames with a story",
-    pageDescription: "Portrait, event, and commercial photography in Gaziantep. Thoughtful images that hold on to how the moment felt.",
+    pageDescription: "Four photography services in Gaziantep: photo color correction, graduation photography, barber and hairstyle photography, and passport and ID photos.",
     languageLabel: "Site language", menuLabel: "Open menu",
-    navWork: "Portfolio", navAbout: "About", navServices: "Services", navContact: "Plan a shoot", searchOpen: "Search the site", searchKicker: "SEARCH / DISCOVER", searchTitle: "Search photos or services", searchPlaceholder: "Type to search...", searchEmpty: "Try portrait, wedding, or color editing...", searchNoResults: "No results found. Try another word.", searchClose: "Close search", searchGroupGallery: "From the gallery", searchGroupService: "Photography service",
+    navWork: "Portfolio", navAbout: "About", navServices: "Services", navContact: "Request a service", searchOpen: "Search the site", searchKicker: "SEARCH / DISCOVER", searchTitle: "Search photos or services", searchPlaceholder: "Type to search...", searchEmpty: "Try color correction, graduation, barber photos, or passport and ID photos...", searchNoResults: "No results found. Try another word.", searchClose: "Close search", searchGroupGallery: "From the gallery", searchGroupService: "Photography service",
     heroEyebrow: "<span class=\"live-dot\"></span>HAMDI — photographer & visual storyteller",
     heroTitle: "Every frame,<br><em>a story like yours.</em>",
-    heroDesc: "From portraits to the days you want to remember, I shape light and detail into honest photographs. Personal, event, and commercial shoots in Gaziantep.",
-    heroBtn1: "Explore the portfolio", heroBtn2: "Plan your shoot",
+    heroDesc: "Four focused services in Gaziantep: photo color correction, graduation photography, barber and hairstyle photography, and passport and ID photos.",
+    heroBtn1: "Explore the portfolio", heroBtn2: "Request a service",
     meta1: "MADE TO FEEL", meta2: "LIGHT WITH INTENT", meta3: "MEMORIES THAT LAST",
     loadingLabel: "Loading the site", loaderLabel: "Preparing your visual experience", loadingSubtext: "Your story is about to begin", loadingProgress: "Website loading progress", welcomeVisitors: "Welcome, visitors",
     visualLabel1: "BEHIND EVERY FRAME — 2026", visualLabel2: "FRAME YOUR STORY", albumMotionCue: "MOVE THE POINTER OR TAP THE ALBUM TO TURN A PAGE",
     scrollCue: "SCROLL TO EXPLORE",
-    t1: "PORTRAITS", t2: "EVENTS", t3: "COMMERCIAL", t4: "VISUAL STORIES",
+    t1: "COLOR EDITING", t2: "GRADUATION", t3: "HAIRSTYLES", t4: "ID PHOTOS",
     workEyebrow: "SELECTED BY HAMDI / 2024—2026",
     workTitle: "Moments worth<br><em>holding onto.</em>",
     workIntro: "Honest feeling, thoughtful light, and details that make the image yours.",
@@ -245,83 +135,28 @@ const translations = {
     g5: "EVENT", gc5: "A celebration in one frame", g5Alt: "A wedding moment in warm light",
     g6: "PORTRAIT", gc6: "A face with a story", g6Alt: "A male portrait in natural light",
     g7: "EVENT", gc7: "Right in the moment", g7Alt: "Concert atmosphere and audience lights",
-    g8: "COMMERCIAL", gc8: "Details make the difference", g8Alt: "A wristwatch in an elegant commercial photo",
+    g8: "DETAILS", gc8: "Details make the difference", g8Alt: "A wristwatch in an elegant visual composition",
     aboutBadge: "H / VISION", aboutEyebrow: "BEHIND THE LENS",
     aboutTitle: "I look for the feeling<br><em>before the frame.</em>",
     aboutDesc: "I'm Hamdi. I believe a good photograph does more than show a moment; it keeps how that moment felt. I focus on light and detail, working with you from the first idea to the final frame so the image feels like yours.",
     aboutLink: "Tell me your idea",
     servEyebrow: "HOW CAN I HELP?",
-    servTitle: "Your idea first,<br><em>the image follows.</em>",
-    servIntro: "Choose a service to prefill the shoot type in your WhatsApp request.",
-    s1Title: "Portrait sessions", s1Desc: "A relaxed session built around your style, with light and details chosen to make the photos feel like you.",
-    s2Title: "Commercial photography", s2Desc: "Clear, compelling images that present your product or brand with a consistent visual identity.",
-    s3Title: "Events & stories", s3Desc: "The details and candid moments of your occasion, kept with all the feeling they held.",
+    servTitle: "Four focused services,<br><em>handled with care.</em>",
+    servIntro: "Choose one of the four services and send the details of your request.",
+    s1Title: "Photo color correction", s1Desc: "Professional color and light correction for a balanced, polished finish.",
+    s2Title: "Graduation photography", s2Desc: "Celebrate the graduation milestone with personal portraits and memorable moments.",
+    s3Title: "Barber & hairstyle photography", s3Desc: "Professional images that highlight haircut details and barbers’ work.", s4Desc: "Portraits prepared to the dimensions and background rules required by the authority.", s4Title: "Passport & ID photos",
     serviceCta: "Start this booking",
-    priceEyebrow: "Photography services · Gaziantep",
-    priceTitle: "Choose a session<br><em>that fits your story.</em>",
-    priceIntro: "Choose a service and send the details through the booking form.",
-    pricePortraitTitle: "Portrait & family",
-    pricePortraitDesc: "Portrait and family sessions with thoughtful lighting and an artistic touch.",
-    priceProductTitle: "Product & commercial",
-    priceProductDesc: "Creative photography for products, brands, and commercial projects.",
-    priceEventTitle: "Events",
-    priceEventDesc: "Thoughtful coverage that captures the standout moments of your event.",
-    priceWeddingTitle: "Engagement & wedding",
-    priceWeddingDesc: "Engagement and wedding photography that preserves the details and moments of your day.",
-    pricePortraitFifteen: "15 edited photos",
-    pricePortraitTwenty: "20 edited photos",
-    priceGraduationFive: "5 graduation photos",
-    priceGraduationFifteen: "15 graduation photos",
-    priceGraduationThirty: "30 graduation photos",
-    priceProductOne: "1 product photo",
-    priceProductFifteen: "15 product photos",
-    priceProductTwenty: "20 product photos",
-    priceEventTen: "10 photos · up to 1 hour",
-    priceEventThirty: "30 photos · up to 3 hours",
-    priceEventSixty: "60 photos · up to 6 hours",
-    priceWeddingTwenty: "20 photos · up to 2 hours",
-    priceWeddingSixty: "60 photos · up to 6 hours",
-    priceWeddingHundred: "100 photos · up to 10 hours",
-    priceColorTen: "Color correction for 10 photos",
-    priceColorTwenty: "Color correction for 20 photos",
-    priceCustomThirty: "30 photos",
-    photoCountLabel: "Photo count",
-    photoCountPlaceholder: "Choose the number of photos", chooseSessionFirst: "Choose a session first to see available photo counts",
-    packageCustom: "Photo count and price will be confirmed after reviewing the request",
-    priceQuoteAfterReview: "Price after reviewing the request",
-    waPackage: "Photo count",
-    priceGraduationTitle: "Graduation",
-    priceGraduationDesc: "A dedicated session to capture graduation day and its special moments.",
-    priceGraduationTen: "10 graduation photos",
-    priceGraduationTwenty: "20 graduation photos",
-    priceColorTitle: "Photo color correction",
-    priceColorDesc: "Improve lighting and color balance in digital photos.",
-    priceColorOne: "Color correction for 1 photo",
-    priceColorFive: "Color correction for 5 photos",
-    priceColorFifteen: "Color correction for 15 photos",
-    priceCustomFive: "5 photos",
-    priceCustomTen: "10 photos",
-    priceCustomTwenty: "20 photos",
-    priceWeddingEighty: "80 photos · up to 6 hours",
-    priceWeddingForty: "40 photos · up to 4 hours",
-    priceEventForty: "40 photos · up to 4 hours",
-    priceEventTwenty: "20 photos · up to 2 hours",
-    priceProductTen: "10 product photos",
-    priceProductFive: "5 product photos",
-    pricePortraitTen: "10 edited photos",
-    pricePortraitFive: "5 edited photos",
-    priceStarting: "starting at",
-    priceCta: "Ask about package",
     contactTop1: "Ready to turn an idea into a photograph?", contactTop2: "Start your request on WhatsApp",
     contactTitle: "Let's turn your idea<br><em>into a frame.</em>",
-    contactDesc: "Choose a shoot type and share your idea. We'll prepare a WhatsApp message for you to review before sending.",
-    nameLabel: "Your name", sessionLabel: "Session type", sessionPlaceholder: "Choose a session type", messageLabel: "Tell me about your idea",
+    contactDesc: "Choose the service you need and describe your request. We’ll prepare a message for you to review before sending.",
+    nameLabel: "Your name", sessionLabel: "Service type", sessionPlaceholder: "Choose a service", messageLabel: "Tell me about your idea",
     namePlaceholder: "Write your name", dateLabel: "Preferred date", datePlaceholder: "Choose a date", calendarTitle: "Choose a date", calendarPrev: "Previous month", calendarNext: "Next month", calendarToday: "Today", timeLabel: "Preferred time", timePlaceholder: "Choose a time window", timeMorning: "Morning · 10:00–13:00", timeAfternoon: "Afternoon · 13:00–17:00", timeEvening: "Evening · 17:00–20:00", timeFlexible: "Any time that works for me", msgPlaceholder: "What would you like to photograph?",
     contactFormHint: "Choose a delivery method; review the prepared message and send it yourself. Email opens a new Gmail draft.",
     channelLabel: "How would you like to send your request?", channelWhatsapp: "WhatsApp", channelSms: "SMS", channelEmail: "Email",
     emailLabel: "Your email address", emailPlaceholder: "you@example.com",
     phoneLabel: "Your phone number (optional)", phonePlaceholder: "Example: +90 5xx xxx xx xx",
-    opt1: "Portrait session", opt2: "Graduation shoot", opt3: "Commercial shoot", opt4: "Event coverage", opt5: "Photo color correction", opt6: "Engagement & wedding", opt7: "Other",
+    opt1: "Photo color correction", opt2: "Graduation photography", opt3: "Barber & hairstyle photography", opt4: "Passport & ID photos",
     sendBtn: "Continue to send request", locationText: "Gaziantep, Türkiye · By appointment",
     waIntro: "Hi Hamdi, I'm", waPhone: "Customer phone", waBooking: "I'd like to book", waEmail: "Customer email", emailSubject: "Photography booking request", waDate: "Preferred date", waTime: "Preferred time", waDetails: "My idea",
     rightsText: "All rights reserved.", backTop: "Back to top ↑"
@@ -577,7 +412,7 @@ async function initThreeScene() {
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 100);
-  camera.position.set(0, 0, 8.2);
+  camera.position.set(0, 0.12, 9.1);
 
   let renderer;
   try {
@@ -589,7 +424,7 @@ async function initThreeScene() {
   }
 
   renderer.setClearColor(0x000000, 0);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.7));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, window.matchMedia('(max-width: 700px)').matches ? 1.2 : 1.55));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.domElement.setAttribute('aria-hidden', 'true');
   mount.appendChild(renderer.domElement);
@@ -602,6 +437,83 @@ async function initThreeScene() {
   rimLight.position.set(2.5, 1.2, 3.3);
   scene.add(rimLight);
 
+  // Virtual studio environment: cyclorama, reflective floor, and practical lighting rigs.
+  const studioFloor = new THREE.Mesh(
+    new THREE.PlaneGeometry(24, 18),
+    new THREE.MeshStandardMaterial({ color: 0x090909, metalness: 0.72, roughness: 0.27 })
+  );
+  studioFloor.rotation.x = -Math.PI / 2;
+  studioFloor.position.set(0, -2.72, -1.1);
+  scene.add(studioFloor);
+
+  const studioBackWall = new THREE.Mesh(
+    new THREE.PlaneGeometry(18, 9),
+    new THREE.MeshStandardMaterial({ color: 0x101010, metalness: 0.28, roughness: 0.78 })
+  );
+  studioBackWall.position.set(0, 1.1, -3.6);
+  scene.add(studioBackWall);
+
+  const goldStripMaterial = new THREE.MeshStandardMaterial({
+    color: 0x9d7940, metalness: 0.88, roughness: 0.24,
+    emissive: 0x2a1705, emissiveIntensity: 0.5
+  });
+  [-4.7, 4.7].forEach((x) => {
+    const strip = new THREE.Mesh(new THREE.BoxGeometry(0.025, 5.5, 0.035), goldStripMaterial);
+    strip.position.set(x, 0.25, -3.52);
+    scene.add(strip);
+  });
+
+  const practicalLights = [];
+  function createSoftbox(x, y, z, rotationY, power) {
+    const unit = new THREE.Group();
+    unit.position.set(x, y, z);
+    unit.rotation.y = rotationY;
+    const darkMetal = new THREE.MeshStandardMaterial({ color: 0x171717, metalness: 0.82, roughness: 0.3 });
+    const housing = new THREE.Mesh(new THREE.BoxGeometry(0.92, 1.3, 0.18), darkMetal);
+    unit.add(housing);
+    const diffuser = new THREE.Mesh(
+      new THREE.PlaneGeometry(0.78, 1.13),
+      new THREE.MeshBasicMaterial({ color: 0xffe3b0, toneMapped: false })
+    );
+    diffuser.position.z = 0.101;
+    unit.add(diffuser);
+    const rim = new THREE.LineSegments(
+      new THREE.EdgesGeometry(new THREE.BoxGeometry(1.02, 1.4, 0.2)),
+      new THREE.LineBasicMaterial({ color: 0xb99559, transparent: true, opacity: 0.82 })
+    );
+    unit.add(rim);
+    const stand = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.04, 1.8, 12), darkMetal);
+    stand.position.y = -1.52;
+    unit.add(stand);
+    const foot = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.34, 0.055, 3), darkMetal);
+    foot.position.y = -2.43;
+    unit.add(foot);
+    scene.add(unit);
+    const lamp = new THREE.SpotLight(0xffd9a0, power, 13, Math.PI / 5, 0.55, 1.4);
+    lamp.position.set(x, y, z + 0.18);
+    lamp.target.position.set(0, -0.2, 0);
+    scene.add(lamp, lamp.target);
+    practicalLights.push({ unit, lamp, baseY: y, phase: x > 0 ? 1.4 : 0 });
+    return unit;
+  }
+  createSoftbox(-3.55, 1.05, -0.15, 0.24, 48);
+  createSoftbox(3.55, 1.15, -0.55, -0.3, 36);
+
+  const overheadFrame = new THREE.Group();
+  const overheadBar = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 7.2, 12), darkStudioMaterial());
+  overheadBar.rotation.z = Math.PI / 2;
+  overheadBar.position.set(0, 3.0, -0.9);
+  overheadFrame.add(overheadBar);
+  const overheadCable = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 1.2, 8), goldStripMaterial);
+  overheadCable.position.set(0, 2.38, -0.9);
+  overheadFrame.add(overheadCable);
+  scene.add(overheadFrame);
+
+  function darkStudioMaterial() {
+    return new THREE.MeshStandardMaterial({ color: 0x151515, metalness: 0.86, roughness: 0.28 });
+  }
+
+
   const rig = new THREE.Group();
   scene.add(rig);
 
@@ -611,6 +523,33 @@ async function initThreeScene() {
   );
   cameraBody.position.set(0, -0.08, -0.24);
   rig.add(cameraBody);
+
+  // Three-legged camera support, attached to the camera body so it follows the rig.
+  const tripodMetal = new THREE.MeshStandardMaterial({ color: 0x252525, metalness: 0.9, roughness: 0.24 });
+  const tripodGold = new THREE.MeshStandardMaterial({ color: 0x9c7841, metalness: 0.88, roughness: 0.22 });
+  const centerColumn = new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.095, 1.5, 20), tripodMetal);
+  centerColumn.position.set(0, -1.27, -0.18);
+  rig.add(centerColumn);
+  const tripodHead = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.2, 0.17, 24), tripodGold);
+  tripodHead.position.set(0, -0.48, -0.18);
+  rig.add(tripodHead);
+  const addTripodLeg = (endX, endZ) => {
+    const start = new THREE.Vector3(0, -1.85, -0.18);
+    const end = new THREE.Vector3(endX, -3.05, endZ);
+    const direction = new THREE.Vector3().subVectors(end, start);
+    const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.055, direction.length(), 12), tripodMetal);
+    leg.position.copy(start).add(end).multiplyScalar(0.5);
+    leg.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction.normalize());
+    rig.add(leg);
+    const collar = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.11, 16), tripodGold);
+    collar.position.copy(start).lerp(end, 0.72);
+    collar.quaternion.copy(leg.quaternion);
+    rig.add(collar);
+  };
+  addTripodLeg(-0.95, 0.55);
+  addTripodLeg(0.95, 0.55);
+  addTripodLeg(0, -1.05);
+
 
   const topPlate = new THREE.Mesh(
     new THREE.BoxGeometry(0.58, 0.16, 0.56),
@@ -850,18 +789,9 @@ async function initThreeScene() {
 
 
 
-  const imageUrls = [
-    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=700&q=80',
-    'https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=700&q=80',
-    'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=700&q=80',
-    'https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=700&q=80'
-  ];
-  const photoPositions = [
-    [-2.05, 1.35, -1.08, -0.2, 0.12],
-    [2.02, 1.28, -1.16, 0.2, -0.1],
-    [-2.12, -1.32, -1.0, 0.22, -0.1],
-    [2.06, -1.35, -1.08, -0.18, 0.1]
-  ];
+  // Do not present stock imagery as Hamdi's portfolio. Real client work belongs in the existing gallery.
+  const imageUrls = [];
+  const photoPositions = [];
   const loader = new THREE.TextureLoader();
   loader.crossOrigin = 'anonymous';
   const photoCards = [];
@@ -946,7 +876,7 @@ async function initThreeScene() {
     const width = Math.max(1, mount.clientWidth);
     const height = Math.max(1, mount.clientHeight);
     camera.aspect = width / height;
-    camera.position.z = width < 520 ? 8.9 : 8.2;
+    camera.position.z = width < 520 ? 10.6 : 9.1;
     camera.updateProjectionMatrix();
     renderer.setSize(width, height, false);
     render();
@@ -981,6 +911,7 @@ async function initThreeScene() {
     photoCards.forEach((card) => {
       card.position.y = card.userData.baseY + Math.sin(time * 0.0007 + card.userData.phase) * 0.055;
     });
+    practicalLights.forEach((item) => { item.unit.rotation.z = Math.sin(time * 0.00045 + item.phase) * 0.012; });
     render();
   }
   if (!reducedMotion) frameId = window.requestAnimationFrame(animate);
