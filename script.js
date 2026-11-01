@@ -954,18 +954,9 @@ async function initThreeScene() {
 
 
 
-  const imageUrls = [
-    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=700&q=80',
-    'https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=700&q=80',
-    'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=700&q=80',
-    'https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=700&q=80'
-  ];
-  const photoPositions = [
-    [-2.05, 1.35, -1.08, -0.2, 0.12],
-    [2.02, 1.28, -1.16, 0.2, -0.1],
-    [-2.12, -1.32, -1.0, 0.22, -0.1],
-    [2.06, -1.35, -1.08, -0.18, 0.1]
-  ];
+  // Do not present stock imagery as Hamdi's portfolio. Real client work belongs in the existing gallery.
+  const imageUrls = [];
+  const photoPositions = [];
   const loader = new THREE.TextureLoader();
   loader.crossOrigin = 'anonymous';
   const photoCards = [];
