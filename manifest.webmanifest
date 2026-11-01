@@ -1,0 +1,22 @@
+{
+  "id": "./studio.html",
+  "name": "Hamdi Photography Studio",
+  "short_name": "Hamdi Studio",
+  "description": "استوديو تعديل الصور من Hamdi Photography",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./studio.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#080808",
+  "theme_color": "#080808",
+  "icons": [
+    {
+      "src": "./icons/hamdi-studio.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
