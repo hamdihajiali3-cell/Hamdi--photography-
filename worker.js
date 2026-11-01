@@ -103,6 +103,44 @@ function getCustomerName(payload) {
   );
 }
 
+async function sendWhatsAppBookingAlert(env, message) {
+  if (!env.WHATSAPP_ACCESS_TOKEN || !env.WHATSAPP_PHONE_NUMBER_ID || !env.WHATSAPP_TEMPLATE_NAME || !env.OWNER_PHONE_NUMBER) {
+    return { sent: false, reason: "whatsapp_not_configured" };
+  }
+
+  const recipient = clean(env.OWNER_PHONE_NUMBER, 40).replace(/\\D/g, "");
+  const templateName = clean(env.WHATSAPP_TEMPLATE_NAME, 80);
+  const response = await fetch("https://graph.facebook.com/v23.0/" + encodeURIComponent(env.WHATSAPP_PHONE_NUMBER_ID) + "/messages", {
+    method: "POST",
+    headers: {
+      "Authorization": "Bearer " + env.WHATSAPP_ACCESS_TOKEN,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      messaging_product: "whatsapp",
+      recipient_type: "individual",
+      to: recipient,
+      type: "template",
+      template: {
+        name: templateName,
+        language: { code: "ar" },
+        components: [{
+          type: "body",
+          parameters: [{ type: "text", text: clean(message, 900) }]
+        }]
+      }
+    })
+  });
+
+  const responseText = await response.text();
+  let data = {};
+  try { data = JSON.parse(responseText); } catch {}
+  if (!response.ok) {
+    return { sent: false, status: response.status, reason: clean(data.error?.message || responseText, 300) };
+  }
+  return { sent: true, message_id: clean(data.messages?.[0]?.id || "", 160) };
+}
+
 async function handlePostCall(request, env) {
   if (request.method !== "POST") return json({ error: "method_not_allowed" }, 405);
   if (!env.BLAND_API_KEY || !env.BLAND_WEBHOOK_SECRET || !env.OWNER_PHONE_NUMBER || !env.CALLBACK_GUARD) {
@@ -149,6 +187,18 @@ async function handlePostCall(request, env) {
   const customerName = getCustomerName(payload);
   const callLength = clean(payload.call_length || payload.duration || "غير محدد", 40);
   const callStatus = clean(payload.status || (payload.completed ? "completed" : "post-call"), 40);
+
+  const whatsappMessage = [
+    "📸 طلب/استفسار جديد – Hamdi Photography",
+    "اسم العميل: " + (customerName || "لم يذكر"),
+    "رقم العميل: " + (callerPhone || "غير متوفر"),
+    "مدة المكالمة: " + callLength,
+    "حالة المكالمة: " + callStatus,
+    "ملخص الطلب: " + (summary || "راجع نص المحادثة في سجل Bland"),
+    "نص المحادثة: " + (transcript || "غير متوفر"),
+    "ملاحظة: الموعد غير مؤكد؛ يرجى مراجعة العميل شخصياً."
+  ].join("\\n");
+  const whatsappResult = await sendWhatsAppBookingAlert(env, whatsappMessage);
 
   const task = [
     "أنت Hamdi AI، مساعد هاتفي يتصل بحمدي عليّ لإبلاغه بتفاصيل مكالمة عميل انتهت للتو.",
@@ -204,7 +254,7 @@ async function handlePostCall(request, env) {
     body: JSON.stringify({ action: "finish", callback_call_id: blandData.call_id })
   });
 
-  return json({ ok: true, callback_queued: true, callback_call_id: blandData.call_id });
+  return json({ ok: true, callback_queued: true, callback_call_id: blandData.call_id, whatsapp_sent: whatsappResult.sent, whatsapp_reason: whatsappResult.reason || null, whatsapp_message_id: whatsappResult.message_id || null });
 }
 
 export default {
@@ -218,7 +268,8 @@ export default {
         callback_ready: Boolean(
           env.BLAND_API_KEY && env.BLAND_WEBHOOK_SECRET &&
           env.OWNER_PHONE_NUMBER && env.CALLBACK_GUARD
-        )
+        ),
+        whatsapp_ready: Boolean(env.WHATSAPP_ACCESS_TOKEN && env.WHATSAPP_PHONE_NUMBER_ID && env.WHATSAPP_TEMPLATE_NAME && env.OWNER_PHONE_NUMBER)
       });
     }
 
