@@ -5,9 +5,10 @@
   const statusEl=$('#status'), installButton=$('#installApp');
   let original=null, rotation=0, flipped=false, flippedV=false, showOriginal=false, installPrompt=null;
   const history=[];let historyIndex=-1;
-  function snapshot(){if(!original)return;history.splice(historyIndex+1);history.push({rotation,flipped,flippedV,filter:$('#filter').value,values:{...values}});if(history.length>40)history.shift();historyIndex=history.length-1;updateHistoryButtons();}
+  let textLayers=[],cropRatio='free';
+  function snapshot(){if(!original)return;history.splice(historyIndex+1);history.push({rotation,flipped,flippedV,filter:$('#filter').value,values:{...values},textLayers:JSON.parse(JSON.stringify(textLayers)),cropRatio});if(history.length>40)history.shift();historyIndex=history.length-1;updateHistoryButtons();}
   function updateHistoryButtons(){$('#undo').disabled=historyIndex<=0;$('#redo').disabled=historyIndex>=history.length-1;}
-  function restore(s){rotation=s.rotation;flipped=s.flipped;flippedV=s.flippedV;$('#filter').value=s.filter;defs.forEach(([id])=>{values[id]=s.values[id];$('#'+id).value=values[id];$('#v-'+id).textContent=values[id];});render();updateHistoryButtons();}
+  function restore(s){rotation=s.rotation;flipped=s.flipped;flippedV=s.flippedV;textLayers=JSON.parse(JSON.stringify(s.textLayers||[]));cropRatio=s.cropRatio||'free';$('#cropRatio').value=cropRatio;$('#filter').value=s.filter;renderLayers();defs.forEach(([id])=>{values[id]=s.values[id];$('#'+id).value=values[id];$('#v-'+id).textContent=values[id];});render();updateHistoryButtons();}
   const defs=[['brightness','السطوع',-100,100,0,1],['contrast','التباين',-100,100,0,1],['saturation','التشبّع',-100,100,0,1],['warmth','دفء الألوان',-100,100,0,1],['exposure','التعريض',-2,2,0,.1],['sharpness','الحدة',0,100,0,1]];
   const values={};
   function setStatus(message){statusEl.textContent=message;}
@@ -46,6 +47,8 @@
     for(let y=1;y<h-1;y++)for(let x=1;x<w-1;x++){const i=(y*w+x)*4;for(let k=0;k<3;k++){const avg=(data[i-4+k]+data[i+4+k]+data[i-w*4+k]+data[i+w*4+k])/4;out[i+k]=Math.max(0,Math.min(255,data[i+k]+(data[i+k]-avg)*factor));}}
     image.data.set(out);ctx.putImageData(image,0,0);
   }
+  function renderLayers(){const root=$('#layerList');if(!root)return;root.replaceChildren();if(!textLayers.length){const empty=document.createElement('span');empty.className='muted';empty.textContent='لا توجد طبقات نص بعد';root.append(empty);return;}textLayers.forEach((layer,index)=>{const row=document.createElement('div');row.className='layer-item';const label=document.createElement('span');label.textContent='T · '+layer.text;const del=document.createElement('button');del.type='button';del.textContent='حذف';del.addEventListener('click',()=>{textLayers.splice(index,1);renderLayers();render();snapshot();});row.append(label,del);root.append(row);});}
+  function drawTextLayers(){if(!textLayers.length)return;ctx.save();textLayers.forEach(layer=>{ctx.font='700 '+layer.size+'px Cairo, Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.direction='rtl';ctx.shadowColor='#000';ctx.shadowBlur=Math.max(2,layer.size*.12);ctx.lineWidth=Math.max(1,layer.size*.035);ctx.strokeStyle='#0009';ctx.fillStyle=layer.color;ctx.strokeText(layer.text,canvas.width/2,canvas.height*(layer.y||.82));ctx.fillText(layer.text,canvas.width/2,canvas.height*(layer.y||.82));});ctx.restore();}
   function render(){
     if(!original)return;
     const w=original.naturalWidth,h=original.naturalHeight,swap=Math.abs(rotation)%180===90;
@@ -53,12 +56,14 @@
     ctx.rotate(rotation*Math.PI/180);ctx.scale(flipped?-1:1,flippedV?-1:1);ctx.filter=showOriginal?'none':cssFilter();
     ctx.drawImage(original,-w/2,-h/2,w,h);ctx.restore();ctx.filter='none';
     if(!showOriginal&&values.sharpness>0)sharpen(values.sharpness/100);
+    if(!showOriginal&&cropRatio!=='free'){const ratio=Number(cropRatio),w0=canvas.width,h0=canvas.height;let cw=w0,ch=h0;if(w0/h0>ratio)cw=Math.round(h0*ratio);else ch=Math.round(w0/ratio);const sx=Math.round((w0-cw)/2),sy=Math.round((h0-ch)/2),tmp=document.createElement('canvas');tmp.width=cw;tmp.height=ch;tmp.getContext('2d').drawImage(canvas,sx,sy,cw,ch,0,0,cw,ch);canvas.width=cw;canvas.height=ch;ctx.drawImage(tmp,0,0);}
+    if(!showOriginal)drawTextLayers();
   }
   fileInput.addEventListener('change',()=>{
     const file=fileInput.files&&fileInput.files[0];if(!file)return;
     if(!['image/jpeg','image/png','image/webp'].includes(file.type)){setStatus('صيغة الصورة غير مدعومة');return;}
     const url=URL.createObjectURL(file),img=new Image();
-    img.onload=()=>{original=img;rotation=0;flipped=false;flippedV=false;resetValues();history.length=0;historyIndex=-1;$('#placeholder').textContent=file.name;$('#empty').hidden=true;render();snapshot();setStatus('تم تحميل الصورة محليًا على جهازك.');URL.revokeObjectURL(url);};
+    img.onload=()=>{original=img;rotation=0;flipped=false;flippedV=false;resetValues();textLayers=[];cropRatio='free';$('#cropRatio').value='free';renderLayers();history.length=0;historyIndex=-1;$('#placeholder').textContent=file.name;$('#empty').hidden=true;render();snapshot();setStatus('تم تحميل الصورة محليًا على جهازك.');URL.revokeObjectURL(url);};
     img.onerror=()=>{setStatus('تعذر فتح الصورة');URL.revokeObjectURL(url);};img.src=url;
   });
   $('#filter').addEventListener('change',()=>{render();snapshot();});
@@ -77,6 +82,10 @@
   }
   $('#download').addEventListener('click',()=>save('image/jpeg'));
   $('#png').addEventListener('click',()=>save('image/png'));
+  $('#addTextLayer').addEventListener('click',()=>{if(!original){setStatus('ارفع صورة أولاً');return;}const text=$('#layerText').value.trim();if(!text){setStatus('اكتب النص أولاً');return;}textLayers.push({text,color:$('#layerColor').value,size:Number($('#layerSize').value),y:.82});renderLayers();render();snapshot();$('#layerText').value='';setStatus('تمت إضافة طبقة النص.');});
+  $('#applyCrop').addEventListener('click',()=>{if(!original)return;cropRatio=$('#cropRatio').value;render();snapshot();setStatus(cropRatio==='free'?'تم إلغاء القص.':'تم تطبيق القص الوسطي.');});
+  $('#saveProject').addEventListener('click',()=>{if(!original){setStatus('ارفع صورة أولاً');return;}const project={app:'Hamdi Photography Studio',version:1,image:original.src,rotation,flipped,flippedV,filter:$('#filter').value,values,textLayers,cropRatio};const blob=new Blob([JSON.stringify(project)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='hamdi-studio-project.json';a.click();URL.revokeObjectURL(url);setStatus('تم حفظ ملف المشروع على جهازك.');});
+  $('#loadProject').addEventListener('change',event=>{const file=event.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{try{const p=JSON.parse(reader.result);if(p.app!=='Hamdi Photography Studio'||!p.image)throw new Error('invalid');const img=new Image();img.onload=()=>{original=img;rotation=p.rotation||0;flipped=!!p.flipped;flippedV=!!p.flippedV;textLayers=p.textLayers||[];cropRatio=p.cropRatio||'free';$('#cropRatio').value=cropRatio;$('#filter').value=p.filter||'none';defs.forEach(([id,,,,initial])=>{values[id]=p.values?.[id]??initial;$('#'+id).value=values[id];$('#v-'+id).textContent=values[id];});$('#empty').hidden=true;history.length=0;historyIndex=-1;renderLayers();render();snapshot();setStatus('تم فتح المشروع بنجاح.');};img.onerror=()=>setStatus('تعذر فتح صورة المشروع.');img.src=p.image;}catch(e){setStatus('ملف المشروع غير صالح أو غير مدعوم.');}};reader.readAsText(file);event.target.value='';});
   window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPrompt=event;installButton.textContent='تثبيت التطبيق';setStatus('التطبيق جاهز للتثبيت. اضغط زر تثبيت التطبيق.');});
   window.addEventListener('appinstalled',()=>{installPrompt=null;installButton.textContent='تم تثبيت التطبيق';installButton.disabled=true;setStatus('تم تثبيت Hamdi Photography Studio بنجاح.');});
   installButton.addEventListener('click',async()=>{
