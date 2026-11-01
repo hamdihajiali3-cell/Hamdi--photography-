@@ -152,9 +152,22 @@ function bootGallery(root) {
     if(keys.has("a")||keys.has("arrowleft"))velocity.sub(right);
     if(velocity.lengthSq()) {
       velocity.normalize().multiplyScalar(dt*4.1);
-      camera.position.add(velocity);
-      camera.position.x=clamp(camera.position.x,-15.4,15.4);
-      camera.position.z=clamp(camera.position.z,-28.2,8.2);
+      // Keep the visitor inside the architecture and prevent walking through partitions.
+      const walls = [
+        {minX:-5.16,maxX:-4.84,minZ:-13,maxZ:-3},
+        {minX:4.84,maxX:5.16,minZ:-13,maxZ:-3},
+        {minX:-4.5,maxX:4.5,minZ:-13.16,maxZ:-12.84},
+        {minX:-14.5,maxX:-5.5,minZ:-3.16,maxZ:-2.84},
+        {minX:5.5,maxX:14.5,minZ:-3.16,maxZ:-2.84}
+      ];
+      const blocked = (x,z) => walls.some(w =>
+        x > w.minX-.38 && x < w.maxX+.38 &&
+        z > w.minZ-.38 && z < w.maxZ+.38
+      );
+      const nextX=clamp(camera.position.x+velocity.x,-15.4,15.4);
+      const nextZ=clamp(camera.position.z+velocity.z,-28.2,8.2);
+      if(!blocked(nextX,camera.position.z)) camera.position.x=nextX;
+      if(!blocked(camera.position.x,nextZ)) camera.position.z=nextZ;
     }
     camera.position.y=1.65;
     camera.rotation.order="YXZ";camera.rotation.y=yaw;camera.rotation.x=pitch;
