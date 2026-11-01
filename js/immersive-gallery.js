@@ -5,6 +5,7 @@ if (root) bootGallery(root);
 
 function bootGallery(root) {
   const canvas = root.querySelector("canvas");
+  canvas.tabIndex = 0;
   const fallback = root.querySelector(".gallery-fallback");
   const status = root.querySelector("[data-gallery-status]");
   const roomButtons = [...root.querySelectorAll("[data-room]")];
@@ -46,6 +47,7 @@ function bootGallery(root) {
   addBox(34,.22,42,0,-.12,-9,floorMat);
   addBox(34,.25,42,0,5.2,-9,ceilingMat);
   addBox(34,5.2,.3,0,2.5,-30,wallMat);
+  addBox(34,5.2,.3,0,2.5,10,wallMat);
   addBox(.3,5.2,42,-17,2.5,-9,wallMat);
   addBox(.3,5.2,42,17,2.5,-9,wallMat);
   // Interior partitions form four connected wings; openings preserve free movement.
@@ -114,7 +116,7 @@ function bootGallery(root) {
   const onUp=()=>dragging=false;
   canvas.addEventListener("pointerdown",onDown);canvas.addEventListener("pointermove",onMove);
   canvas.addEventListener("pointerup",onUp);canvas.addEventListener("pointercancel",onUp);
-  window.addEventListener("keydown",e=>{if(["w","a","s","d","ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.key)){keys.add(e.key.toLowerCase());}});
+  window.addEventListener("keydown",e=>{if(["w","a","s","d","ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.key)){e.preventDefault();keys.add(e.key.toLowerCase());}});
   window.addEventListener("keyup",e=>keys.delete(e.key.toLowerCase()));
   canvas.addEventListener("wheel",e=>{e.preventDefault();camera.position.y=clamp(camera.position.y+e.deltaY*.001,.9,2.4);},{passive:false});
 
