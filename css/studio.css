@@ -82,3 +82,11 @@ footer{position:relative;text-align:center;color:#777;padding:25px;border-top:1p
 .raw-note small{font-size:11px;line-height:1.8;color:var(--muted)}
 
 #controls .control input[type=range]{accent-color:#d7b574}
+
+.layer-properties{grid-column:1/-1;display:grid;grid-template-columns:1fr 2fr;align-items:center;gap:8px;padding:10px;border-radius:10px;background:#ffffff06}
+.layer-properties label{font-size:11px;color:#d8c8a9}
+.layer-properties input[type=text]{min-width:0;width:100%;background:#080a0d;border:1px solid #ffffff22;border-radius:8px;color:#fff;padding:8px;font:12px Cairo}
+.layer-properties input[type=range]{width:100%;accent-color:#d7b574}
+.layer-item.selected{border-color:#d7b57488;background:#d7b57412}
+.layer-item .layer-name{margin-inline-end:auto;text-align:right;background:transparent;border:0;padding:4px;color:#e9dfcc}
+.layer-item button:disabled{opacity:.3}
