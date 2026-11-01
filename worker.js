@@ -110,7 +110,7 @@ async function sendWhatsAppBookingAlert(env, message) {
 
   const recipient = clean(env.OWNER_PHONE_NUMBER, 40).replace(/\\D/g, "");
   const templateName = clean(env.WHATSAPP_TEMPLATE_NAME, 80);
-  const response = await fetch("https://graph.facebook.com/v23.0/" + encodeURIComponent(env.WHATSAPP_PHONE_NUMBER_ID) + "/messages", {
+  const response = await fetch("https://graph.facebook.com/v26.0/" + encodeURIComponent(env.WHATSAPP_PHONE_NUMBER_ID) + "/messages", {
     method: "POST",
     headers: {
       "Authorization": "Bearer " + env.WHATSAPP_ACCESS_TOKEN,
