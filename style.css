@@ -2073,7 +2073,7 @@ section[id] { scroll-margin-top: 104px; }
 .hero-meta span { line-height: 1.5; }
 
 #services .services-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
   border-top: 0;
   perspective: 1400px;
@@ -2159,11 +2159,12 @@ section[id] { scroll-margin-top: 104px; }
 }
 
 @media (max-width: 850px) {
-  #services .services-grid { grid-template-columns: 1fr; gap: 12px; }
+  #services .services-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
   #services .service,
   #services .service + .service { min-height: 260px; }
 }
 @media (max-width: 520px) {
+  #services .services-grid { grid-template-columns: 1fr; }
   .hero-meta { gap: 7px; }
   .hero-meta div { padding: 10px 8px; }
   .hero-meta span { font-size: 7px; letter-spacing: .6px; }
