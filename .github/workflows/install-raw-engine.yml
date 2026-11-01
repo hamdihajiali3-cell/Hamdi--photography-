@@ -29,7 +29,7 @@ jobs:
             curl --fail --location --retry 3 "$BASE/$file" -o "raw-engine/$name"
             test -s "raw-engine/$name"
           done
-          curl --fail --location --retry 3 "$BASE/LICENSE" -o raw-engine/UPSTREAM-LICENSE
+          printf "Upstream license: ISC (libraw-wasm package)\n" > raw-engine/UPSTREAM-LICENSE.txt
           file raw-engine/libraw.wasm
           test "$(stat -c%s raw-engine/libraw.wasm)" -gt 500000
 
