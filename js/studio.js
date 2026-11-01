@@ -64,8 +64,8 @@
     const file=fileInput.files&&fileInput.files[0];if(!file)return;
     if(!['image/jpeg','image/png','image/webp'].includes(file.type)){setStatus('صيغة الصورة غير مدعومة');return;}
     const url=URL.createObjectURL(file),img=new Image();
-    img.onload=()=>{original=img;const dataReader=new FileReader();dataReader.onload=()=>{originalDataURL=dataReader.result;};dataReader.readAsDataURL(file);rotation=0;flipped=false;flippedV=false;resetValues();textLayers=[];paintStrokes=[];cropRatio='free';$('#cropRatio').value='free';renderLayers();history.length=0;historyIndex=-1;$('#placeholder').textContent=file.name;$('#empty').hidden=true;render();snapshot();setStatus('تم تحميل الصورة محليًا على جهازك.');URL.revokeObjectURL(url);};
-    img.onerror=()=>{setStatus('تعذر فتح الصورة');URL.revokeObjectURL(url);};img.src=url;
+    img.onload=()=>{original=img;const dataReader=new FileReader();dataReader.onload=()=>{originalDataURL=dataReader.result;};dataReader.readAsDataURL(file);rotation=0;flipped=false;flippedV=false;resetValues();textLayers=[];paintStrokes=[];cropRatio='free';$('#cropRatio').value='free';renderLayers();history.length=0;historyIndex=-1;$('#placeholder').textContent=file.name;$('#empty').hidden=true;render();snapshot();setStatus(isRaw?'تم فتح ملف RAW عبر مفكك الصور المتاح في المتصفح. قد تختلف معالجة الألوان عن محرك الكاميرا.':'تم تحميل الصورة محليًا على جهازك.');URL.revokeObjectURL(url);};
+    img.onerror=()=>{setStatus(isRaw?'تم التعرف على ملف RAW، لكن المتصفح لا يستطيع فك هذا النوع بعد. احتفظنا بالملف الأصلي؛ نحتاج محرك RAW محليًا مدمجًا قبل تحريره.':'تعذر فتح الصورة');URL.revokeObjectURL(url);};img.src=url;
   });
   $('#filter').addEventListener('change',()=>{render();snapshot();});
   $('#reset').addEventListener('click',()=>{if(!original)return;resetValues();rotation=0;flipped=false;flippedV=false;render();snapshot();setStatus('تمت إعادة الضبط');});
