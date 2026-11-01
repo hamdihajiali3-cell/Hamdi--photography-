@@ -1,0 +1,48 @@
+name: Install local RAW engine
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/install-raw-engine.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  vendor-libraw-wasm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Download published LibRaw-Wasm browser runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p raw-engine
+          BASE="https://raw.githubusercontent.com/ybouane/LibRaw-Wasm/main"
+          for file in dist/index.js dist/libraw.js dist/libraw.wasm dist/worker.js; do
+            name="${file##*/}"
+            curl --fail --location --retry 3 "$BASE/$file" -o "raw-engine/$name"
+            test -s "raw-engine/$name"
+          done
+          curl --fail --location --retry 3 "$BASE/LICENSE" -o raw-engine/UPSTREAM-LICENSE
+          file raw-engine/libraw.wasm
+          test "$(stat -c%s raw-engine/libraw.wasm)" -gt 500000
+
+      - name: Commit vendored runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add raw-engine
+          if git diff --cached --quiet; then
+            echo "RAW runtime is already up to date."
+          else
+            git commit -m "Vendor local LibRaw WebAssembly runtime"
+            git push origin HEAD:main
+          fi
