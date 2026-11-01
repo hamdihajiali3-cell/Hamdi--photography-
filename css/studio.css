@@ -94,3 +94,5 @@ footer{position:relative;text-align:center;color:#777;padding:25px;border-top:1p
 #startFreeCrop{border-color:#d7b574;color:#f0d7a3}
 
 .mask-tools{display:grid;grid-template-columns:1fr 1fr;gap:9px;align-items:center;padding:13px;margin-top:10px;border:1px solid #d7b57455;border-radius:12px;background:#d7b5740b}.mask-tools strong,.mask-tools p{grid-column:1/-1}.mask-tools label{font-size:12px;color:#e8d8b9}.mask-tools input[type=range]{width:100%;accent-color:#d7b574}.mask-tools output{color:#f4d99e}.mask-tools button{grid-column:1/-1}
+
+.raw-note{border:1px solid #c99b4a66;border-radius:10px;padding:10px;color:#e6d2a8;background:#c99b4a0c;font-size:12px;line-height:1.7}
