@@ -60,7 +60,8 @@
     ctx.rotate(rotation*Math.PI/180);ctx.scale(flipped?-1:1,flippedV?-1:1);ctx.filter=showOriginal?'none':cssFilter();
     ctx.drawImage(original,-w/2,-h/2,w,h);ctx.restore();ctx.filter='none';
     if(!showOriginal){applyToneAdjustments();if(values.sharpness>0)sharpen(values.sharpness/100);}
-    \n    if(!showOriginal&&cropRatio!=='free'){const ratio=Number(cropRatio),w0=canvas.width,h0=canvas.height;let cw=w0,ch=h0;if(w0/h0>ratio)cw=Math.round(h0*ratio);else ch=Math.round(w0/ratio);const sx=Math.round((w0-cw)/2),sy=Math.round((h0-ch)/2),tmp=document.createElement('canvas');tmp.width=cw;tmp.height=ch;tmp.getContext('2d').drawImage(canvas,sx,sy,cw,ch,0,0,cw,ch);canvas.width=cw;canvas.height=ch;ctx.drawImage(tmp,0,0);}
+    
+    if(!showOriginal&&cropRatio!=='free'){const ratio=Number(cropRatio),w0=canvas.width,h0=canvas.height;let cw=w0,ch=h0;if(w0/h0>ratio)cw=Math.round(h0*ratio);else ch=Math.round(w0/ratio);const sx=Math.round((w0-cw)/2),sy=Math.round((h0-ch)/2),tmp=document.createElement('canvas');tmp.width=cw;tmp.height=ch;tmp.getContext('2d').drawImage(canvas,sx,sy,cw,ch,0,0,cw,ch);canvas.width=cw;canvas.height=ch;ctx.drawImage(tmp,0,0);}
     if(!showOriginal){drawPaintStrokes();drawTextLayers();if(cropSelecting&&cropRect){ctx.save();ctx.strokeStyle='#f4d99e';ctx.lineWidth=Math.max(2,canvas.width/700);ctx.setLineDash([10,7]);ctx.strokeRect(cropRect.x*canvas.width,cropRect.y*canvas.height,cropRect.w*canvas.width,cropRect.h*canvas.height);ctx.fillStyle='#f4d99e22';ctx.fillRect(cropRect.x*canvas.width,cropRect.y*canvas.height,cropRect.w*canvas.width,cropRect.h*canvas.height);ctx.restore();}}
   }
   fileInput.addEventListener('change',()=>{
