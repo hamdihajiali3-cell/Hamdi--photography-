@@ -35,4 +35,4 @@
 .gallery-pad button:nth-child(4){grid-column:3;grid-row:2}
 .gallery-pad button:active{background:#c7a267;color:#111}
 @media(min-width:701px){.gallery-pad{opacity:.7}}
-@media(max-width:700px){.gallery-pad{grid-template-columns:repeat(3,30px);grid-template-rows:repeat(2,29px)}.gallery-pad button{width:30px;height:29px;font-size:14px}.gallery-controls{gap:8px}.gallery-instructions{max-width:150px}}
+@media(max-width:700px){.gallery-pad{grid-template-columns:repeat(3,30px);grid-template-rows:repeat(2,29px)}.gallery-pad button{width:30px;height:29px;font-size:14px}.gallery-controls{display:grid;grid-template-columns:auto 1fr;align-items:end;gap:8px}.gallery-instructions{grid-column:1/-1;max-width:none;text-align:center}.gallery-action{justify-self:end}}
