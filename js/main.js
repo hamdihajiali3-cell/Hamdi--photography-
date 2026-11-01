@@ -1,3 +1,4 @@
+import "./immersive-gallery.js";
 import { initLanguage } from "./language.js";
 import { initServiceLinks } from "./service-links.js";
 import { initContactForm } from "./contact-form.js";
