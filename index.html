@@ -20,20 +20,34 @@
 <header class="topbar">
 <a class="brand" href="#home" aria-label="Hamdi Photography"><span class="brand-mark" aria-hidden="true">H<span>.</span></span><span class="brand-name">HAMDI <small>PHOTOGRAPHY</small></span></a>
 <nav class="nav" id="siteNavigation" aria-label="التنقل الرئيسي">
-<a href="#services" data-i18n="navServices">الخدمات</a><a href="#work" data-i18n="navWork">طريقة العمل</a><a href="#about" data-i18n="navAbout">عن حمدي</a><a class="nav-cta" href="#contact" data-i18n="navContact">اطلب خدمة</a>
+<a href="#gallery">المعرض</a><a href="#services" data-i18n="navServices">الخدمات</a><a href="#work" data-i18n="navWork">طريقة العمل</a><a href="#about" data-i18n="navAbout">عن حمدي</a><a class="nav-cta" href="#contact" data-i18n="navContact">اطلب خدمة</a>
 </nav>
 <div class="header-tools"><div class="language-switcher" role="group" aria-label="لغة الموقع" data-i18n-aria-label="languageLabel">
 <button type="button" class="language-button is-active" data-language="ar" aria-pressed="true" onclick="setLanguage('ar')">AR</button><button type="button" class="language-button" data-language="tr" aria-pressed="false" onclick="setLanguage('tr')">TR</button><button type="button" class="language-button" data-language="en" aria-pressed="false" onclick="setLanguage('en')">EN</button>
 </div><button class="menu-toggle" type="button" aria-expanded="false" aria-controls="siteNavigation" aria-label="فتح القائمة"></button></div>
 </header>
 <main id="main">
-<section class="hero" id="home"><div class="hero-copy">
-<p class="eyebrow" data-i18n="heroEyebrow">HAMDI PHOTOGRAPHY · GAZIANTEP</p>
-<h1 data-i18n="heroTitle">تصوير يركّز على<br><em>ما يهمّك فعلاً.</em></h1>
-<p class="hero-text" data-i18n="heroDesc">أربع خدمات واضحة للتصوير وتعديل الصور، مع طريقة طلب مباشرة ومواعيد تُنسّق معك قبل التأكيد.</p>
-<div class="hero-actions"><a class="button button-gold" href="#services"><span data-i18n="heroBtn1">استكشف الخدمات</span><span aria-hidden="true">↙</span></a><a class="text-link" href="#contact" data-i18n="heroBtn2">اطلب خدمة</a></div>
-<p class="hero-location"><span class="location-dot" aria-hidden="true"></span><span data-i18n="locationText">غازي عنتاب، تركيا · بموعد مسبق</span></p>
-</div><div class="hero-art" aria-hidden="true"><div class="art-frame art-frame-back"></div><div class="art-frame art-frame-front"><span class="art-monogram">H<span>.</span>P</span><span class="art-caption">PHOTOGRAPHY / 2026</span></div><span class="art-side-note">LIGHT · DETAIL · MOMENT</span></div></section>
+<section class="gallery-experience" id="gallery" data-immersive-gallery aria-label="المعرض الافتراضي ثلاثي الأبعاد">
+  <canvas class="gallery-canvas" aria-label="مشهد ثلاثي الأبعاد للمعرض. استخدم مفاتيح W A S D للحركة واسحب لتغيير اتجاه النظر."></canvas>
+  <div class="gallery-vignette" aria-hidden="true"></div>
+  <div class="gallery-headline">
+    <p class="gallery-kicker">HAMDI PHOTOGRAPHY · GAZİANTEP</p>
+    <h1>ادخل إلى عالم<br><em>الصورة والضوء.</em></h1>
+    <p>تجوّل بحرية بين القاعات، اقترب من الإطارات، واكتشف خدمات التصوير من منظور مختلف.</p>
+  </div>
+  <nav class="gallery-room-nav" aria-label="قاعات المعرض">
+    <button type="button" data-room="0"><b>٠١</b><span>قاعة التخرج</span></button>
+    <button type="button" data-room="1"><b>٠٢</b><span>قاعة البورتريه</span></button>
+    <button type="button" data-room="2"><b>٠٣</b><span>قاعة تعديل الألوان</span></button>
+    <button type="button" data-room="3"><b>٠٤</b><span>قاعة صور الوثائق</span></button>
+  </nav>
+  <p class="gallery-status" data-gallery-status aria-live="polite">القاعة الرئيسية</p>
+  <div class="gallery-controls">
+    <div class="gallery-instructions"><strong>تجوّل بحرية داخل المعرض</strong>اسحب لتغيير اتجاه النظر · استخدم W A S D أو الأسهم للحركة · على الهاتف اسحب للمشاهدة واختر القاعة من القائمة</div>
+    <button class="gallery-action" type="button" data-gallery-start>العودة إلى المدخل</button>
+  </div>
+  <div class="gallery-fallback" hidden><strong>المعرض بانتظارك</strong><span>تعذّر تشغيل العرض ثلاثي الأبعاد على هذا الجهاز. يمكنك متابعة استكشاف الخدمات أدناه.</span></div>
+</section>
 
 <section class="services-section section" id="services"><div class="section-heading"><div><p class="eyebrow" data-i18n="servEyebrow">الخدمات</p><h2 data-i18n="servTitle">أربع خدمات،<br><em>بلا تعقيد.</em></h2></div><p class="section-intro" data-i18n="servIntro">اختر الخدمة المناسبة، اقرأ تفاصيلها، ثم أرسل طلبك. لا توجد أسعار أو مواعيد مؤكدة قبل التواصل.</p></div>
 <div class="services-grid">
