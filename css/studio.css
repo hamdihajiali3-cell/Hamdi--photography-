@@ -90,3 +90,5 @@ footer{position:relative;text-align:center;color:#777;padding:25px;border-top:1p
 .layer-item.selected{border-color:#d7b57488;background:#d7b57412}
 .layer-item .layer-name{margin-inline-end:auto;text-align:right;background:transparent;border:0;padding:4px;color:#e9dfcc}
 .layer-item button:disabled{opacity:.3}
+
+#startFreeCrop{border-color:#d7b574;color:#f0d7a3}
