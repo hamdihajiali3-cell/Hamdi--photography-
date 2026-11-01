@@ -16,10 +16,10 @@
 <div class="layout">
 <section class="panel"><h2>١. الصورة</h2>
 <label class="drop" for="photo"><span id="placeholder"><b class="gold">اضغط لاختيار صورة</b><br><span class="muted">JPG أو PNG أو WEBP</span></span><input id="photo" type="file" accept="image/jpeg,image/png,image/webp"></label>
-<div class="actions"><button id="reset" type="button">إعادة ضبط</button><button id="rotate" type="button">تدوير 90°</button><button id="flip" type="button">عكس أفقي</button></div>
+<div class="actions tool-actions"><button id="undo" type="button">↶ تراجع</button><button id="redo" type="button">↷ إعادة</button><button id="reset" type="button">⟲ إعادة ضبط</button><button id="rotateLeft" type="button">↶ تدوير يسار</button><button id="rotate" type="button">↷ تدوير يمين</button><button id="flip" type="button">⇋ عكس أفقي</button><button id="flipVertical" type="button">⇅ عكس عمودي</button></div>
 <h2 class="section-heading">٢. ضبط الصورة</h2><div class="controls" id="controls"></div>
 <div class="control filter-control"><label for="filter">المظهر اللوني</label><select id="filter"><option value="none">طبيعي</option><option value="cinema">سينمائي دافئ</option><option value="moody">داكن درامي</option><option value="portrait">بورتريه ناعم</option><option value="bw">أبيض وأسود</option><option value="vintage">فيلم قديم</option></select></div>
-<div class="actions"><button class="primary" id="download" type="button">تنزيل JPG</button><button id="png" type="button">تنزيل PNG</button><button id="compare" type="button">عرض الأصل</button></div><div class="status" id="status" role="status">ارفع صورة للبدء.</div>
+<div class="actions export-actions"><button class="primary" id="download" type="button">⬇ تنزيل JPG</button><button id="png" type="button">⬇ تنزيل PNG</button><button id="compare" type="button">◉ عرض الأصل</button></div><div class="status" id="status" role="status">ارفع صورة للبدء.</div>
 </section>
 <section class="panel"><h2>معاينة التعديل</h2><div class="canvas-wrap"><canvas id="canvas"></canvas><span class="muted" id="empty">ستظهر الصورة هنا بعد رفعها</span></div>
 <p class="hint">جميع المعالجات تتم محليًا على جهازك. لا تُرفع صورك إلى خادم خارجي. هذه أدوات تعديل فوتوغرافي تقليدية وليست توليدًا أو إزالةً ذكية للعناصر.</p></section>
