@@ -3,6 +3,20 @@ import { translations } from "./translations.js";
 export function initContactForm() {
   const form = document.getElementById("directContactForm");
   if (!form) return;
+  const channelSelect = document.getElementById("contactChannel");
+  const emailField = document.getElementById("clientEmailField");
+  const emailInput = document.getElementById("clientEmail");
+  const syncEmailField = () => {
+    const needsEmail = channelSelect?.value === "email";
+    if (emailField) emailField.hidden = !needsEmail;
+    if (emailInput) {
+      emailInput.required = Boolean(needsEmail);
+      if (!needsEmail) emailInput.value = "";
+    }
+  };
+  channelSelect?.addEventListener("change", syncEmailField);
+  syncEmailField();
+
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     const value = (id) => document.getElementById(id)?.value?.trim() || "";
