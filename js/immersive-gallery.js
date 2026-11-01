@@ -53,9 +53,9 @@ function bootGallery(root) {
   // Interior partitions form four connected wings; openings preserve free movement.
   addBox(.24,5.2,10,-5,2.5,-8,wallMat);
   addBox(.24,5.2,10,5,2.5,-8,wallMat);
-  addBox(9,5.2,.24,0,2.5,-13,wallMat);
-  addBox(9,5.2,.24,-10,2.5,-3,wallMat);
-  addBox(9,5.2,.24,10,2.5,-3,wallMat);
+  // Cross-passages keep all four wings connected while preserving the room layout.
+  for (const [x,w] of [[-11.75,10.5],[-2.5,2],[2.5,2],[11.75,10.5]]) addBox(w,5.2,.24,x,2.5,-13,wallMat);
+  for (const [x,w] of [[-12.5,4],[-6.5,2],[6.5,2],[12.5,4]]) addBox(w,5.2,.24,x,2.5,-3,wallMat);
 
   // Gold architectural light lines.
   for (const x of [-16.7,16.7]) addBox(.035,.035,39,x,4.97,-9,trimMat);
@@ -156,9 +156,14 @@ function bootGallery(root) {
       const walls = [
         {minX:-5.16,maxX:-4.84,minZ:-13,maxZ:-3},
         {minX:4.84,maxX:5.16,minZ:-13,maxZ:-3},
-        {minX:-4.5,maxX:4.5,minZ:-13.16,maxZ:-12.84},
-        {minX:-14.5,maxX:-5.5,minZ:-3.16,maxZ:-2.84},
-        {minX:5.5,maxX:14.5,minZ:-3.16,maxZ:-2.84}
+        {minX:-17,maxX:-6.5,minZ:-13.16,maxZ:-12.84},
+        {minX:-3.5,maxX:-1.5,minZ:-13.16,maxZ:-12.84},
+        {minX:1.5,maxX:3.5,minZ:-13.16,maxZ:-12.84},
+        {minX:6.5,maxX:17,minZ:-13.16,maxZ:-12.84},
+        {minX:-14.5,maxX:-10.5,minZ:-3.16,maxZ:-2.84},
+        {minX:-7.5,maxX:-5.5,minZ:-3.16,maxZ:-2.84},
+        {minX:5.5,maxX:7.5,minZ:-3.16,maxZ:-2.84},
+        {minX:10.5,maxX:14.5,minZ:-3.16,maxZ:-2.84}
       ];
       const blocked = (x,z) => walls.some(w =>
         x > w.minX-.38 && x < w.maxX+.38 &&
