@@ -3,7 +3,11 @@
   const $ = (s) => document.querySelector(s);
   const fileInput=$('#photo'), canvas=$('#canvas'), ctx=canvas.getContext('2d',{willReadFrequently:true});
   const statusEl=$('#status'), installButton=$('#installApp');
-  let original=null, rotation=0, flipped=false, flippedV=false, showOriginal=false, installPrompt=null;\n  const history=[];let historyIndex=-1;\n  function snapshot(){if(!original)return;history.splice(historyIndex+1);history.push({rotation,flipped,flippedV,filter:$('#filter').value,values:{...values}});if(history.length>40)history.shift();historyIndex=history.length-1;updateHistoryButtons();}\n  function updateHistoryButtons(){$('#undo').disabled=historyIndex<=0;$('#redo').disabled=historyIndex>=history.length-1;}\n  function restore(s){rotation=s.rotation;flipped=s.flipped;flippedV=s.flippedV;$('#filter').value=s.filter;defs.forEach(([id])=>{values[id]=s.values[id];$('#'+id).value=values[id];$('#v-'+id).textContent=values[id];});render();updateHistoryButtons();}
+  let original=null, rotation=0, flipped=false, flippedV=false, showOriginal=false, installPrompt=null;
+  const history=[];let historyIndex=-1;
+  function snapshot(){if(!original)return;history.splice(historyIndex+1);history.push({rotation,flipped,flippedV,filter:$('#filter').value,values:{...values}});if(history.length>40)history.shift();historyIndex=history.length-1;updateHistoryButtons();}
+  function updateHistoryButtons(){$('#undo').disabled=historyIndex<=0;$('#redo').disabled=historyIndex>=history.length-1;}
+  function restore(s){rotation=s.rotation;flipped=s.flipped;flippedV=s.flippedV;$('#filter').value=s.filter;defs.forEach(([id])=>{values[id]=s.values[id];$('#'+id).value=values[id];$('#v-'+id).textContent=values[id];});render();updateHistoryButtons();}
   const defs=[['brightness','السطوع',-100,100,0,1],['contrast','التباين',-100,100,0,1],['saturation','التشبّع',-100,100,0,1],['warmth','دفء الألوان',-100,100,0,1],['exposure','التعريض',-2,2,0,.1],['sharpness','الحدة',0,100,0,1]];
   const values={};
   function setStatus(message){statusEl.textContent=message;}
@@ -16,7 +20,8 @@
       const output=document.createElement('output'); output.id='v-'+id; output.textContent=value;
       title.append(name,output);
       const input=document.createElement('input'); input.type='range'; input.id=id; input.min=min; input.max=max; input.step=step; input.value=value;
-      input.addEventListener('input',()=>{values[id]=Number(input.value);output.textContent=input.value;render();});\n      input.addEventListener('change',snapshot);
+      input.addEventListener('input',()=>{values[id]=Number(input.value);output.textContent=input.value;render();});
+      input.addEventListener('change',snapshot);
       box.append(title,input); root.append(box);
     });
   }
@@ -59,7 +64,11 @@
   $('#filter').addEventListener('change',()=>{render();snapshot();});
   $('#reset').addEventListener('click',()=>{if(!original)return;resetValues();rotation=0;flipped=false;flippedV=false;render();snapshot();setStatus('تمت إعادة الضبط');});
   $('#rotate').addEventListener('click',()=>{if(!original)return;rotation=(rotation+90)%360;render();snapshot();});
-  $('#flip').addEventListener('click',()=>{if(!original)return;flipped=!flipped;render();snapshot();});\n  $('#rotateLeft').addEventListener('click',()=>{if(!original)return;rotation=(rotation+270)%360;render();snapshot();});\n  $('#flipVertical').addEventListener('click',()=>{if(!original)return;flippedV=!flippedV;render();snapshot();});\n  $('#undo').addEventListener('click',()=>{if(historyIndex>0){historyIndex--;restore(history[historyIndex]);setStatus('تم التراجع عن آخر تعديل');}});\n  $('#redo').addEventListener('click',()=>{if(historyIndex<history.length-1){historyIndex++;restore(history[historyIndex]);setStatus('تمت إعادة التعديل');}});
+  $('#flip').addEventListener('click',()=>{if(!original)return;flipped=!flipped;render();snapshot();});
+  $('#rotateLeft').addEventListener('click',()=>{if(!original)return;rotation=(rotation+270)%360;render();snapshot();});
+  $('#flipVertical').addEventListener('click',()=>{if(!original)return;flippedV=!flippedV;render();snapshot();});
+  $('#undo').addEventListener('click',()=>{if(historyIndex>0){historyIndex--;restore(history[historyIndex]);setStatus('تم التراجع عن آخر تعديل');}});
+  $('#redo').addEventListener('click',()=>{if(historyIndex<history.length-1){historyIndex++;restore(history[historyIndex]);setStatus('تمت إعادة التعديل');}});
   $('#compare').addEventListener('click',()=>{if(!original)return;showOriginal=!showOriginal;$('#compare').textContent=showOriginal?'العودة للتعديل':'عرض الأصل';render();});
   function save(type){
     if(!original){setStatus('ارفع صورة أولاً');return;}
