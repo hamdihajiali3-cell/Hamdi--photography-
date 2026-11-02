@@ -34,7 +34,7 @@ function render(){if(!base||!outputCanvas)return;let d=base.getContext('2d',{wil
 for(let i=0;i<a.length;i+=4){let r=a[i],g=a[i+1],b=a[i+2],br=v[0]*2.25,wa=v[3];r=(r-128)*factor+128+br+wa*.62;g=(g-128)*factor+128+br+wa*.08;b=(b-128)*factor+128+br-wa*.62;let gray=.299*r+.587*g+.114*b;a[i]=clamp(gray+(r-gray)*sat);a[i+1]=clamp(gray+(g-gray)*sat);a[i+2]=clamp(gray+(b-gray)*sat);}
 outputCanvas.getContext('2d').putImageData(d,0,0);compareLine();}
 function clamp(n){return Math.max(0,Math.min(255,Math.round(n)));}
-function compareLine(){let p=Number(range.value),clip=lang==='ar'?'inset(0 0 0 '+(100-p)+'%)':'inset(0 '+(100-p)+'% 0 0)';originalCanvas.style.clipPath=clip;$('.lab-divider',root).style.left=p+'%';}
+function compareLine(){let p=Number(range.value),clip=lang==='ar'?'inset(0 '+(100-p)+'% 0 0)':'inset(0 0 0 '+(100-p)+'%)';originalCanvas.style.clipPath=clip;$('.lab-divider',root).style.left=p+'%';}
 function analyze(){if(!base)return;let w=base.width,h=base.height,d=base.getContext('2d',{willReadFrequently:true}).getImageData(0,0,w,h).data,step=Math.max(1,Math.floor(Math.sqrt(w*h/10000))),r=0,g=0,b=0,l=0,l2=0,n=0,bins=new Map();
 for(let y=0;y<h;y+=step)for(let x=0;x<w;x+=step){let i=(y*w+x)*4,R=d[i],G=d[i+1],B=d[i+2],L=.2126*R+.7152*G+.0722*B;r+=R;g+=G;b+=B;l+=L;l2+=L*L;n++;let key=[R,G,B].map(q=>Math.min(255,Math.round(q/32)*32)).join(',');bins.set(key,(bins.get(key)||0)+1);}
 dna.replaceChildren();[...bins.entries()].sort((a,b)=>b[1]-a[1]).slice(0,4).forEach(([key])=>{let el=document.createElement('div');el.className='lab-swatch';el.style.background='rgb('+key+')';let s=document.createElement('span');s.textContent=key.split(',').map(q=>Number(q).toString(16).padStart(2,'0')).join('').toUpperCase();el.append(s);dna.append(el);});
