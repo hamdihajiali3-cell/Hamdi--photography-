@@ -236,3 +236,41 @@ bookingForm?.addEventListener("submit", (event) => {
 const savedLanguage = localStorage.getItem("hamdi-language");
 if (savedLanguage && translations[savedLanguage]) setLanguage(savedLanguage);
 
+const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+const heroArt = document.querySelector(".hero-art");
+
+if (heroArt && !reducedMotion.matches) {
+  heroArt.addEventListener("pointermove", (event) => {
+    if (event.pointerType === "touch") return;
+    const bounds = heroArt.getBoundingClientRect();
+    const x = (event.clientX - bounds.left) / bounds.width;
+    const y = (event.clientY - bounds.top) / bounds.height;
+    heroArt.style.setProperty("--pointer-x", `${Math.round(x * 100)}%`);
+    heroArt.style.setProperty("--pointer-y", `${Math.round(y * 100)}%`);
+    heroArt.style.setProperty("--turn-x", `${((0.5 - y) * 7).toFixed(2)}deg`);
+    heroArt.style.setProperty("--turn-y", `${((x - 0.5) * 10).toFixed(2)}deg`);
+  });
+
+  heroArt.addEventListener("pointerleave", () => {
+    heroArt.style.setProperty("--pointer-x", "50%");
+    heroArt.style.setProperty("--pointer-y", "47%");
+    heroArt.style.setProperty("--turn-x", "0deg");
+    heroArt.style.setProperty("--turn-y", "0deg");
+  });
+
+  document.querySelectorAll(".service-card").forEach((card) => {
+    card.addEventListener("pointermove", (event) => {
+      if (event.pointerType === "touch") return;
+      const bounds = card.getBoundingClientRect();
+      const x = (event.clientX - bounds.left) / bounds.width;
+      const y = (event.clientY - bounds.top) / bounds.height;
+      card.style.setProperty("--card-x", `${((x - 0.5) * 4).toFixed(2)}deg`);
+      card.style.setProperty("--card-y", `${((0.5 - y) * 3).toFixed(2)}deg`);
+    });
+    card.addEventListener("pointerleave", () => {
+      card.style.setProperty("--card-x", "0deg");
+      card.style.setProperty("--card-y", "0deg");
+    });
+  });
+}
+
