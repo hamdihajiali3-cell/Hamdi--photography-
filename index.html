@@ -3,198 +3,85 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta
-      name="description"
-      content="Hamdi Photography — photo color correction, graduation photography, barber and haircut photography, and passport or ID photos."
-    />
-    <title>Hamdi Photography</title>
-    <link rel="stylesheet" href="style.css?v=spectral-20261102" />
-    <link rel="stylesheet" href="spectral.css?v=spectral-20261102" />
+    <meta name="theme-color" content="#070914" />
+    <meta name="description" content="Hamdi Photography — أربع خدمات تصوير واضحة، مع طلب موعد عبر Gmail أو واتساب." />
+    <title>Hamdi Photography | طيف الضوء</title>
+    <link rel="stylesheet" href="style.css?v=full-20261102" />
   </head>
   <body>
-    <a class="skip-link" href="#main" data-i18n="skip">تخطَّ إلى المحتوى</a>
+    <div class="light-field" aria-hidden="true"><i class="field-orb orb-one"></i><i class="field-orb orb-two"></i><i class="field-orb orb-three"></i><i class="field-grid"></i></div>
+    <div class="noise-layer" aria-hidden="true"></div>
+    <a class="skip-link" href="#content" data-i18n="skip">انتقل إلى المحتوى</a>
 
     <header class="site-header">
       <a class="brand" href="#top" aria-label="Hamdi Photography">
-        <span class="brand-mark" aria-hidden="true">H.</span>
-        <span class="brand-name">Hamdi<br />Photography</span>
+        <span class="brand-sigil" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="brand-copy"><b>HAMDI</b><small>PHOTOGRAPHY</small></span>
       </a>
-
-      <nav class="primary-nav" aria-label="التنقل الرئيسي" data-i18n-aria="navigation">
-        <a href="#services" data-i18n="navServices">الخدمات</a>
-        <a href="#process" data-i18n="navProcess">كيف نعمل</a>
-        <a href="#contact" data-i18n="navContact">تواصل</a>
-      </nav>
-
-      <div class="language-switch" role="group" aria-label="Language">
-        <button class="language-button is-active" type="button" data-language="ar" aria-pressed="true">AR</button>
-        <button class="language-button" type="button" data-language="tr" aria-pressed="false">TR</button>
+      <nav class="primary-nav" aria-label="التنقل الرئيسي" data-i18n-aria="navigation"><a href="#services" data-i18n="navServices">الخدمات</a><a href="#method" data-i18n="navMethod">المسار</a><a href="#contact" data-i18n="navContact">اطلب موعدًا</a></nav>
+      <div class="header-tools">
+        <div class="language-switch" role="group" aria-label="اللغة" data-i18n-aria="languageSwitcher"><button class="language-button is-active" type="button" data-language="ar" aria-pressed="true">ع</button><button class="language-button" type="button" data-language="tr" aria-pressed="false">TR</button></div>
+        <button class="motion-button" type="button" data-motion-toggle aria-pressed="true"><span aria-hidden="true">◌</span><span data-i18n="motionOn">الحركة: تعمل</span></button>
       </div>
     </header>
 
-    <main id="main">
-      <section class="hero section-shell" id="top" aria-labelledby="hero-heading">
+    <main id="content">
+      <section class="hero page-shell" id="top" aria-labelledby="hero-title">
         <div class="hero-copy">
-          <p class="eyebrow" data-i18n="heroEyebrow">خدمات تصوير مركّزة · بموعد مسبق</p>
-          <h1 id="hero-heading" data-i18n="heroTitle">صورتك، كما تحتاجها تمامًا.</h1>
-          <p class="hero-lede" data-i18n="heroDescription">
-            أربع خدمات واضحة، من جلسة التخرّج إلى صورة الهوية. نبدأ بفهم ما تحتاجه، ثم ننسّق الوقت والتفاصيل معك.
-          </p>
-          <div class="hero-actions">
-            <a class="button button-primary" href="#contact" data-i18n="heroPrimary">اطلب موعدًا</a>
-            <a class="button button-secondary" href="#services" data-i18n="heroSecondary">استعرض الخدمات</a>
-          </div>
-          <p class="hero-note" data-i18n="heroNote">بدون قوائم أسعار ثابتة — تواصل لشرح احتياجك.</p>
+          <p class="eyebrow"><span data-i18n="heroEyebrow">HAMDI PHOTOGRAPHY / 01</span><i aria-hidden="true"></i></p>
+          <h1 id="hero-title" data-i18n-html="heroTitle">الضوء لا يلتقط<br /><em>لحظة فقط.</em></h1>
+          <p class="hero-lede" data-i18n="heroDescription">أربع خدمات واضحة، تُقدَّم كمساحات ضوء ووقت وتفصيل—من دون صور مُختلقة أو وعود زائدة.</p>
+          <div class="hero-actions"><a class="button button-primary" href="#contact" data-i18n="heroPrimary">ابدأ طلبًا</a><a class="button button-quiet" href="#services" data-i18n="heroSecondary">استكشف الخدمات <span aria-hidden="true">↓</span></a></div>
+          <div class="hero-footnotes"><span data-i18n="heroNoteOne">أربع خدمات محدّدة</span><span data-i18n="heroNoteTwo">العربية / Türkçe</span></div>
         </div>
 
-        <div class="hero-art" aria-hidden="true">
-          <div class="art-utility-tag">HP / 01</div>
-          <div class="art-card art-card-main">
-            <span class="art-card-label" data-i18n="artLabel">خدمة قريبة، صورة واضحة</span>
-            <span class="art-card-line"></span>
-            <span class="art-card-caption" data-i18n="artCaption">للأشخاص، اللحظات، والتفاصيل.</span>
-          </div>
-          <div class="art-card art-card-small"><span>H</span></div>
-          <div class="art-ring ring-one"></div>
-          <div class="art-ring ring-two"></div>
-          <div class="art-dots"></div>
-          <p class="art-coordinate">36° 53′ · STUDIO / LOCAL</p>
+        <div class="light-chamber" aria-hidden="true">
+          <div class="chamber-corner corner-a"></div><div class="chamber-corner corner-b"></div><div class="chamber-corner corner-c"></div><div class="chamber-corner corner-d"></div>
+          <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="orbit orbit-three"></div>
+          <div class="aperture"><i></i><i></i><i></i><i></i><b></b></div>
+          <div class="chamber-label label-top">LIGHT / FIELD</div><div class="chamber-label label-bottom">H / P — 2026</div>
+          <div class="chamber-readout"><span>01</span><i></i><span>04</span></div>
         </div>
       </section>
 
-      <section class="intro-band" aria-label="نبذة" data-i18n-aria="aboutLabel">
-        <p data-i18n="introBand">
-          لا صور معروضة للزينة؛ كل خدمة هنا تبدأ من احتياجك الفعلي وتنتهي بخطوة تواصل واضحة.
-        </p>
+      <section class="manifest page-shell" aria-label="عن التجربة" data-i18n-aria="aboutLabel">
+        <p class="manifest-index">/ 02</p>
+        <p class="manifest-copy" data-i18n="manifestText">ليس معرضًا مليئًا بصور لا تخصك. هذا مكان تبدأ منه بالخدمة التي تحتاجها، ثم تفتح طلبًا واضحًا للتنسيق.</p>
+        <a class="manifest-link" href="#contact"><span data-i18n="manifestAction">افتح مساحة الطلب</span><i aria-hidden="true">↘</i></a>
       </section>
 
-      <section class="services section-shell" id="services" aria-labelledby="services-heading">
-        <div class="section-heading">
-          <p class="eyebrow" data-i18n="servicesEyebrow">01 / الخدمات</p>
-          <h2 id="services-heading" data-i18n="servicesTitle">اختر الخدمة التي تناسبك.</h2>
-          <p data-i18n="servicesDescription">أربع خدمات فقط، مرتّبة لتصل إلى ما تبحث عنه بسرعة.</p>
-        </div>
+      <section class="services page-shell" id="services" aria-labelledby="services-title">
+        <div class="section-heading"><p class="eyebrow"><span data-i18n="servicesEyebrow">الخدمات / 04 فصول</span><i aria-hidden="true"></i></p><h2 id="services-title" data-i18n-html="servicesTitle">كل خدمة لها<br /><em>مجالها الضوئي.</em></h2><p data-i18n="servicesDescription">اختر الفصل الأقرب لما تحتاجه، وستنتقل الخدمة مباشرة إلى نموذج الطلب.</p></div>
 
-        <div class="service-grid">
-          <article class="service-card service-card-featured">
-            <div class="service-card-top">
-              <span class="service-index">01</span>
-              <span class="service-icon icon-swatch" aria-hidden="true"></span>
-            </div>
-            <h3 data-i18n="serviceColorTitle">تعديل ألوان الصور</h3>
-            <p data-i18n="serviceColorText">تصحيح الإضاءة والألوان للصور الرقمية بطريقة تخدم النتيجة التي تريدها.</p>
-            <a href="#contact" class="text-link" data-service="color" data-i18n="serviceAction">اسأل عن هذه الخدمة <span aria-hidden="true">↗</span></a>
-          </article>
-
-          <article class="service-card">
-            <div class="service-card-top">
-              <span class="service-index">02</span>
-              <span class="service-icon icon-cap" aria-hidden="true"></span>
-            </div>
-            <h3 data-i18n="serviceGraduationTitle">تصوير التخرّج</h3>
-            <p data-i18n="serviceGraduationText">جلسة تركز على الشخص واللحظة وتفاصيل المناسبة التي تهمك.</p>
-            <a href="#contact" class="text-link" data-service="graduation" data-i18n="serviceAction">اسأل عن هذه الخدمة <span aria-hidden="true">↗</span></a>
-          </article>
-
-          <article class="service-card">
-            <div class="service-card-top">
-              <span class="service-index">03</span>
-              <span class="service-icon icon-comb" aria-hidden="true"></span>
-            </div>
-            <h3 data-i18n="serviceHairTitle">تصوير الحلاقة وقصّات الشعر</h3>
-            <p data-i18n="serviceHairText">توثيق القصّات والتفاصيل لمظهر الحلاق أو الصالون.</p>
-            <a href="#contact" class="text-link" data-service="hair" data-i18n="serviceAction">اسأل عن هذه الخدمة <span aria-hidden="true">↗</span></a>
-          </article>
-
-          <article class="service-card">
-            <div class="service-card-top">
-              <span class="service-index">04</span>
-              <span class="service-icon icon-id" aria-hidden="true"></span>
-            </div>
-            <h3 data-i18n="serviceIdTitle">صور الجواز والهويات</h3>
-            <p data-i18n="serviceIdText">صور مرتبة وواضحة لطلبات الجواز والهوية.</p>
-            <a href="#contact" class="text-link" data-service="id" data-i18n="serviceAction">اسأل عن هذه الخدمة <span aria-hidden="true">↗</span></a>
-          </article>
+        <div class="service-list">
+          <article class="service-scene scene-color"><div class="scene-number">01</div><div class="scene-object color-object" aria-hidden="true"><i></i><i></i><i></i></div><div class="scene-copy"><p class="scene-kicker" data-i18n="colorKicker">اللون / التوازن</p><h3 data-i18n="serviceColorTitle">تعديل ألوان الصور</h3><p data-i18n="serviceColorText">تعديل الإضاءة والألوان للصور الرقمية بحسب الإحساس والنتيجة التي تريدها.</p><button class="scene-action" type="button" data-booking-service="color"><span data-i18n="selectService">اختر هذه الخدمة</span><i aria-hidden="true">↗</i></button></div></article>
+          <article class="service-scene scene-graduation"><div class="scene-number">02</div><div class="scene-object graduation-object" aria-hidden="true"><i></i><i></i><i></i></div><div class="scene-copy"><p class="scene-kicker" data-i18n="graduationKicker">اللحظة / الأثر</p><h3 data-i18n="serviceGraduationTitle">تصوير التخرّج</h3><p data-i18n="serviceGraduationText">جلسة تُبقي الشخص واللحظة وتفاصيل المناسبة في مركز المشهد.</p><button class="scene-action" type="button" data-booking-service="graduation"><span data-i18n="selectService">اختر هذه الخدمة</span><i aria-hidden="true">↗</i></button></div></article>
+          <article class="service-scene scene-hair"><div class="scene-number">03</div><div class="scene-object hair-object" aria-hidden="true"><i></i><i></i><i></i></div><div class="scene-copy"><p class="scene-kicker" data-i18n="hairKicker">الخط / الملمس</p><h3 data-i18n="serviceHairTitle">تصوير الحلاقة وقصّات الشعر</h3><p data-i18n="serviceHairText">توثيق القصّة والحركة والملمس داخل الصالون أو عند الحلاق.</p><button class="scene-action" type="button" data-booking-service="hair"><span data-i18n="selectService">اختر هذه الخدمة</span><i aria-hidden="true">↗</i></button></div></article>
+          <article class="service-scene scene-id"><div class="scene-number">04</div><div class="scene-object id-object" aria-hidden="true"><i></i><i></i><i></i></div><div class="scene-copy"><p class="scene-kicker" data-i18n="idKicker">الوضوح / الوثيقة</p><h3 data-i18n="serviceIdTitle">صور الجواز والهويات</h3><p data-i18n="serviceIdText">صور شخصية مرتبة وواضحة لمعاملات الجواز والهوية.</p><button class="scene-action" type="button" data-booking-service="id"><span data-i18n="selectService">اختر هذه الخدمة</span><i aria-hidden="true">↗</i></button></div></article>
         </div>
       </section>
 
-      <section class="process section-shell" id="process" aria-labelledby="process-heading">
-        <div class="section-heading section-heading-compact">
-          <p class="eyebrow" data-i18n="processEyebrow">02 / الخطوات</p>
-          <h2 id="process-heading" data-i18n="processTitle">بداية بسيطة، من دون تعقيد.</h2>
-        </div>
-
-        <ol class="process-list">
-          <li>
-            <span class="process-number">01</span>
-            <div>
-              <h3 data-i18n="processOneTitle">اختر الخدمة</h3>
-              <p data-i18n="processOneText">ابدأ بالخدمة الأقرب لما تحتاجه الآن.</p>
-            </div>
-          </li>
-          <li>
-            <span class="process-number">02</span>
-            <div>
-              <h3 data-i18n="processTwoTitle">اشرح التفاصيل</h3>
-              <p data-i18n="processTwoText">تواصل واشرح الغرض، الوقت المناسب، وأي تفاصيل مهمة.</p>
-            </div>
-          </li>
-          <li>
-            <span class="process-number">03</span>
-            <div>
-              <h3 data-i18n="processThreeTitle">نسّق الموعد</h3>
-              <p data-i18n="processThreeText">يُحدَّد الموعد والخطوة التالية بحسب طلبك.</p>
-            </div>
-          </li>
-        </ol>
+      <section class="method page-shell" id="method" aria-labelledby="method-title">
+        <div class="section-heading method-heading"><p class="eyebrow"><span data-i18n="methodEyebrow">المسار / 03 خطوات</span><i aria-hidden="true"></i></p><h2 id="method-title" data-i18n-html="methodTitle">من الإشارة<br /><em>إلى الموعد.</em></h2></div>
+        <ol class="method-list"><li><span>01</span><div><h3 data-i18n="stepOneTitle">اختر الخدمة</h3><p data-i18n="stepOneText">ابدأ بالفصل الذي يطابق احتياجك.</p></div></li><li><span>02</span><div><h3 data-i18n="stepTwoTitle">اكتب التفاصيل</h3><p data-i18n="stepTwoText">اكتب الاسم والتفصيل الذي يساعد على فهم الطلب.</p></div></li><li><span>03</span><div><h3 data-i18n="stepThreeTitle">أرسل الطلب</h3><p data-i18n="stepThreeText">افتح الرسالة الجاهزة في Gmail أو واتساب وأرسلها بنفسك.</p></div></li></ol>
       </section>
 
-      <section class="contact section-shell" id="contact" aria-labelledby="contact-heading">
-        <div class="contact-panel">
-          <div class="contact-copy">
-            <p class="eyebrow eyebrow-light" data-i18n="contactEyebrow">03 / تواصل</p>
-            <h2 id="contact-heading" data-i18n="contactTitle">لننسّق ما تحتاجه.</h2>
-            <p data-i18n="contactDescription">اختر الخدمة واكتب التفاصيل، ثم أرسل الطلب برسالة جاهزة.</p>
-            <a class="phone-link" href="tel:05377423671" aria-label="اتصل على 0537 742 36 71">
-              <span data-i18n="phoneLabel">اتصال مباشر</span>
-              <strong dir="ltr">0537 742 36 71</strong>
-            </a>
-            <p class="contact-small" data-i18n="contactSmall">التفاصيل والسعر تُناقش بحسب الطلب.</p>
-          </div>
+      <section class="contact page-shell" id="contact" aria-labelledby="contact-title">
+        <div class="contact-intro"><p class="eyebrow"><span data-i18n="contactEyebrow">طلب موعد / الصفحة الأخيرة</span><i aria-hidden="true"></i></p><h2 id="contact-title" data-i18n-html="contactTitle">اكتب الضوء<br /><em>الذي تحتاجه.</em></h2><p data-i18n="contactDescription">اختر خدمة واحدة، اكتب التفاصيل، ثم افتح رسالة جاهزة إلى Gmail أو واتساب.</p><div class="contact-links"><a class="contact-link contact-link-email" href="mailto:hamdihajiali76@gmail.com"><span data-i18n="gmailLabel">Gmail</span><strong dir="ltr">hamdihajiali76@gmail.com</strong><i aria-hidden="true">↗</i></a><a class="contact-link contact-link-phone" href="tel:05377423671"><span data-i18n="phoneLabel">اتصال مباشر</span><strong dir="ltr">0537 742 36 71</strong><i aria-hidden="true">↗</i></a></div></div>
 
-          <form id="booking-form" class="booking-form" aria-describedby="booking-destination booking-status">
-            <div class="booking-heading">
-              <p class="eyebrow eyebrow-booking" data-i18n="bookingEyebrow">طلب موعد</p>
-              <h3 data-i18n="bookingTitle">اكتب طلبك ثم اختر وسيلة الإرسال.</h3>
-              <p id="booking-destination" class="booking-destination"><span data-i18n="bookingDestinationLabel">رسالة البريد تصل إلى</span> <strong dir="ltr">hamdihajiali76@gmail.com</strong></p>
-            </div>
-
-            <label class="booking-field booking-field-wide" for="booking-service"><span data-i18n="bookingServiceLabel">نوع الجلسة / الخدمة</span><select id="booking-service" name="service" required><option value="" selected disabled data-i18n="bookingServicePlaceholder">اختر خدمة</option><option value="color" data-i18n="serviceColorTitle">تعديل ألوان الصور</option><option value="graduation" data-i18n="serviceGraduationTitle">تصوير التخرّج</option><option value="hair" data-i18n="serviceHairTitle">تصوير الحلاقة وقصّات الشعر</option><option value="id" data-i18n="serviceIdTitle">صور الجواز والهويات</option></select></label>
-            <div class="booking-fields">
-              <label class="booking-field" for="booking-name"><span data-i18n="bookingNameLabel">الاسم</span><input id="booking-name" name="name" type="text" autocomplete="name" required data-i18n-placeholder="bookingNamePlaceholder" placeholder="اكتب اسمك" /></label>
-              <label class="booking-field" for="booking-phone"><span data-i18n="bookingPhoneLabel">رقم الهاتف (اختياري)</span><input id="booking-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" data-i18n-placeholder="bookingPhonePlaceholder" placeholder="مثال: 05…" /></label>
-            </div>
-            <label class="booking-field booking-field-wide" for="booking-details"><span data-i18n="bookingDetailsLabel">تفاصيل الطلب (اختياري)</span><textarea id="booking-details" name="details" rows="3" data-i18n-placeholder="bookingDetailsPlaceholder" placeholder="اكتب أي تفاصيل مهمة للموعد"></textarea></label>
-            <div class="booking-actions" role="group" aria-label="قناة إرسال الطلب" data-i18n-aria="bookingChannelLabel">
-              <button class="booking-send booking-send-email" type="submit" data-booking-channel="email"><span data-i18n="bookingEmail">إرسال عبر البريد</span><i aria-hidden="true">↗</i></button>
-              <button class="booking-send booking-send-whatsapp" type="submit" data-booking-channel="whatsapp"><span data-i18n="bookingWhatsapp">إرسال عبر واتساب</span><i aria-hidden="true">↗</i></button>
-            </div>
-            <p id="booking-status" class="booking-status" role="status" aria-live="polite"></p>
-          </form>
-        </div>
+        <form id="booking-form" class="booking-form" aria-describedby="booking-note booking-status">
+          <div class="booking-heading"><p class="booking-index">/ REQUEST</p><h3 data-i18n="bookingTitle">افتح رسالة الطلب.</h3><p id="booking-note" data-i18n="bookingText">لن يُرسل شيء تلقائيًا؛ ستراجع الرسالة ثم ترسلها بنفسك.</p></div>
+          <label class="booking-field booking-field-wide" for="booking-service"><span data-i18n="bookingServiceLabel">نوع الجلسة / الخدمة</span><select id="booking-service" name="service" required><option value="" selected disabled data-i18n="bookingServicePlaceholder">اختر خدمة</option><option value="color" data-i18n="serviceColorTitle">تعديل ألوان الصور</option><option value="graduation" data-i18n="serviceGraduationTitle">تصوير التخرّج</option><option value="hair" data-i18n="serviceHairTitle">تصوير الحلاقة وقصّات الشعر</option><option value="id" data-i18n="serviceIdTitle">صور الجواز والهويات</option></select></label>
+          <div class="booking-fields"><label class="booking-field" for="booking-name"><span data-i18n="bookingNameLabel">الاسم</span><input id="booking-name" name="name" type="text" autocomplete="name" required data-i18n-placeholder="bookingNamePlaceholder" placeholder="اكتب اسمك" /></label><label class="booking-field" for="booking-phone"><span data-i18n="bookingPhoneLabel">رقم الهاتف (اختياري)</span><input id="booking-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" data-i18n-placeholder="bookingPhonePlaceholder" placeholder="مثال: 05…" /></label></div>
+          <label class="booking-field booking-field-wide" for="booking-details"><span data-i18n="bookingDetailsLabel">تفاصيل الطلب (اختياري)</span><textarea id="booking-details" name="details" rows="4" data-i18n-placeholder="bookingDetailsPlaceholder" placeholder="اكتب أي تفاصيل مهمة للموعد"></textarea></label>
+          <div class="booking-actions" role="group" aria-label="قناة إرسال الطلب" data-i18n-aria="bookingChannelLabel"><button class="booking-send booking-send-email" type="submit" data-booking-channel="email"><span data-i18n="bookingEmail">إرسال عبر Gmail</span><i aria-hidden="true">↗</i></button><button class="booking-send booking-send-whatsapp" type="submit" data-booking-channel="whatsapp"><span data-i18n="bookingWhatsapp">إرسال عبر واتساب</span><i aria-hidden="true">↗</i></button></div>
+          <p id="booking-status" class="booking-status" role="status" aria-live="polite"></p>
+        </form>
       </section>
     </main>
 
-    <footer class="site-footer">
-      <a class="brand footer-brand" href="#top" aria-label="Hamdi Photography">
-        <span class="brand-mark" aria-hidden="true">H.</span>
-        <span class="brand-name">Hamdi<br />Photography</span>
-      </a>
-      <p data-i18n="footer">© Hamdi Photography. جميع الحقوق محفوظة.</p>
-      <a href="#top" class="back-to-top" data-i18n="backTop">العودة للأعلى ↑</a>
-    </footer>
-
-    <script src="script.js?v=spectral-20261102"></script>
+    <footer class="site-footer page-shell"><a class="brand" href="#top" aria-label="Hamdi Photography"><span class="brand-sigil" aria-hidden="true"><i></i><i></i><i></i></span><span class="brand-copy"><b>HAMDI</b><small>PHOTOGRAPHY</small></span></a><p data-i18n="footer">© Hamdi Photography. جميع الحقوق محفوظة.</p><a href="#top" class="back-top" data-i18n="backTop">العودة للأعلى ↑</a></footer>
+    <script src="script.js?v=full-20261102"></script>
   </body>
 </html>
 
