@@ -13,7 +13,7 @@ function translate(){lang=document.documentElement.lang==='tr'?'tr':'ar';root.qu
 new MutationObserver(translate).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
 function fail(k){error.textContent=t()[k];error.hidden=false;}
 function canvas(w,h){let c=document.createElement('canvas');c.width=w;c.height=h;return c;}
-function setTools(on){root.querySelectorAll('[data-requires-image]').forEach(e=>e.disabled=!on);}
+function setTools(on){root.querySelectorAll('[data-requires-image], [data-lab-filter]').forEach(e=>e.disabled=!on);}
 function load(f){
  error.hidden=true;if(!f)return;
  if(!['image/jpeg','image/png','image/webp'].includes(f.type)){fail('badType');return;}
