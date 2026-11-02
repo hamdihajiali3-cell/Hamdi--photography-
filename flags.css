@@ -5,7 +5,9 @@
 .flag-syria { background: linear-gradient(#007a3d 0 33.33%,#fff 33.33% 66.66%,#111 66.66%); }
 .flag-syria i { color: #cf2639; font-size: .48rem; letter-spacing: .06rem; }
 .flag-turkey { background: #e30a17; }
-.flag-turkey i { color: #fff; font-size: 1rem; letter-spacing: -.17rem; transform: translateX(-.08rem); }
+.flag-turkey::before { position: absolute; top: .31rem; left: .34rem; width: .82rem; height: .82rem; border-radius: 50%; background: #fff; content: ""; }
+.flag-turkey::after { position: absolute; top: .24rem; left: .55rem; width: .82rem; height: .82rem; border-radius: 50%; background: #e30a17; content: ""; }
+.flag-turkey i { z-index: 1; top: .21rem; left: 1.32rem; right: auto; bottom: auto; display: block; color: #fff; font-size: .78rem; line-height: 1; }
 header { padding-right: clamp(5.25rem,7vw,7.5rem); }
 @media (max-width:650px) { .country-flags { top: .65rem; right: .65rem; transform: scale(.84); transform-origin: top right; } header { padding-right: 4.6rem; } }
 
