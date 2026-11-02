@@ -37,9 +37,31 @@ const translations = {
     processThreeText: "يُحدَّد الموعد والخطوة التالية بحسب طلبك.",
     contactEyebrow: "03 / تواصل",
     contactTitle: "لننسّق ما تحتاجه.",
-    contactDescription: "اتصل واشرح الخدمة والوقت المناسب لك، ثم تُرتّب التفاصيل قبل الموعد.",
+    contactDescription: "اختر الخدمة واكتب التفاصيل، ثم أرسل الطلب برسالة جاهزة.",
     phoneLabel: "اتصال مباشر",
     contactSmall: "التفاصيل والسعر تُناقش بحسب الطلب.",
+    bookingEyebrow: "طلب موعد",
+    bookingTitle: "اكتب طلبك ثم اختر وسيلة الإرسال.",
+    bookingDestinationLabel: "رسالة البريد تصل إلى",
+    bookingServiceLabel: "نوع الجلسة / الخدمة",
+    bookingServicePlaceholder: "اختر خدمة",
+    bookingNameLabel: "الاسم",
+    bookingNamePlaceholder: "اكتب اسمك",
+    bookingPhoneLabel: "رقم الهاتف (اختياري)",
+    bookingPhonePlaceholder: "مثال: 05…",
+    bookingDetailsLabel: "تفاصيل الطلب (اختياري)",
+    bookingDetailsPlaceholder: "اكتب أي تفاصيل مهمة للموعد",
+    bookingChannelLabel: "قناة إرسال الطلب",
+    bookingEmail: "إرسال عبر البريد",
+    bookingWhatsapp: "إرسال عبر واتساب",
+    bookingStatusEmail: "فُتحت رسالة البريد. راجعها ثم أرسلها.",
+    bookingStatusWhatsapp: "فُتحت واتساب برسالة الطلب. راجعها ثم أرسلها.",
+    bookingMessageTitle: "طلب موعد جديد — Hamdi Photography",
+    bookingMessageService: "الخدمة",
+    bookingMessageName: "الاسم",
+    bookingMessagePhone: "الهاتف",
+    bookingMessageDetails: "التفاصيل",
+    bookingEmailSubject: "طلب موعد",
     footer: "© Hamdi Photography. جميع الحقوق محفوظة.",
     backTop: "العودة للأعلى ↑"
   },
@@ -81,9 +103,31 @@ const translations = {
     processThreeText: "Randevu ve sonraki adım talebine göre belirlenir.",
     contactEyebrow: "03 / İLETİŞİM",
     contactTitle: "İhtiyacını birlikte planlayalım.",
-    contactDescription: "Hizmeti ve sana uygun zamanı anlat; ayrıntılar randevudan önce planlansın.",
+    contactDescription: "Hizmeti seç, ayrıntıları yaz; ardından talebini hazır bir mesajla gönder.",
     phoneLabel: "Doğrudan ara",
     contactSmall: "Ayrıntılar ve ücret, talebe göre görüşülür.",
+    bookingEyebrow: "RANDEVU TALEBİ",
+    bookingTitle: "Talebini yaz, sonra gönderim yolunu seç.",
+    bookingDestinationLabel: "E-posta mesajı şuraya ulaşır:",
+    bookingServiceLabel: "Seans / hizmet türü",
+    bookingServicePlaceholder: "Bir hizmet seç",
+    bookingNameLabel: "Adın",
+    bookingNamePlaceholder: "Adını yaz",
+    bookingPhoneLabel: "Telefon numarası (isteğe bağlı)",
+    bookingPhonePlaceholder: "Örnek: 05…",
+    bookingDetailsLabel: "Talep ayrıntıları (isteğe bağlı)",
+    bookingDetailsPlaceholder: "Randevu için önemli ayrıntıları yaz",
+    bookingChannelLabel: "Talebi gönderme kanalı",
+    bookingEmail: "E-posta ile gönder",
+    bookingWhatsapp: "WhatsApp ile gönder",
+    bookingStatusEmail: "E-posta mesajı açıldı. Gözden geçirip gönder.",
+    bookingStatusWhatsapp: "WhatsApp’ta talep mesajı açıldı. Gözden geçirip gönder.",
+    bookingMessageTitle: "Yeni randevu talebi — Hamdi Photography",
+    bookingMessageService: "Hizmet",
+    bookingMessageName: "Ad",
+    bookingMessagePhone: "Telefon",
+    bookingMessageDetails: "Ayrıntılar",
+    bookingEmailSubject: "Randevu talebi",
     footer: "© Hamdi Photography. Tüm hakları saklıdır.",
     backTop: "Yukarı dön ↑"
   }
@@ -92,10 +136,17 @@ const translations = {
 const root = document.documentElement;
 const title = document.querySelector("title");
 const languageButtons = document.querySelectorAll("[data-language]");
+const bookingForm = document.querySelector("#booking-form");
+const bookingService = document.querySelector("#booking-service");
+const bookingStatus = document.querySelector("#booking-status");
+const bookingEmail = "hamdihajiali76@gmail.com";
+const whatsappNumber = "905377423671";
+let activeLanguage = "ar";
 
 function setLanguage(language) {
   const dictionary = translations[language];
   const isArabic = language === "ar";
+  activeLanguage = language;
 
   root.lang = language;
   root.dir = isArabic ? "rtl" : "ltr";
@@ -109,6 +160,11 @@ function setLanguage(language) {
   document.querySelectorAll("[data-i18n-aria]").forEach((element) => {
     const key = element.dataset.i18nAria;
     if (dictionary[key]) element.setAttribute("aria-label", dictionary[key]);
+  });
+
+  document.querySelectorAll("[data-i18n-placeholder]").forEach((element) => {
+    const key = element.dataset.i18nPlaceholder;
+    if (dictionary[key]) element.setAttribute("placeholder", dictionary[key]);
   });
 
   languageButtons.forEach((button) => {
@@ -128,7 +184,53 @@ document.querySelectorAll("[data-service]").forEach((link) => {
   link.addEventListener("click", () => {
     const chosenService = link.dataset.service;
     document.body.dataset.chosenService = chosenService;
+    if (bookingService) bookingService.value = chosenService;
   });
+});
+
+function createBookingMessage(formData) {
+  const dictionary = translations[activeLanguage];
+  const service = String(formData.get("service") || "");
+  const serviceTitle = {
+    color: dictionary.serviceColorTitle,
+    graduation: dictionary.serviceGraduationTitle,
+    hair: dictionary.serviceHairTitle,
+    id: dictionary.serviceIdTitle
+  }[service] || service;
+  const name = String(formData.get("name") || "").trim();
+  const phone = String(formData.get("phone") || "").trim();
+  const details = String(formData.get("details") || "").trim();
+  const lines = [
+    dictionary.bookingMessageTitle,
+    "",
+    `${dictionary.bookingMessageService}: ${serviceTitle}`,
+    `${dictionary.bookingMessageName}: ${name}`,
+    phone && `${dictionary.bookingMessagePhone}: ${phone}`,
+    details && `${dictionary.bookingMessageDetails}: ${details}`
+  ];
+  return { message: lines.filter(Boolean).join("\n"), serviceTitle };
+}
+
+bookingForm?.addEventListener("submit", (event) => {
+  event.preventDefault();
+  if (!bookingForm.reportValidity()) return;
+
+  const channel = event.submitter?.dataset.bookingChannel || "email";
+  const dictionary = translations[activeLanguage];
+  const { message, serviceTitle } = createBookingMessage(new FormData(bookingForm));
+
+  if (channel === "email") {
+    const subject = `${dictionary.bookingEmailSubject} — ${serviceTitle}`;
+    window.location.href = `mailto:${bookingEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
+    bookingStatus.textContent = dictionary.bookingStatusEmail;
+    return;
+  }
+
+  const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+  const popup = window.open(url, "_blank");
+  if (popup) popup.opener = null;
+  else window.location.href = url;
+  bookingStatus.textContent = dictionary.bookingStatusWhatsapp;
 });
 
 const savedLanguage = localStorage.getItem("hamdi-language");
