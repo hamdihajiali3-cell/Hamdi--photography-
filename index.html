@@ -150,18 +150,36 @@
 
       <section class="contact section-shell" id="contact" aria-labelledby="contact-heading">
         <div class="contact-panel">
-          <div>
+          <div class="contact-copy">
             <p class="eyebrow eyebrow-light" data-i18n="contactEyebrow">03 / تواصل</p>
             <h2 id="contact-heading" data-i18n="contactTitle">لننسّق ما تحتاجه.</h2>
-            <p data-i18n="contactDescription">اتصل واشرح الخدمة والوقت المناسب لك، ثم تُرتّب التفاصيل قبل الموعد.</p>
-          </div>
-          <div class="contact-actions">
+            <p data-i18n="contactDescription">اختر الخدمة واكتب التفاصيل، ثم أرسل الطلب برسالة جاهزة.</p>
             <a class="phone-link" href="tel:05377423671" aria-label="اتصل على 0537 742 36 71">
               <span data-i18n="phoneLabel">اتصال مباشر</span>
               <strong dir="ltr">0537 742 36 71</strong>
             </a>
             <p class="contact-small" data-i18n="contactSmall">التفاصيل والسعر تُناقش بحسب الطلب.</p>
           </div>
+
+          <form id="booking-form" class="booking-form" aria-describedby="booking-destination booking-status">
+            <div class="booking-heading">
+              <p class="eyebrow eyebrow-booking" data-i18n="bookingEyebrow">طلب موعد</p>
+              <h3 data-i18n="bookingTitle">اكتب طلبك ثم اختر وسيلة الإرسال.</h3>
+              <p id="booking-destination" class="booking-destination"><span data-i18n="bookingDestinationLabel">رسالة البريد تصل إلى</span> <strong dir="ltr">hamdihajiali76@gmail.com</strong></p>
+            </div>
+
+            <label class="booking-field booking-field-wide" for="booking-service"><span data-i18n="bookingServiceLabel">نوع الجلسة / الخدمة</span><select id="booking-service" name="service" required><option value="" selected disabled data-i18n="bookingServicePlaceholder">اختر خدمة</option><option value="color" data-i18n="serviceColorTitle">تعديل ألوان الصور</option><option value="graduation" data-i18n="serviceGraduationTitle">تصوير التخرّج</option><option value="hair" data-i18n="serviceHairTitle">تصوير الحلاقة وقصّات الشعر</option><option value="id" data-i18n="serviceIdTitle">صور الجواز والهويات</option></select></label>
+            <div class="booking-fields">
+              <label class="booking-field" for="booking-name"><span data-i18n="bookingNameLabel">الاسم</span><input id="booking-name" name="name" type="text" autocomplete="name" required data-i18n-placeholder="bookingNamePlaceholder" placeholder="اكتب اسمك" /></label>
+              <label class="booking-field" for="booking-phone"><span data-i18n="bookingPhoneLabel">رقم الهاتف (اختياري)</span><input id="booking-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" data-i18n-placeholder="bookingPhonePlaceholder" placeholder="مثال: 05…" /></label>
+            </div>
+            <label class="booking-field booking-field-wide" for="booking-details"><span data-i18n="bookingDetailsLabel">تفاصيل الطلب (اختياري)</span><textarea id="booking-details" name="details" rows="3" data-i18n-placeholder="bookingDetailsPlaceholder" placeholder="اكتب أي تفاصيل مهمة للموعد"></textarea></label>
+            <div class="booking-actions" role="group" aria-label="قناة إرسال الطلب" data-i18n-aria="bookingChannelLabel">
+              <button class="booking-send booking-send-email" type="submit" data-booking-channel="email"><span data-i18n="bookingEmail">إرسال عبر البريد</span><i aria-hidden="true">↗</i></button>
+              <button class="booking-send booking-send-whatsapp" type="submit" data-booking-channel="whatsapp"><span data-i18n="bookingWhatsapp">إرسال عبر واتساب</span><i aria-hidden="true">↗</i></button>
+            </div>
+            <p id="booking-status" class="booking-status" role="status" aria-live="polite"></p>
+          </form>
         </div>
       </section>
     </main>
@@ -175,7 +193,7 @@
       <a href="#top" class="back-to-top" data-i18n="backTop">العودة للأعلى ↑</a>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=booking-20261102"></script>
   </body>
 </html>
 
