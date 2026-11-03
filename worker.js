@@ -1,3 +1,6 @@
+import { handleVoiceRequest, VoiceSessionGuard } from './cloudflare-worker/hamdi-voice.mjs';
+export { VoiceSessionGuard };
+
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
@@ -261,6 +264,10 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
+    if (url.pathname === "/api/status" || url.pathname === "/api/live-token") {
+      return handleVoiceRequest(request, env);
+    }
+
     if (url.pathname === "/api/health" && request.method === "GET") {
       return json({
         ok: true,
@@ -317,3 +324,4 @@ export default {
     return env.ASSETS.fetch(request);
   }
 };
+

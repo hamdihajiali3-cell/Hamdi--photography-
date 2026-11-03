@@ -8,19 +8,42 @@
       {
         "name": "CALLBACK_GUARD",
         "class_name": "CallbackGuard"
+      },
+      {
+        "name": "VOICE_SESSION_GUARD",
+        "class_name": "VoiceSessionGuard"
       }
     ]
   },
   "migrations": [
     {
       "tag": "v1",
-      "new_sqlite_classes": ["CallbackGuard"]
+      "new_sqlite_classes": [
+        "CallbackGuard"
+      ]
+    },
+    {
+      "tag": "v2-voice",
+      "new_sqlite_classes": [
+        "VoiceSessionGuard"
+      ]
     }
   ],
   "assets": {
     "directory": "./",
     "binding": "ASSETS",
-    "run_worker_first": ["/api/*"],
+    "run_worker_first": [
+      "/api/*"
+    ],
     "not_found_handling": "404-page"
+  },
+  "vars": {
+    "LIVE_ENABLED": "true",
+    "GEMINI_FREE_TIER_CONFIRMED": "true",
+    "GEMINI_MODEL": "gemini-3.8-live",
+    "GEMINI_API_VERSION": "v1beta",
+    "VOICE_SESSION_SECONDS": "120",
+    "VOICE_SESSIONS_PER_DAY": "10"
   }
 }
+
