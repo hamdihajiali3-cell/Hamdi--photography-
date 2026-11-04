@@ -272,7 +272,7 @@ class CustomerVoice {
 }
 
 function orderService(value) {
-  const s=value.toLowerCase().normalize('NFKC').replace(/[أإآ]/g,'ا');
+  const s=value.toLowerCase().normalize('NFKC').replace(/[\u0640\u064b-\u065f\u0670]/g,'').replace(/[أإآ]/g,'ا');
   const matches=[['color',/color|renk|düzen|duzen|الوان|لون|تعديل/],['graduation',/graduation|mezun|تخرج/],['hair',/hair|berber|saç|sac|حلاق|شعر|قصات/],['id',/\bid\b|pasaport|kimlik|هوي|جواز/]].filter(([,re])=>re.test(s));
   return matches.length===1?matches[0][0]:'';
 }
@@ -389,7 +389,10 @@ class OrderAssistant {
       const response=await fetch('/api/order/transcribe',{method:'POST',headers:{'content-type':'audio/wav',authorization:'Bearer '+this.token},body:orderWav(chunks),signal:AbortSignal.timeout(30000)});const data=await response.json();if(run!==this.run)return;if(!response.ok)throw new Error(data.error);
       const key=['service','name','channel','contact','when'][stage];let value=data.text;
       if(key==='service')value=orderService(value);if(key==='channel')value=orderChannel(value);if(key==='contact'&&this.field('channel').value!=='email')value=orderPhone(value);
-      this.field(key).value=value;this.busy=false;this.advance();
+      this.field(key).value=value;this.busy=false;
+      if(!value&&(key==='service'||key==='channel')) {
+        this.el('status').textContent=(this.language==='tr'?'Duyduğum: ':'سمعت: ')+data.text+'\n'+this.c.invalid;
+      }else this.advance();
     }catch(error){if(run===this.run)this.el('status').textContent=error.message==='order-limit'?this.c.limit:this.c.error;}
     finally{if(run===this.run){this.busy=false;this.el('record').disabled=false;this.el('next').disabled=false;this.el('skip').disabled=false;}}
   }
