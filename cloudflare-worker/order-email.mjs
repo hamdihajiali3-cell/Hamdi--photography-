@@ -1,6 +1,7 @@
 export const OWNER_EMAIL = 'hamdihajiali76@gmail.com';
 export const ORDER_SERVICES = Object.freeze({ color:'تعديل ألوان الصور', graduation:'تصوير التخرج', hair:'تصوير الحلاقة وقصّات الشعر', id:'صور الجواز والهويات' });
 export const ORDER_PAGE = 'https://hamdihajiali3-cell.github.io/Hamdi--photography-/';
+export const isActivationTest = order => order.service==='color' && order.name==='اختبار الربط — طلب تجريبي فقط' && order.channel==='email' && order.contact==='test@example.com' && order.when==='' && order.language==='ar' && order.notes==='هذه تجربة إعداد بطلب صاحب الموقع. لا تمثل طلب زبون أو حجز موعد.';
 export const mailConfigured = env => (env.ORDER_MAIL_SECRET || '').length >= 32 && (env.ORDER_MAIL_PROVIDER === 'formsubmit' || /^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(env.ORDER_MAIL_ENDPOINT || ''));
 const fields = ['service', 'name', 'channel', 'contact', 'when', 'notes', 'language', 'confirmed'];
 
@@ -51,10 +52,16 @@ export async function sendOrderEmail(order, id, env, fetchImpl = fetch) {
         ...(order.channel === 'email' ? { _replyto:order.contact } : {}) }),
       signal:AbortSignal.timeout(25000)
     });
-    if (!response.ok) throw new Error('mail-unconfirmed');
-    const result = await response.json();
+    const raw = await response.text();
+    let result;try { result=JSON.parse(raw); }catch { result=null; }
+    const failure = () => {
+      const error = new Error('mail-unconfirmed');
+      error.diagnostic = {status:response.status,message:String(result?.message || /<title[^>]*>([^<]+)/i.exec(raw)?.[1] || 'non-json-provider-response').slice(0,180)};
+      return error;
+    };
+    if (!response.ok || !result) throw failure();
     if (/activat|confirm.{0,30}email|verif.{0,30}email/i.test(String(result?.message || ''))) throw new Error('mail-activation-required');
-    if (![true,'true'].includes(result?.success)) throw new Error('mail-unconfirmed');
+    if (![true,'true'].includes(result?.success)) throw failure();
     return {accepted:true,id};
   }
   const envelope = await signedMailEnvelope(order, id, env.ORDER_MAIL_SECRET);

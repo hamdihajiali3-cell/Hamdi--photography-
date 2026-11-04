@@ -11,8 +11,8 @@ button.addEventListener('click',async()=>{
     const response=await fetch('/api/order/send',{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+session.token},body:JSON.stringify({service:'color',name:'اختبار الربط — طلب تجريبي فقط',channel:'email',contact:'test@example.com',when:'',notes:'هذه تجربة إعداد بطلب صاحب الموقع. لا تمثل طلب زبون أو حجز موعد.',language:'ar',confirmed:true}),signal:AbortSignal.timeout(35000)});
     const result=await response.json();
     if(result.error==='mail-activation-required'){document.documentElement.dataset.setupState='activation-required';status.textContent='أرسلت الخدمة طلب تفعيل البريد. افتح hamdihajiali76@gmail.com وابحث عن رسالة FormSubmit، ثم اضغط Activate Form.\nرقم التجربة: '+result.id;return;}
-    if(!response.ok||result.accepted!==true)throw new Error(result.error);
+    if(!response.ok||result.accepted!==true){const error=new Error(result.error);error.diagnostic=result.diagnostic;throw error;}
     document.documentElement.dataset.setupState='accepted';status.textContent='استلمت خدمة البريد الطلب التجريبي. تحقق من رسالة التفعيل ثم رسالة الطلب في hamdihajiali76@gmail.com.\nرقم التجربة: '+result.id;
-  }catch(error){document.documentElement.dataset.setupState='unconfirmed';status.textContent='تعذر تأكيد الإرسال. نراجع إعداد الربط قبل إعادة التجربة.\nالحالة: '+error.message;}
+  }catch(error){document.documentElement.dataset.setupState='unconfirmed';status.textContent='تعذر تأكيد الإرسال. نراجع إعداد الربط قبل إعادة التجربة.\nالحالة: '+error.message+(error.diagnostic?'\nرد خدمة البريد: '+JSON.stringify(error.diagnostic):'');}
 });
 </script></body></html>

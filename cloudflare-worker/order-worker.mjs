@@ -1,4 +1,4 @@
-import { validateOrder, sendOrderEmail, mailConfigured } from './order-email.mjs';
+import { validateOrder, sendOrderEmail, mailConfigured, isActivationTest } from './order-email.mjs';
 
 const MAX_AUDIO = 480044; // Canonical PCM WAV: mono, 16 kHz, 16 bit, at most 15 seconds.
 const KEY = 'order-guard-v1';
@@ -71,6 +71,8 @@ export class OrderGuard {
     let body;try {if(request.headers.get('content-type')?.split(';')[0]!=='application/json')throw 0;body=JSON.parse(new TextDecoder().decode(await readLimited(request,4096)));}catch{return json({error:'invalid-request'},400);}
     const order=validateOrder(body);
     if(!order)return json({error:'invalid-order'},400);
+    // Before activation, accept only the owner's fixed, non-personal setup sample.
+    if(this.env.ORDER_MAIL_ACTIVE!=='true'&&!isActivationTest(order))return json({error:'mail-not-activated'},503);
     const claim=await this.mutate(state=>{
       const s=state.sessions[hash];if(!s||s.ip!==ip||s.expires<this.now()||s.language!==order.language)return {error:'session-required'};
       if(s.status==='sent')return {accepted:true,id:s.id};
@@ -87,7 +89,7 @@ export class OrderGuard {
     }catch(error) {
       // A timeout can happen after mail acceptance. Never retry with a fresh ID.
       await this.mutate(state=>{if(state.sessions[hash]?.id===claim.id)state.sessions[hash].status='uncertain';});
-      return json({error:error.message==='mail-activation-required'?'mail-activation-required':'delivery-unconfirmed',id:claim.id},502);
+      return json({error:error.message==='mail-activation-required'?'mail-activation-required':'delivery-unconfirmed',id:claim.id,...(this.env.ORDER_MAIL_ACTIVE!=='true'&&error.diagnostic?{diagnostic:error.diagnostic}:{})},502);
     }
   }
 }
