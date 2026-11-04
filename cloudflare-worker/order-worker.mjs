@@ -1,4 +1,5 @@
 import { validateOrder, sendOrderEmail, mailConfigured, isActivationTest } from './order-email.mjs';
+import { readOrderPrompt, cachedOrderPrompt, synthesizeOrderPrompt } from './order-speech.mjs';
 
 const MAX_AUDIO = 480044; // Canonical PCM WAV: mono, 16 kHz, 16 bit, at most 15 seconds.
 const KEY = 'order-guard-v1';
@@ -24,6 +25,12 @@ async function readLimited(request,max) {
 }
 export async function handleOrderRequest(request,env) {
   const path=new URL(request.url).pathname;
+  if(path.startsWith('/api/order/prompt/')) {
+    if(!readOrderPrompt(request))return json({error:'not-found'},404);
+    if(!ready(env)||!env.ORDER_GUARD)return json({error:'orders-not-configured'},503);
+    try {return await env.ORDER_GUARD.get(env.ORDER_GUARD.idFromName('hamdi-order-prompts-v1')).fetch(request);}
+    catch{return json({error:'prompt-unavailable'},503);}
+  }
   if(path==='/api/order/status' && request.method==='GET')return json({enabled:ready(env)&&Boolean(env.ORDER_GUARD)&&env.ORDER_MAIL_ACTIVE==='true',voice:Boolean(ready(env)&&env.AI&&env.ORDER_GUARD&&env.ORDER_MAIL_ACTIVE==='true'),delivery:'email'});
   if(request.method!=='POST'||!['/api/order/session','/api/order/transcribe','/api/order/send'].includes(path))return json({error:'not-found'},404);
   if(!ready(env)||!env.ORDER_GUARD)return json({error:'orders-not-configured'},503);
@@ -33,12 +40,13 @@ export async function handleOrderRequest(request,env) {
 }
 
 export class OrderGuard {
-  constructor(ctx,env,dependencies={}) {this.ctx=ctx;this.env=env;this.now=dependencies.now||Date.now;this.send=dependencies.send||sendOrderEmail;}
+  constructor(ctx,env,dependencies={}) {this.ctx=ctx;this.env=env;this.now=dependencies.now||Date.now;this.send=dependencies.send||sendOrderEmail;this.synthesize=dependencies.synthesize||synthesizeOrderPrompt;}
   state(raw) {const day=new Date(this.now()).toISOString().slice(0,10);return raw?.day===day?raw:{day,created:0,audio:0,mails:0,sessions:{}};}
   async mutate(fn) {return this.ctx.storage.transaction(async storage=>{const state=this.state(await storage.get(KEY));const result=fn(state);await storage.put(KEY,state);return result;});}
   async fetch(request) {
     if(!ready(this.env))return json({error:'orders-not-configured'},503);
     const path=new URL(request.url).pathname;
+    if(path.startsWith('/api/order/prompt/')) {const prompt=readOrderPrompt(request);return prompt?cachedOrderPrompt(this,prompt):json({error:'not-found'},404);}
     if(request.method!=='POST'||request.headers.get('origin')!==new URL(request.url).origin||request.headers.get('sec-fetch-site')==='cross-site')return json({error:'same-origin-required'},403);
     if(!['/api/order/session','/api/order/transcribe','/api/order/send'].includes(path))return json({error:'not-found'},404);
     const ip=await digest((request.headers.get('cf-connecting-ip')||'unknown')+'|'+this.env.ORDER_MAIL_SECRET);
