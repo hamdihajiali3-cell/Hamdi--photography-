@@ -16,6 +16,13 @@ html[dir=ltr] .request-intro h2{font-family:var(--serif);line-height:1.2;font-si
 @media(max-width:370px){.wrap{width:calc(100% - 28px)}.hero h1{font-size:48px}.hero-actions{gap:15px}.button{padding-inline:15px}.hero-notes{gap:15px;font-size:8px}.form-grid{grid-template-columns:1fr}.service-card h3{font-size:14px}.service-desc{font-size:10px}.steps{gap:10px}.service-card{min-height:265px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important}}
 .voice-booking{display:flex;width:100%;margin-top:16px;text-align:center}
+/* Refine the existing reception design and mobile controls. */
+.mic-icon svg{display:block;width:16px;height:16px}
+#open-voice-test{display:flex;align-items:center;justify-content:center;width:100%;min-height:44px;margin-top:8px;padding:9px 14px;border:1px solid #c7d2be;border-radius:6px;color:#35513c;line-height:1.6}
+.voice-status{max-width:36ch;margin:12px auto 0;font-size:11px;line-height:1.8;color:#53604d}
+.voice-booking{margin-top:20px;min-height:50px}
+@media(max-width:760px){.hero h1{font-size:clamp(40px,11vw,50px);line-height:1.42;letter-spacing:0}.hero-notes{flex-wrap:wrap;row-gap:8px}.booking-form input,.booking-form select,.booking-form textarea,html[dir=ltr] #service{font-size:16px}.service-desc{font-size:12px}.form-note{font-size:10px;line-height:1.8}.voice-copy>p:last-child{font-size:13px}}
+@media(max-width:520px){.form-grid{grid-template-columns:1fr;gap:16px}.hero-actions{flex-wrap:wrap;gap:16px}.voice-card{padding:20px 18px}.service-card{min-height:275px}}
 </style>
 </head>
 <body>
@@ -27,7 +34,7 @@ html[dir=ltr] .request-intro h2{font-family:var(--serif);line-height:1.2;font-si
   <main id="main" class="wrap">
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-copy"><p class="eyebrow"><span></span><b data-t="kicker">مكتب استقبال الاستوديو</b></p><h1 id="hero-title" data-t-html="title">اسأل براحتك.<br><em>والطلب بيوصل.</em></h1><p class="lead" data-t="intro">تعرّف على خدمات Hamdi Photography، ثم جهّز طلب جلستك وراجعه قبل إرساله إلى واتساب الاستوديو.</p><div class="hero-actions"><a href="#booking-form" class="button primary" data-t="requestAction">جهّز طلب جلسة <span>↙</span></a><a href="#services" class="text-link" data-t="servicesAction">شوف الخدمات الأربع</a></div><div class="hero-notes"><span data-t="note1">عربي · Türkçe</span><span data-t="note2">أنت تراجع وترسل</span><span data-t="note3">الموعد بتأكيد الاستوديو</span></div></div>
-      <aside class="voice-card" aria-labelledby="voice-title"><div class="voice-card-top"><span class="mini-logo">HAMDI AI</span><span class="voice-badge" id="voice-badge" data-t="unavailable">قيد الإعداد</span></div><div class="orb-scene" id="orb-scene" aria-hidden="true"><div class="orb-shadow"></div><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="orb"><div class="orb-shine"></div><div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div><span class="orbit-dot"></span></div><div class="voice-copy"><p class="eyebrow" data-t="voiceKicker">مساعد الاستوديو الصوتي</p><h2 id="voice-title" data-t="voiceTitle">أهلًا، أنا حمدي AI.</h2><p data-t="voiceDescription">أسئلة عن الخدمات؟ المحادثة للمعلومات العامة، وطلبك الشخصي إله نموذج مستقل.</p></div><button type="button" class="button voice-start" id="open-voice" disabled><span class="mic-icon" aria-hidden="true">♩</span><span data-t="talkAction">تحدّث مع حمدي AI</span><span aria-hidden="true">↗</span></button><button type="button" class="text-link" id="open-voice-test" data-t="testVoice" disabled>اسمع صوت حمدي AI</button><p class="voice-status" id="voice-status" role="status" aria-live="polite" data-t="voiceOffline">الصوت غير مفعّل بالمعاينة. نموذج الطلب يعمل بشكل مستقل.</p><div class="call-controls" id="call-controls" hidden><button id="mute-voice" type="button" class="button compact" data-t="mute">كتم الميكروفون</button><button id="end-voice" type="button" class="button compact end" data-t="endCall">إنهاء المحادثة</button></div><p class="transcript" id="transcript" aria-live="polite" hidden></p><a class="button primary voice-booking" href="#booking-form" data-t="bookingAction">طلب موعد عبر واتساب ↙</a></aside>
+      <aside class="voice-card" aria-labelledby="voice-title"><div class="voice-card-top"><span class="mini-logo">HAMDI AI</span><span class="voice-badge" id="voice-badge" data-t="unavailable">قيد الإعداد</span></div><div class="orb-scene" id="orb-scene" aria-hidden="true"><div class="orb-shadow"></div><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="orb"><div class="orb-shine"></div><div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div><span class="orbit-dot"></span></div><div class="voice-copy"><p class="eyebrow" data-t="voiceKicker">مساعد الاستوديو الصوتي</p><h2 id="voice-title" data-t="voiceTitle">أهلًا، أنا حمدي AI.</h2><p data-t="voiceDescription">أسئلة عن الخدمات؟ المحادثة للمعلومات العامة، وطلبك الشخصي إله نموذج مستقل.</p></div><button type="button" class="button voice-start" id="open-voice" disabled><span class="mic-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 10v1a7 7 0 0 0 14 0v-1M12 18v3m-4 0h8"/></svg></span><span data-t="talkAction">تحدّث مع حمدي AI</span><span aria-hidden="true">↗</span></button><button type="button" class="text-link" id="open-voice-test" data-t="testVoice" disabled>اسمع صوت حمدي AI</button><p class="voice-status" id="voice-status" role="status" aria-live="polite" data-t="voiceOffline">الصوت غير مفعّل بالمعاينة. نموذج الطلب يعمل بشكل مستقل.</p><div class="call-controls" id="call-controls" hidden><button id="mute-voice" type="button" class="button compact" data-t="mute">كتم الميكروفون</button><button id="end-voice" type="button" class="button compact end" data-t="endCall">إنهاء المحادثة</button></div><p class="transcript" id="transcript" aria-live="polite" hidden></p><a class="button primary voice-booking" href="#booking-form" data-t="bookingAction">طلب موعد عبر واتساب ↙</a></aside>
     </section>
     <section id="services" class="services-section" aria-labelledby="services-title"><div class="section-heading"><div><p class="eyebrow" data-t="servicesKicker">أربع خدمات. اختيار واضح.</p><h2 id="services-title" data-t="servicesTitle">شو حابب نصوّر؟</h2></div><p data-t="noPrices">التفاصيل والأسعار تُنسّق مباشرة مع الاستوديو.</p></div><div class="service-grid">
       <button type="button" class="service-card" data-service="color"><span class="service-art art-color" aria-hidden="true"><i></i></span><span class="service-count">01 /</span><h3 data-service-name="color">تعديل ألوان الصور</h3><span class="service-desc" data-t="colorDesc">تعديل الإضاءة والألوان لصورك الرقمية.</span><span class="service-arrow" aria-hidden="true">↙</span></button>
@@ -234,8 +241,8 @@ const copy = {
   }
 };
 
-Object.assign(copy.ar, { bookingAction:'طلب موعد عبر واتساب ↙' });
-Object.assign(copy.tr, { bookingAction:'WhatsApp ile randevu talebi ↘' });
+Object.assign(copy.ar, { bookingAction:'طلب موعد عبر واتساب ↙', 'test-waiting':'جاري انتظار الرد الصوتي…', 'test-speaking':'جاري تشغيل الصوت التجريبي.' });
+Object.assign(copy.tr, { bookingAction:'WhatsApp ile randevu talebi ↘', 'test-waiting':'Sesli yanıt bekleniyor…', 'test-speaking':'Deneme sesi oynatılıyor.' });
 const delivery = document.documentElement.dataset.delivery;
 const staticDelivery = delivery === 'static' || (delivery === 'hybrid' && location.hostname.endsWith('.github.io'));
 if (delivery === 'hybrid' && !staticDelivery) {
@@ -274,7 +281,8 @@ function setVoiceState(state) {
   $('#orb-scene').classList.toggle('live', state === 'speaking' || state === 'listening');
   $('#voice-badge').classList.toggle('active', active);
   $('#voice-badge').textContent = text(active ? 'active' : configured ? 'ready' : 'unavailable');
-  $('#voice-status').textContent = text(state === 'unavailable' ? 'voiceError' : state) || text(configured ? 'voiceReady' : 'voiceOffline');
+  const displayState = consentMode === 'playback' ? ({ listening:'test-waiting', speaking:'test-speaking' }[state] || state) : state;
+  $('#voice-status').textContent = text(displayState === 'unavailable' ? 'voiceError' : displayState) || text(configured ? 'voiceReady' : 'voiceOffline');
   $('#mute-voice').textContent = text(state === 'muted' ? 'unmute' : 'mute');
   if (!active) { transcriptText = ''; $('#transcript').textContent = ''; $('#transcript').hidden = true; }
 }
