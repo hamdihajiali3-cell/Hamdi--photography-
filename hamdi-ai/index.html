@@ -36,6 +36,12 @@ html[data-embedded=true] .voice-card{width:100%;max-width:460px;margin:auto}
 .orbit-dot{box-shadow:0 0 7px #f0d18aaa,0 0 20px #d6b57866}
 html[data-voice-state=speaking] .orb-scene::before{opacity:1;transform:translate(-50%,-50%) scale(1.08)}
 html[data-voice-state=speaking] .orb{box-shadow:inset -13px -15px 20px #031e1860,inset 5px 5px 12px #d1e3b590,0 4px 30px #2a61443a,0 0 32px #c7c58a70,0 0 58px #8eb48536}
+/* Two slow orbital rings retain the existing shape and studio palette. */
+.orbit-one{animation:hamdi-ring-one 22s linear infinite;transform-origin:center;will-change:transform}
+.orbit-two{animation:hamdi-ring-two 28s linear infinite;transform-origin:center;will-change:transform}
+@keyframes hamdi-ring-one{from{transform:rotate(-23deg)}to{transform:rotate(337deg)}}
+@keyframes hamdi-ring-two{from{transform:rotate(28deg)}to{transform:rotate(-332deg)}}
+@media(prefers-reduced-motion:reduce){.orbit-one,.orbit-two{animation:none!important;will-change:auto}}
 </style>
 </head>
 <body>
