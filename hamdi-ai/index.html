@@ -295,6 +295,11 @@ function orderWav(chunks) {
   let at=44;for(const c of chunks){bytes.set(c,at);at+=c.length;}return bytes;
 }
 
+function orderPromptUrl(language,key) {
+  return ['ar','tr'].includes(language)&&['service','name','channel','phone','email','when','review','sent'].includes(key)
+    ?'/api/order/prompt/aoede-v1/'+language+'/'+key+'.wav':null;
+}
+
 const orderCopy={
   ar:{title:'طلبك مع حمدي',intro:'سنجهّز طلبك هنا ونرسله إلى بريد حمدي. اختيار واتساب أو SMS أو البريد يحدد كيف تفضّل أن يتواصل معك.',privacy:'عند استخدام الميكروفون يُعالج Cloudflare الصوت لتحويله إلى نص. نرسل ملخص الطلب وبيانات التواصل عبر Web3Forms إلى بريد الاستوديو. يحتفظ Web3Forms بالتفاصيل 7 أيام. لا نحفظ التسجيل الصوتي.',consent:'أوافق على معالجة صوتي وبيانات طلبي لهذا الغرض.',start:'ابدأ الطلب',service:'الخدمة',name:'اسمك',channel:'وسيلة التواصل المفضلة',contact:'رقم التواصل أو البريد',when:'الموعد المقترح (اختياري)',notes:'ملاحظات (اختياري)',choose:'اختر',record:'قل جوابك',stop:'خلصت — استخدم التسجيل',next:'التالي',skip:'نتفق على الموعد لاحقًا',review:'راجع التفاصيل، وعدّل أي كلمة سمعها المساعد بشكل غير صحيح.',send:'أؤكد التفاصيل وأرسل الطلب إلى حمدي',pending:'هذا طلب للتنسيق. يؤكد حمدي الموعد والسعر بعد التواصل.',close:'إغلاق',listening:'عم اسمعك… مدة التسجيل حتى 15 ثانية.',processing:'جاري فهم جوابك…',invalid:'راجع هذا الحقل أو أعد تسجيل جوابك.',error:'تعذّرت المتابعة. يمكنك الكتابة أو المحاولة لاحقًا.',limit:'وصلنا لحد التجربة اليوم. يمكنك التواصل مباشرة مع الاستوديو.',sending:'جاري إرسال الطلب إلى بريد حمدي…',sent:'تم إرسال طلبك إلى بريد حمدي. سيتواصل معك عبر الوسيلة التي اخترتها بعد مراجعة الطلب.',unknown:'لم نتمكن من تأكيد الإرسال. تواصل مع الاستوديو قبل إعادة الطلب لتجنب تكراره.',reference:'رقم الطلب',qService:'شو الخدمة اللي بدك ياها؟ تعديل ألوان، تخرج، تصوير الحلاقة، أو صور جواز وهويات؟',qName:'شو اسمك؟',qChannel:'كيف بتحب حمدي يتواصل معك؟ واتساب، رسالة قصيرة، أو بريد إلكتروني؟',qPhone:'قول رقمك رقم رقم، أو اكتبه بالخانة.',qEmail:'قول عنوان بريدك الإلكتروني، أو اكتبه بالخانة حتى نتأكد منه.',qWhen:'أي يوم ووقت بتفضّل؟ اختياري، فيك تضغط نتفق لاحقًا.',qReview:'راجع طلبك المكتوب، وبعدها اضغط تأكيد الإرسال.',speechFallback:'إذا لم تسمع السؤال، يمكنك قراءته هنا والجواب بالصوت أو الكتابة.'},
   tr:{title:'Hamdi ile talebin',intro:'Talebini burada hazırlayıp Hamdi’nin e-posta adresine göndeririz. WhatsApp, SMS veya e-posta seçimin, sana nasıl ulaşılmasını istediğini belirtir.',privacy:'Mikrofonu kullandığında Cloudflare sesi metne dönüştürür. Talep özeti ve iletişim bilgileri Web3Forms ile stüdyoya e-posta olarak gönderilir. Web3Forms ayrıntıları 7 gün saklar. Ses kaydını saklamayız.',consent:'Bu amaçla sesimin ve talep bilgilerimin işlenmesini kabul ediyorum.',start:'Talebi başlat',service:'Hizmet',name:'Adın',channel:'Tercih ettiğin iletişim yolu',contact:'Telefon veya e-posta',when:'Önerilen zaman (isteğe bağlı)',notes:'Notlar (isteğe bağlı)',choose:'Seç',record:'Yanıtını söyle',stop:'Bitti — kaydı kullan',next:'İleri',skip:'Zamanı sonra kararlaştıralım',review:'Ayrıntıları incele ve yanlış duyulan kelimeleri düzelt.',send:'Bilgileri onayla ve talebi Hamdi’ye gönder',pending:'Bu bir planlama talebidir. Zamanı ve fiyatı Hamdi görüşmeden sonra onaylar.',close:'Kapat',listening:'Dinliyorum… Kayıt en fazla 15 saniye.',processing:'Yanıtın anlaşılıyor…',invalid:'Bu alanı kontrol et veya yanıtını yeniden kaydet.',error:'Devam edilemedi. Yazabilir veya daha sonra deneyebilirsin.',limit:'Bugünkü deneme sınırına ulaşıldı. Stüdyoyla doğrudan iletişim kurabilirsin.',sending:'Talebin Hamdi’ye e-posta ile gönderiliyor…',sent:'Talebin Hamdi’ye e-posta ile gönderildi. İnceledikten sonra seçtiğin yoldan sana ulaşacak.',unknown:'Gönderim doğrulanamadı. Tekrarlamadan önce stüdyoyla iletişime geç.',reference:'Talep numarası',qService:'Hangi hizmeti istiyorsun? Renk düzenleme, mezuniyet, berber çekimi veya pasaport ve kimlik fotoğrafı?',qName:'Adın nedir?',qChannel:'Hamdi sana nasıl ulaşsın? WhatsApp, SMS veya e-posta?',qPhone:'Telefon numaranı rakam rakam söyle veya kutuya yaz.',qEmail:'E-posta adresini söyle veya doğru olması için kutuya yaz.',qWhen:'Hangi gün ve saati tercih edersin? İstersen zamanı sonra kararlaştırabiliriz.',qReview:'Yazılı talebini incele. Ardından gönderimi onayla.',speechFallback:'Soruyu duymuyorsan buradan okuyup sesle veya yazarak yanıtlayabilirsin.'}
@@ -306,7 +311,7 @@ class OrderAssistant {
     this.dialog=document.createElement('dialog');this.dialog.className='order-dialog';this.dialog.id='order-dialog';this.dialog.setAttribute('aria-labelledby','order-title');document.body.append(this.dialog);
     this.dialog.addEventListener('cancel',event=>{event.preventDefault();if(!this.sending)this.close();});
     window.addEventListener('pagehide',()=>this.close());
-    document.addEventListener('visibilitychange',()=>{if(document.hidden)this.cancelRecording();});
+    document.addEventListener('visibilitychange',()=>{if(document.hidden){this.cancelRecording();this.stopPrompt();}});
   }
   async configure() {
     try {const r=await fetch('/api/order/status',{signal:AbortSignal.timeout(5000)});this.enabled=r.ok&&(await r.json()).enabled===true;}catch{this.enabled=false;}return this.enabled;
@@ -314,11 +319,20 @@ class OrderAssistant {
   get c(){return orderCopy[this.language==='tr'?'tr':'ar'];}
   field(key){return this.dialog.querySelector(`[name="${key}"]`);}
   el(id){return this.dialog.querySelector('#order-'+id);}
-  speak(text) {
-    if(!window.speechSynthesis||!window.SpeechSynthesisUtterance)return;
-    speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(text);utterance.lang=this.language==='tr'?'tr-TR':'ar-SY';utterance.rate=.95;
-    const match=speechSynthesis.getVoices().find(v=>v.lang.toLowerCase().startsWith(this.language));if(match)utterance.voice=match;
-    speechSynthesis.speak(utterance);
+  stopPrompt() {
+    this.promptRun=(this.promptRun||0)+1;
+    if(this.promptAudio){this.promptAudio.onplaying=this.promptAudio.onended=this.promptAudio.onerror=null;this.promptAudio.pause();this.promptAudio.removeAttribute('src');this.promptAudio.load();this.promptAudio=null;}
+    if(this.dialog.dataset)this.dialog.dataset.promptState='stopped';
+  }
+  speak(key) {
+    this.stopPrompt();this.currentPrompt=key;
+    const url=orderPromptUrl(this.language,key);if(!url||!this.dialog.open||!window.Audio)return;
+    const run=this.promptRun,audio=new Audio(url);this.promptAudio=audio;
+    this.dialog.dataset.promptState='loading';
+    audio.onplaying=()=>{if(run===this.promptRun)this.dialog.dataset.promptState='playing';};
+    audio.onended=()=>{if(run===this.promptRun)this.dialog.dataset.promptState='ended';};
+    const failed=()=>{if(run===this.promptRun)this.dialog.dataset.promptState='unavailable';};
+    audio.onerror=failed;audio.play().catch(failed);
   }
   open(service='') {
     if(!this.enabled)return;
@@ -329,6 +343,7 @@ class OrderAssistant {
     this.el('close').onclick=()=>{if(!this.sending)this.close();};
     this.el('agree').onchange=()=>{this.el('start').disabled=!this.el('agree').checked;};
     this.el('start').onclick=()=>this.start();this.el('record').onclick=()=>this.recording?this.finishRecording():this.record();
+    const repeat=document.createElement('button');repeat.type='button';repeat.className='text-link';repeat.id='order-repeat';repeat.textContent=tr?'Soruyu dinle':'اسمع السؤال';repeat.onclick=()=>{if(!this.recording&&!this.busy)this.speak(this.currentPrompt);};this.el('question').after(repeat);
     this.el('next').onclick=()=>this.advance();this.el('skip').onclick=()=>{this.field('when').value='';this.review();};
     this.el('form').onsubmit=event=>{event.preventDefault();this.send();};
     this.el('form').oninput=()=>{if(!this.sending)this.el('status').textContent='';};
@@ -343,8 +358,9 @@ class OrderAssistant {
   showStep() {
     const keys=['service','name','channel','contact','when'],key=keys[this.stage];
     this.dialog.querySelectorAll('[data-order-field]').forEach(el=>{el.hidden=el.dataset.orderField!==key;});
-    const prompt=this.c[{service:'qService',name:'qName',channel:'qChannel',contact:this.field('channel').value==='email'?'qEmail':'qPhone',when:'qWhen'}[key]];
-    this.el('question').textContent=prompt;this.el('skip').hidden=key!=='when';this.el('status').textContent='';this.speak(prompt);this.field(key).focus();
+    const promptKey=key==='contact'?(this.field('channel').value==='email'?'email':'phone'):key;
+    const prompt=this.c[{service:'qService',name:'qName',channel:'qChannel',email:'qEmail',phone:'qPhone',when:'qWhen'}[promptKey]];
+    this.el('question').textContent=prompt;this.el('skip').hidden=key!=='when';this.el('status').textContent='';this.speak(promptKey);this.field(key).focus();
   }
   validField(key) {
     const value=this.field(key).value.trim();
@@ -361,12 +377,12 @@ class OrderAssistant {
     if(++this.stage>=5)this.review();else this.showStep();
   }
   review() {
-    this.stage=5;this.cancelRecording();window.speechSynthesis?.cancel();this.dialog.querySelectorAll('[data-order-field]').forEach(el=>el.hidden=false);this.el('step-tools').hidden=true;this.el('review').hidden=false;this.el('send').hidden=false;this.el('question').textContent=this.c.review;this.el('status').textContent='';this.speak(this.c.qReview);
+    this.stage=5;this.cancelRecording();this.dialog.querySelectorAll('[data-order-field]').forEach(el=>el.hidden=false);this.el('step-tools').hidden=true;this.el('review').hidden=false;this.el('send').hidden=false;this.el('question').textContent=this.c.review;this.el('status').textContent='';this.speak('review');
   }
   async record() {
     if(this.busy||!this.token||this.stage<0||this.stage>4)return;
     if(!window.AudioContext||!window.AudioWorkletNode||!navigator.mediaDevices?.getUserMedia){this.el('status').textContent=this.c.error;return;}
-    const run=this.run,capture=++this.captureRun;window.speechSynthesis?.cancel();this.busy=true;
+    const run=this.run,capture=++this.captureRun;this.stopPrompt();this.busy=true;
     try {
       const stream=await navigator.mediaDevices.getUserMedia({audio:{channelCount:1,echoCancellation:true,noiseSuppression:true},video:false});
       if(run!==this.run||capture!==this.captureRun||document.hidden||!this.dialog.open){stream.getTracks().forEach(t=>t.stop());return;}this.stream=stream;
@@ -400,12 +416,12 @@ class OrderAssistant {
     if(this.sending||this.stage!==5||!this.el('form').reportValidity())return;
     for(const key of ['service','name','channel','contact'])if(!this.validField(key)){this.field(key).focus();this.el('status').textContent=this.c.invalid;return;}
     const data=Object.fromEntries(new FormData(this.el('form')));if(data.channel!=='email')data.contact=orderPhone(data.contact);data.language=this.language;data.confirmed=true;
-    window.speechSynthesis?.cancel();this.sending=true;this.el('send').disabled=true;this.el('close').disabled=true;this.el('status').textContent=this.c.sending;
-    try {const response=await fetch('/api/order/send',{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+this.token},body:JSON.stringify(data),signal:AbortSignal.timeout(35000)});const result=await response.json();if(!response.ok||result.accepted!==true)throw new Error('unconfirmed');this.el('form').hidden=true;this.el('status').textContent=this.c.sent+' '+this.c.reference+': '+result.id;this.speak(this.c.sent);}
+    this.stopPrompt();this.sending=true;this.el('send').disabled=true;this.el('close').disabled=true;this.el('status').textContent=this.c.sending;
+    try {const response=await fetch('/api/order/send',{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+this.token},body:JSON.stringify(data),signal:AbortSignal.timeout(35000)});const result=await response.json();if(!response.ok||result.accepted!==true)throw new Error('unconfirmed');this.el('form').hidden=true;this.el('status').textContent=this.c.sent+' '+this.c.reference+': '+result.id;this.speak('sent');}
     catch{this.el('status').textContent=this.c.unknown;this.el('send').hidden=true;}
     finally{this.sending=false;this.el('close').disabled=false;}
   }
-  close() {this.run++;this.cancelRecording();window.speechSynthesis?.cancel();if(this.dialog.open)this.dialog.close();this.token='';this.chunks=[];this.dialog.innerHTML='';}
+  close() {this.run++;this.cancelRecording();this.stopPrompt();if(this.dialog.open)this.dialog.close();this.token='';this.chunks=[];this.dialog.innerHTML='';}
 }
 
 
