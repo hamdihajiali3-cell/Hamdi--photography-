@@ -47,7 +47,7 @@ export class OrderGuard {
       if(body?.consent!==true||!['ar','tr'].includes(body.language)||Object.keys(body).some(k=>!['consent','language'].includes(k)))return json({error:'consent-required'},400);
       const token=crypto.randomUUID()+crypto.randomUUID(),hash=await digest(token);
       const accepted=await this.mutate(state=>{
-        if(state.created>=20||Object.values(state.sessions).filter(s=>s.ip===ip).length>=4)return false;
+        if(state.created>=20||Object.values(state.sessions).filter(s=>s.ip===ip).length>=8)return false;
         state.created++;state.sessions[hash]={ip,language:body.language,expires:this.now()+1200000,turns:0,status:'open'};return true;
       });
       return accepted?json({token,maxAudioSeconds:15}):json({error:'order-limit'},429);
