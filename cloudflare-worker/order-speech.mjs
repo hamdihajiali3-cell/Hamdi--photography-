@@ -29,18 +29,22 @@ export function readOrderPrompt(request) {
   return match&&Object.hasOwn(ORDER_PROMPTS[match[1]],match[2])?{language:match[1],key:match[2]}:null;
 }
 const errorResponse=(error,status=503)=>Response.json({error},{status,headers:{'cache-control':'no-store'}});
-export function promptResponse(bytes) {
-  return new Response(bytes,{headers:{'content-type':'audio/wav','cache-control':'public,max-age=31536000,immutable','x-content-type-options':'nosniff'}});
+export function promptResponse(bytes,cached=false) {
+  return new Response(bytes,{headers:{'content-type':'audio/wav','cache-control':'public,max-age=31536000,immutable','x-content-type-options':'nosniff','x-hamdi-prompt-cache':cached?'hit':'miss'}});
 }
 export async function synthesizeOrderPrompt(prompt,env,fetchImpl=fetch) {
-  const response=await fetchImpl('https://generativelanguage.googleapis.com/v1beta/interactions',{
+  const generate=model=>fetchImpl('https://generativelanguage.googleapis.com/v1beta/interactions',{
     method:'POST',headers:{'x-goog-api-key':env.GEMINI_API_KEY,'content-type':'application/json'},
-    body:JSON.stringify({model:'gemini-3.8-flash-tts',input:[{type:'user_input',content:[{
+    body:JSON.stringify({model,input:[{type:'user_input',content:[{
       type:'text',text:ORDER_PROMPTS[prompt.language][prompt.key],
       annotations:[{type:'speech_metadata',style:prompt.language==='ar'?'A warm, natural female studio receptionist, speaking gently in Syrian Arabic, at a conversational pace.':'Sıcak ve doğal bir kadın stüdyo asistanı, samimi ve sakin bir konuşma temposuyla.'}]
     }]}],response_format:{type:'audio'},generation_config:{speech_config:[{voice:'Aoede'}]}}),
-    signal:AbortSignal.timeout(40000)
+    signal:AbortSignal.timeout(20000)
   });
+  let response=await generate('gemini-3.8-flash-tts');
+  // Both models have a separately available free allowance in this project.
+  // Retry once with the same stock voice and the same fixed transcript.
+  if(response.status===429){await response.body?.cancel();response=await generate('gemini-3.8-flash-lite-tts');}
   if(!response.ok)throw new Error([401,403].includes(response.status)?'prompt-provider-auth':response.status===429?'prompt-provider-quota':'prompt-provider-unavailable');
   const result=await response.json();
   const blocks=result.steps?.flatMap(step=>step.type==='model_output'?(step.content||[]):[])||[];
@@ -54,7 +58,7 @@ export async function cachedOrderPrompt(guard,prompt) {
   if(guard.env.GEMINI_FREE_TIER_CONFIRMED!=='true'||!guard.env.GEMINI_API_KEY)return errorResponse('prompt-not-configured');
   const key='prompt-'+PROMPT_VERSION+'-'+prompt.language+'-'+prompt.key;
   const cached=await guard.ctx.storage.get(key);
-  if(cached)return promptResponse(cached);
+  if(cached)return promptResponse(cached,true);
   const now=guard.now(),day=new Date(now).toISOString().slice(0,10);
   const claimed=await guard.ctx.storage.transaction(async storage=>{
     const old=await storage.get('prompt-budget'),budget=old?.day===day?old:{day,used:0,next:{}};
