@@ -8,6 +8,7 @@
   <title>Hamdi Photography | مكتب الحجز</title>
   <link rel="stylesheet" href="style.css?v=voice-entry-20261103" />
   <link rel="stylesheet" href="flags.css?v=turkey-flag-20261102" />
+  <link rel="stylesheet" href="hamdi-inline/assistant.css?v=inline-20261104" />
 </head>
 <body>
   <a class="skip" href="#content" data-i18n="skip">انتقل إلى المحتوى</a>
@@ -18,13 +19,13 @@
     </div>
     <header>
       <a class="brand" href="#top" aria-label="Hamdi Photography"><b>HAMDI</b><span>PHOTOGRAPHY</span></a>
-      <nav aria-label="التنقل الرئيسي" data-i18n-aria="navigation"><a href="#services" data-i18n="navServices">الخدمات</a><a href="#steps" data-i18n="navSteps">كيف نحجز؟</a><a href="#contact" data-i18n="navContact">تواصل</a><a href="https://hamdi--photography.hamdihajiali3.workers.dev/hamdi-ai/" data-i18n="navVoice">حمدي AI</a></nav>
+      <nav aria-label="التنقل الرئيسي" data-i18n-aria="navigation"><a href="#services" data-i18n="navServices">الخدمات</a><a href="#steps" data-i18n="navSteps">كيف نحجز؟</a><a href="#contact" data-i18n="navContact">تواصل</a><a href="#hamdi-ai-dialog" data-open-hamdi-ai data-i18n="navVoice">حمدي AI</a></nav>
       <div class="head-tools"><div class="lang" role="group" aria-label="اللغة" data-i18n-aria="languageSwitcher"><button type="button" data-lang="ar" class="active" aria-pressed="true">عربي</button><button type="button" data-lang="tr" aria-pressed="false">TR</button></div><a class="book-top" href="#booking"><span aria-hidden="true">▦</span><b data-i18n="bookTop">حجز موعد</b></a></div>
     </header>
     <main id="content">
       <section class="hero" id="top" aria-labelledby="hero-title">
         <div class="studio" aria-hidden="true"><i class="film f1"></i><i class="film f2"></i><i class="film f3"></i><i class="lens"><b></b><b></b><b></b></i><i class="copper"></i><i class="line l1"></i><i class="line l2"></i></div>
-        <div class="hero-copy"><p class="eyebrow"><span data-i18n="heroKicker">HAMDI PHOTOGRAPHY / ISTANBUL</span><i></i></p><h1 id="hero-title" data-i18n-html="heroTitle">تصوير واضح.<br><em>طلب سهل.</em></h1><p data-i18n="heroText">اختر الخدمة المناسبة، اكتب التفاصيل التي تهمك، ثم أرسل طلبك عبر Gmail أو واتساب.</p><div class="notes"><span data-i18n="noteOne">أربع خدمات محددة</span><span data-i18n="noteTwo">بدون أسعار ثابتة</span></div><a class="ai-entry" href="https://hamdi--photography.hamdihajiali3.workers.dev/hamdi-ai/"><span><b data-i18n="voiceLink">تحدّث مع حمدي AI</b><small data-i18n="voiceLinkNote">اسأل عن الخدمات بالصوت</small></span><i aria-hidden="true">↗</i></a></div>
+        <div class="hero-copy"><p class="eyebrow"><span data-i18n="heroKicker">HAMDI PHOTOGRAPHY / ISTANBUL</span><i></i></p><h1 id="hero-title" data-i18n-html="heroTitle">تصوير واضح.<br><em>طلب سهل.</em></h1><p data-i18n="heroText">اختر الخدمة المناسبة، اكتب التفاصيل التي تهمك، ثم أرسل طلبك عبر Gmail أو واتساب.</p><div class="notes"><span data-i18n="noteOne">أربع خدمات محددة</span><span data-i18n="noteTwo">بدون أسعار ثابتة</span></div><a class="ai-entry" href="#hamdi-ai-dialog" data-open-hamdi-ai><span><b data-i18n="voiceLink">تحدّث مع حمدي AI</b><small data-i18n="voiceLinkNote">اسأل عن الخدمات بالصوت</small></span><i aria-hidden="true">↗</i></a></div>
         <form id="booking" class="booking" aria-describedby="booking-note booking-status">
           <div class="booking-head"><div><span data-i18n="bookingOverline">طلب موعد</span><h2 data-i18n="bookingTitle">اختر وقتك.</h2></div><i aria-hidden="true">▦</i></div>
           <label><span data-i18n="serviceLabel">نوع الخدمة</span><select id="booking-service" name="service" required><option value="" selected disabled data-i18n="servicePlaceholder">اختر خدمة</option><option value="color" data-i18n="colorTitle">تعديل ألوان الصور</option><option value="graduation" data-i18n="graduationTitle">تصوير التخرّج</option><option value="hair" data-i18n="hairTitle">تصوير الحلاقة وقصّات الشعر</option><option value="id" data-i18n="idTitle">صور الجواز والهويات</option></select></label>
@@ -45,6 +46,13 @@
     </main>
     <footer><a class="brand" href="#top"><b>HAMDI</b><span>PHOTOGRAPHY</span></a><p data-i18n="footer">© Hamdi Photography. جميع الحقوق محفوظة.</p><a href="#top" data-i18n="backTop">العودة للأعلى ↑</a></footer>
   </div><script src="script.js?v=voice-label-20261104"></script>
+
+  <dialog id="hamdi-ai-dialog" aria-labelledby="hamdi-ai-dialog-title">
+    <div class="hamdi-ai-bar"><div class="hamdi-ai-heading"><h2 id="hamdi-ai-dialog-title">HAMDI AI</h2><p id="hamdi-ai-subtitle">مساعد الاستوديو الصوتي</p></div><button type="button" id="hamdi-ai-book">طلب موعد</button><button type="button" id="hamdi-ai-close" aria-label="إغلاق">×</button></div>
+    <iframe id="hamdi-ai-frame" title="مساعد حمدي AI الصوتي" allow="microphone; autoplay" sandbox="allow-scripts allow-same-origin allow-forms" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+  </dialog>
+  <script type="module" src="hamdi-inline/site-assistant.mjs?v=inline-20261104"></script>
 </body>
 </html>
+
 

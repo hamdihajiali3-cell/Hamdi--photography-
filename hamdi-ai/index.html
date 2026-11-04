@@ -23,6 +23,12 @@ html[dir=ltr] .request-intro h2{font-family:var(--serif);line-height:1.2;font-si
 .voice-booking{margin-top:20px;min-height:50px}
 @media(max-width:760px){.hero h1{font-size:clamp(40px,11vw,50px);line-height:1.42;letter-spacing:0}.hero-notes{flex-wrap:wrap;row-gap:8px}.booking-form input,.booking-form select,.booking-form textarea,html[dir=ltr] #service{font-size:16px}.service-desc{font-size:12px}.form-note{font-size:10px;line-height:1.8}.voice-copy>p:last-child{font-size:13px}}
 @media(max-width:520px){.form-grid{grid-template-columns:1fr;gap:16px}.hero-actions{flex-wrap:wrap;gap:16px}.voice-card{padding:20px 18px}.service-card{min-height:275px}}
+/* Same assistant card when opened inside the photography website. */
+html[data-embedded=true] .topbar .brand,html[data-embedded=true] .preview-tag,html[data-embedded=true] .hero-copy,html[data-embedded=true] .services-section,html[data-embedded=true] .request-section,html[data-embedded=true] .faq-section,html[data-embedded=true] .owner-note,html[data-embedded=true] footer{display:none}
+html[data-embedded=true] .wrap{width:min(500px,calc(100% - 24px))}
+html[data-embedded=true] .topbar{justify-content:flex-end;padding-block:10px 0;border:0}
+html[data-embedded=true] .hero{display:block;padding-block:10px 20px}
+html[data-embedded=true] .voice-card{width:100%;max-width:460px;margin:auto}
 </style>
 </head>
 <body>
@@ -244,6 +250,15 @@ const copy = {
 Object.assign(copy.ar, { bookingAction:'طلب موعد عبر واتساب ↙', 'test-waiting':'جاري انتظار الرد الصوتي…', 'test-speaking':'جاري تشغيل الصوت التجريبي.' });
 Object.assign(copy.tr, { bookingAction:'WhatsApp ile randevu talebi ↘', 'test-waiting':'Sesli yanıt bekleniyor…', 'test-speaking':'Deneme sesi oynatılıyor.' });
 const delivery = document.documentElement.dataset.delivery;
+const pageOptions = new URLSearchParams(location.search);
+const embeddedParent = pageOptions.get('parentOrigin');
+const embedded = pageOptions.get('embed') === '1' && window.parent !== window
+  && ['https://hamdihajiali3-cell.github.io', 'https://hamdi--photography.hamdihajiali3.workers.dev'].includes(embeddedParent);
+if (embedded) {
+  document.documentElement.dataset.embedded = 'true';
+  Object.assign(copy.ar, { bookingAction:'طلب موعد ↙' });
+  Object.assign(copy.tr, { bookingAction:'Randevu talebi ↘' });
+}
 const staticDelivery = delivery === 'static' || (delivery === 'hybrid' && location.hostname.endsWith('.github.io'));
 if (delivery === 'hybrid' && !staticDelivery) {
   Object.assign(copy.ar, { preview:'تجربة صوتية', voiceReady:'اسأل عن الخدمات بالصوت، لمدة تصل إلى دقيقتين.', voiceOffline:'الصوت غير متاح حالياً. يمكنك استخدام نموذج الطلب.', ownerTitle:'عن تجربة الصوت', ownerNote:'تجربة صوتية محدودة، للمعلومات العامة عن الخدمات الأربع. بيانات الحجز تُكتب في النموذج المنفصل وتُرسل بواسطتك عبر واتساب.' });
@@ -321,6 +336,10 @@ function selectService(value) {
 }
 function openBooking(focusId = 'service') {
   if (voice.active) voice.stop();
+  if (embedded) {
+    window.parent.postMessage({ type:'hamdi-ai:booking', service:$('#service').value, language }, embeddedParent);
+    return;
+  }
   form.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   $('#' + focusId).focus({ preventScroll: true });
 }
@@ -373,7 +392,7 @@ $('#skip-to-form').addEventListener('click', () => { hide(voiceDialog); openBook
 $('#mute-voice').addEventListener('click', () => voice.mute()); $('#end-voice').addEventListener('click', () => voice.stop());
 window.addEventListener('pagehide', () => voice.stop(false));
 document.addEventListener('visibilitychange', () => { if (document.hidden && voice.active) voice.stop(); });
-setLanguage('ar');
+setLanguage(pageOptions.get('lang') === 'tr' ? 'tr' : 'ar');
 if (!staticDelivery && (location.protocol === 'http:' || location.protocol === 'https:')) {
   fetch('/api/status', { signal: AbortSignal.timeout(5000) }).then(response => response.ok ? response.json() : null).then(status => { configured = status?.configured === true; setVoiceState(''); updateConsent(); }).catch(() => { configured = false; setVoiceState(''); updateConsent(); });
 }
