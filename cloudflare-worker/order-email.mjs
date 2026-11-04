@@ -2,7 +2,7 @@ export const OWNER_EMAIL = 'hamdihajiali76@gmail.com';
 export const ORDER_SERVICES = Object.freeze({ color:'تعديل ألوان الصور', graduation:'تصوير التخرج', hair:'تصوير الحلاقة وقصّات الشعر', id:'صور الجواز والهويات' });
 export const ORDER_PAGE = 'https://hamdihajiali3-cell.github.io/Hamdi--photography-/';
 export const isActivationTest = order => order.service==='color' && order.name==='اختبار الربط — طلب تجريبي فقط' && order.channel==='email' && order.contact==='test@example.com' && order.when==='' && order.language==='ar' && order.notes==='هذه تجربة إعداد بطلب صاحب الموقع. لا تمثل طلب زبون أو حجز موعد.';
-export const mailConfigured = env => (env.ORDER_MAIL_SECRET || '').length >= 32 && (env.ORDER_MAIL_PROVIDER === 'formsubmit' || /^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(env.ORDER_MAIL_ENDPOINT || ''));
+export const mailConfigured = env => (env.ORDER_MAIL_SECRET || '').length >= 32 && (env.ORDER_MAIL_PROVIDER === 'formsubmit' || (env.ORDER_MAIL_PROVIDER === 'web3forms' && /^[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}$/i.test(env.WEB3FORMS_ACCESS_KEY || '')) || /^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(env.ORDER_MAIL_ENDPOINT || ''));
 const fields = ['service', 'name', 'channel', 'contact', 'when', 'notes', 'language', 'confirmed'];
 
 export function validateOrder(input) {
@@ -43,6 +43,23 @@ export async function signedMailEnvelope(order, id, secret, now = Date.now()) {
 
 export async function sendOrderEmail(order, id, env, fetchImpl = fetch) {
   if (!mailConfigured(env)) throw new Error('mail-not-configured');
+  if (env.ORDER_MAIL_PROVIDER === 'web3forms') {
+    const response = await fetchImpl('https://api.web3forms.com/submit', {
+      method:'POST',headers:{'content-type':'application/json',accept:'application/json'},
+      body:JSON.stringify({access_key:env.WEB3FORMS_ACCESS_KEY,from_name:'Hamdi Photography',
+        subject:`طلب زبون جديد — Hamdi Photography — ${id.slice(0,8)}`,name:order.name,
+        message:orderEmailText(order,id),botcheck:'',
+        ...(order.channel==='email'&&!isActivationTest(order)?{email:order.contact,replyto:order.contact}:{})}),
+      signal:AbortSignal.timeout(25000)
+    });
+    let result;try { result=await response.json(); }catch { result=null; }
+    if (!response.ok || result?.success!==true) {
+      const error=new Error('mail-unconfirmed');
+      error.diagnostic={status:response.status,message:String(result?.message||'non-json-provider-response').replaceAll(env.WEB3FORMS_ACCESS_KEY,'[redacted]').slice(0,180)};
+      throw error;
+    }
+    return {accepted:true,id};
+  }
   if (env.ORDER_MAIL_PROVIDER === 'formsubmit') {
     const response = await fetchImpl(`https://formsubmit.co/ajax/${OWNER_EMAIL}`, {
       method:'POST', headers:{ 'content-type':'application/json', accept:'application/json' },

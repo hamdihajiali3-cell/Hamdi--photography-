@@ -4,7 +4,7 @@ export function liveSettings(env = process.env) {
     model: env.GEMINI_MODEL || 'gemini-3.8-live', version: env.GEMINI_API_VERSION || 'v1beta',
     seconds: Math.min(180, Math.max(30, Number(env.VOICE_SESSION_SECONDS) || 120)),
     daily: Math.min(20, Math.max(1, Number(env.VOICE_SESSIONS_PER_DAY) || 10)),
-    orders: env.ORDER_ENABLED === 'true' && env.ORDER_MAIL_ACTIVE === 'true' && Boolean(env.ORDER_MAIL_SECRET && (env.ORDER_MAIL_PROVIDER === 'formsubmit' || env.ORDER_MAIL_ENDPOINT)),
+    orders: env.ORDER_ENABLED === 'true' && env.ORDER_MAIL_ACTIVE === 'true' && Boolean(env.ORDER_MAIL_SECRET && (env.ORDER_MAIL_PROVIDER === 'formsubmit' || (env.ORDER_MAIL_PROVIDER === 'web3forms' && env.WEB3FORMS_ACCESS_KEY) || env.ORDER_MAIL_ENDPOINT)),
   };
 }
 

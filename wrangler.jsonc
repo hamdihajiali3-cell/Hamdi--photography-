@@ -55,7 +55,7 @@
     "VOICE_SESSION_SECONDS": "120",
     "VOICE_SESSIONS_PER_DAY": "10",
     "ORDER_ENABLED": "true",
-    "ORDER_MAIL_PROVIDER": "formsubmit",
+    "ORDER_MAIL_PROVIDER": "web3forms",
     "ORDER_MAIL_ACTIVE": "false"
   },
   "ai": {
