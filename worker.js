@@ -1,5 +1,7 @@
 import { handleVoiceRequest, VoiceSessionGuard } from './cloudflare-worker/hamdi-voice.mjs';
 export { VoiceSessionGuard };
+import { handleOrderRequest, OrderGuard } from './cloudflare-worker/order-worker.mjs';
+export { OrderGuard };
 
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
@@ -263,6 +265,8 @@ async function handlePostCall(request, env) {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+
+    if (url.pathname.startsWith('/api/order/')) return handleOrderRequest(request, env);
 
     if (url.pathname === "/api/status" || url.pathname === "/api/live-token") {
       return handleVoiceRequest(request, env);

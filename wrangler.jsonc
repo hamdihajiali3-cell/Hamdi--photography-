@@ -12,6 +12,10 @@
       {
         "name": "VOICE_SESSION_GUARD",
         "class_name": "VoiceSessionGuard"
+      },
+      {
+        "name": "ORDER_GUARD",
+        "class_name": "OrderGuard"
       }
     ]
   },
@@ -26,6 +30,12 @@
       "tag": "v2-voice",
       "new_sqlite_classes": [
         "VoiceSessionGuard"
+      ]
+    },
+    {
+      "tag": "v3-orders",
+      "new_sqlite_classes": [
+        "OrderGuard"
       ]
     }
   ],
@@ -43,7 +53,12 @@
     "GEMINI_MODEL": "gemini-3.8-live",
     "GEMINI_API_VERSION": "v1beta",
     "VOICE_SESSION_SECONDS": "120",
-    "VOICE_SESSIONS_PER_DAY": "10"
+    "VOICE_SESSIONS_PER_DAY": "10",
+    "ORDER_ENABLED": "true",
+    "ORDER_MAIL_PROVIDER": "formsubmit",
+    "ORDER_MAIL_ACTIVE": "false"
+  },
+  "ai": {
+    "binding": "AI"
   }
 }
-

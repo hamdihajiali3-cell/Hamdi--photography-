@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>تجربة استقبال الطلبات — Hamdi Photography</title><style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:1.5rem;background:#20231f;color:#f5f0e7;font:16px/1.9 Arial,sans-serif}main{max-width:40rem;width:100%;padding:2rem;border:1px solid #6d7662;border-radius:1.3rem;background:#2d332a}h1{font-size:1.8rem;line-height:1.5}p{color:#dddccf}button{width:100%;min-height:3.25rem;padding:.8rem;border:0;border-radius:.6rem;background:#d2b391;color:#20231f;font:700 1rem Arial,sans-serif;cursor:pointer}button:disabled{opacity:.6}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;padding:1rem;background:#20231f;border-radius:.7rem}a{color:#e7c7a3}.tag{color:#e7c7a3;font-size:.8rem;letter-spacing:.1em}</style></head>
+<body><main><p class="tag">HAMDI PHOTOGRAPHY</p><h1>تجربة استقبال الطلبات</h1><p>هذه صفحة تهيئة البريد. سترسل طلبًا تجريبيًا واحدًا إلى <b dir="ltr">hamdihajiali76@gmail.com</b> عبر FormSubmit. الطلب مميز كتجربة، ولا يحجز موعدًا.</p><p>عند أول تجربة ستصل رسالة تفعيل من FormSubmit. افتحها واضغط <b>Activate Form</b>، ثم نتحقق من رسالة الطلب التجريبي. استقبال الطلبات عبر المساعد لن يظهر للزبائن قبل إتمام التفعيل.</p><button id="send-test" type="button">إرسال طلب التفعيل والتجربة</button><pre id="setup-status" role="status" aria-live="polite">جاهز للتجربة.</pre><a href="./">العودة إلى المساعد</a></main><script type="module">
+const button=document.querySelector('#send-test'),status=document.querySelector('#setup-status');
+button.addEventListener('click',async()=>{
+  button.disabled=true;status.textContent='جاري إرسال طلب التفعيل والتجربة…';document.documentElement.dataset.setupState='sending';
+  try {
+    const sessionResponse=await fetch('/api/order/session',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({consent:true,language:'ar'}),signal:AbortSignal.timeout(10000)});
+    const session=await sessionResponse.json();if(!sessionResponse.ok)throw new Error(session.error);
+    const response=await fetch('/api/order/send',{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+session.token},body:JSON.stringify({service:'color',name:'اختبار الربط — طلب تجريبي فقط',channel:'email',contact:'test@example.com',when:'',notes:'هذه تجربة إعداد بطلب صاحب الموقع. لا تمثل طلب زبون أو حجز موعد.',language:'ar',confirmed:true}),signal:AbortSignal.timeout(35000)});
+    const result=await response.json();
+    if(result.error==='mail-activation-required'){document.documentElement.dataset.setupState='activation-required';status.textContent='أرسلت الخدمة طلب تفعيل البريد. افتح hamdihajiali76@gmail.com وابحث عن رسالة FormSubmit، ثم اضغط Activate Form.\nرقم التجربة: '+result.id;return;}
+    if(!response.ok||result.accepted!==true)throw new Error(result.error);
+    document.documentElement.dataset.setupState='accepted';status.textContent='استلمت خدمة البريد الطلب التجريبي. تحقق من رسالة التفعيل ثم رسالة الطلب في hamdihajiali76@gmail.com.\nرقم التجربة: '+result.id;
+  }catch(error){document.documentElement.dataset.setupState='unconfirmed';status.textContent='تعذر تأكيد الإرسال. نراجع إعداد الربط قبل إعادة التجربة.\nالحالة: '+error.message;}
+});
+</script></body></html>

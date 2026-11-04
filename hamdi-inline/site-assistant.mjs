@@ -11,12 +11,19 @@ export function readBookingRequest(event, expectedWindow) {
   return { service: data.service, language: data.language };
 }
 
+export function orderWorkflowReady(event, expectedWindow) {
+  return Boolean(expectedWindow && event.source === expectedWindow && event.origin === VOICE_ORIGIN
+    && event.data && !Array.isArray(event.data) && event.data.type === 'hamdi-ai:order-ready'
+    && Object.keys(event.data).length === 1);
+}
+
 if (typeof document !== 'undefined') {
   const dialog = document.querySelector('#hamdi-ai-dialog');
   const frame = document.querySelector('#hamdi-ai-frame');
   const close = document.querySelector('#hamdi-ai-close');
   const book = document.querySelector('#hamdi-ai-book');
   const subtitle = document.querySelector('#hamdi-ai-subtitle');
+  let ordersReady = false;
   const language = () => document.documentElement.lang === 'tr' ? 'tr' : 'ar';
   const labels = () => {
     const tr = language() === 'tr';
@@ -26,6 +33,7 @@ if (typeof document !== 'undefined') {
     frame.title = tr ? 'Hamdi AI sesli asistanı' : 'مساعد حمدي AI الصوتي';
   };
   const closeAssistant = () => {
+    ordersReady = false;
     if (dialog.open) dialog.close();
     frame.src = 'about:blank';
     document.documentElement.classList.remove('hamdi-assistant-open');
@@ -50,7 +58,10 @@ if (typeof document !== 'undefined') {
     document.documentElement.classList.add('hamdi-assistant-open');
   }));
   close.addEventListener('click', closeAssistant);
-  book.addEventListener('click', () => openBooking());
+  book.addEventListener('click', () => {
+    if (ordersReady) frame.contentWindow.postMessage({ type:'hamdi-ai:start-order' }, VOICE_ORIGIN);
+    else openBooking();
+  });
   dialog.addEventListener('close', closeAssistant);
   dialog.addEventListener('click', event => {
     if (event.target !== dialog) return;
@@ -58,6 +69,7 @@ if (typeof document !== 'undefined') {
     if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) closeAssistant();
   });
   window.addEventListener('message', event => {
+    if (orderWorkflowReady(event, frame.contentWindow)) { ordersReady = true; return; }
     const request = readBookingRequest(event, frame.contentWindow);
     if (request && dialog.open) openBooking(request.service, request.language);
   });

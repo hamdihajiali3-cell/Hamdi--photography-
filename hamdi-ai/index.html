@@ -42,6 +42,16 @@ html[data-voice-state=speaking] .orb{box-shadow:inset -13px -15px 20px #031e1860
 @keyframes hamdi-ring-one{from{transform:rotate(-23deg)}to{transform:rotate(337deg)}}
 @keyframes hamdi-ring-two{from{transform:rotate(28deg)}to{transform:rotate(-332deg)}}
 @media(prefers-reduced-motion:reduce){.orbit-one,.orbit-two{animation:none!important;will-change:auto}}
+/* Guided voice orders stay in the existing site dialog. */
+.order-dialog{width:min(34rem,calc(100% - 1.5rem));max-height:calc(100dvh - 1.5rem);overflow:auto;text-align:start}
+.order-dialog [hidden]{display:none!important}
+.order-dialog label:not(.check-label){display:grid;gap:.5rem;margin:1rem 0;font-size:.85rem}
+.order-dialog :is(input:not([type=checkbox]),select,textarea){width:100%;padding:.8rem;border:1px solid var(--line);border-radius:.7rem;font:inherit;font-size:1rem;color:inherit;background:rgba(255,255,255,.55)}
+.order-dialog .order-question{font-size:1.1rem;font-weight:700;line-height:1.8}
+.order-dialog .order-speech-note{font-size:.75rem;opacity:.75}
+.order-step-tools{display:flex;flex-wrap:wrap;gap:.6rem;margin:1rem 0}
+.order-dialog #order-status{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.8;font-size:.9rem}
+.order-dialog :is(#order-send,#order-start){width:100%;margin-top:.75rem}
 </style>
 </head>
 <body>
@@ -136,7 +146,7 @@ function providerFailure(error) {
 }
 
 class CustomerVoice {
-  constructor({ onState, onTranscript }) { this.onState = onState; this.onTranscript = onTranscript; this.run = 0; this.players = new Set(); this.muted = false; }
+  constructor({ onState, onTranscript, onOrder }) { this.onState = onState; this.onTranscript = onTranscript; this.onOrder = onOrder; this.run = 0; this.players = new Set(); this.muted = false; }
   async start(language, { microphone = true } = {}) {
     this.stop(false);
     const run = ++this.run;
@@ -171,6 +181,17 @@ class CustomerVoice {
             const message = JSON.parse(text);
             if (message.error) { const error = new Error(providerFailure(message.error)); clearTimeout(timer); reject(error); this.stop(false); this.onState(failureState(error)); return; }
             if (message.setupComplete) { clearTimeout(timer); resolve(); return; }
+            if (message.toolCall?.functionCalls) {
+              for (const call of message.toolCall.functionCalls.slice(0, 4)) {
+                const args = call.args || {};
+                const service = args.service || '';
+                const allowed = call.name === 'start_order' && !this.outputOnly && typeof this.onOrder === 'function'
+                  && args && typeof args === 'object' && !Array.isArray(args) && Object.keys(args).every(key => key === 'service')
+                  && ['', 'color', 'graduation', 'hair', 'id'].includes(service);
+                socket.send(JSON.stringify({ toolResponse: { functionResponses: [{ id:call.id, name:call.name, response:{ result:allowed ? 'opening_separate_order_workflow' : 'unavailable' } }] } }));
+                if (allowed) { this.stop(false); this.onOrder(service); return; }
+              }
+            }
             const content = message.serverContent;
             if (content?.interrupted) this.clearPlayback();
             for (const part of content?.modelTurn?.parts || []) if (part.inlineData?.data && part.inlineData.mimeType?.startsWith('audio/pcm')) this.play(part.inlineData);
@@ -250,6 +271,140 @@ class CustomerVoice {
   }
 }
 
+function orderService(value) {
+  const s=value.toLowerCase().normalize('NFKC').replace(/[أإآ]/g,'ا');
+  const matches=[['color',/color|renk|düzen|duzen|الوان|لون|تعديل/],['graduation',/graduation|mezun|تخرج/],['hair',/hair|berber|saç|sac|حلاق|شعر|قصات/],['id',/\bid\b|pasaport|kimlik|هوي|جواز/]].filter(([,re])=>re.test(s));
+  return matches.length===1?matches[0][0]:'';
+}
+function orderChannel(value) {
+  const s=value.toLowerCase();
+  if(/واتس|whats/.test(s))return 'whatsapp';
+  if(/بريد|[اإ]يميل|email|e-mail|posta/.test(s))return 'email';
+  if(/sms|اسمس|رسالة|mesaj|kısa|kisa/.test(s))return 'sms';
+  return '';
+}
+function orderPhone(value) {
+  const arabic='٠١٢٣٤٥٦٧٨٩',persian='۰۱۲۳۴۵۶۷۸۹';
+  const words={صفر:'0',واحد:'1',اثنين:'2',اتنين:'2',ثلاثة:'3',ثلاثه:'3',اربعة:'4',اربعه:'4',خمسة:'5',خمسه:'5',ستة:'6',سته:'6',سبعة:'7',سبعه:'7',ثمانية:'8',ثمانيه:'8',تمانية:'8',تسعة:'9',تسعه:'9','sıfır':'0',sifir:'0',bir:'1',iki:'2','üç':'3',uc:'3','dört':'4',dort:'4','beş':'5',bes:'5','altı':'6',alti:'6',yedi:'7',sekiz:'8',dokuz:'9'};
+  return value.toLowerCase().replace(/[أإآ]/g,'ا').replace(/[٠-٩]/g,c=>arabic.indexOf(c)).replace(/[۰-۹]/g,c=>persian.indexOf(c)).split(/[\s,،.-]+/).map(w=>words[w]??w).join('').replace(/[^\d+]/g,'');
+}
+function orderWav(chunks) {
+  const size=chunks.reduce((n,c)=>n+c.length,0),bytes=new Uint8Array(44+size),v=new DataView(bytes.buffer);
+  const word=(offset,text)=>{for(let i=0;i<text.length;i++)bytes[offset+i]=text.charCodeAt(i);};
+  word(0,'RIFF');v.setUint32(4,36+size,true);word(8,'WAVEfmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,16000,true);v.setUint32(28,32000,true);v.setUint16(32,2,true);v.setUint16(34,16,true);word(36,'data');v.setUint32(40,size,true);
+  let at=44;for(const c of chunks){bytes.set(c,at);at+=c.length;}return bytes;
+}
+
+const orderCopy={
+  ar:{title:'طلبك مع حمدي',intro:'سنجهّز طلبك هنا ونرسله إلى بريد حمدي. اختيار واتساب أو SMS أو البريد يحدد كيف تفضّل أن يتواصل معك.',privacy:'عند استخدام الميكروفون يُعالج Cloudflare الصوت لتحويله إلى نص. نرسل ملخص الطلب وبيانات التواصل عبر FormSubmit إلى بريد الاستوديو. يحتفظ FormSubmit بالتفاصيل 30 يومًا. لا نحفظ التسجيل الصوتي.',consent:'أوافق على معالجة صوتي وبيانات طلبي لهذا الغرض.',start:'ابدأ الطلب',service:'الخدمة',name:'اسمك',channel:'وسيلة التواصل المفضلة',contact:'رقم التواصل أو البريد',when:'الموعد المقترح (اختياري)',notes:'ملاحظات (اختياري)',choose:'اختر',record:'قل جوابك',stop:'خلصت — استخدم التسجيل',next:'التالي',skip:'نتفق على الموعد لاحقًا',review:'راجع التفاصيل، وعدّل أي كلمة سمعها المساعد بشكل غير صحيح.',send:'أؤكد التفاصيل وأرسل الطلب إلى حمدي',pending:'هذا طلب للتنسيق. يؤكد حمدي الموعد والسعر بعد التواصل.',close:'إغلاق',listening:'عم اسمعك… مدة التسجيل حتى 15 ثانية.',processing:'جاري فهم جوابك…',invalid:'راجع هذا الحقل أو أعد تسجيل جوابك.',error:'تعذّرت المتابعة. يمكنك الكتابة أو المحاولة لاحقًا.',limit:'وصلنا لحد التجربة اليوم. يمكنك التواصل مباشرة مع الاستوديو.',sending:'جاري إرسال الطلب إلى بريد حمدي…',sent:'تم إرسال طلبك إلى بريد حمدي. سيتواصل معك عبر الوسيلة التي اخترتها بعد مراجعة الطلب.',unknown:'لم نتمكن من تأكيد الإرسال. تواصل مع الاستوديو قبل إعادة الطلب لتجنب تكراره.',reference:'رقم الطلب',qService:'شو الخدمة اللي بدك ياها؟ تعديل ألوان، تخرج، تصوير الحلاقة، أو صور جواز وهويات؟',qName:'شو اسمك؟',qChannel:'كيف بتحب حمدي يتواصل معك؟ واتساب، رسالة قصيرة، أو بريد إلكتروني؟',qPhone:'قول رقمك رقم رقم، أو اكتبه بالخانة.',qEmail:'قول عنوان بريدك الإلكتروني، أو اكتبه بالخانة حتى نتأكد منه.',qWhen:'أي يوم ووقت بتفضّل؟ اختياري، فيك تضغط نتفق لاحقًا.',qReview:'راجع طلبك المكتوب، وبعدها اضغط تأكيد الإرسال.',speechFallback:'إذا لم تسمع السؤال، يمكنك قراءته هنا والجواب بالصوت أو الكتابة.'},
+  tr:{title:'Hamdi ile talebin',intro:'Talebini burada hazırlayıp Hamdi’nin e-posta adresine göndeririz. WhatsApp, SMS veya e-posta seçimin, sana nasıl ulaşılmasını istediğini belirtir.',privacy:'Mikrofonu kullandığında Cloudflare sesi metne dönüştürür. Talep özeti ve iletişim bilgileri FormSubmit ile stüdyoya e-posta olarak gönderilir. FormSubmit ayrıntıları 30 gün saklar. Ses kaydını saklamayız.',consent:'Bu amaçla sesimin ve talep bilgilerimin işlenmesini kabul ediyorum.',start:'Talebi başlat',service:'Hizmet',name:'Adın',channel:'Tercih ettiğin iletişim yolu',contact:'Telefon veya e-posta',when:'Önerilen zaman (isteğe bağlı)',notes:'Notlar (isteğe bağlı)',choose:'Seç',record:'Yanıtını söyle',stop:'Bitti — kaydı kullan',next:'İleri',skip:'Zamanı sonra kararlaştıralım',review:'Ayrıntıları incele ve yanlış duyulan kelimeleri düzelt.',send:'Bilgileri onayla ve talebi Hamdi’ye gönder',pending:'Bu bir planlama talebidir. Zamanı ve fiyatı Hamdi görüşmeden sonra onaylar.',close:'Kapat',listening:'Dinliyorum… Kayıt en fazla 15 saniye.',processing:'Yanıtın anlaşılıyor…',invalid:'Bu alanı kontrol et veya yanıtını yeniden kaydet.',error:'Devam edilemedi. Yazabilir veya daha sonra deneyebilirsin.',limit:'Bugünkü deneme sınırına ulaşıldı. Stüdyoyla doğrudan iletişim kurabilirsin.',sending:'Talebin Hamdi’ye e-posta ile gönderiliyor…',sent:'Talebin Hamdi’ye e-posta ile gönderildi. İnceledikten sonra seçtiğin yoldan sana ulaşacak.',unknown:'Gönderim doğrulanamadı. Tekrarlamadan önce stüdyoyla iletişime geç.',reference:'Talep numarası',qService:'Hangi hizmeti istiyorsun? Renk düzenleme, mezuniyet, berber çekimi veya pasaport ve kimlik fotoğrafı?',qName:'Adın nedir?',qChannel:'Hamdi sana nasıl ulaşsın? WhatsApp, SMS veya e-posta?',qPhone:'Telefon numaranı rakam rakam söyle veya kutuya yaz.',qEmail:'E-posta adresini söyle veya doğru olması için kutuya yaz.',qWhen:'Hangi gün ve saati tercih edersin? İstersen zamanı sonra kararlaştırabiliriz.',qReview:'Yazılı talebini incele. Ardından gönderimi onayla.',speechFallback:'Soruyu duymuyorsan buradan okuyup sesle veya yazarak yanıtlayabilirsin.'}
+};
+
+class OrderAssistant {
+  constructor({getLanguage,stopOtherVoice,onState}) {
+    this.getLanguage=getLanguage;this.stopOtherVoice=stopOtherVoice;this.onState=onState;this.enabled=false;this.run=0;this.captureRun=0;
+    this.dialog=document.createElement('dialog');this.dialog.className='order-dialog';this.dialog.id='order-dialog';this.dialog.setAttribute('aria-labelledby','order-title');document.body.append(this.dialog);
+    this.dialog.addEventListener('cancel',event=>{event.preventDefault();if(!this.sending)this.close();});
+    window.addEventListener('pagehide',()=>this.close());
+    document.addEventListener('visibilitychange',()=>{if(document.hidden)this.cancelRecording();});
+  }
+  async configure() {
+    try {const r=await fetch('/api/order/status',{signal:AbortSignal.timeout(5000)});this.enabled=r.ok&&(await r.json()).enabled===true;}catch{this.enabled=false;}return this.enabled;
+  }
+  get c(){return orderCopy[this.language==='tr'?'tr':'ar'];}
+  field(key){return this.dialog.querySelector(`[name="${key}"]`);}
+  el(id){return this.dialog.querySelector('#order-'+id);}
+  speak(text) {
+    if(!window.speechSynthesis||!window.SpeechSynthesisUtterance)return;
+    speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(text);utterance.lang=this.language==='tr'?'tr-TR':'ar-SY';utterance.rate=.95;
+    const match=speechSynthesis.getVoices().find(v=>v.lang.toLowerCase().startsWith(this.language));if(match)utterance.voice=match;
+    speechSynthesis.speak(utterance);
+  }
+  open(service='') {
+    if(!this.enabled)return;
+    this.stopOtherVoice();this.close();this.language=this.getLanguage();this.stage=-1;this.token='';this.sending=false;this.run++;
+    const c=this.c,tr=this.language==='tr';
+    // This template contains only application-owned copy. Personal values use .value/textContent.
+    this.dialog.innerHTML=`<button type="button" id="order-close" class="dialog-close" aria-label="${c.close}">×</button><p class="eyebrow">HAMDI AI</p><h2 id="order-title">${c.title}</h2><p>${c.intro}</p><section id="order-consent"><p class="dialog-alert">${c.privacy}</p><label class="check-label"><input type="checkbox" id="order-agree"><span>${c.consent}</span></label><button type="button" class="button primary" id="order-start" disabled>${c.start}</button></section><form id="order-form" hidden><p id="order-question" class="order-question" aria-live="polite"></p><p class="order-speech-note">${c.speechFallback}</p><label data-order-field="service"><span>${c.service}</span><select name="service" required><option value="">${c.choose}</option><option value="color">${tr?'Fotoğraf renk düzenleme':'تعديل ألوان الصور'}</option><option value="graduation">${tr?'Mezuniyet çekimi':'تصوير التخرج'}</option><option value="hair">${tr?'Berber ve saç kesimi çekimi':'تصوير الحلاقة وقصّات الشعر'}</option><option value="id">${tr?'Pasaport ve kimlik fotoğrafları':'صور الجواز والهويات'}</option></select></label><label data-order-field="name"><span>${c.name}</span><input name="name" maxlength="100" autocomplete="name" required></label><label data-order-field="channel"><span>${c.channel}</span><select name="channel" required><option value="">${c.choose}</option><option value="whatsapp">WhatsApp</option><option value="sms">SMS</option><option value="email">${tr?'E-posta':'البريد الإلكتروني'}</option></select></label><label data-order-field="contact"><span>${c.contact}</span><input name="contact" maxlength="120" required dir="auto"></label><label data-order-field="when"><span>${c.when}</span><input name="when" maxlength="160"></label><label data-order-field="notes"><span>${c.notes}</span><textarea name="notes" maxlength="500" rows="2"></textarea></label><div class="order-step-tools" id="order-step-tools"><button type="button" class="button" id="order-record">${c.record}</button><button type="button" class="button primary" id="order-next">${c.next}</button><button type="button" class="text-link" id="order-skip">${c.skip}</button></div><p class="dialog-alert" id="order-review" hidden>${c.review}</p><p>${c.pending}</p><button type="submit" class="button primary" id="order-send" hidden>${c.send}</button></form><p id="order-status" role="status" aria-live="polite"></p>`;
+    this.el('close').onclick=()=>{if(!this.sending)this.close();};
+    this.el('agree').onchange=()=>{this.el('start').disabled=!this.el('agree').checked;};
+    this.el('start').onclick=()=>this.start();this.el('record').onclick=()=>this.recording?this.finishRecording():this.record();
+    this.el('next').onclick=()=>this.advance();this.el('skip').onclick=()=>{this.field('when').value='';this.review();};
+    this.el('form').onsubmit=event=>{event.preventDefault();this.send();};
+    this.el('form').oninput=()=>{if(!this.sending)this.el('status').textContent='';};
+    if(['color','graduation','hair','id'].includes(service))this.field('service').value=service;
+    this.dialog.showModal();
+  }
+  async start() {
+    if(!this.el('agree').checked)return;this.el('start').disabled=true;const run=this.run;
+    try {const r=await fetch('/api/order/session',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({language:this.language,consent:true}),signal:AbortSignal.timeout(10000)});const data=await r.json();if(run!==this.run)return;if(!r.ok)throw new Error(data.error);this.token=data.token;this.el('consent').hidden=true;this.el('form').hidden=false;this.stage=this.field('service').value?1:0;this.showStep();}
+    catch(error){if(run===this.run){this.el('status').textContent=error.message==='order-limit'?this.c.limit:this.c.error;this.el('start').disabled=false;}}
+  }
+  showStep() {
+    const keys=['service','name','channel','contact','when'],key=keys[this.stage];
+    this.dialog.querySelectorAll('[data-order-field]').forEach(el=>{el.hidden=el.dataset.orderField!==key;});
+    const prompt=this.c[{service:'qService',name:'qName',channel:'qChannel',contact:this.field('channel').value==='email'?'qEmail':'qPhone',when:'qWhen'}[key]];
+    this.el('question').textContent=prompt;this.el('skip').hidden=key!=='when';this.el('status').textContent='';this.speak(prompt);this.field(key).focus();
+  }
+  validField(key) {
+    const value=this.field(key).value.trim();
+    if(key==='service')return ['color','graduation','hair','id'].includes(value);
+    if(key==='channel')return ['whatsapp','sms','email'].includes(value);
+    if(key==='name')return Boolean(value);
+    if(key==='contact')return this.field('channel').value==='email'?/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(value):/^\+?\d{7,15}$/.test(orderPhone(value));
+    return true;
+  }
+  advance() {
+    const key=['service','name','channel','contact','when'][this.stage];if(!key||this.busy||this.recording)return;
+    if(!this.validField(key)){this.el('status').textContent=this.c.invalid;return;}
+    if(key==='contact'&&this.field('channel').value!=='email')this.field('contact').value=orderPhone(this.field('contact').value);
+    if(++this.stage>=5)this.review();else this.showStep();
+  }
+  review() {
+    this.stage=5;this.cancelRecording();window.speechSynthesis?.cancel();this.dialog.querySelectorAll('[data-order-field]').forEach(el=>el.hidden=false);this.el('step-tools').hidden=true;this.el('review').hidden=false;this.el('send').hidden=false;this.el('question').textContent=this.c.review;this.el('status').textContent='';this.speak(this.c.qReview);
+  }
+  async record() {
+    if(this.busy||!this.token||this.stage<0||this.stage>4)return;
+    if(!window.AudioContext||!window.AudioWorkletNode||!navigator.mediaDevices?.getUserMedia){this.el('status').textContent=this.c.error;return;}
+    const run=this.run,capture=++this.captureRun;window.speechSynthesis?.cancel();this.busy=true;
+    try {
+      const stream=await navigator.mediaDevices.getUserMedia({audio:{channelCount:1,echoCancellation:true,noiseSuppression:true},video:false});
+      if(run!==this.run||capture!==this.captureRun||document.hidden||!this.dialog.open){stream.getTracks().forEach(t=>t.stop());return;}this.stream=stream;
+      const audio=new AudioContext({sampleRate:16000});this.audio=audio;await audio.resume();
+      if(audio.sampleRate!==16000)throw new Error('sample-rate');
+      await audio.audioWorklet.addModule(new URL('./microphone.js',location.href).href);if(run!==this.run||capture!==this.captureRun||document.hidden){this.cancelRecording();return;}
+      this.chunks=[];this.bytes=0;this.source=audio.createMediaStreamSource(stream);this.worklet=new AudioWorkletNode(audio,'hamdi-microphone');this.silence=audio.createGain();this.silence.gain.value=0;
+      this.worklet.port.onmessage=event=>{if(!this.recording)return;const data=new Uint8Array(event.data);if(this.bytes+data.length<=480000){this.chunks.push(data);this.bytes+=data.length;}else this.finishRecording();};
+      this.source.connect(this.worklet);this.worklet.connect(this.silence);this.silence.connect(audio.destination);this.recording=true;this.busy=false;this.el('record').textContent=this.c.stop;this.el('next').disabled=true;this.el('skip').disabled=true;this.el('status').textContent=this.c.listening;this.onState?.('listening');this.timer=setTimeout(()=>this.finishRecording(),15000);
+    }catch{this.cancelRecording();if(run===this.run)this.el('status').textContent=this.c.error;}
+  }
+  cancelRecording() {
+    this.captureRun=(this.captureRun||0)+1;
+    clearTimeout(this.timer);this.recording=false;this.busy=false;this.stream?.getTracks().forEach(t=>t.stop());this.stream=null;this.source?.disconnect();this.worklet?.disconnect();this.silence?.disconnect();this.audio?.close().catch(()=>{});this.audio=null;this.source=this.worklet=this.silence=null;
+    if(this.el('record')){this.el('record').textContent=this.c.record;this.el('next').disabled=false;this.el('skip').disabled=false;}this.onState?.('ready');
+  }
+  async finishRecording() {
+    if(!this.recording)return;const chunks=this.chunks||[],stage=this.stage,run=this.run;this.chunks=[];this.cancelRecording();this.busy=true;this.el('record').disabled=true;this.el('next').disabled=true;this.el('skip').disabled=true;this.el('status').textContent=this.c.processing;
+    try {
+      const response=await fetch('/api/order/transcribe',{method:'POST',headers:{'content-type':'audio/wav',authorization:'Bearer '+this.token},body:orderWav(chunks),signal:AbortSignal.timeout(30000)});const data=await response.json();if(run!==this.run)return;if(!response.ok)throw new Error(data.error);
+      const key=['service','name','channel','contact','when'][stage];let value=data.text;
+      if(key==='service')value=orderService(value);if(key==='channel')value=orderChannel(value);if(key==='contact'&&this.field('channel').value!=='email')value=orderPhone(value);
+      this.field(key).value=value;this.busy=false;this.advance();
+    }catch(error){if(run===this.run)this.el('status').textContent=error.message==='order-limit'?this.c.limit:this.c.error;}
+    finally{if(run===this.run){this.busy=false;this.el('record').disabled=false;this.el('next').disabled=false;this.el('skip').disabled=false;}}
+  }
+  async send() {
+    if(this.sending||this.stage!==5||!this.el('form').reportValidity())return;
+    for(const key of ['service','name','channel','contact'])if(!this.validField(key)){this.field(key).focus();this.el('status').textContent=this.c.invalid;return;}
+    const data=Object.fromEntries(new FormData(this.el('form')));if(data.channel!=='email')data.contact=orderPhone(data.contact);data.language=this.language;data.confirmed=true;
+    window.speechSynthesis?.cancel();this.sending=true;this.el('send').disabled=true;this.el('close').disabled=true;this.el('status').textContent=this.c.sending;
+    try {const response=await fetch('/api/order/send',{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+this.token},body:JSON.stringify(data),signal:AbortSignal.timeout(35000)});const result=await response.json();if(!response.ok||result.accepted!==true)throw new Error('unconfirmed');this.el('form').hidden=true;this.el('status').textContent=this.c.sent+' '+this.c.reference+': '+result.id;this.speak(this.c.sent);}
+    catch{this.el('status').textContent=this.c.unknown;this.el('send').hidden=true;}
+    finally{this.sending=false;this.el('close').disabled=false;}
+  }
+  close() {this.run++;this.cancelRecording();window.speechSynthesis?.cancel();if(this.dialog.open)this.dialog.close();this.token='';this.chunks=[];this.dialog.innerHTML='';}
+}
+
 
 const copy = {
   ar: {
@@ -314,7 +469,20 @@ function setVoiceState(state) {
   $('#mute-voice').textContent = text(state === 'muted' ? 'unmute' : 'mute');
   if (!active) { transcriptText = ''; $('#transcript').textContent = ''; $('#transcript').hidden = true; }
 }
-const voice = new CustomerVoice({ onState: setVoiceState, onTranscript: value => { transcriptText = (transcriptText + value).slice(-1500); $('#transcript').textContent = transcriptText; $('#transcript').hidden = false; } });
+const voice = new CustomerVoice({ onState: setVoiceState, onTranscript: value => { transcriptText = (transcriptText + value).slice(-1500); $('#transcript').textContent = transcriptText; $('#transcript').hidden = false; }, onOrder: service => { if (orderAssistant.enabled) orderAssistant.open(service); else openBooking(); } });
+const orderAssistant = new OrderAssistant({ getLanguage: () => language, stopOtherVoice: () => voice.stop(false), onState: state => setVoiceState(state) });
+orderAssistant.configure().then(enabled => {
+  if (!enabled) return;
+  Object.assign(copy.ar, { voiceDescription:'اسأل عن الخدمات، أو اطلب جلستك بالصوت خطوة بخطوة. نراجع التفاصيل معك ثم نرسلها إلى بريد حمدي.', bookingAction:'اطلب جلسة مع المساعد ↙' });
+  Object.assign(copy.tr, { voiceDescription:'Hizmetleri sor veya çekim talebini adım adım sesle hazırla. Ayrıntıları seninle kontrol edip Hamdi’ye e-posta ile göndeririz.', bookingAction:'Asistanla çekim talebi ↘' });
+  $('[data-t="voiceDescription"]').textContent = text('voiceDescription');
+  $('.voice-booking').textContent = text('bookingAction');
+  if (embedded) window.parent.postMessage({type:'hamdi-ai:order-ready'}, embeddedParent);
+});
+window.addEventListener('message', event => {
+  if (embedded && event.origin === embeddedParent && event.source === window.parent && event.data?.type === 'hamdi-ai:start-order'
+    && Object.keys(event.data).length === 1 && orderAssistant.enabled) orderAssistant.open($('#service').value);
+});
 
 function updateConsent() {
   $('#confirm-voice').disabled = !configured || !$('#adult-check').checked || !$('#voice-check').checked;
@@ -326,6 +494,7 @@ function updateConsent() {
 }
 function setLanguage(next) {
   if (!copy[next]) return;
+  if (orderAssistant.dialog.open) orderAssistant.close();
   if (voice.active) voice.stop(false);
   language = next;
   document.documentElement.lang = language; document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
@@ -349,6 +518,7 @@ function selectService(value) {
 }
 function openBooking(focusId = 'service') {
   if (voice.active) voice.stop();
+  if (orderAssistant.enabled) { orderAssistant.open($('#service').value); return; }
   if (embedded) {
     window.parent.postMessage({ type:'hamdi-ai:booking', service:$('#service').value, language }, embeddedParent);
     return;
