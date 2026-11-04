@@ -3,3 +3,18 @@
 
 
 .ai-entry{display:flex;align-items:center;justify-content:space-between;gap:1.2rem;width:100%;max-width:27rem;margin-top:1.5rem;padding:1rem 1.15rem;border:1px solid var(--copper);border-radius:.55rem;background:var(--light);color:var(--ink)}.ai-entry b{display:block;font-size:.95rem}.ai-entry small{display:block;margin-top:.35rem;font-size:.7rem;color:var(--muted);line-height:1.7}.ai-entry>i{font-style:normal;font-size:1.5rem;color:var(--copper)}.ai-entry:hover{background:#fffaf1}.ai-entry:focus-visible{outline:2px solid var(--copper);outline-offset:4px}
+
+/* Short request form: two required fields, optional details, WhatsApp first. */
+.booking-intro{margin:1rem 0 .15rem;color:var(--muted);font-size:.76rem;line-height:1.7}
+.booking-extras{margin-top:1.15rem;padding:.85rem 0;border-block:1px solid var(--line)}
+.booking-extras summary{display:flex;align-items:center;justify-content:space-between;gap:.75rem;min-height:1.7rem;cursor:pointer;list-style:none;color:var(--olive);font-size:.72rem;font-weight:700}
+.booking-extras summary::-webkit-details-marker{display:none}
+.booking-extras summary i{font-size:1.2rem;font-style:normal;transition:transform .2s}
+.booking-extras[open] summary i{transform:rotate(45deg)}
+.booking-extras summary:focus-visible,.booking-open-draft:focus-visible{outline:2px solid var(--copper);outline-offset:4px}
+.booking .send{grid-template-columns:1fr;gap:.3rem}
+.booking .send [data-channel="whatsapp"]{justify-content:space-between;min-height:3.2rem;border:1px solid var(--olive);background:var(--olive);color:#f8f3e9;font-size:.8rem}
+.booking .send [data-channel="gmail"]{justify-content:center;min-height:2.2rem;padding:.45rem;border:0;background:transparent;color:var(--muted);font-size:.7rem;font-weight:600;text-decoration:underline;text-underline-offset:.2rem}
+.booking-pending{margin:.3rem 0 0;color:var(--muted);font-size:.68rem;text-align:center}
+.booking-open-draft{display:inline-block;margin-top:.25rem;color:var(--olive);font-size:.78rem;font-weight:700;text-decoration:underline;text-underline-offset:.2rem}
+.booking-open-draft[hidden]{display:none}
