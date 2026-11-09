@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#20231f" />
-  <meta name="description" content="Hamdi Photography — خدمات تصوير واضحة وحجز موعد عبر Gmail أو واتساب." />
+  <meta name="description" content="Hamdi Photography — خدمات تصوير واضحة وحجز موعد عبر Gmail." />
   <title>Hamdi Photography | مكتب الحجز</title>
-  <link rel="stylesheet" href="style.css?v=quick-request-20261104" />
+  <link rel="stylesheet" href="style.css?v=booking-email-20261109" />
   <link rel="stylesheet" href="flags.css?v=turkey-flag-20261102" />
   <link rel="stylesheet" href="hamdi-inline/assistant.css?v=inline-20261104" />
 </head>
@@ -25,7 +25,7 @@
     <main id="content">
       <section class="hero" id="top" aria-labelledby="hero-title">
         <div class="studio" aria-hidden="true"><i class="film f1"></i><i class="film f2"></i><i class="film f3"></i><i class="lens"><b></b><b></b><b></b></i><i class="copper"></i><i class="line l1"></i><i class="line l2"></i></div>
-        <div class="hero-copy"><p class="eyebrow"><span data-i18n="heroKicker">HAMDI PHOTOGRAPHY / ISTANBUL</span><i></i></p><h1 id="hero-title" data-i18n-html="heroTitle">تصوير واضح.<br><em>طلب سهل.</em></h1><p data-i18n="heroText">اختر الخدمة، اكتب اسمك، وأكمل إرسال طلبك برسالة واتساب جاهزة.</p><div class="notes"><span data-i18n="noteOne">أربع خدمات محددة</span><span data-i18n="noteTwo">بدون أسعار ثابتة</span></div><a class="ai-entry" href="#hamdi-ai-dialog" data-open-hamdi-ai><span><b data-i18n="voiceLink">تحدّث مع حمدي AI</b><small data-i18n="voiceLinkNote">اسأل عن الخدمات بالصوت</small></span><i aria-hidden="true">↗</i></a></div>
+        <div class="hero-copy"><p class="eyebrow"><span data-i18n="heroKicker">HAMDI PHOTOGRAPHY / ISTANBUL</span><i></i></p><h1 id="hero-title" data-i18n-html="heroTitle">تصوير واضح.<br><em>طلب سهل.</em></h1><p data-i18n="heroText">اختر الخدمة، اكتب اسمك، وأرسل طلبك عبر Gmail.</p><div class="notes"><span data-i18n="noteOne">أربع خدمات محددة</span><span data-i18n="noteTwo">بدون أسعار ثابتة</span></div><a class="ai-entry" href="#hamdi-ai-dialog" data-open-hamdi-ai><span><b data-i18n="voiceLink">تحدّث مع حمدي AI</b><small data-i18n="voiceLinkNote">اسأل عن الخدمات بالصوت</small></span><i aria-hidden="true">↗</i></a></div>
         <form id="booking" class="booking" aria-describedby="booking-note booking-status">
           <div class="booking-head"><div><span data-i18n="bookingOverline">طلب موعد</span><h2 data-i18n="bookingTitle">طلبك بسهولة.</h2></div><i aria-hidden="true">▦</i></div>
           <p class="booking-intro" data-i18n="bookingIntro">اختر الخدمة واكتب اسمك، والباقي اختياري.</p>
@@ -37,8 +37,8 @@
             <label><span data-i18n="phoneLabel">رقم الهاتف (اختياري)</span><input name="phone" type="tel" autocomplete="tel" inputmode="tel" data-i18n-placeholder="phonePlaceholder" placeholder="05…"></label>
             <label><span data-i18n="detailsLabel">تفاصيل إضافية</span><textarea name="details" rows="2" maxlength="1500" data-i18n-placeholder="detailsPlaceholder" placeholder="اكتب أي تفاصيل تساعد في التنسيق"></textarea></label>
           </details>
-          <p class="booking-note" id="booking-note" data-i18n="bookingNote">ستفتح رسالة جاهزة في واتساب؛ اضغط إرسال حتى يصل طلبك.</p>
-          <div class="send"><button type="submit" data-channel="whatsapp"><span data-i18n="sendWhatsApp">إرسال الطلب عبر واتساب</span><i aria-hidden="true">↗</i></button><button type="submit" data-channel="gmail"><span data-i18n="sendGmail">أو أرسل عبر Gmail</span></button></div>
+          <p class="booking-note" id="booking-note" data-i18n="bookingNote">ستفتح رسالة جاهزة في Gmail. راجعها واضغط إرسال.</p>
+          <div class="send"><button type="submit" data-channel="gmail"><span data-i18n="sendGmail">إرسال الطلب عبر Gmail</span><i aria-hidden="true">↗</i></button></div>
           <p class="booking-pending" data-i18n="bookingPending">الموعد يُؤكَّد بعد التواصل مع حمدي.</p>
           <p class="status" id="booking-status" role="status" aria-live="polite"></p>
           <a id="booking-open-draft" class="booking-open-draft" target="_blank" rel="noopener noreferrer" hidden data-i18n="openDraft">فتح الرسالة الجاهزة</a>
@@ -50,11 +50,11 @@
         <article class="card hair"><div class="art scissors" aria-hidden="true"><i></i></div><div><span>03</span><h3 data-i18n="hairTitle">تصوير الحلاقة وقصّات الشعر</h3><p data-i18n="hairText">توثيق القصّة والحركة والملمس.</p><button type="button" data-service="hair"><b data-i18n="choose">اختر الخدمة</b><i>↗</i></button></div></article>
         <article class="card ident"><div class="art photo" aria-hidden="true"><i></i><i></i><i></i></div><div><span>04</span><h3 data-i18n="idTitle">صور الجواز والهويات</h3><p data-i18n="idText">صور شخصية واضحة لمعاملاتك.</p><button type="button" data-service="id"><b data-i18n="choose">اختر الخدمة</b><i>↗</i></button></div></article>
       </div></section>
-      <section class="steps" id="steps" aria-labelledby="steps-title"><div><p class="eyebrow"><span data-i18n="stepsKicker">طريقة الحجز</span><i></i></p><h2 id="steps-title" data-i18n-html="stepsTitle">ثلاث خطوات<br><em>وبدون تعقيد.</em></h2></div><ol><li><span>01</span><h3 data-i18n="step1">اختر الخدمة</h3><p data-i18n="step1Text">حدد الخدمة التي تحتاجها من البطاقات الأربع.</p></li><li><span>02</span><h3 data-i18n="step2">أضف التفاصيل</h3><p data-i18n="step2Text">اكتب اسمك. الموعد والتفاصيل الإضافية اختياريان.</p></li><li><span>03</span><h3 data-i18n="step3">أرسل الطلب</h3><p data-i18n="step3Text">افتح رسالة واتساب الجاهزة واضغط إرسال. يؤكد حمدي الموعد بعد التواصل.</p></li></ol></section>
+      <section class="steps" id="steps" aria-labelledby="steps-title"><div><p class="eyebrow"><span data-i18n="stepsKicker">طريقة الحجز</span><i></i></p><h2 id="steps-title" data-i18n-html="stepsTitle">ثلاث خطوات<br><em>وبدون تعقيد.</em></h2></div><ol><li><span>01</span><h3 data-i18n="step1">اختر الخدمة</h3><p data-i18n="step1Text">حدد الخدمة التي تحتاجها من البطاقات الأربع.</p></li><li><span>02</span><h3 data-i18n="step2">أضف التفاصيل</h3><p data-i18n="step2Text">اكتب اسمك. الموعد والتفاصيل الإضافية اختياريان.</p></li><li><span>03</span><h3 data-i18n="step3">أرسل الطلب</h3><p data-i18n="step3Text">افتح الرسالة الجاهزة في Gmail واضغط إرسال. يؤكد حمدي الموعد بعد التواصل.</p></li></ol></section>
       <section class="contact" id="contact" aria-labelledby="contact-title"><div><p class="eyebrow"><span data-i18n="contactKicker">تواصل مباشر</span><i></i></p><h2 id="contact-title" data-i18n-html="contactTitle">ابدأ من<br><em>التفاصيل.</em></h2></div><div class="contact-links"><a href="mailto:hamdihajiali76@gmail.com"><span>Gmail</span><b dir="ltr">hamdihajiali76@gmail.com</b><i>↗</i></a><a href="tel:05377423671"><span data-i18n="call">اتصال مباشر</span><b dir="ltr">0537 742 36 71</b><i>↗</i></a></div></section>
     </main>
     <footer><a class="brand" href="#top"><b>HAMDI</b><span>PHOTOGRAPHY</span></a><p data-i18n="footer">© Hamdi Photography. جميع الحقوق محفوظة.</p><a href="#top" data-i18n="backTop">العودة للأعلى ↑</a></footer>
-  </div><script src="script.js?v=quick-request-20261104"></script>
+  </div><script src="script.js?v=booking-email-20261109"></script>
 
   <dialog id="hamdi-ai-dialog" aria-labelledby="hamdi-ai-dialog-title">
     <div class="hamdi-ai-bar"><div class="hamdi-ai-heading"><h2 id="hamdi-ai-dialog-title">HAMDI AI</h2><p id="hamdi-ai-subtitle">مساعد الاستوديو الصوتي</p></div><button type="button" id="hamdi-ai-book">طلب موعد</button><button type="button" id="hamdi-ai-close" aria-label="إغلاق">×</button></div>
