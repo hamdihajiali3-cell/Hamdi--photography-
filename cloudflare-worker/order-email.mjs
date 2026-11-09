@@ -4,6 +4,7 @@ export const ORDER_PAGE = 'https://hamdihajiali3-cell.github.io/Hamdi--photograp
 export const isActivationTest = order => order.service==='color' && order.name==='اختبار الربط — طلب تجريبي فقط' && order.channel==='email' && order.contact==='test@example.com' && order.when==='' && order.language==='ar' && order.notes==='هذه تجربة إعداد بطلب صاحب الموقع. لا تمثل طلب زبون أو حجز موعد.';
 export const mailConfigured = env => (env.ORDER_MAIL_SECRET || '').length >= 32 && (env.ORDER_MAIL_PROVIDER === 'formsubmit' || (env.ORDER_MAIL_PROVIDER === 'web3forms' && /^[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}$/i.test(env.WEB3FORMS_ACCESS_KEY || '')) || /^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(env.ORDER_MAIL_ENDPOINT || ''));
 const fields = ['service', 'name', 'channel', 'contact', 'when', 'notes', 'language', 'confirmed'];
+const validEmail = value => /^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(value);
 
 export function validateOrder(input) {
   if (!input || typeof input !== 'object' || Array.isArray(input) || Object.keys(input).some(k => !fields.includes(k))) return null;
@@ -16,9 +17,8 @@ export function validateOrder(input) {
   }
   if (input.confirmed !== true || !Object.hasOwn(ORDER_SERVICES, order.service) || !order.name
     || !['ar', 'tr'].includes(order.language) || !['whatsapp', 'sms', 'email'].includes(order.channel)) return null;
-  if (order.channel === 'email') {
-    if (!/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(order.contact)) return null;
-  } else if (!/^\+?[\d ()-]{7,30}$/.test(order.contact) || !/^[\d]{7,15}$/.test(order.contact.replace(/\D/g, ''))) return null;
+  const phone = /^\+?[\d ()-]{7,30}$/.test(order.contact) && /^\d{7,15}$/.test(order.contact.replace(/\D/g,''));
+  if (!phone && !(order.channel === 'email' && validEmail(order.contact))) return null;
   return order;
 }
 
@@ -44,18 +44,21 @@ export async function signedMailEnvelope(order, id, secret, now = Date.now()) {
 export async function sendOrderEmail(order, id, env, fetchImpl = fetch) {
   if (order.channel !== 'email') throw new Error('wrong-delivery-channel');
   if (!mailConfigured(env)) throw new Error('mail-not-configured');
+  const replyTo = !isActivationTest(order) && validEmail(order.contact) ? order.contact : '';
   if (env.ORDER_MAIL_PROVIDER === 'web3forms') {
     const response = await fetchImpl('https://api.web3forms.com/submit', {
       method:'POST',headers:{'content-type':'application/json',accept:'application/json'},
       body:JSON.stringify({access_key:env.WEB3FORMS_ACCESS_KEY,from_name:'Hamdi Photography',
         subject:`طلب زبون جديد — Hamdi Photography — ${id.slice(0,8)}`,name:order.name,
         message:orderEmailText(order,id),botcheck:'',
-        ...(order.channel==='email'&&!isActivationTest(order)?{email:order.contact,replyto:order.contact}:{})}),
+        ...(replyTo?{email:replyTo,replyto:replyTo}:{})}),
       signal:AbortSignal.timeout(25000)
     });
     let result;try { result=await response.json(); }catch { result=null; }
     if (!response.ok || result?.success!==true) {
-      const error=new Error('mail-unconfirmed');
+      const code = response.status === 429 ? 'mail-rate-limited'
+        : response.status === 403 ? 'mail-server-rejected' : 'mail-unconfirmed';
+      const error=new Error(code);
       error.diagnostic={status:response.status,message:String(result?.message||'non-json-provider-response').replaceAll(env.WEB3FORMS_ACCESS_KEY,'[redacted]').slice(0,180)};
       throw error;
     }
@@ -67,7 +70,7 @@ export async function sendOrderEmail(order, id, env, fetchImpl = fetch) {
       body:JSON.stringify({ name:order.name, message:orderEmailText(order,id),
         _subject:`طلب زبون جديد — Hamdi Photography — ${id.slice(0,8)}`,
         _url:ORDER_PAGE, _captcha:'false', _template:'table',
-        ...(order.channel === 'email' ? { _replyto:order.contact } : {}) }),
+        ...(replyTo ? { _replyto:replyTo } : {}) }),
       signal:AbortSignal.timeout(25000)
     });
     const raw = await response.text();

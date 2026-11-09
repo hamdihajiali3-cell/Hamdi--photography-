@@ -107,7 +107,9 @@ export class OrderGuard {
     }catch(error) {
       // A timeout can happen after mail acceptance. Never retry with a fresh ID.
       await this.mutate(state=>{if(state.sessions[hash]?.id===claim.id)state.sessions[hash].status='uncertain';});
-      return json({error:error.message==='mail-activation-required'?'mail-activation-required':'delivery-unconfirmed',id:claim.id,...(this.env.ORDER_MAIL_ACTIVE!=='true'&&error.diagnostic?{diagnostic:error.diagnostic}:{})},502);
+      const mailErrors=['mail-activation-required','mail-rate-limited','mail-server-rejected'];
+      const code=order.channel==='email'&&mailErrors.includes(error.message)?error.message:'delivery-unconfirmed';
+      return json({error:code,id:claim.id,...(setup&&error.diagnostic?{diagnostic:error.diagnostic}:{})},502);
     }
   }
 }

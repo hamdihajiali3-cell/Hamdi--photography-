@@ -25,6 +25,7 @@ export const PROMPT_VERSION='aoede-v1';
 const channelPrompts = {
   ar:{
     channel:'بأي طريقة بدك المساعد يرسل طلبك لحمدي؟ اختار من القنوات المتاحة.',
+    email:'حتى يقدر حمدي يتواصل معك، قول رقم هاتفك رقم رقم، أو أعطينا بريدك الإلكتروني.',
     sent:'قبلت خدمة الإرسال طلبك. احتفظ برقم الطلب للتواصل مع الاستوديو.',
     when:'أي يوم ووقت بتفضّل؟ إذا بدك نتفق بعدين، قول بدون موعد.',
     received:'وصل طلبك لخدمة الإرسال. ملخص طلبك ورقمه ظاهرين قدّامك.',
@@ -32,6 +33,7 @@ const channelPrompts = {
   },
   tr:{
     channel:'Asistan talebini Hamdi’ye nasıl göndersin? Kullanılabilir kanallardan birini seç.',
+    email:'Hamdi sana ulaşabilsin diye telefon numaranı rakam rakam söyle veya e-posta adresini ver.',
     sent:'Gönderim sağlayıcısı talebini kabul etti. Stüdyoyla görüşmek için talep numaranı sakla.',
     when:'Hangi gün ve saati tercih edersin? İstersen zamanı sonra kararlaştıralım de.',
     received:'Gönderim sağlayıcısı talebini aldı. Talep özeti ve numarası ekranda.',

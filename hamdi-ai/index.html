@@ -305,7 +305,29 @@ function orderChannel(value) {
 function orderPhone(value) {
   const arabic='٠١٢٣٤٥٦٧٨٩',persian='۰۱۲۳۴۵۶۷۸۹';
   const words={صفر:'0',واحد:'1',اثنين:'2',اتنين:'2',ثلاثة:'3',ثلاثه:'3',اربعة:'4',اربعه:'4',خمسة:'5',خمسه:'5',ستة:'6',سته:'6',سبعة:'7',سبعه:'7',ثمانية:'8',ثمانيه:'8',تمانية:'8',تسعة:'9',تسعه:'9','sıfır':'0',sifir:'0',bir:'1',iki:'2','üç':'3',uc:'3','dört':'4',dort:'4','beş':'5',bes:'5','altı':'6',alti:'6',yedi:'7',sekiz:'8',dokuz:'9'};
-  return value.toLowerCase().replace(/[أإآ]/g,'ا').replace(/[٠-٩]/g,c=>arabic.indexOf(c)).replace(/[۰-۹]/g,c=>persian.indexOf(c)).split(/[\s,،.-]+/).map(w=>words[w]??w).join('').replace(/[^\d+]/g,'');
+  const spoken = normalizedOrderReply(value).replace(/^(?:رقمي|رقم هاتفي|رقم الهاتف|telefon numaram|numaram)\s*[:،]?\s*/,'');
+  const number = spoken.replace(/[٠-٩]/g,c=>arabic.indexOf(c)).replace(/[۰-۹]/g,c=>persian.indexOf(c))
+    .replace(/[()]/g,'').split(/[\s,،.-]+/).map(word=>Object.hasOwn(words,word)?words[word]:word).join('');
+  return /^\+?\d+$/.test(number) ? number : '';
+}
+
+function orderContact(value, channel) {
+  const email = /^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/;
+  if (channel === 'email') {
+    const address = value.trim();
+    if (email.test(address)) return address;
+    const spoken = normalizedOrderReply(address)
+      .replace(/^(?:بريدي(?: الالكتروني)?|ايميلي|e-posta adresim)\s*[:،]?\s*/,'')
+      .replace(/\s+(?:at|ات|ات ساين|et|kuyruklu a)\s+/g,'@')
+      .replace(/\s+(?:dot|دوت|نقطة|nokta)\s+/g,'.')
+      .replace(/\s*([@.])\s*/g,'$1')
+      .replace(/@(?:جي ?ميل|جي مايل|g mail)(?=\.)/g,'@gmail')
+      .replace(/\.(?:كوم|kom)[.!؟]?$/g,'.com')
+      .replace(/[.!؟]$/,'');
+    if (/^[\x21-\x7e]+$/.test(spoken) && email.test(spoken)) return spoken;
+  }
+  const phone = orderPhone(value);
+  return /^\+?\d{7,15}$/.test(phone) ? phone : '';
 }
 function orderWav(chunks) {
   const size=chunks.reduce((n,c)=>n+c.length,0),bytes=new Uint8Array(44+size),v=new DataView(bytes.buffer);
@@ -316,7 +338,7 @@ function orderWav(chunks) {
 
 function orderPromptUrl(language,key) {
   if (!['ar','tr'].includes(language) || !['service','name','channel','phone','email','when','review','sent','received','delivered'].includes(key)) return null;
-  const version = ['channel','sent','when','received','delivered'].includes(key) ? 'aoede-v2' : 'aoede-v1';
+  const version = ['channel','email','sent','when','received','delivered'].includes(key) ? 'aoede-v2' : 'aoede-v1';
   return '/api/order/prompt/'+version+'/'+language+'/'+key+'.wav';
 }
 
@@ -342,12 +364,15 @@ const orderCopy = {
     channelUnavailable:'قناة الإرسال هذه غير مفعّلة. اختَر إحدى القنوات المتاحة إذا كانت تناسبك.',
     smsLimit:'نص الطلب طويل لرسالة SMS أو يحتوي رابطًا. اختصر التفاصيل واحذف الروابط.',
     error:'تعذّرت المتابعة. يمكنك الكتابة أو المحاولة لاحقًا.', limit:'وصلنا لحد الجلسات اليوم. يمكنك التواصل مباشرة مع الاستوديو.',
+    expired:'انتهت جلسة الطلب قبل الإرسال. افتح طلبًا جديدًا إذا أردت المتابعة.',
+    mailBusy:'خدمة البريد طلبت الانتظار. تعذّر إكمال إرسال الطلب الآن.',
+    mailRejected:'خدمة البريد رفضت الإرسال. تواصل مع الاستوديو لمتابعة طلبك.',
     sending:'عم نرسل طلبك عبر', accepted:'وصل طلبك لخدمة الإرسال عبر', delivered:'وصل طلبك لحمدي عبر',
     receiptTitle:'ملخص طلبك', cancelled:'تم إلغاء الطلب قبل الإرسال.',
     unknown:'لم نتمكن من تأكيد الإرسال. تواصل مع الاستوديو قبل إعادة الطلب لتجنب تكراره.',
     reference:'رقم الطلب', qService:'شو الخدمة اللي بدك ياها؟ تعديل ألوان، تخرج، تصوير الحلاقة، أو صور جواز وهويات؟', qName:'شو اسمك؟',
     qChannel:'بأي طريقة بدك المساعد يرسل طلبك لحمدي؟ اختار من القنوات المتاحة.',
-    qPhone:'قول رقمك رقم رقم، أو اكتبه بالخانة.', qEmail:'قول عنوان بريدك الإلكتروني، أو اكتبه بالخانة حتى نتأكد منه.',
+    qPhone:'قول رقمك رقم رقم، أو اكتبه بالخانة.', qEmail:'حتى يقدر حمدي يتواصل معك، قول رقم هاتفك رقم رقم، أو أعطينا بريدك الإلكتروني.',
     qWhen:'أي يوم ووقت بتفضّل؟ إذا بدك نتفق بعدين، قول «بدون موعد».'
   },
   tr:{
@@ -362,12 +387,15 @@ const orderCopy = {
     channelUnavailable:'Bu gönderim kanalı etkin değil. Sana uygunsa kullanılabilir bir kanal seç.',
     smsLimit:'SMS için metin fazla uzun veya bağlantı içeriyor. Ayrıntıları kısalt ve bağlantıları kaldır.',
     error:'Devam edilemedi. Yazabilir veya daha sonra deneyebilirsin.', limit:'Bugünkü oturum sınırına ulaşıldı. Stüdyoyla doğrudan iletişim kurabilirsin.',
+    expired:'Talep gönderilmeden oturum sona erdi. Devam etmek için yeni bir talep aç.',
+    mailBusy:'E-posta hizmeti beklemeyi istedi. Talep şu anda gönderilemedi.',
+    mailRejected:'E-posta hizmeti gönderimi reddetti. Talebin için stüdyoyla iletişime geç.',
     sending:'Talep şu kanalla gönderiliyor:', accepted:'Gönderim sağlayıcısı talebini aldı:', delivered:'Talep Hamdi’ye şu kanalla teslim edildi:',
     receiptTitle:'Talep özeti', cancelled:'Talep gönderilmeden iptal edildi.',
     unknown:'Gönderim doğrulanamadı. Tekrarlamadan önce stüdyoyla iletişime geç.',
     reference:'Talep numarası', qService:'Hangi hizmeti istiyorsun? Renk düzenleme, mezuniyet, berber çekimi veya pasaport ve kimlik fotoğrafı?', qName:'Adın nedir?',
     qChannel:'Asistan talebini Hamdi’ye nasıl göndersin? Kullanılabilir kanallardan birini seç.',
-    qPhone:'Telefon numaranı rakam rakam söyle veya kutuya yaz.', qEmail:'E-posta adresini söyle veya doğru olması için kutuya yaz.',
+    qPhone:'Telefon numaranı rakam rakam söyle veya kutuya yaz.', qEmail:'Hamdi sana ulaşabilsin diye telefon numaranı rakam rakam söyle veya e-posta adresini ver.',
     qWhen:'Hangi gün ve saati tercih edersin? İstersen “zamanı sonra kararlaştıralım” de.'
   }
 };
@@ -576,8 +604,8 @@ class OrderAssistant {
   updateContactField() {
     const email = this.field('channel').value === 'email';
     const tr = this.language === 'tr';
-    this.el('contact-label').textContent = email ? (tr?'E-posta adresin':'بريدك الإلكتروني') : (tr?'Telefon numaran':'رقم هاتفك');
-    this.field('contact').inputMode = email ? 'email' : 'tel';
+    this.el('contact-label').textContent = email ? this.c.contact : (tr?'Telefon numaran':'رقم هاتفك');
+    this.field('contact').inputMode = email ? 'text' : 'tel';
   }
 
   showStep(play = Boolean(this.stream)) {
@@ -607,9 +635,7 @@ class OrderAssistant {
     if (key === 'service') return ['color','graduation','hair','id'].includes(value);
     if (key === 'channel') return this.channels[value] === true;
     if (key === 'name') return Boolean(value);
-    if (key === 'contact') {
-      return this.field('channel').value === 'email' ? /^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(value) : /^\+?\d{7,15}$/.test(orderPhone(value));
-    }
+    if (key === 'contact') return Boolean(orderContact(value,this.field('channel').value));
     return true;
   }
 
@@ -622,7 +648,7 @@ class OrderAssistant {
     this.stopTurn();
     this.stopPrompt();
     this.repeats = 0;
-    if (key === 'contact' && this.field('channel').value !== 'email') this.field('contact').value = orderPhone(this.field('contact').value);
+    if (key === 'contact') this.field('contact').value = orderContact(this.field('contact').value,this.field('channel').value);
     this.stage++;
     if (this.stage === orderFields.length) this.review();
     else this.showStep();
@@ -780,7 +806,7 @@ class OrderAssistant {
       let value = result.text;
       if (key === 'service') value = orderService(value);
       if (key === 'channel') value = orderChannel(value);
-      if (key === 'contact' && this.field('channel').value !== 'email') value = orderPhone(value);
+      if (key === 'contact') value = orderContact(value,this.field('channel').value) || value;
       if (key === 'when' && /بدون موعد|بلا موعد|نتفق لاحقا|نتفق بعدين|sonra kararlaştıralım|zaman fark etmez/i.test(transcript)) value = '';
       if (key === 'channel' && value && !this.channels[value]) {
         this.repeatAnswer(this.c.channelUnavailable);
@@ -851,7 +877,7 @@ class OrderAssistant {
       return;
     }
     const data = Object.fromEntries(new FormData(this.el('form')));
-    if (data.channel !== 'email') data.contact = orderPhone(data.contact);
+    data.contact = orderContact(data.contact,data.channel);
     Object.assign(data,{language:this.language,confirmed:true});
     this.stopPrompt();
     this.sending = this.el('send').disabled = this.el('close').disabled = true;
@@ -864,6 +890,16 @@ class OrderAssistant {
       });
       const result = await response.json();
       if (run !== this.run) return;
+      if (result.error === 'order-limit' || result.error === 'session-required') {
+        this.setPhase('idle',result.error === 'order-limit' ? this.c.limit : this.c.expired);
+        this.el('send').hidden = true;
+        return;
+      }
+      if (result.error === 'mail-rate-limited' || result.error === 'mail-server-rejected') {
+        this.setPhase('idle',result.error === 'mail-rate-limited' ? this.c.mailBusy : this.c.mailRejected);
+        this.el('send').hidden = true;
+        return;
+      }
       if (result.error === 'channel-unavailable' || result.error === 'sms-content-limit') {
         this.setPhase('review',result.error === 'channel-unavailable' ? this.c.channelUnavailable : this.c.smsLimit);
         this.el('send').disabled = false;
