@@ -1,10 +1,11 @@
 import { validateOrder, sendOrderEmail, mailConfigured, isActivationTest } from './order-email.mjs';
 import { readOrderPrompt, cachedOrderPrompt, synthesizeOrderPrompt } from './order-speech.mjs';
+import { checkOrderDelivery, orderDeliveryChannels, sendOrderByChannel } from './order-delivery.mjs';
 
 const MAX_AUDIO = 480044; // Canonical PCM WAV: mono, 16 kHz, 16 bit, at most 15 seconds.
 const KEY = 'order-guard-v1';
 const json = (body, status=200) => Response.json(body,{status,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
-const ready = env => env.ORDER_ENABLED === 'true' && Boolean(env.AI) && mailConfigured(env);
+const ready = env => env.ORDER_ENABLED === 'true' && Boolean(env.AI) && (env.ORDER_MAIL_SECRET || '').length >= 32;
 const digest = async value => Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(value))),b=>b.toString(16).padStart(2,'0')).join('');
 
 export function validOrderWav(bytes) {
@@ -31,7 +32,11 @@ export async function handleOrderRequest(request,env) {
     try {return await env.ORDER_GUARD.get(env.ORDER_GUARD.idFromName('hamdi-order-prompts-v1')).fetch(request);}
     catch{return json({error:'prompt-unavailable'},503);}
   }
-  if(path==='/api/order/status' && request.method==='GET')return json({enabled:ready(env)&&Boolean(env.ORDER_GUARD)&&env.ORDER_MAIL_ACTIVE==='true',voice:Boolean(ready(env)&&env.AI&&env.ORDER_GUARD&&env.ORDER_MAIL_ACTIVE==='true'),delivery:'email'});
+  if(path==='/api/order/status' && request.method==='GET') {
+    const channels=orderDeliveryChannels(env);
+    const enabled=ready(env)&&Boolean(env.ORDER_GUARD)&&Object.values(channels).some(Boolean);
+    return json({enabled,voice:enabled,channels});
+  }
   if(request.method!=='POST'||!['/api/order/session','/api/order/transcribe','/api/order/send'].includes(path))return json({error:'not-found'},404);
   if(!ready(env)||!env.ORDER_GUARD)return json({error:'orders-not-configured'},503);
   if(request.headers.get('origin')!==new URL(request.url).origin||request.headers.get('sec-fetch-site')==='cross-site')return json({error:'same-origin-required'},403);
@@ -40,7 +45,7 @@ export async function handleOrderRequest(request,env) {
 }
 
 export class OrderGuard {
-  constructor(ctx,env,dependencies={}) {this.ctx=ctx;this.env=env;this.now=dependencies.now||Date.now;this.send=dependencies.send||sendOrderEmail;this.synthesize=dependencies.synthesize||synthesizeOrderPrompt;}
+  constructor(ctx,env,dependencies={}) {this.ctx=ctx;this.env=env;this.now=dependencies.now||Date.now;this.send=dependencies.send||sendOrderByChannel;this.synthesize=dependencies.synthesize||synthesizeOrderPrompt;}
   state(raw) {const day=new Date(this.now()).toISOString().slice(0,10);return raw?.day===day?raw:{day,created:0,audio:0,mails:0,sessions:{}};}
   async mutate(fn) {return this.ctx.storage.transaction(async storage=>{const state=this.state(await storage.get(KEY));const result=fn(state);await storage.put(KEY,state);return result;});}
   async fetch(request) {
@@ -79,21 +84,26 @@ export class OrderGuard {
     let body;try {if(request.headers.get('content-type')?.split(';')[0]!=='application/json')throw 0;body=JSON.parse(new TextDecoder().decode(await readLimited(request,4096)));}catch{return json({error:'invalid-request'},400);}
     const order=validateOrder(body);
     if(!order)return json({error:'invalid-order'},400);
-    // Before activation, accept only the owner's fixed, non-personal setup sample.
-    if(this.env.ORDER_MAIL_ACTIVE!=='true'&&!isActivationTest(order))return json({error:'mail-not-activated'},503);
+    const setup=isActivationTest(order)&&this.env.ORDER_MAIL_ACTIVE!=='true'&&mailConfigured(this.env);
     const claim=await this.mutate(state=>{
       const s=state.sessions[hash];if(!s||s.ip!==ip||s.expires<this.now()||s.language!==order.language)return {error:'session-required'};
-      if(s.status==='sent')return {accepted:true,id:s.id};
+      if(s.status==='sent')return {accepted:true,id:s.id,channel:s.channel||'email',state:s.deliveryState||'accepted'};
       if(s.status!=='open')return {error:'delivery-unconfirmed',id:s.id};
+      const issue=setup?null:checkOrderDelivery(order,this.env);
+      if(issue)return {error:issue};
       if(state.mails>=20)return {error:'order-limit'};
       state.mails++;s.id=crypto.randomUUID();s.status='pending';return {id:s.id};
     });
     if(claim.accepted)return json(claim);
     if(claim.error)return json(claim,claim.error==='session-required'?403:409);
     try {
-      await this.send(order,claim.id,this.env);
-      await this.mutate(state=>{if(state.sessions[hash]?.id===claim.id)state.sessions[hash].status='sent';});
-      return json({accepted:true,id:claim.id});
+      const result=setup?await sendOrderEmail(order,claim.id,this.env):await this.send(order,claim.id,this.env);
+      const deliveryState=result?.state==='delivered'?'delivered':'accepted';
+      await this.mutate(state=>{
+        const s=state.sessions[hash];
+        if(s?.id===claim.id)Object.assign(s,{status:'sent',channel:order.channel,deliveryState});
+      });
+      return json({accepted:true,id:claim.id,channel:order.channel,state:deliveryState});
     }catch(error) {
       // A timeout can happen after mail acceptance. Never retry with a fresh ID.
       await this.mutate(state=>{if(state.sessions[hash]?.id===claim.id)state.sessions[hash].status='uncertain';});

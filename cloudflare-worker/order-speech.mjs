@@ -22,11 +22,19 @@ export const ORDER_PROMPTS = Object.freeze({
   })
 });
 export const PROMPT_VERSION='aoede-v1';
+const channelPrompts = {
+  ar:{ channel:'بأي طريقة بدك المساعد يرسل طلبك لحمدي؟ اختار من القنوات المتاحة.', sent:'قبلت خدمة الإرسال طلبك. احتفظ برقم الطلب للتواصل مع الاستوديو.' },
+  tr:{ channel:'Asistan talebini Hamdi’ye nasıl göndersin? Kullanılabilir kanallardan birini seç.', sent:'Gönderim sağlayıcısı talebini kabul etti. Stüdyoyla görüşmek için talep numaranı sakla.' }
+};
 export function readOrderPrompt(request) {
   const url=new URL(request.url);
   if(request.method!=='GET'||url.search)return null;
-  const match=/^\/api\/order\/prompt\/aoede-v1\/(ar|tr)\/([a-z]+)\.wav$/.exec(url.pathname);
-  return match&&Object.hasOwn(ORDER_PROMPTS[match[1]],match[2])?{language:match[1],key:match[2]}:null;
+  const match=/^\/api\/order\/prompt\/(aoede-v1|aoede-v2)\/(ar|tr)\/([a-z]+)\.wav$/.exec(url.pathname);
+  if(!match)return null;
+  const [,version,language,key]=match;
+  const prompts=version==='aoede-v2'?channelPrompts:ORDER_PROMPTS;
+  if(!Object.hasOwn(prompts[language],key))return null;
+  return version==='aoede-v2'?{language,key,version}:{language,key};
 }
 const errorResponse=(error,status=503)=>Response.json({error},{status,headers:{'cache-control':'no-store'}});
 export function promptResponse(bytes,cached=false) {
@@ -36,7 +44,7 @@ export async function synthesizeOrderPrompt(prompt,env,fetchImpl=fetch) {
   const generate=model=>fetchImpl('https://generativelanguage.googleapis.com/v1beta/interactions',{
     method:'POST',headers:{'x-goog-api-key':env.GEMINI_API_KEY,'content-type':'application/json'},
     body:JSON.stringify({model,input:[{type:'user_input',content:[{
-      type:'text',text:ORDER_PROMPTS[prompt.language][prompt.key],
+      type:'text',text:(prompt.version==='aoede-v2'?channelPrompts:ORDER_PROMPTS)[prompt.language][prompt.key],
       annotations:[{type:'speech_metadata',style:prompt.language==='ar'?'A warm, natural female studio receptionist, speaking gently in Syrian Arabic, at a conversational pace.':'Sıcak ve doğal bir kadın stüdyo asistanı, samimi ve sakin bir konuşma temposuyla.'}]
     }]}],response_format:{type:'audio'},generation_config:{speech_config:[{voice:'Aoede'}]}}),
     signal:AbortSignal.timeout(20000)
@@ -56,7 +64,7 @@ export async function synthesizeOrderPrompt(prompt,env,fetchImpl=fetch) {
 }
 export async function cachedOrderPrompt(guard,prompt) {
   if(guard.env.GEMINI_FREE_TIER_CONFIRMED!=='true'||!guard.env.GEMINI_API_KEY)return errorResponse('prompt-not-configured');
-  const key='prompt-'+PROMPT_VERSION+'-'+prompt.language+'-'+prompt.key;
+  const key='prompt-'+(prompt.version||PROMPT_VERSION)+'-'+prompt.language+'-'+prompt.key;
   const cached=await guard.ctx.storage.get(key);
   if(cached)return promptResponse(cached,true);
   const now=guard.now(),day=new Date(now).toISOString().slice(0,10);

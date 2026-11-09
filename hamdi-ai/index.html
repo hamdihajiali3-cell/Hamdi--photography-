@@ -52,6 +52,18 @@ html[data-voice-state=speaking] .orb{box-shadow:inset -13px -15px 20px #031e1860
 .order-step-tools{display:flex;flex-wrap:wrap;gap:.6rem;margin:1rem 0}
 .order-dialog #order-status{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.8;font-size:.9rem}
 .order-dialog :is(#order-send,#order-start){width:100%;margin-top:.75rem}
+.order-dialog :is(#order-repeat,#order-mute,#order-typed){min-height:44px;margin-inline-end:.8rem}
+.order-avatar{--orb-light:#eac884;position:relative;display:grid;place-items:center;width:86px;height:82px;margin:.2rem auto 1rem;isolation:isolate}
+.order-avatar::before{content:"";position:absolute;inset:6px;border-radius:50%;background:var(--orb-light);filter:blur(18px);opacity:.32;transition:background .2s,opacity .2s}
+.order-avatar::after{content:"";position:absolute;inset:24px -4px 22px;border:1px solid color-mix(in srgb,var(--orb-light) 74%,transparent);border-radius:50%;transform:rotate(-21deg);box-shadow:0 0 12px var(--orb-light);opacity:.65}
+.order-avatar i{width:46px;height:62px;border-radius:50% 50% 46% 46%/62% 62% 38% 38%;background:radial-gradient(ellipse at 29% 23%,#f4dc9c 0%,#9ca064 18%,#286458 52%,#123531 77%);box-shadow:inset -5px -7px 12px #081b17a6,0 6px 18px #122c2855;transform:rotate(-9deg);animation:order-egg-float 4s ease-in-out infinite}
+.order-dialog[data-phase="listening"] .order-avatar{--orb-light:#60e9ba}
+.order-dialog[data-phase="processing"] .order-avatar{--orb-light:#9dc5ff}
+.order-dialog:is([data-phase="listening"],[data-phase="speaking"],[data-phase="processing"]) .order-avatar::before{opacity:.67}
+.order-dialog[data-phase="processing"] .order-avatar::after{animation:order-egg-ring .9s linear infinite}
+@keyframes order-egg-float{50%{transform:translateY(-6px) rotate(8deg)}}
+@keyframes order-egg-ring{to{transform:rotate(339deg)}}
+@media(prefers-reduced-motion:reduce){.order-avatar i,.order-avatar::after{animation:none!important}.order-avatar::before{transition:none}}
 </style>
 </head>
 <body>
@@ -277,11 +289,13 @@ function orderService(value) {
   return matches.length===1?matches[0][0]:'';
 }
 function orderChannel(value) {
-  const s=value.toLowerCase();
-  if(/واتس|whats/.test(s))return 'whatsapp';
-  if(/بريد|[اإ]يميل|email|e-mail|posta/.test(s))return 'email';
-  if(/sms|اسمس|رسالة|mesaj|kısa|kisa/.test(s))return 'sms';
-  return '';
+  const s=value.toLowerCase().normalize('NFKC').replace(/[\u0640\u064b-\u065f\u0670]/g,'').replace(/[أإآ]/g,'ا');
+  const matches=[
+    ['whatsapp',/واتس|الوتس|whats/],
+    ['email',/بريد|ايميل|email|e-mail|posta/],
+    ['sms',/sms|اس\s*ام\s*اس|اسمس|رسالة\s+قصيرة|kısa mesaj|kisa mesaj/]
+  ].filter(([,pattern])=>pattern.test(s));
+  return matches.length===1 ? matches[0][0] : '';
 }
 function orderPhone(value) {
   const arabic='٠١٢٣٤٥٦٧٨٩',persian='۰۱۲۳۴۵۶۷۸۹';
@@ -297,131 +311,522 @@ function orderWav(chunks) {
 
 function orderPromptUrl(language,key) {
   return ['ar','tr'].includes(language)&&['service','name','channel','phone','email','when','review','sent'].includes(key)
-    ?'/api/order/prompt/aoede-v1/'+language+'/'+key+'.wav':null;
+    ?'/api/order/prompt/'+(['channel','sent'].includes(key)?'aoede-v2':'aoede-v1')+'/'+language+'/'+key+'.wav':null;
 }
 
-const orderCopy={
-  ar:{title:'طلبك مع حمدي',intro:'سنجهّز طلبك هنا ونرسله إلى بريد حمدي. اختيار واتساب أو SMS أو البريد يحدد كيف تفضّل أن يتواصل معك.',privacy:'عند استخدام الميكروفون يُعالج Cloudflare الصوت لتحويله إلى نص. نرسل ملخص الطلب وبيانات التواصل عبر Web3Forms إلى بريد الاستوديو. يحتفظ Web3Forms بالتفاصيل 7 أيام. لا نحفظ التسجيل الصوتي.',consent:'أوافق على معالجة صوتي وبيانات طلبي لهذا الغرض.',start:'ابدأ الطلب',service:'الخدمة',name:'اسمك',channel:'وسيلة التواصل المفضلة',contact:'رقم التواصل أو البريد',when:'الموعد المقترح (اختياري)',notes:'ملاحظات (اختياري)',choose:'اختر',record:'قل جوابك',stop:'خلصت — استخدم التسجيل',next:'التالي',skip:'نتفق على الموعد لاحقًا',review:'راجع التفاصيل، وعدّل أي كلمة سمعها المساعد بشكل غير صحيح.',send:'أؤكد التفاصيل وأرسل الطلب إلى حمدي',pending:'هذا طلب للتنسيق. يؤكد حمدي الموعد والسعر بعد التواصل.',close:'إغلاق',listening:'عم اسمعك… مدة التسجيل حتى 15 ثانية.',processing:'جاري فهم جوابك…',invalid:'راجع هذا الحقل أو أعد تسجيل جوابك.',error:'تعذّرت المتابعة. يمكنك الكتابة أو المحاولة لاحقًا.',limit:'وصلنا لحد التجربة اليوم. يمكنك التواصل مباشرة مع الاستوديو.',sending:'جاري إرسال الطلب إلى بريد حمدي…',sent:'تم إرسال طلبك إلى بريد حمدي. سيتواصل معك عبر الوسيلة التي اخترتها بعد مراجعة الطلب.',unknown:'لم نتمكن من تأكيد الإرسال. تواصل مع الاستوديو قبل إعادة الطلب لتجنب تكراره.',reference:'رقم الطلب',qService:'شو الخدمة اللي بدك ياها؟ تعديل ألوان، تخرج، تصوير الحلاقة، أو صور جواز وهويات؟',qName:'شو اسمك؟',qChannel:'كيف بتحب حمدي يتواصل معك؟ واتساب، رسالة قصيرة، أو بريد إلكتروني؟',qPhone:'قول رقمك رقم رقم، أو اكتبه بالخانة.',qEmail:'قول عنوان بريدك الإلكتروني، أو اكتبه بالخانة حتى نتأكد منه.',qWhen:'أي يوم ووقت بتفضّل؟ اختياري، فيك تضغط نتفق لاحقًا.',qReview:'راجع طلبك المكتوب، وبعدها اضغط تأكيد الإرسال.',speechFallback:'إذا لم تسمع السؤال، يمكنك قراءته هنا والجواب بالصوت أو الكتابة.'},
-  tr:{title:'Hamdi ile talebin',intro:'Talebini burada hazırlayıp Hamdi’nin e-posta adresine göndeririz. WhatsApp, SMS veya e-posta seçimin, sana nasıl ulaşılmasını istediğini belirtir.',privacy:'Mikrofonu kullandığında Cloudflare sesi metne dönüştürür. Talep özeti ve iletişim bilgileri Web3Forms ile stüdyoya e-posta olarak gönderilir. Web3Forms ayrıntıları 7 gün saklar. Ses kaydını saklamayız.',consent:'Bu amaçla sesimin ve talep bilgilerimin işlenmesini kabul ediyorum.',start:'Talebi başlat',service:'Hizmet',name:'Adın',channel:'Tercih ettiğin iletişim yolu',contact:'Telefon veya e-posta',when:'Önerilen zaman (isteğe bağlı)',notes:'Notlar (isteğe bağlı)',choose:'Seç',record:'Yanıtını söyle',stop:'Bitti — kaydı kullan',next:'İleri',skip:'Zamanı sonra kararlaştıralım',review:'Ayrıntıları incele ve yanlış duyulan kelimeleri düzelt.',send:'Bilgileri onayla ve talebi Hamdi’ye gönder',pending:'Bu bir planlama talebidir. Zamanı ve fiyatı Hamdi görüşmeden sonra onaylar.',close:'Kapat',listening:'Dinliyorum… Kayıt en fazla 15 saniye.',processing:'Yanıtın anlaşılıyor…',invalid:'Bu alanı kontrol et veya yanıtını yeniden kaydet.',error:'Devam edilemedi. Yazabilir veya daha sonra deneyebilirsin.',limit:'Bugünkü deneme sınırına ulaşıldı. Stüdyoyla doğrudan iletişim kurabilirsin.',sending:'Talebin Hamdi’ye e-posta ile gönderiliyor…',sent:'Talebin Hamdi’ye e-posta ile gönderildi. İnceledikten sonra seçtiğin yoldan sana ulaşacak.',unknown:'Gönderim doğrulanamadı. Tekrarlamadan önce stüdyoyla iletişime geç.',reference:'Talep numarası',qService:'Hangi hizmeti istiyorsun? Renk düzenleme, mezuniyet, berber çekimi veya pasaport ve kimlik fotoğrafı?',qName:'Adın nedir?',qChannel:'Hamdi sana nasıl ulaşsın? WhatsApp, SMS veya e-posta?',qPhone:'Telefon numaranı rakam rakam söyle veya kutuya yaz.',qEmail:'E-posta adresini söyle veya doğru olması için kutuya yaz.',qWhen:'Hangi gün ve saati tercih edersin? İstersen zamanı sonra kararlaştırabiliriz.',qReview:'Yazılı talebini incele. Ardından gönderimi onayla.',speechFallback:'Soruyu duymuyorsan buradan okuyup sesle veya yazarak yanıtlayabilirsin.'}
+
+const orderCopy = {
+  ar:{
+    title:'طلبك مع حمدي', intro:'المساعد يسألك ويستمع لجوابك تلقائيًا. بعد مراجعة التفاصيل، يرسل طلبك لحمدي بالقناة التي تختارها.',
+    privacy:'عند بدء الحجز بالصوت، يُحوّل Cloudflare أجوبتك إلى نص. يعمل الميكروفون أثناء انتظار جوابك ويتوقف عند المراجعة. نرسل تفاصيل الطلب لخدمة القناة التي تختارها بعد تأكيدك.',
+    start:'ابدأ الحجز بالصوت', typed:'المتابعة كتابة', mute:'أوقف الميكروفون', replay:'اسمع السؤال', close:'إغلاق',
+    service:'الخدمة', name:'اسمك', channel:'قناة إرسال الطلب لحمدي', contact:'رقم التواصل أو البريد', when:'الموعد المقترح (اختياري)', notes:'ملاحظات (اختياري)',
+    choose:'اختر', unavailable:'غير مفعّل', next:'التالي', skip:'نتفق على الموعد لاحقًا', review:'راجع التفاصيل وقناة الإرسال قبل التأكيد.',
+    send:'أؤكد التفاصيل وأرسل الطلب', pending:'هذا طلب للتنسيق. يؤكد حمدي الموعد والسعر بعد التواصل.',
+    speaking:'عم اسألك…', listening:'عم اسمعك…', processing:'عم أفهم جوابك…', typedHint:'يمكنك كتابة الجواب والمتابعة.',
+    invalid:'راجع جوابك أو قلْه مرة ثانية بعد سماع السؤال.', micUnavailable:'الميكروفون غير متاح. يمكنك المتابعة كتابة.',
+    channelUnavailable:'قناة الإرسال هذه غير مفعّلة. اختَر إحدى القنوات المتاحة إذا كانت تناسبك.',
+    smsLimit:'نص الطلب طويل لرسالة SMS أو يحتوي رابطًا. اختصر التفاصيل واحذف الروابط.',
+    error:'تعذّرت المتابعة. يمكنك الكتابة أو المحاولة لاحقًا.', limit:'وصلنا لحد الجلسات اليوم. يمكنك التواصل مباشرة مع الاستوديو.',
+    sending:'عم نرسل طلبك عبر', accepted:'قبلت خدمة الإرسال طلبك عبر', delivered:'تم تسليم طلبك عبر',
+    unknown:'لم نتمكن من تأكيد الإرسال. تواصل مع الاستوديو قبل إعادة الطلب لتجنب تكراره.',
+    reference:'رقم الطلب', qService:'شو الخدمة اللي بدك ياها؟ تعديل ألوان، تخرج، تصوير الحلاقة، أو صور جواز وهويات؟', qName:'شو اسمك؟',
+    qChannel:'بأي طريقة بدك المساعد يرسل طلبك لحمدي؟ اختار من القنوات المتاحة.',
+    qPhone:'قول رقمك رقم رقم، أو اكتبه بالخانة.', qEmail:'قول عنوان بريدك الإلكتروني، أو اكتبه بالخانة حتى نتأكد منه.',
+    qWhen:'أي يوم ووقت بتفضّل؟ اختياري، فيك تضغط نتفق لاحقًا.'
+  },
+  tr:{
+    title:'Hamdi ile talebin', intro:'Asistan soruları sorar ve yanıtlarını otomatik dinler. Ayrıntıları onaylayınca talebini seçtiğin kanalla Hamdi’ye gönderir.',
+    privacy:'Sesli talebi başlattığında Cloudflare yanıtlarını metne dönüştürür. Mikrofon yanıtını beklerken çalışır ve inceleme adımında kapanır. Onayından sonra ayrıntılar seçtiğin kanalın sağlayıcısına iletilir.',
+    start:'Sesli talebi başlat', typed:'Yazarak devam et', mute:'Mikrofonu kapat', replay:'Soruyu dinle', close:'Kapat',
+    service:'Hizmet', name:'Adın', channel:'Talebin Hamdi’ye iletileceği kanal', contact:'Telefon veya e-posta', when:'Önerilen zaman (isteğe bağlı)', notes:'Notlar (isteğe bağlı)',
+    choose:'Seç', unavailable:'Etkin değil', next:'İleri', skip:'Zamanı sonra kararlaştıralım', review:'Onaylamadan önce ayrıntıları ve gönderim kanalını incele.',
+    send:'Bilgileri onayla ve talebi gönder', pending:'Bu bir planlama talebidir. Zamanı ve fiyatı Hamdi görüşmeden sonra onaylar.',
+    speaking:'Soruyu okuyorum…', listening:'Dinliyorum…', processing:'Yanıtın anlaşılıyor…', typedHint:'Yanıtını yazarak devam edebilirsin.',
+    invalid:'Yanıtı kontrol et veya soruyu dinleyip tekrar söyle.', micUnavailable:'Mikrofon kullanılamıyor. Yazarak devam edebilirsin.',
+    channelUnavailable:'Bu gönderim kanalı etkin değil. Sana uygunsa kullanılabilir bir kanal seç.',
+    smsLimit:'SMS için metin fazla uzun veya bağlantı içeriyor. Ayrıntıları kısalt ve bağlantıları kaldır.',
+    error:'Devam edilemedi. Yazabilir veya daha sonra deneyebilirsin.', limit:'Bugünkü oturum sınırına ulaşıldı. Stüdyoyla doğrudan iletişim kurabilirsin.',
+    sending:'Talep şu kanalla gönderiliyor:', accepted:'Gönderim sağlayıcısı talebi kabul etti:', delivered:'Talep şu kanalla teslim edildi:',
+    unknown:'Gönderim doğrulanamadı. Tekrarlamadan önce stüdyoyla iletişime geç.',
+    reference:'Talep numarası', qService:'Hangi hizmeti istiyorsun? Renk düzenleme, mezuniyet, berber çekimi veya pasaport ve kimlik fotoğrafı?', qName:'Adın nedir?',
+    qChannel:'Asistan talebini Hamdi’ye nasıl göndersin? Kullanılabilir kanallardan birini seç.',
+    qPhone:'Telefon numaranı rakam rakam söyle veya kutuya yaz.', qEmail:'E-posta adresini söyle veya doğru olması için kutuya yaz.',
+    qWhen:'Hangi gün ve saati tercih edersin? İstersen zamanı sonra kararlaştırabiliriz.'
+  }
 };
+const orderFields = ['service','name','channel','contact','when'];
+const orderChannels = ['whatsapp','sms','email'];
+const chunkMs = 32;
+const maxAnswerBytes = 480000;
 
 class OrderAssistant {
-  constructor({getLanguage,stopOtherVoice,onState}) {
-    this.getLanguage=getLanguage;this.stopOtherVoice=stopOtherVoice;this.onState=onState;this.enabled=false;this.run=0;this.captureRun=0;
-    this.dialog=document.createElement('dialog');this.dialog.className='order-dialog';this.dialog.id='order-dialog';this.dialog.setAttribute('aria-labelledby','order-title');document.body.append(this.dialog);
-    this.dialog.addEventListener('cancel',event=>{event.preventDefault();if(!this.sending)this.close();});
+  constructor({ getLanguage, stopOtherVoice, onState }) {
+    Object.assign(this,{getLanguage,stopOtherVoice,onState,enabled:false,run:0,captureRun:0,turnRun:0,channels:{}});
+    this.dialog = document.createElement('dialog');
+    this.dialog.className = 'order-dialog';
+    this.dialog.id = 'order-dialog';
+    this.dialog.setAttribute('aria-labelledby','order-title');
+    document.body.append(this.dialog);
+    this.dialog.addEventListener('cancel',event=>{
+      event.preventDefault();
+      if (!this.sending) this.close();
+    });
     window.addEventListener('pagehide',()=>this.close());
-    document.addEventListener('visibilitychange',()=>{if(document.hidden){this.cancelRecording();this.stopPrompt();}});
+    document.addEventListener('visibilitychange',()=>{
+      if (document.hidden) {
+        this.cancelRecording();
+        this.stopPrompt();
+      }
+    });
   }
+
   async configure() {
-    try {const r=await fetch('/api/order/status',{signal:AbortSignal.timeout(5000)});this.enabled=r.ok&&(await r.json()).enabled===true;}catch{this.enabled=false;}return this.enabled;
+    try {
+      const response = await fetch('/api/order/status',{signal:AbortSignal.timeout(5000)});
+      const result = await response.json();
+      this.channels = Object.fromEntries(orderChannels.map(key=>[key,result.channels?.[key] === true]));
+      this.enabled = response.ok && result.enabled === true && Object.values(this.channels).some(Boolean);
+    } catch {
+      this.enabled = false;
+    }
+    return this.enabled;
   }
-  get c(){return orderCopy[this.language==='tr'?'tr':'ar'];}
-  field(key){return this.dialog.querySelector(`[name="${key}"]`);}
-  el(id){return this.dialog.querySelector('#order-'+id);}
+
+  get c() { return orderCopy[this.language === 'tr' ? 'tr' : 'ar']; }
+  field(key) { return this.dialog.querySelector('[name="'+key+'"]'); }
+  el(id) { return this.dialog.querySelector('#order-'+id); }
+  channelLabel(channel) {
+    if (channel === 'email') return this.language === 'tr' ? 'E-posta' : 'البريد الإلكتروني';
+    return channel === 'whatsapp' ? 'WhatsApp' : 'SMS';
+  }
+  setPhase(phase, message) {
+    this.dialog.dataset.phase = phase;
+    this.el('status').textContent = message || '';
+    this.onState?.(phase === 'listening' ? 'listening' : phase === 'speaking' ? 'speaking' : 'ready');
+  }
+
   stopPrompt() {
-    this.promptRun=(this.promptRun||0)+1;
-    if(this.promptAudio){this.promptAudio.onplaying=this.promptAudio.onended=this.promptAudio.onerror=null;this.promptAudio.pause();this.promptAudio.removeAttribute('src');this.promptAudio.load();this.promptAudio=null;}
-    if(this.dialog.dataset)this.dialog.dataset.promptState='stopped';
+    this.promptRun = (this.promptRun || 0)+1;
+    clearTimeout(this.promptTimer);
+    if (this.promptAudio) {
+      const audio = this.promptAudio;
+      audio.onplaying = audio.onended = audio.onerror = null;
+      audio.pause();
+      audio.removeAttribute('src');
+      audio.load();
+      this.promptAudio = null;
+    }
+    if (this.dialog.dataset) this.dialog.dataset.promptState = 'stopped';
   }
-  speak(key) {
-    this.stopPrompt();this.currentPrompt=key;
-    const url=orderPromptUrl(this.language,key);if(!url||!this.dialog.open||!window.Audio)return;
-    const run=this.promptRun,audio=new Audio(url);this.promptAudio=audio;
-    this.dialog.dataset.promptState='loading';
-    audio.onplaying=()=>{if(run===this.promptRun)this.dialog.dataset.promptState='playing';};
-    audio.onended=()=>{if(run===this.promptRun)this.dialog.dataset.promptState='ended';};
-    const failed=()=>{if(run===this.promptRun)this.dialog.dataset.promptState='unavailable';};
-    audio.onerror=failed;audio.play().catch(failed);
+
+  speak(key, after) {
+    this.stopPrompt();
+    this.currentPrompt = key;
+    const url = orderPromptUrl(this.language,key);
+    if (!url || !this.dialog.open || !window.Audio) {
+      after?.();
+      return;
+    }
+    const run = this.promptRun;
+    const audio = new Audio(url);
+    this.promptAudio = audio;
+    this.dialog.dataset.promptState = 'loading';
+    let finished = false;
+    const complete = state=>{
+      if (finished || run !== this.promptRun) return;
+      finished = true;
+      clearTimeout(this.promptTimer);
+      if (state === 'unavailable') audio.pause();
+      this.dialog.dataset.promptState = state;
+      after?.();
+    };
+    this.promptTimer = setTimeout(()=>complete('unavailable'),14000);
+    audio.onplaying = ()=>{
+      if (finished || run !== this.promptRun) return;
+      this.dialog.dataset.promptState = 'playing';
+      clearTimeout(this.promptTimer);
+      this.promptTimer = setTimeout(()=>complete('unavailable'),20000);
+    };
+    audio.onended = ()=>complete('ended');
+    audio.onerror = ()=>complete('unavailable');
+    audio.play().catch(audio.onerror);
   }
-  open(service='') {
-    if(!this.enabled)return;
-    this.stopOtherVoice();this.close();this.language=this.getLanguage();this.stage=-1;this.token='';this.sending=false;this.run++;
-    const c=this.c,tr=this.language==='tr';
-    // This template contains only application-owned copy. Personal values use .value/textContent.
-    this.dialog.innerHTML=`<button type="button" id="order-close" class="dialog-close" aria-label="${c.close}">×</button><p class="eyebrow">HAMDI AI</p><h2 id="order-title">${c.title}</h2><p>${c.intro}</p><section id="order-consent"><p class="dialog-alert">${c.privacy}</p><label class="check-label"><input type="checkbox" id="order-agree"><span>${c.consent}</span></label><button type="button" class="button primary" id="order-start" disabled>${c.start}</button></section><form id="order-form" hidden><p id="order-question" class="order-question" aria-live="polite"></p><p class="order-speech-note">${c.speechFallback}</p><label data-order-field="service"><span>${c.service}</span><select name="service" required><option value="">${c.choose}</option><option value="color">${tr?'Fotoğraf renk düzenleme':'تعديل ألوان الصور'}</option><option value="graduation">${tr?'Mezuniyet çekimi':'تصوير التخرج'}</option><option value="hair">${tr?'Berber ve saç kesimi çekimi':'تصوير الحلاقة وقصّات الشعر'}</option><option value="id">${tr?'Pasaport ve kimlik fotoğrafları':'صور الجواز والهويات'}</option></select></label><label data-order-field="name"><span>${c.name}</span><input name="name" maxlength="100" autocomplete="name" required></label><label data-order-field="channel"><span>${c.channel}</span><select name="channel" required><option value="">${c.choose}</option><option value="whatsapp">WhatsApp</option><option value="sms">SMS</option><option value="email">${tr?'E-posta':'البريد الإلكتروني'}</option></select></label><label data-order-field="contact"><span>${c.contact}</span><input name="contact" maxlength="120" required dir="auto"></label><label data-order-field="when"><span>${c.when}</span><input name="when" maxlength="160"></label><label data-order-field="notes"><span>${c.notes}</span><textarea name="notes" maxlength="500" rows="2"></textarea></label><div class="order-step-tools" id="order-step-tools"><button type="button" class="button" id="order-record">${c.record}</button><button type="button" class="button primary" id="order-next">${c.next}</button><button type="button" class="text-link" id="order-skip">${c.skip}</button></div><p class="dialog-alert" id="order-review" hidden>${c.review}</p><p>${c.pending}</p><button type="submit" class="button primary" id="order-send" hidden>${c.send}</button></form><p id="order-status" role="status" aria-live="polite"></p>`;
-    this.el('close').onclick=()=>{if(!this.sending)this.close();};
-    this.el('agree').onchange=()=>{this.el('start').disabled=!this.el('agree').checked;};
-    this.el('start').onclick=()=>this.start();this.el('record').onclick=()=>this.recording?this.finishRecording():this.record();
-    const repeat=document.createElement('button');repeat.type='button';repeat.className='text-link';repeat.id='order-repeat';repeat.textContent=tr?'Soruyu dinle':'اسمع السؤال';repeat.onclick=()=>{if(!this.recording&&!this.busy)this.speak(this.currentPrompt);};this.el('question').after(repeat);
-    this.el('next').onclick=()=>this.advance();this.el('skip').onclick=()=>{this.field('when').value='';this.review();};
-    this.el('form').onsubmit=event=>{event.preventDefault();this.send();};
-    this.el('form').oninput=()=>{if(!this.sending)this.el('status').textContent='';};
-    if(['color','graduation','hair','id'].includes(service))this.field('service').value=service;
+
+  open(service = '') {
+    if (!this.enabled) return;
+    this.stopOtherVoice();
+    this.close();
+    this.language = this.getLanguage();
+    this.stage = -1;
+    this.sending = false;
+    const c = this.c, tr = this.language === 'tr';
+    const services = tr
+      ? ['Fotoğraf renk düzenleme','Mezuniyet çekimi','Berber ve saç kesimi çekimi','Pasaport ve kimlik fotoğrafları']
+      : ['تعديل ألوان الصور','تصوير التخرج','تصوير الحلاقة وقصّات الشعر','صور الجواز والهويات'];
+    const options = ['color','graduation','hair','id'].map((key,i)=>'<option value="'+key+'">'+services[i]+'</option>').join('');
+    const channels = orderChannels.map(key=>'<option value="'+key+'"'+(this.channels[key]?'':' disabled')+'>'+
+      this.channelLabel(key)+(this.channels[key]?'':' ('+c.unavailable+')')+'</option>').join('');
+    this.dialog.innerHTML = [
+      '<button type="button" id="order-close" class="dialog-close" aria-label="'+c.close+'">×</button>',
+      '<div class="order-avatar" aria-hidden="true"><i></i></div><h2 id="order-title">'+c.title+'</h2><p>'+c.intro+'</p>',
+      '<section id="order-consent"><p class="dialog-alert">'+c.privacy+
+        (this.channels.email?(tr?' Web3Forms e-posta taleplerini 7 gün saklar.':' يحتفظ Web3Forms بتفاصيل طلبات البريد 7 أيام.'):'')+'</p>',
+      '<button type="button" class="button primary" id="order-start">'+c.start+'</button>',
+      '<button type="button" class="text-link" id="order-typed">'+c.typed+'</button></section>',
+      '<form id="order-form" hidden><p id="order-question" class="order-question" aria-live="polite"></p>',
+      '<button type="button" class="text-link" id="order-repeat">'+c.replay+'</button>',
+      '<button type="button" class="text-link" id="order-mute" hidden>'+c.mute+'</button>',
+      '<label data-order-field="service">'+c.service+'<select name="service" required><option value="">'+c.choose+'</option>'+options+'</select></label>',
+      '<label data-order-field="name">'+c.name+'<input name="name" maxlength="100" autocomplete="name" required></label>',
+      '<label data-order-field="channel">'+c.channel+'<select name="channel" required><option value="">'+c.choose+'</option>'+channels+'</select></label>',
+      '<label data-order-field="contact"><span id="order-contact-label">'+c.contact+'</span><input name="contact" maxlength="120" required dir="auto"></label>',
+      '<label data-order-field="when">'+c.when+'<input name="when" maxlength="160"></label>',
+      '<label data-order-field="notes">'+c.notes+'<textarea name="notes" maxlength="500" rows="2"></textarea></label>',
+      '<div class="order-step-tools" id="order-step-tools"><button type="button" class="button primary" id="order-next">'+c.next+'</button>',
+      '<button type="button" class="text-link" id="order-skip">'+c.skip+'</button></div>',
+      '<p>'+c.pending+'</p><button type="submit" class="button primary" id="order-send" hidden>'+c.send+'</button></form>',
+      '<p id="order-status" role="status" aria-live="polite"></p>'
+    ].join('');
+    this.el('close').onclick = ()=>{ if (!this.sending) this.close(); };
+    this.el('start').onclick = ()=>this.start(true);
+    this.el('typed').onclick = ()=>this.start(false);
+    this.el('next').onclick = ()=>this.advance();
+    this.el('skip').onclick = ()=>{
+      this.field('when').value = '';
+      this.review();
+    };
+    this.el('mute').onclick = ()=>{
+      this.cancelRecording();
+      this.setPhase('idle',c.typedHint);
+    };
+    this.el('repeat').onclick = ()=>{
+      if (this.stage < 5) this.ask(this.currentPrompt);
+      else this.speak('review');
+    };
+    this.el('form').oninput = event=>{
+      if (this.sending) return;
+      this.stopTurn();
+      this.stopPrompt();
+      if (event.target === this.field('channel')) this.updateContactField();
+      this.setPhase('idle');
+    };
+    this.el('form').onsubmit = event=>{
+      event.preventDefault();
+      if (this.stage < 5) this.advance();
+      else this.send();
+    };
+    if (['color','graduation','hair','id'].includes(service)) this.field('service').value = service;
+    this.setPhase('idle');
     this.dialog.showModal();
   }
-  async start() {
-    if(!this.el('agree').checked)return;this.el('start').disabled=true;const run=this.run;
-    try {const r=await fetch('/api/order/session',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({language:this.language,consent:true}),signal:AbortSignal.timeout(10000)});const data=await r.json();if(run!==this.run)return;if(!r.ok)throw new Error(data.error);this.token=data.token;this.el('consent').hidden=true;this.el('form').hidden=false;this.stage=this.field('service').value?1:0;this.showStep();}
-    catch(error){if(run===this.run){this.el('status').textContent=error.message==='order-limit'?this.c.limit:this.c.error;this.el('start').disabled=false;}}
+
+  async start(withVoice) {
+    if (this.starting) return;
+    this.starting = true;
+    this.el('start').disabled = this.el('typed').disabled = true;
+    const run = this.run;
+    try {
+      const mic = withVoice && await this.prepareMicrophone();
+      if (run !== this.run || !this.dialog.open) return;
+      const response = await fetch('/api/order/session',{
+        method:'POST',headers:{'content-type':'application/json'},
+        body:JSON.stringify({language:this.language,consent:true}),signal:AbortSignal.timeout(10000)
+      });
+      const result = await response.json();
+      if (run !== this.run || !this.dialog.open) return;
+      if (!response.ok) throw new Error(result.error);
+      this.token = result.token;
+      this.el('consent').hidden = true;
+      this.el('form').hidden = false;
+      this.el('mute').hidden = !this.stream;
+      this.stage = this.field('service').value ? 1 : 0;
+      this.showStep(mic && Boolean(this.stream));
+      if (withVoice && !mic) this.setPhase('idle',this.c.micUnavailable);
+    } catch(error) {
+      if (run !== this.run) return;
+      this.cancelRecording();
+      this.setPhase('idle',error.message === 'order-limit' ? this.c.limit : this.c.error);
+      this.el('start').disabled = this.el('typed').disabled = false;
+    } finally {
+      if (run === this.run) this.starting = false;
+    }
   }
-  showStep() {
-    const keys=['service','name','channel','contact','when'],key=keys[this.stage];
-    this.dialog.querySelectorAll('[data-order-field]').forEach(el=>{el.hidden=el.dataset.orderField!==key;});
-    const promptKey=key==='contact'?(this.field('channel').value==='email'?'email':'phone'):key;
-    const prompt=this.c[{service:'qService',name:'qName',channel:'qChannel',email:'qEmail',phone:'qPhone',when:'qWhen'}[promptKey]];
-    this.el('question').textContent=prompt;this.el('skip').hidden=key!=='when';this.el('status').textContent='';this.speak(promptKey);this.field(key).focus();
+
+  updateContactField() {
+    const email = this.field('channel').value === 'email';
+    const tr = this.language === 'tr';
+    this.el('contact-label').textContent = email ? (tr?'E-posta adresin':'بريدك الإلكتروني') : (tr?'Telefon numaran':'رقم هاتفك');
+    this.field('contact').inputMode = email ? 'email' : 'tel';
   }
+
+  showStep(play = Boolean(this.stream)) {
+    const key = orderFields[this.stage];
+    this.dialog.querySelectorAll('[data-order-field]').forEach(el=>{ el.hidden = el.dataset.orderField !== key; });
+    this.el('skip').hidden = key !== 'when';
+    if (key === 'contact') this.updateContactField();
+    const prompt = key === 'contact' ? (this.field('channel').value === 'email' ? 'email' : 'phone') : key;
+    const copyKey = {service:'qService',name:'qName',channel:'qChannel',email:'qEmail',phone:'qPhone',when:'qWhen'}[prompt];
+    this.el('question').textContent = this.c[copyKey];
+    this.currentPrompt = prompt;
+    if (play) this.ask(prompt);
+    else this.setPhase('idle');
+  }
+
+  ask(prompt) {
+    this.stopTurn();
+    this.setPhase('speaking',this.c.speaking);
+    this.speak(prompt,()=>{
+      if (this.stream) this.listenForAnswer();
+      else this.setPhase('idle');
+    });
+  }
+
   validField(key) {
-    const value=this.field(key).value.trim();
-    if(key==='service')return ['color','graduation','hair','id'].includes(value);
-    if(key==='channel')return ['whatsapp','sms','email'].includes(value);
-    if(key==='name')return Boolean(value);
-    if(key==='contact')return this.field('channel').value==='email'?/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(value):/^\+?\d{7,15}$/.test(orderPhone(value));
+    const value = this.field(key).value.trim();
+    if (key === 'service') return ['color','graduation','hair','id'].includes(value);
+    if (key === 'channel') return this.channels[value] === true;
+    if (key === 'name') return Boolean(value);
+    if (key === 'contact') {
+      return this.field('channel').value === 'email' ? /^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(value) : /^\+?\d{7,15}$/.test(orderPhone(value));
+    }
     return true;
   }
+
   advance() {
-    const key=['service','name','channel','contact','when'][this.stage];if(!key||this.busy||this.recording)return;
-    if(!this.validField(key)){this.el('status').textContent=this.c.invalid;return;}
-    if(key==='contact'&&this.field('channel').value!=='email')this.field('contact').value=orderPhone(this.field('contact').value);
-    if(++this.stage>=5)this.review();else this.showStep();
+    const key = orderFields[this.stage];
+    if (!key || !this.validField(key)) {
+      this.setPhase('idle',this.c.invalid);
+      return;
+    }
+    this.stopTurn();
+    this.stopPrompt();
+    this.repeats = 0;
+    if (key === 'contact' && this.field('channel').value !== 'email') this.field('contact').value = orderPhone(this.field('contact').value);
+    this.stage++;
+    if (this.stage === orderFields.length) this.review();
+    else this.showStep();
   }
+
   review() {
-    this.stage=5;this.cancelRecording();this.dialog.querySelectorAll('[data-order-field]').forEach(el=>el.hidden=false);this.el('step-tools').hidden=true;this.el('review').hidden=false;this.el('send').hidden=false;this.el('question').textContent=this.c.review;this.el('status').textContent='';this.speak('review');
+    this.stage = orderFields.length;
+    this.cancelRecording();
+    this.dialog.querySelectorAll('[data-order-field]').forEach(el=>{ el.hidden = false; });
+    this.el('step-tools').hidden = true;
+    this.el('send').hidden = false;
+    this.el('question').textContent = this.c.review;
+    this.setPhase('review');
+    this.speak('review');
   }
-  async record() {
-    if(this.busy||!this.token||this.stage<0||this.stage>4)return;
-    if(!window.AudioContext||!window.AudioWorkletNode||!navigator.mediaDevices?.getUserMedia){this.el('status').textContent=this.c.error;return;}
-    const run=this.run,capture=++this.captureRun;this.stopPrompt();this.busy=true;
+
+  async prepareMicrophone() {
+    if (!window.AudioContext || !window.AudioWorkletNode || !navigator.mediaDevices?.getUserMedia) return false;
+    const run = this.run, capture = ++this.captureRun;
+    const current = ()=>run === this.run && capture === this.captureRun && !document.hidden && this.dialog.open;
     try {
-      const stream=await navigator.mediaDevices.getUserMedia({audio:{channelCount:1,echoCancellation:true,noiseSuppression:true},video:false});
-      if(run!==this.run||capture!==this.captureRun||document.hidden||!this.dialog.open){stream.getTracks().forEach(t=>t.stop());return;}this.stream=stream;
-      const audio=new AudioContext({sampleRate:16000});this.audio=audio;await audio.resume();
-      if(audio.sampleRate!==16000)throw new Error('sample-rate');
-      await audio.audioWorklet.addModule(new URL('./microphone.js',location.href).href);if(run!==this.run||capture!==this.captureRun||document.hidden){this.cancelRecording();return;}
-      this.chunks=[];this.bytes=0;this.source=audio.createMediaStreamSource(stream);this.worklet=new AudioWorkletNode(audio,'hamdi-microphone');this.silence=audio.createGain();this.silence.gain.value=0;
-      this.worklet.port.onmessage=event=>{if(!this.recording)return;const data=new Uint8Array(event.data);if(this.bytes+data.length<=480000){this.chunks.push(data);this.bytes+=data.length;}else this.finishRecording();};
-      this.source.connect(this.worklet);this.worklet.connect(this.silence);this.silence.connect(audio.destination);this.recording=true;this.busy=false;this.el('record').textContent=this.c.stop;this.el('next').disabled=true;this.el('skip').disabled=true;this.el('status').textContent=this.c.listening;this.onState?.('listening');this.timer=setTimeout(()=>this.finishRecording(),15000);
-    }catch{this.cancelRecording();if(run===this.run)this.el('status').textContent=this.c.error;}
+      const stream = await navigator.mediaDevices.getUserMedia({audio:{channelCount:1,echoCancellation:true,noiseSuppression:true},video:false});
+      if (!current()) {
+        stream.getTracks().forEach(track=>track.stop());
+        return false;
+      }
+      this.stream = stream;
+      this.enableTracks(false);
+      const audio = new AudioContext({sampleRate:16000});
+      this.audio = audio;
+      await audio.resume();
+      if (!current()) return false;
+      if (audio.sampleRate !== 16000) throw new Error('sample-rate');
+      await audio.audioWorklet.addModule(new URL('./microphone.js',location.href).href);
+      if (!current()) return false;
+      this.source = audio.createMediaStreamSource(stream);
+      this.worklet = new AudioWorkletNode(audio,'hamdi-microphone');
+      this.silence = audio.createGain();
+      this.silence.gain.value = 0;
+      this.worklet.port.onmessage = event=>this.receiveAudio(new Uint8Array(event.data));
+      this.source.connect(this.worklet);
+      this.worklet.connect(this.silence);
+      this.silence.connect(audio.destination);
+      return true;
+    } catch {
+      if (current()) this.cancelRecording();
+      return false;
+    }
   }
+
+  enableTracks(enabled) {
+    this.stream?.getAudioTracks().forEach(track=>{ track.enabled = enabled; });
+  }
+
+  listenForAnswer() {
+    if (!this.stream || !this.dialog.open || document.hidden || !orderFields[this.stage]) return;
+    this.stopTurn();
+    this.turn = {chunks:[],lead:[],hits:0,quietMs:0,bytes:0,noise:0.003};
+    this.enableTracks(true);
+    this.setPhase('listening',this.c.listening);
+    this.turnTimer = setTimeout(()=>{
+      if (this.turn?.bytes) this.finishRecording();
+      else {
+        this.cancelRecording();
+        this.setPhase('idle',this.c.typedHint);
+      }
+    },15000);
+  }
+
+  receiveAudio(chunk) {
+    const turn = this.turn;
+    if (!turn) return;
+    const samples = new DataView(chunk.buffer,chunk.byteOffset,chunk.byteLength);
+    let energy = 0;
+    for (let i=0;i<chunk.length;i+=2) energy += (samples.getInt16(i,true)/32768)**2;
+    const rms = Math.sqrt(energy/(chunk.length/2));
+    const voiced = rms >= Math.max(0.008,Math.min(0.04,turn.noise*2.8));
+    if (!turn.bytes) {
+      turn.lead.push(chunk);
+      if (turn.lead.length > 10) turn.lead.shift();
+      turn.hits = voiced ? turn.hits+1 : 0;
+      if (!voiced) turn.noise = turn.noise*0.9+rms*0.1;
+      if (turn.hits < 3) return;
+      turn.chunks = turn.lead;
+      turn.bytes = turn.lead.reduce((total,part)=>total+part.length,0);
+      return;
+    }
+    if (turn.bytes+chunk.length > maxAnswerBytes) {
+      this.finishRecording();
+      return;
+    }
+    turn.chunks.push(chunk);
+    turn.bytes += chunk.length;
+    turn.quietMs = voiced ? 0 : turn.quietMs+chunkMs;
+    // Keep turn detection below one second, including for a dictated number.
+    if (turn.quietMs >= (orderFields[this.stage] === 'contact' ? 864 : 672)) this.finishRecording();
+  }
+
+  stopTurn() {
+    this.turnRun = (this.turnRun || 0)+1;
+    clearTimeout(this.turnTimer);
+    this.turn = null;
+    this.enableTracks(false);
+    this.transcription?.abort();
+    this.transcription = null;
+  }
+
   cancelRecording() {
-    this.captureRun=(this.captureRun||0)+1;
-    clearTimeout(this.timer);this.recording=false;this.busy=false;this.stream?.getTracks().forEach(t=>t.stop());this.stream=null;this.source?.disconnect();this.worklet?.disconnect();this.silence?.disconnect();this.audio?.close().catch(()=>{});this.audio=null;this.source=this.worklet=this.silence=null;
-    if(this.el('record')){this.el('record').textContent=this.c.record;this.el('next').disabled=false;this.el('skip').disabled=false;}this.onState?.('ready');
+    this.captureRun = (this.captureRun || 0)+1;
+    this.stopTurn();
+    this.stream?.getTracks().forEach(track=>track.stop());
+    this.stream = null;
+    if (this.worklet) this.worklet.port.onmessage = null;
+    this.source?.disconnect();
+    this.worklet?.disconnect();
+    this.silence?.disconnect();
+    this.audio?.close().catch(()=>{});
+    this.audio = this.source = this.worklet = this.silence = null;
+    const mute = this.el('mute');
+    if (mute) mute.hidden = true;
   }
+
   async finishRecording() {
-    if(!this.recording)return;const chunks=this.chunks||[],stage=this.stage,run=this.run;this.chunks=[];this.cancelRecording();this.busy=true;this.el('record').disabled=true;this.el('next').disabled=true;this.el('skip').disabled=true;this.el('status').textContent=this.c.processing;
+    const chunks = this.turn?.chunks;
+    this.stopTurn();
+    if (!chunks?.length) return;
+    const turn = this.turnRun, run = this.run, key = orderFields[this.stage];
+    const controller = new AbortController();
+    this.transcription = controller;
+    const current = ()=>run === this.run && turn === this.turnRun && this.dialog.open && !document.hidden;
+    this.setPhase('processing',this.c.processing);
     try {
-      const response=await fetch('/api/order/transcribe',{method:'POST',headers:{'content-type':'audio/wav',authorization:'Bearer '+this.token},body:orderWav(chunks),signal:AbortSignal.timeout(30000)});const data=await response.json();if(run!==this.run)return;if(!response.ok)throw new Error(data.error);
-      const key=['service','name','channel','contact','when'][stage];let value=data.text;
-      if(key==='service')value=orderService(value);if(key==='channel')value=orderChannel(value);if(key==='contact'&&this.field('channel').value!=='email')value=orderPhone(value);
-      this.field(key).value=value;this.busy=false;
-      if(!value&&(key==='service'||key==='channel')) {
-        this.el('status').textContent=(this.language==='tr'?'Duyduğum: ':'سمعت: ')+data.text+'\n'+this.c.invalid;
-      }else this.advance();
-    }catch(error){if(run===this.run)this.el('status').textContent=error.message==='order-limit'?this.c.limit:this.c.error;}
-    finally{if(run===this.run){this.busy=false;this.el('record').disabled=false;this.el('next').disabled=false;this.el('skip').disabled=false;}}
+      const response = await fetch('/api/order/transcribe',{
+        method:'POST',headers:{'content-type':'audio/wav',authorization:'Bearer '+this.token},
+        body:orderWav(chunks),signal:AbortSignal.any([controller.signal,AbortSignal.timeout(15000)])
+      });
+      const result = await response.json();
+      if (!current()) return;
+      if (!response.ok) throw new Error(result.error);
+      let value = result.text;
+      if (key === 'service') value = orderService(value);
+      if (key === 'channel') value = orderChannel(value);
+      if (key === 'contact' && this.field('channel').value !== 'email') value = orderPhone(value);
+      if (key === 'channel' && value && !this.channels[value]) {
+        this.repeatAnswer(this.c.channelUnavailable);
+        return;
+      }
+      this.field(key).value = value;
+      if (this.validField(key)) this.advance();
+      else this.repeatAnswer();
+    } catch(error) {
+      if (!current()) return;
+      if (error.message === 'no-speech') this.repeatAnswer();
+      else {
+        this.cancelRecording();
+        this.setPhase('idle',error.message === 'order-limit' ? this.c.limit : this.c.error);
+      }
+    }
   }
+
+  repeatAnswer(message = this.c.invalid) {
+    this.repeats = (this.repeats || 0)+1;
+    if (this.repeats < 2 && this.stream) this.listenForAnswer();
+    else {
+      this.cancelRecording();
+      this.setPhase('idle');
+    }
+    this.el('status').textContent = message+(this.stream?' '+this.c.listening:' '+this.c.typedHint);
+  }
+
   async send() {
-    if(this.sending||this.stage!==5||!this.el('form').reportValidity())return;
-    for(const key of ['service','name','channel','contact'])if(!this.validField(key)){this.field(key).focus();this.el('status').textContent=this.c.invalid;return;}
-    const data=Object.fromEntries(new FormData(this.el('form')));if(data.channel!=='email')data.contact=orderPhone(data.contact);data.language=this.language;data.confirmed=true;
-    this.stopPrompt();this.sending=true;this.el('send').disabled=true;this.el('close').disabled=true;this.el('status').textContent=this.c.sending;
-    try {const response=await fetch('/api/order/send',{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+this.token},body:JSON.stringify(data),signal:AbortSignal.timeout(35000)});const result=await response.json();if(!response.ok||result.accepted!==true)throw new Error('unconfirmed');this.el('form').hidden=true;this.el('status').textContent=this.c.sent+' '+this.c.reference+': '+result.id;this.speak('sent');}
-    catch{this.el('status').textContent=this.c.unknown;this.el('send').hidden=true;}
-    finally{this.sending=false;this.el('close').disabled=false;}
+    if (this.sending || this.stage !== orderFields.length || !this.el('form').reportValidity()) return;
+    for (const key of ['service','name','channel','contact']) {
+      if (this.validField(key)) continue;
+      this.field(key).focus();
+      this.setPhase('review',this.c.invalid);
+      return;
+    }
+    const data = Object.fromEntries(new FormData(this.el('form')));
+    if (data.channel !== 'email') data.contact = orderPhone(data.contact);
+    Object.assign(data,{language:this.language,confirmed:true});
+    this.stopPrompt();
+    this.sending = this.el('send').disabled = this.el('close').disabled = true;
+    const run = this.run;
+    this.setPhase('processing',this.c.sending+' '+this.channelLabel(data.channel));
+    try {
+      const response = await fetch('/api/order/send',{
+        method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+this.token},
+        body:JSON.stringify(data),signal:AbortSignal.timeout(35000)
+      });
+      const result = await response.json();
+      if (run !== this.run) return;
+      if (result.error === 'channel-unavailable' || result.error === 'sms-content-limit') {
+        this.setPhase('review',result.error === 'channel-unavailable' ? this.c.channelUnavailable : this.c.smsLimit);
+        this.el('send').disabled = false;
+        return;
+      }
+      if (!response.ok || result.accepted !== true || result.channel !== data.channel) throw new Error('unconfirmed');
+      this.el('form').hidden = true;
+      const status = result.state === 'delivered' ? this.c.delivered : this.c.accepted;
+      this.setPhase('review',status+' '+this.channelLabel(result.channel)+'. '+this.c.reference+' '+result.id);
+      this.speak('sent');
+    } catch {
+      if (run !== this.run) return;
+      this.setPhase('idle',this.c.unknown);
+      this.el('send').hidden = true;
+    } finally {
+      if (run === this.run) {
+        this.sending = false;
+        this.el('close').disabled = false;
+      }
+    }
   }
-  close() {this.run++;this.cancelRecording();this.stopPrompt();if(this.dialog.open)this.dialog.close();this.token='';this.chunks=[];this.dialog.innerHTML='';}
+
+  close() {
+    this.run++;
+    this.starting = false;
+    this.repeats = 0;
+    this.cancelRecording();
+    this.stopPrompt();
+    if (this.dialog.open) this.dialog.close();
+    this.token = '';
+    this.dialog.innerHTML = '';
+  }
 }
 
 
@@ -492,8 +897,8 @@ const voice = new CustomerVoice({ onState: setVoiceState, onTranscript: value =>
 const orderAssistant = new OrderAssistant({ getLanguage: () => language, stopOtherVoice: () => voice.stop(false), onState: state => setVoiceState(state) });
 orderAssistant.configure().then(enabled => {
   if (!enabled) return;
-  Object.assign(copy.ar, { voiceDescription:'اسأل عن الخدمات، أو اطلب جلستك بالصوت خطوة بخطوة. نراجع التفاصيل معك ثم نرسلها إلى بريد حمدي.', bookingAction:'اطلب جلسة مع المساعد ↙' });
-  Object.assign(copy.tr, { voiceDescription:'Hizmetleri sor veya çekim talebini adım adım sesle hazırla. Ayrıntıları seninle kontrol edip Hamdi’ye e-posta ile göndeririz.', bookingAction:'Asistanla çekim talebi ↘' });
+  Object.assign(copy.ar, { voiceDescription:'اطلب جلستك بالصوت. المساعد يسألك ويسمع جوابك تلقائيًا، ويرسل الطلب بعد تأكيدك بالقناة المختارة.', bookingAction:'احجز طلب عبر المساعد ↙' });
+  Object.assign(copy.tr, { voiceDescription:'Çekim talebini sesle hazırla. Asistan yanıtlarını otomatik dinler ve onayından sonra seçtiğin kanalla gönderir.', bookingAction:'Asistanla çekim talebi ↘' });
   $('[data-t="voiceDescription"]').textContent = text('voiceDescription');
   $('.voice-booking').textContent = text('bookingAction');
   if (embedded) window.parent.postMessage({type:'hamdi-ai:order-ready'}, embeddedParent);

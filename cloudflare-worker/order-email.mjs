@@ -27,7 +27,7 @@ export function orderEmailText(order, id) {
   return [
     'طلب زبون جديد — Hamdi Photography', `رقم الطلب: ${id}`, '',
     `الخدمة: ${ORDER_SERVICES[order.service]}`, `الاسم: ${order.name}`,
-    `وسيلة التواصل المفضلة للزبون: ${channels[order.channel]}`, `بيانات التواصل: ${order.contact}`,
+    `قناة إرسال الطلب: ${channels[order.channel]}`, `بيانات التواصل: ${order.contact}`,
     order.when && `الموعد المقترح كما ذكره الزبون: ${order.when}`,
     order.notes && `ملاحظات: ${order.notes}`, '',
     'هذا طلب للتنسيق. لم يتم تأكيد توفر موعد أو سعر، ويؤكد حمدي التفاصيل مع الزبون.'
@@ -42,6 +42,7 @@ export async function signedMailEnvelope(order, id, secret, now = Date.now()) {
 }
 
 export async function sendOrderEmail(order, id, env, fetchImpl = fetch) {
+  if (order.channel !== 'email') throw new Error('wrong-delivery-channel');
   if (!mailConfigured(env)) throw new Error('mail-not-configured');
   if (env.ORDER_MAIL_PROVIDER === 'web3forms') {
     const response = await fetchImpl('https://api.web3forms.com/submit', {
