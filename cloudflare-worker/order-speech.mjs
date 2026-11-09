@@ -23,8 +23,20 @@ export const ORDER_PROMPTS = Object.freeze({
 });
 export const PROMPT_VERSION='aoede-v1';
 const channelPrompts = {
-  ar:{ channel:'بأي طريقة بدك المساعد يرسل طلبك لحمدي؟ اختار من القنوات المتاحة.', sent:'قبلت خدمة الإرسال طلبك. احتفظ برقم الطلب للتواصل مع الاستوديو.' },
-  tr:{ channel:'Asistan talebini Hamdi’ye nasıl göndersin? Kullanılabilir kanallardan birini seç.', sent:'Gönderim sağlayıcısı talebini kabul etti. Stüdyoyla görüşmek için talep numaranı sakla.' }
+  ar:{
+    channel:'بأي طريقة بدك المساعد يرسل طلبك لحمدي؟ اختار من القنوات المتاحة.',
+    sent:'قبلت خدمة الإرسال طلبك. احتفظ برقم الطلب للتواصل مع الاستوديو.',
+    when:'أي يوم ووقت بتفضّل؟ إذا بدك نتفق بعدين، قول بدون موعد.',
+    received:'وصل طلبك لخدمة الإرسال. ملخص طلبك ورقمه ظاهرين قدّامك.',
+    delivered:'وصل طلبك لحمدي. ملخص طلبك ورقمه ظاهرين قدّامك.'
+  },
+  tr:{
+    channel:'Asistan talebini Hamdi’ye nasıl göndersin? Kullanılabilir kanallardan birini seç.',
+    sent:'Gönderim sağlayıcısı talebini kabul etti. Stüdyoyla görüşmek için talep numaranı sakla.',
+    when:'Hangi gün ve saati tercih edersin? İstersen zamanı sonra kararlaştıralım de.',
+    received:'Gönderim sağlayıcısı talebini aldı. Talep özeti ve numarası ekranda.',
+    delivered:'Talebin Hamdi’ye ulaştı. Talep özeti ve numarası ekranda.'
+  }
 };
 export function readOrderPrompt(request) {
   const url=new URL(request.url);

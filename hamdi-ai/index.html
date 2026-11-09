@@ -51,6 +51,10 @@ html[data-voice-state=speaking] .orb{box-shadow:inset -13px -15px 20px #031e1860
 .order-dialog .order-speech-note{font-size:.75rem;opacity:.75}
 .order-step-tools{display:flex;flex-wrap:wrap;gap:.6rem;margin:1rem 0}
 .order-dialog #order-status{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.8;font-size:.9rem}
+.order-dialog #order-receipt{padding:.85rem 1rem;border:1px solid var(--line);border-radius:.75rem;background:#fff9}
+.order-dialog #order-receipt dl{display:grid;grid-template-columns:minmax(6rem,auto) minmax(0,1fr);gap:.4rem 1rem}
+.order-dialog #order-receipt dt{font-weight:600}
+.order-dialog #order-receipt dd{margin:0;overflow-wrap:anywhere}
 .order-dialog :is(#order-send,#order-start){width:100%;margin-top:.75rem}
 .order-dialog :is(#order-repeat,#order-mute,#order-typed){min-height:44px;margin-inline-end:.8rem}
 .order-avatar{--orb-light:#eac884;position:relative;display:grid;place-items:center;width:86px;height:82px;margin:.2rem auto 1rem;isolation:isolate}
@@ -289,7 +293,8 @@ function orderService(value) {
   return matches.length===1?matches[0][0]:'';
 }
 function orderChannel(value) {
-  const s=value.toLowerCase().normalize('NFKC').replace(/[\u0640\u064b-\u065f\u0670]/g,'').replace(/[أإآ]/g,'ا');
+  const s=normalizedOrderReply(value);
+  if (/(?:^|\s)(?:لا|ما|مو|مش|hayır|hayir|değil|degil|istemiyorum)(?:\s|[،,.!?؟]|$)/u.test(s)) return '';
   const matches=[
     ['whatsapp',/واتس|الوتس|whats/],
     ['email',/بريد|ايميل|email|e-mail|posta/],
@@ -310,49 +315,60 @@ function orderWav(chunks) {
 }
 
 function orderPromptUrl(language,key) {
-  return ['ar','tr'].includes(language)&&['service','name','channel','phone','email','when','review','sent'].includes(key)
-    ?'/api/order/prompt/'+(['channel','sent'].includes(key)?'aoede-v2':'aoede-v1')+'/'+language+'/'+key+'.wav':null;
+  if (!['ar','tr'].includes(language) || !['service','name','channel','phone','email','when','review','sent','received','delivered'].includes(key)) return null;
+  const version = ['channel','sent','when','received','delivered'].includes(key) ? 'aoede-v2' : 'aoede-v1';
+  return '/api/order/prompt/'+version+'/'+language+'/'+key+'.wav';
+}
+
+function normalizedOrderReply(value) {
+  return value.toLowerCase().normalize('NFKC').replace(/[\u0640\u064b-\u065f\u0670]/g,'').replace(/[أإآ]/g,'ا').trim();
+}
+
+function isOrderCancellation(text) {
+  return /(?:لا|ما)\s*(?:ترسل|تبعت)|(?:الغاء|الغي|الغ|وقف)\s*(?:ال)?(?:طلب|حجز)|\b(?:iptal(?: et)?|gönderme|gonderme)\b/i.test(text);
 }
 
 
 const orderCopy = {
   ar:{
-    title:'طلبك مع حمدي', intro:'المساعد يسألك ويستمع لجوابك تلقائيًا. بعد مراجعة التفاصيل، يرسل طلبك لحمدي بالقناة التي تختارها.',
-    privacy:'عند بدء الحجز بالصوت، يُحوّل Cloudflare أجوبتك إلى نص. يعمل الميكروفون أثناء انتظار جوابك ويتوقف عند المراجعة. نرسل تفاصيل الطلب لخدمة القناة التي تختارها بعد تأكيدك.',
+    title:'طلبك مع حمدي', intro:'اختَر قناة الإرسال بصوتك. بعد اكتمال الأجوبة، المساعد يرسل الطلب تلقائيًا لحمدي ويعرض لك الملخص ورقم الطلب.',
+    privacy:'عند بدء الحجز بالصوت، يُحوّل Cloudflare أجوبتك إلى نص. باختيار قناة الإرسال بصوتك، توافق على إرسال تفاصيل الطلب عبرها فور اكتمالها. يمكنك قول «ألغِ الطلب» قبل الإرسال.',
     start:'ابدأ الحجز بالصوت', typed:'المتابعة كتابة', mute:'أوقف الميكروفون', replay:'اسمع السؤال', close:'إغلاق',
     service:'الخدمة', name:'اسمك', channel:'قناة إرسال الطلب لحمدي', contact:'رقم التواصل أو البريد', when:'الموعد المقترح (اختياري)', notes:'ملاحظات (اختياري)',
     choose:'اختر', unavailable:'غير مفعّل', next:'التالي', skip:'نتفق على الموعد لاحقًا', review:'راجع التفاصيل وقناة الإرسال قبل التأكيد.',
-    send:'أؤكد التفاصيل وأرسل الطلب', pending:'هذا طلب للتنسيق. يؤكد حمدي الموعد والسعر بعد التواصل.',
+    send:'أرسل الطلب', pending:'هذا طلب للتنسيق. يؤكد حمدي الموعد والسعر بعد التواصل.',
     speaking:'عم اسألك…', listening:'عم اسمعك…', processing:'عم أفهم جوابك…', typedHint:'يمكنك كتابة الجواب والمتابعة.',
     invalid:'راجع جوابك أو قلْه مرة ثانية بعد سماع السؤال.', micUnavailable:'الميكروفون غير متاح. يمكنك المتابعة كتابة.',
     channelUnavailable:'قناة الإرسال هذه غير مفعّلة. اختَر إحدى القنوات المتاحة إذا كانت تناسبك.',
     smsLimit:'نص الطلب طويل لرسالة SMS أو يحتوي رابطًا. اختصر التفاصيل واحذف الروابط.',
     error:'تعذّرت المتابعة. يمكنك الكتابة أو المحاولة لاحقًا.', limit:'وصلنا لحد الجلسات اليوم. يمكنك التواصل مباشرة مع الاستوديو.',
-    sending:'عم نرسل طلبك عبر', accepted:'قبلت خدمة الإرسال طلبك عبر', delivered:'تم تسليم طلبك عبر',
+    sending:'عم نرسل طلبك عبر', accepted:'وصل طلبك لخدمة الإرسال عبر', delivered:'وصل طلبك لحمدي عبر',
+    receiptTitle:'ملخص طلبك', cancelled:'تم إلغاء الطلب قبل الإرسال.',
     unknown:'لم نتمكن من تأكيد الإرسال. تواصل مع الاستوديو قبل إعادة الطلب لتجنب تكراره.',
     reference:'رقم الطلب', qService:'شو الخدمة اللي بدك ياها؟ تعديل ألوان، تخرج، تصوير الحلاقة، أو صور جواز وهويات؟', qName:'شو اسمك؟',
     qChannel:'بأي طريقة بدك المساعد يرسل طلبك لحمدي؟ اختار من القنوات المتاحة.',
     qPhone:'قول رقمك رقم رقم، أو اكتبه بالخانة.', qEmail:'قول عنوان بريدك الإلكتروني، أو اكتبه بالخانة حتى نتأكد منه.',
-    qWhen:'أي يوم ووقت بتفضّل؟ اختياري، فيك تضغط نتفق لاحقًا.'
+    qWhen:'أي يوم ووقت بتفضّل؟ إذا بدك نتفق بعدين، قول «بدون موعد».'
   },
   tr:{
-    title:'Hamdi ile talebin', intro:'Asistan soruları sorar ve yanıtlarını otomatik dinler. Ayrıntıları onaylayınca talebini seçtiğin kanalla Hamdi’ye gönderir.',
-    privacy:'Sesli talebi başlattığında Cloudflare yanıtlarını metne dönüştürür. Mikrofon yanıtını beklerken çalışır ve inceleme adımında kapanır. Onayından sonra ayrıntılar seçtiğin kanalın sağlayıcısına iletilir.',
+    title:'Hamdi ile talebin', intro:'Gönderim kanalını sesle seç. Yanıtların tamamlanınca asistan talebini otomatik gönderir, özeti ve talep numarasını gösterir.',
+    privacy:'Sesli talebi başlattığında Cloudflare yanıtlarını metne dönüştürür. Kanalı sesle seçtiğinde, ayrıntılar tamamlanınca o kanalla gönderilmesine izin verirsin. Gönderimden önce “talebi iptal et” diyebilirsin.',
     start:'Sesli talebi başlat', typed:'Yazarak devam et', mute:'Mikrofonu kapat', replay:'Soruyu dinle', close:'Kapat',
     service:'Hizmet', name:'Adın', channel:'Talebin Hamdi’ye iletileceği kanal', contact:'Telefon veya e-posta', when:'Önerilen zaman (isteğe bağlı)', notes:'Notlar (isteğe bağlı)',
     choose:'Seç', unavailable:'Etkin değil', next:'İleri', skip:'Zamanı sonra kararlaştıralım', review:'Onaylamadan önce ayrıntıları ve gönderim kanalını incele.',
-    send:'Bilgileri onayla ve talebi gönder', pending:'Bu bir planlama talebidir. Zamanı ve fiyatı Hamdi görüşmeden sonra onaylar.',
+    send:'Talebi gönder', pending:'Bu bir planlama talebidir. Zamanı ve fiyatı Hamdi görüşmeden sonra onaylar.',
     speaking:'Soruyu okuyorum…', listening:'Dinliyorum…', processing:'Yanıtın anlaşılıyor…', typedHint:'Yanıtını yazarak devam edebilirsin.',
     invalid:'Yanıtı kontrol et veya soruyu dinleyip tekrar söyle.', micUnavailable:'Mikrofon kullanılamıyor. Yazarak devam edebilirsin.',
     channelUnavailable:'Bu gönderim kanalı etkin değil. Sana uygunsa kullanılabilir bir kanal seç.',
     smsLimit:'SMS için metin fazla uzun veya bağlantı içeriyor. Ayrıntıları kısalt ve bağlantıları kaldır.',
     error:'Devam edilemedi. Yazabilir veya daha sonra deneyebilirsin.', limit:'Bugünkü oturum sınırına ulaşıldı. Stüdyoyla doğrudan iletişim kurabilirsin.',
-    sending:'Talep şu kanalla gönderiliyor:', accepted:'Gönderim sağlayıcısı talebi kabul etti:', delivered:'Talep şu kanalla teslim edildi:',
+    sending:'Talep şu kanalla gönderiliyor:', accepted:'Gönderim sağlayıcısı talebini aldı:', delivered:'Talep Hamdi’ye şu kanalla teslim edildi:',
+    receiptTitle:'Talep özeti', cancelled:'Talep gönderilmeden iptal edildi.',
     unknown:'Gönderim doğrulanamadı. Tekrarlamadan önce stüdyoyla iletişime geç.',
     reference:'Talep numarası', qService:'Hangi hizmeti istiyorsun? Renk düzenleme, mezuniyet, berber çekimi veya pasaport ve kimlik fotoğrafı?', qName:'Adın nedir?',
     qChannel:'Asistan talebini Hamdi’ye nasıl göndersin? Kullanılabilir kanallardan birini seç.',
     qPhone:'Telefon numaranı rakam rakam söyle veya kutuya yaz.', qEmail:'E-posta adresini söyle veya doğru olması için kutuya yaz.',
-    qWhen:'Hangi gün ve saati tercih edersin? İstersen zamanı sonra kararlaştırabiliriz.'
+    qWhen:'Hangi gün ve saati tercih edersin? İstersen “zamanı sonra kararlaştıralım” de.'
   }
 };
 const orderFields = ['service','name','channel','contact','when'];
@@ -486,7 +502,8 @@ class OrderAssistant {
       '<div class="order-step-tools" id="order-step-tools"><button type="button" class="button primary" id="order-next">'+c.next+'</button>',
       '<button type="button" class="text-link" id="order-skip">'+c.skip+'</button></div>',
       '<p>'+c.pending+'</p><button type="submit" class="button primary" id="order-send" hidden>'+c.send+'</button></form>',
-      '<p id="order-status" role="status" aria-live="polite"></p>'
+      '<p id="order-status" role="status" aria-live="polite"></p>',
+      '<section id="order-receipt" hidden><h3>'+c.receiptTitle+'</h3><dl id="order-summary"></dl><p>'+c.pending+'</p></section>'
     ].join('');
     this.el('close').onclick = ()=>{ if (!this.sending) this.close(); };
     this.el('start').onclick = ()=>this.start(true);
@@ -508,7 +525,10 @@ class OrderAssistant {
       if (this.sending) return;
       this.stopTurn();
       this.stopPrompt();
-      if (event.target === this.field('channel')) this.updateContactField();
+      if (event.target === this.field('channel')) {
+        this.automaticChannel = '';
+        this.updateContactField();
+      }
       this.setPhase('idle');
     };
     this.el('form').onsubmit = event=>{
@@ -609,14 +629,18 @@ class OrderAssistant {
   }
 
   review() {
+    const automatically = Boolean(this.stream && this.automaticChannel
+      && this.automaticChannel === this.field('channel').value);
     this.stage = orderFields.length;
     this.cancelRecording();
     this.dialog.querySelectorAll('[data-order-field]').forEach(el=>{ el.hidden = false; });
     this.el('step-tools').hidden = true;
-    this.el('send').hidden = false;
-    this.el('question').textContent = this.c.review;
+    this.el('send').hidden = automatically;
+    this.el('repeat').hidden = automatically;
+    this.el('question').textContent = automatically ? this.c.receiptTitle : this.c.review;
     this.setPhase('review');
-    this.speak('review');
+    if (automatically) this.send();
+    else this.speak('review');
   }
 
   async prepareMicrophone() {
@@ -711,6 +735,7 @@ class OrderAssistant {
   }
 
   cancelRecording() {
+    this.automaticChannel = '';
     this.captureRun = (this.captureRun || 0)+1;
     this.stopTurn();
     this.stream?.getTracks().forEach(track=>track.stop());
@@ -742,17 +767,32 @@ class OrderAssistant {
       const result = await response.json();
       if (!current()) return;
       if (!response.ok) throw new Error(result.error);
+      const transcript = normalizedOrderReply(result.text);
+      if (isOrderCancellation(transcript)) {
+        this.cancelRecording();
+        this.stopPrompt();
+        this.token = '';
+        this.stage = -1;
+        this.el('form').hidden = true;
+        this.setPhase('idle',this.c.cancelled);
+        return;
+      }
       let value = result.text;
       if (key === 'service') value = orderService(value);
       if (key === 'channel') value = orderChannel(value);
       if (key === 'contact' && this.field('channel').value !== 'email') value = orderPhone(value);
+      if (key === 'when' && /بدون موعد|بلا موعد|نتفق لاحقا|نتفق بعدين|sonra kararlaştıralım|zaman fark etmez/i.test(transcript)) value = '';
       if (key === 'channel' && value && !this.channels[value]) {
         this.repeatAnswer(this.c.channelUnavailable);
         return;
       }
       this.field(key).value = value;
-      if (this.validField(key)) this.advance();
-      else this.repeatAnswer();
+      if (!this.validField(key)) {
+        this.repeatAnswer();
+        return;
+      }
+      if (key === 'channel') this.automaticChannel = value;
+      this.advance();
     } catch(error) {
       if (!current()) return;
       if (error.message === 'no-speech') this.repeatAnswer();
@@ -773,12 +813,41 @@ class OrderAssistant {
     this.el('status').textContent = message+(this.stream?' '+this.c.listening:' '+this.c.typedHint);
   }
 
+  showReceipt(data, id) {
+    const c = this.c;
+    const rows = [
+      [c.reference,id],
+      [c.service,this.field('service').selectedOptions[0]?.textContent],
+      [c.name,data.name],
+      [c.channel,this.channelLabel(data.channel)],
+      [this.el('contact-label').textContent,data.contact],
+      [c.when,data.when],
+      [c.notes,data.notes]
+    ];
+    const summary = this.el('summary');
+    summary.replaceChildren();
+    for (const [label,value] of rows) {
+      if (!value) continue;
+      const term = document.createElement('dt'), detail = document.createElement('dd');
+      term.textContent = label;
+      detail.textContent = value;
+      detail.dir = 'auto';
+      summary.append(term,detail);
+    }
+    this.el('receipt').hidden = false;
+  }
+
   async send() {
-    if (this.sending || this.stage !== orderFields.length || !this.el('form').reportValidity()) return;
+    if (this.sending || this.stage !== orderFields.length) return;
+    if (!this.el('form').reportValidity()) {
+      this.el('send').hidden = false;
+      return;
+    }
     for (const key of ['service','name','channel','contact']) {
       if (this.validField(key)) continue;
       this.field(key).focus();
       this.setPhase('review',this.c.invalid);
+      this.el('send').hidden = false;
       return;
     }
     const data = Object.fromEntries(new FormData(this.el('form')));
@@ -798,13 +867,17 @@ class OrderAssistant {
       if (result.error === 'channel-unavailable' || result.error === 'sms-content-limit') {
         this.setPhase('review',result.error === 'channel-unavailable' ? this.c.channelUnavailable : this.c.smsLimit);
         this.el('send').disabled = false;
+        this.el('send').hidden = false;
         return;
       }
       if (!response.ok || result.accepted !== true || result.channel !== data.channel) throw new Error('unconfirmed');
+      this.stage++;
       this.el('form').hidden = true;
-      const status = result.state === 'delivered' ? this.c.delivered : this.c.accepted;
-      this.setPhase('review',status+' '+this.channelLabel(result.channel)+'. '+this.c.reference+' '+result.id);
-      this.speak('sent');
+      const delivered = result.state === 'delivered';
+      const status = delivered ? this.c.delivered : this.c.accepted;
+      this.setPhase('review',status+' '+this.channelLabel(result.channel)+'.');
+      this.showReceipt(data,result.id);
+      this.speak(delivered?'delivered':'received');
     } catch {
       if (run !== this.run) return;
       this.setPhase('idle',this.c.unknown);
@@ -897,8 +970,8 @@ const voice = new CustomerVoice({ onState: setVoiceState, onTranscript: value =>
 const orderAssistant = new OrderAssistant({ getLanguage: () => language, stopOtherVoice: () => voice.stop(false), onState: state => setVoiceState(state) });
 orderAssistant.configure().then(enabled => {
   if (!enabled) return;
-  Object.assign(copy.ar, { voiceDescription:'اطلب جلستك بالصوت. المساعد يسألك ويسمع جوابك تلقائيًا، ويرسل الطلب بعد تأكيدك بالقناة المختارة.', bookingAction:'احجز طلب عبر المساعد ↙' });
-  Object.assign(copy.tr, { voiceDescription:'Çekim talebini sesle hazırla. Asistan yanıtlarını otomatik dinler ve onayından sonra seçtiğin kanalla gönderir.', bookingAction:'Asistanla çekim talebi ↘' });
+  Object.assign(copy.ar, { voiceDescription:'اطلب جلستك بالصوت. المساعد يسمع أجوبتك ويرسل الطلب تلقائيًا عبر القناة التي تختارها بصوتك.', bookingAction:'احجز طلب عبر المساعد ↙' });
+  Object.assign(copy.tr, { voiceDescription:'Çekim talebini sesle hazırla. Asistan yanıtlarını dinler ve talebini sesle seçtiğin kanalla otomatik gönderir.', bookingAction:'Asistanla çekim talebi ↘' });
   $('[data-t="voiceDescription"]').textContent = text('voiceDescription');
   $('.voice-booking').textContent = text('bookingAction');
   if (embedded) window.parent.postMessage({type:'hamdi-ai:order-ready'}, embeddedParent);
