@@ -51,8 +51,24 @@ export function readOrderPrompt(request) {
   return version==='aoede-v2'?{language,key,version}:{language,key};
 }
 const errorResponse=(error,status=503)=>Response.json({error},{status,headers:{'cache-control':'no-store'}});
-export function promptResponse(bytes,cached=false) {
-  return new Response(bytes,{headers:{'content-type':'audio/wav','cache-control':'public,max-age=31536000,immutable','x-content-type-options':'nosniff','x-hamdi-prompt-cache':cached?'hit':'miss'}});
+export function promptResponse(bytes,cached=false,range='') {
+  const size=bytes.byteLength;
+  const headers={
+    'content-type':'audio/wav','cache-control':'public,max-age=31536000,immutable',
+    'x-content-type-options':'nosniff','x-hamdi-prompt-cache':cached?'hit':'miss','accept-ranges':'bytes'
+  };
+  const parts=/^bytes=(\d*)-(\d*)$/i.exec(range);
+  if (!parts || (!parts[1] && !parts[2])) {
+    return new Response(bytes,{headers:{...headers,'content-length':String(size)}});
+  }
+  const start=parts[1]?Number(parts[1]):Math.max(0,size-Number(parts[2]));
+  const end=parts[1] && parts[2]?Math.min(Number(parts[2]),size-1):size-1;
+  if (start>end || start>=size) {
+    return new Response(null,{status:416,headers:{'content-range':'bytes */'+size,'cache-control':'no-store'}});
+  }
+  return new Response(bytes.slice(start,end+1),{
+    status:206,headers:{...headers,'content-range':`bytes ${start}-${end}/${size}`,'content-length':String(end-start+1)}
+  });
 }
 export async function synthesizeOrderPrompt(prompt,env,fetchImpl=fetch) {
   const generate=model=>fetchImpl('https://generativelanguage.googleapis.com/v1beta/interactions',{
@@ -76,11 +92,11 @@ export async function synthesizeOrderPrompt(prompt,env,fetchImpl=fetch) {
   if(bytes.length<44||bytes.length>1200044||String.fromCharCode(...bytes.subarray(0,4))!=='RIFF'||String.fromCharCode(...bytes.subarray(8,12))!=='WAVE')throw new Error('prompt-audio-invalid');
   return bytes;
 }
-export async function cachedOrderPrompt(guard,prompt) {
+export async function cachedOrderPrompt(guard,prompt,range) {
   if(guard.env.GEMINI_FREE_TIER_CONFIRMED!=='true'||!guard.env.GEMINI_API_KEY)return errorResponse('prompt-not-configured');
   const key='prompt-'+(prompt.version||PROMPT_VERSION)+'-'+prompt.language+'-'+prompt.key;
   const cached=await guard.ctx.storage.get(key);
-  if(cached)return promptResponse(cached,true);
+  if(cached)return promptResponse(cached,true,range);
   const now=guard.now(),day=new Date(now).toISOString().slice(0,10);
   const claimed=await guard.ctx.storage.transaction(async storage=>{
     const old=await storage.get('prompt-budget'),budget=old?.day===day?old:{day,used:0,next:{}};
@@ -88,6 +104,6 @@ export async function cachedOrderPrompt(guard,prompt) {
     budget.used++;budget.next[key]=now+60000;await storage.put('prompt-budget',budget);return true;
   });
   if(!claimed)return errorResponse('prompt-limit',429);
-  try {const bytes=await guard.synthesize(prompt,guard.env);await guard.ctx.storage.put(key,bytes);return promptResponse(bytes);}
+  try {const bytes=await guard.synthesize(prompt,guard.env);await guard.ctx.storage.put(key,bytes);return promptResponse(bytes,false,range);}
   catch(error){return errorResponse(['prompt-provider-auth','prompt-provider-quota','prompt-provider-unavailable','prompt-audio-invalid'].includes(error.message)?error.message:'prompt-unavailable');}
 }

@@ -173,16 +173,20 @@ class CustomerVoice {
     this.active = true; this.muted = false;
     this.outputOnly = !microphone; this.outputTurnComplete = false; this.playedAudio = false;
     try {
-      if (!window.AudioContext || (microphone && (!navigator.mediaDevices?.getUserMedia || !window.AudioWorkletNode))) throw new Error('unsupported');
+      if (!window.AudioContext || (microphone && (!navigator.mediaDevices?.getUserMedia || !window.AudioWorkletNode
+        || (window.document?.permissionsPolicy || window.document?.featurePolicy)?.allowsFeature?.('microphone') === false))) {
+        throw new Error('unsupported');
+      }
       this.onState('connecting');
-      this.audio = new AudioContext({ sampleRate: 16000 });
-      await this.audio.resume();
-      if (run !== this.run) return;
+      this.audio = new AudioContext();
+      const activated = this.audio.resume().then(()=>true,()=>false);
       if (microphone) {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true, autoGainControl: true }, video: false });
         if (run !== this.run) { stream.getTracks().forEach(track => track.stop()); return; }
         this.stream = stream;
       }
+      if (!(await activated)) throw new Error('unsupported');
+      if (run !== this.run) return;
       const response = await fetch('/api/live-token', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ language, adult: true, consent: true }) }).catch(() => { throw new Error('provider-network'); });
       const config = await response.json();
       if (!response.ok) throw new Error(config.error || 'unavailable');
@@ -227,17 +231,17 @@ class CustomerVoice {
       });
       if (run !== this.run) return;
       if (microphone) {
-        await this.audio.audioWorklet.addModule(new URL('./microphone.js', window.location.href).href);
+        await this.audio.audioWorklet.addModule(new URL('./microphone.js?v=mobile-audio-20261110', window.location.href).href);
         if (run !== this.run) return;
         this.source = this.audio.createMediaStreamSource(this.stream);
-        this.microphone = new AudioWorkletNode(this.audio, 'hamdi-microphone');
+        this.microphone = new AudioWorkletNode(this.audio, 'hamdi-microphone', {processorOptions:{outputRate:16000}});
         this.silence = this.audio.createGain();
         this.silence.gain.value = 0;
         this.microphone.port.onmessage = event => {
           if (!this.active || this.muted || socket.readyState !== WebSocket.OPEN || socket.bufferedAmount > 262144) return;
           const bytes = new Uint8Array(event.data);
           let binary = ''; for (const byte of bytes) binary += String.fromCharCode(byte);
-          socket.send(JSON.stringify({ realtimeInput: { audio: { data: btoa(binary), mimeType: `audio/pcm;rate=${this.audio.sampleRate}` } } }));
+          socket.send(JSON.stringify({ realtimeInput: { audio: { data: btoa(binary), mimeType: 'audio/pcm;rate=16000' } } }));
         };
         this.source.connect(this.microphone); this.microphone.connect(this.silence); this.silence.connect(this.audio.destination);
       }
@@ -364,7 +368,7 @@ const orderCopy = {
     choose:'اختر', next:'التالي', skip:'نتفق على الموعد لاحقًا', review:'راجع التفاصيل وقناة الإرسال قبل التأكيد.',
     send:'أرسل الطلب', pending:'هذا طلب للتنسيق. يؤكد حمدي الموعد والسعر بعد التواصل.',
     speaking:'عم اسألك…', listening:'عم اسمعك…', processing:'عم أفهم جوابك…', typedHint:'يمكنك كتابة الجواب والمتابعة.',
-    invalid:'راجع جوابك أو قلْه مرة ثانية بعد سماع السؤال.', micUnavailable:'الميكروفون غير متاح. يمكنك المتابعة كتابة.',
+    invalid:'راجع جوابك أو قلْه مرة ثانية بعد سماع السؤال.', micUnavailable:'الميكروفون غير متاح هون. فيك تتابع كتابة، أو تفتح نفس الموقع في Safari أو Chrome وتسمح بالميكروفون.',
     channelUnavailable:'قناة الإرسال هذه غير مفعّلة. اختَر إحدى القنوات المتاحة إذا كانت تناسبك.',
     smsLimit:'نص الطلب طويل لرسالة SMS أو يحتوي رابطًا. اختصر التفاصيل واحذف الروابط.',
     error:'تعذّرت المتابعة. يمكنك الكتابة أو المحاولة لاحقًا.', limit:'وصلنا لحد الجلسات اليوم. يمكنك التواصل مباشرة مع الاستوديو.',
@@ -387,7 +391,7 @@ const orderCopy = {
     choose:'Seç', next:'İleri', skip:'Zamanı sonra kararlaştıralım', review:'Onaylamadan önce ayrıntıları ve gönderim kanalını incele.',
     send:'Talebi gönder', pending:'Bu bir planlama talebidir. Zamanı ve fiyatı Hamdi görüşmeden sonra onaylar.',
     speaking:'Soruyu okuyorum…', listening:'Dinliyorum…', processing:'Yanıtın anlaşılıyor…', typedHint:'Yanıtını yazarak devam edebilirsin.',
-    invalid:'Yanıtı kontrol et veya soruyu dinleyip tekrar söyle.', micUnavailable:'Mikrofon kullanılamıyor. Yazarak devam edebilirsin.',
+    invalid:'Yanıtı kontrol et veya soruyu dinleyip tekrar söyle.', micUnavailable:'Mikrofon burada kullanılamıyor. Yazarak devam edebilir veya aynı siteyi Safari ya da Chrome’da açıp mikrofona izin verebilirsin.',
     channelUnavailable:'Bu gönderim kanalı etkin değil. Sana uygunsa kullanılabilir bir kanal seç.',
     smsLimit:'SMS için metin fazla uzun veya bağlantı içeriyor. Ayrıntıları kısalt ve bağlantıları kaldır.',
     error:'Devam edilemedi. Yazabilir veya daha sonra deneyebilirsin.', limit:'Bugünkü oturum sınırına ulaşıldı. Stüdyoyla doğrudan iletişim kurabilirsin.',
@@ -407,6 +411,16 @@ const orderFields = ['service','name','channel','contact','when'];
 const orderChannels = ['email','sms'];
 const chunkMs = 32;
 const maxAnswerBytes = 480000;
+
+async function fetchOrder(url, timeout, options = {}, controller = new AbortController()) {
+  const timer = setTimeout(()=>controller.abort(),timeout);
+  try {
+    const response = await fetch(url,{...options,signal:controller.signal});
+    return {response,result:await response.json()};
+  } finally {
+    clearTimeout(timer);
+  }
+}
 
 class OrderAssistant {
   constructor({ getLanguage, stopOtherVoice, onState }) {
@@ -431,8 +445,7 @@ class OrderAssistant {
 
   async configure() {
     try {
-      const response = await fetch('/api/order/status',{signal:AbortSignal.timeout(5000)});
-      const result = await response.json();
+      const {response,result} = await fetchOrder('/api/order/status',5000);
       this.channels = Object.fromEntries(orderChannels.map(key=>[key,result.channels?.[key] === true]));
       this.enabled = response.ok && result.enabled === true && Object.values(this.channels).some(Boolean);
     } catch {
@@ -463,7 +476,6 @@ class OrderAssistant {
       audio.pause();
       audio.removeAttribute('src');
       audio.load();
-      this.promptAudio = null;
     }
     if (this.dialog.dataset) this.dialog.dataset.promptState = 'stopped';
   }
@@ -477,8 +489,8 @@ class OrderAssistant {
       return;
     }
     const run = this.promptRun;
-    const audio = new Audio(url);
-    this.promptAudio = audio;
+    const audio = this.promptAudio ||= new window.Audio();
+    audio.src = url;
     this.dialog.dataset.promptState = 'loading';
     let finished = false;
     const complete = state=>{
@@ -498,7 +510,20 @@ class OrderAssistant {
     };
     audio.onended = ()=>complete('ended');
     audio.onerror = ()=>complete('unavailable');
-    audio.play().catch(audio.onerror);
+    audio.play().catch(()=>complete('unavailable'));
+  }
+
+  unlockPromptAudio() {
+    if (!window.Audio) return;
+    const audio = this.promptAudio ||= new window.Audio();
+    const silence = orderWav([new Uint8Array(640)]);
+    audio.src = 'data:audio/wav;base64,'+btoa(String.fromCharCode(...silence));
+    audio.play().catch(()=>{});
+  }
+
+  canRecord() {
+    return Boolean(window.AudioContext && window.AudioWorkletNode && navigator.mediaDevices?.getUserMedia
+      && (document.permissionsPolicy || document.featurePolicy)?.allowsFeature?.('microphone') !== false);
   }
 
   open(service = '') {
@@ -573,6 +598,10 @@ class OrderAssistant {
     if (['color','graduation','hair','id'].includes(service)) this.field('service').value = service;
     this.setPhase('idle');
     this.dialog.showModal();
+    if (!this.canRecord()) {
+      this.el('start').hidden = true;
+      this.setPhase('idle',c.micUnavailable);
+    }
   }
 
   async start(withVoice) {
@@ -581,13 +610,13 @@ class OrderAssistant {
     this.el('start').disabled = this.el('typed').disabled = true;
     const run = this.run;
     try {
+      if (withVoice && this.canRecord()) this.unlockPromptAudio();
       const mic = withVoice && await this.prepareMicrophone();
       if (run !== this.run || !this.dialog.open) return;
-      const response = await fetch('/api/order/session',{
+      const {response,result} = await fetchOrder('/api/order/session',10000,{
         method:'POST',headers:{'content-type':'application/json'},
-        body:JSON.stringify({language:this.language,consent:true}),signal:AbortSignal.timeout(10000)
+        body:JSON.stringify({language:this.language,consent:true})
       });
-      const result = await response.json();
       if (run !== this.run || !this.dialog.open) return;
       if (!response.ok) throw new Error(result.error);
       this.token = result.token;
@@ -676,10 +705,15 @@ class OrderAssistant {
   }
 
   async prepareMicrophone() {
-    if (!window.AudioContext || !window.AudioWorkletNode || !navigator.mediaDevices?.getUserMedia) return false;
+    if (!this.canRecord()) return false;
     const run = this.run, capture = ++this.captureRun;
     const current = ()=>run === this.run && capture === this.captureRun && !document.hidden && this.dialog.open;
+    let resumeTimer;
     try {
+      const audio = new window.AudioContext();
+      this.audio = audio;
+      // Mobile browsers need resume() to be requested during the Start tap.
+      const activated = audio.resume().then(()=>true,()=>false);
       const stream = await navigator.mediaDevices.getUserMedia({audio:{channelCount:1,echoCancellation:true,noiseSuppression:true},video:false});
       if (!current()) {
         stream.getTracks().forEach(track=>track.stop());
@@ -687,15 +721,15 @@ class OrderAssistant {
       }
       this.stream = stream;
       this.enableTracks(false);
-      const audio = new AudioContext({sampleRate:16000});
-      this.audio = audio;
-      await audio.resume();
+      const resumed = await Promise.race([activated,new Promise(resolve=>{
+        resumeTimer = setTimeout(()=>resolve(false),2500);
+      })]);
       if (!current()) return false;
-      if (audio.sampleRate !== 16000) throw new Error('sample-rate');
-      await audio.audioWorklet.addModule(new URL('./microphone.js',location.href).href);
+      if (!resumed) throw new Error('audio-suspended');
+      await audio.audioWorklet.addModule(new URL('./microphone.js?v=mobile-audio-20261110',location.href).href);
       if (!current()) return false;
       this.source = audio.createMediaStreamSource(stream);
-      this.worklet = new AudioWorkletNode(audio,'hamdi-microphone');
+      this.worklet = new window.AudioWorkletNode(audio,'hamdi-microphone',{processorOptions:{outputRate:16000}});
       this.silence = audio.createGain();
       this.silence.gain.value = 0;
       this.worklet.port.onmessage = event=>this.receiveAudio(new Uint8Array(event.data));
@@ -706,6 +740,8 @@ class OrderAssistant {
     } catch {
       if (current()) this.cancelRecording();
       return false;
+    } finally {
+      clearTimeout(resumeTimer);
     }
   }
 
@@ -792,11 +828,10 @@ class OrderAssistant {
     const current = ()=>run === this.run && turn === this.turnRun && this.dialog.open && !document.hidden;
     this.setPhase('processing',this.c.processing);
     try {
-      const response = await fetch('/api/order/transcribe',{
+      const {response,result} = await fetchOrder('/api/order/transcribe',15000,{
         method:'POST',headers:{'content-type':'audio/wav',authorization:'Bearer '+this.token},
-        body:orderWav(chunks),signal:AbortSignal.any([controller.signal,AbortSignal.timeout(15000)])
-      });
-      const result = await response.json();
+        body:orderWav(chunks)
+      },controller);
       if (!current()) return;
       if (!response.ok) throw new Error(result.error);
       const transcript = normalizedOrderReply(result.text);
@@ -890,11 +925,10 @@ class OrderAssistant {
     const run = this.run;
     this.setPhase('processing',this.c.sending+' '+this.channelLabel(data.channel));
     try {
-      const response = await fetch('/api/order/send',{
+      const {response,result} = await fetchOrder('/api/order/send',35000,{
         method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+this.token},
-        body:JSON.stringify(data),signal:AbortSignal.timeout(35000)
+        body:JSON.stringify(data)
       });
-      const result = await response.json();
       if (run !== this.run) return;
       if (result.error === 'order-limit' || result.error === 'session-required') {
         this.setPhase('idle',result.error === 'order-limit' ? this.c.limit : this.c.expired);
@@ -938,6 +972,7 @@ class OrderAssistant {
     this.repeats = 0;
     this.cancelRecording();
     this.stopPrompt();
+    this.promptAudio = null;
     if (this.dialog.open) this.dialog.close();
     this.token = '';
     this.dialog.innerHTML = '';
@@ -957,6 +992,12 @@ const copy = {
 Object.assign(copy.ar, { bookingAction:'طلب موعد عبر Gmail ↙', 'test-waiting':'جاري انتظار الرد الصوتي…', 'test-speaking':'جاري تشغيل الصوت التجريبي.' });
 Object.assign(copy.tr, { bookingAction:'Gmail ile randevu talebi ↘', 'test-waiting':'Sesli yanıt bekleniyor…', 'test-speaking':'Deneme sesi oynatılıyor.' });
 const delivery = document.documentElement.dataset.delivery;
+for (const [locale,message] of [
+  ['ar','الميكروفون غير متاح هون. فيك تفتح نفس الموقع في Safari أو Chrome وتسمح بالميكروفون، أو تتابع طلبك كتابة.'],
+  ['tr','Mikrofon burada kullanılamıyor. Aynı siteyi Safari veya Chrome’da açıp izin verebilir ya da yazarak devam edebilirsin.']
+]) {
+  Object.assign(copy[locale],{permission:message,unsupported:message});
+}
 const pageOptions = new URLSearchParams(location.search);
 const embeddedParent = pageOptions.get('parentOrigin');
 const embedded = pageOptions.get('embed') === '1' && window.parent !== window

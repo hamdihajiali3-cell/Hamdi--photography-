@@ -77,7 +77,7 @@ export class OrderGuard {
   async fetch(request) {
     if(!ready(this.env))return json({error:'orders-not-configured'},503);
     const path=new URL(request.url).pathname;
-    if(path.startsWith('/api/order/prompt/')) {const prompt=readOrderPrompt(request);return prompt?cachedOrderPrompt(this,prompt):json({error:'not-found'},404);}
+    if(path.startsWith('/api/order/prompt/')) {const prompt=readOrderPrompt(request);return prompt?cachedOrderPrompt(this,prompt,request.headers.get('range')):json({error:'not-found'},404);}
     if(request.method!=='POST'||request.headers.get('origin')!==new URL(request.url).origin||request.headers.get('sec-fetch-site')==='cross-site')return json({error:'same-origin-required'},403);
     if(!['/api/order/session','/api/order/transcribe','/api/order/send'].includes(path))return json({error:'not-found'},404);
     const ip=await digest((request.headers.get('cf-connecting-ip')||'unknown')+'|'+this.env.ORDER_MAIL_SECRET);
