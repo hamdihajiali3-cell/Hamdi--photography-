@@ -1,4 +1,4 @@
-import { validateOrder, sendOrderEmail, mailConfigured, isActivationTest } from './order-email.mjs';
+import { validateOrder, isActivationTest } from './order-email.mjs';
 import { readOrderPrompt, cachedOrderPrompt, synthesizeOrderPrompt } from './order-speech.mjs';
 import { checkOrderDelivery, orderDeliveryChannels, sendOrderByChannel } from './order-delivery.mjs';
 import {
@@ -109,13 +109,12 @@ export class OrderGuard {
     }
     let body;try {if(request.headers.get('content-type')?.split(';')[0]!=='application/json')throw 0;body=JSON.parse(new TextDecoder().decode(await readLimited(request,4096)));}catch{return json({error:'invalid-request'},400);}
     const order=validateOrder(body);
-    if(!order)return json({error:'invalid-order'},400);
-    const setup=isActivationTest(order)&&this.env.ORDER_MAIL_ACTIVE!=='true'&&mailConfigured(this.env);
+    if(!order||isActivationTest(order))return json({error:'invalid-order'},400);
     const claim=await this.mutate(state=>{
       const s=state.sessions[hash];if(!s||s.ip!==ip||s.expires<this.now()||s.language!==order.language)return {error:'session-required'};
       if(s.status==='sent')return {accepted:true,id:s.id,channel:s.channel||'email',state:s.deliveryState||'accepted'};
       if(s.status!=='open')return {error:'delivery-unconfirmed',id:s.id};
-      const issue=setup?null:checkOrderDelivery(order,this.env);
+      const issue=checkOrderDelivery(order,this.env);
       if(issue)return {error:issue};
       if(state.mails>=20)return {error:'order-limit'};
       state.mails++;s.id=crypto.randomUUID();s.status='pending';return {id:s.id};
@@ -123,12 +122,12 @@ export class OrderGuard {
     if(claim.accepted)return json(claim);
     if(claim.error)return json(claim,claim.error==='session-required'?403:409);
     try {
-      const result=setup?await sendOrderEmail(order,claim.id,this.env):await this.send(order,claim.id,this.env);
+      const result=await this.send(order,claim.id,this.env);
       const deliveryState=result?.state==='delivered'?'delivered':'accepted';
       await this.mutate(async (state,storage)=>{
         const s=state.sessions[hash];
         if(s?.id===claim.id)Object.assign(s,{status:'sent',channel:order.channel,deliveryState});
-        if (archiveConfigured(this.env) && !isActivationTest(order)) {
+        if (archiveConfigured(this.env)) {
           const time = this.now() + 1000;
           await storage.put(archiveKey(time, claim.id), { id: claim.id, service: order.service, when: order.when });
           // OrderGuard uses SQLite. Alarm calls on ctx.storage share this transaction.
@@ -141,7 +140,7 @@ export class OrderGuard {
       await this.mutate(state=>{if(state.sessions[hash]?.id===claim.id)state.sessions[hash].status='uncertain';});
       const mailErrors=['mail-activation-required','mail-rate-limited','mail-server-rejected'];
       const code=order.channel==='email'&&mailErrors.includes(error.message)?error.message:'delivery-unconfirmed';
-      return json({error:code,id:claim.id,...(setup&&error.diagnostic?{diagnostic:error.diagnostic}:{})},502);
+      return json({error:code,id:claim.id},502);
     }
   }
 }

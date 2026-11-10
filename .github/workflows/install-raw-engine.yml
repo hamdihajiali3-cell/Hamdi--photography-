@@ -1,48 +1,40 @@
-name: Install local RAW engine
+name: Prepare verified RAW engine files
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - '.github/workflows/install-raw-engine.yml'
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  vendor-libraw-wasm:
+  download-libraw:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: main
-
-      - name: Download published LibRaw-Wasm browser runtime
+      - name: Download and verify the pinned LibRaw-Wasm files
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p raw-engine
-          BASE="https://raw.githubusercontent.com/ybouane/LibRaw-Wasm/main"
-          for file in dist/index.js dist/libraw.js dist/libraw.wasm dist/worker.js; do
-            name="${file##*/}"
-            curl --fail --location --retry 3 "$BASE/$file" -o "raw-engine/$name"
-            test -s "raw-engine/$name"
+          revision=909d3ff518958d4c28e64d0293be00fc3ab33685
+          base="https://raw.githubusercontent.com/ybouane/LibRaw-Wasm/$revision"
+          declare -A expected=(
+            [index.js]=34694c3d5d40feb22504c72aef949350cbce5a87
+            [libraw.js]=a823f9d325f75bc6cb7d086992e6d4619acfedb7
+            [libraw.wasm]=7841eadeb82f384e44f518f93993ac2c5cbc82c7
+            [worker.js]=5727dfcb7cbbf026288a848cbbca4414c0beddae
+          )
+          for name in index.js libraw.js libraw.wasm worker.js; do
+            curl --fail --proto '=https' --retry 3 "$base/dist/$name" -o "raw-engine/$name"
+            if [[ "$(git hash-object "raw-engine/$name")" != "${expected[$name]}" ]]; then
+              echo "Checksum mismatch for $name" >&2
+              exit 1
+            fi
           done
-          printf "Upstream license: ISC (libraw-wasm package)\n" > raw-engine/UPSTREAM-LICENSE.txt
-          file raw-engine/libraw.wasm
-          test "$(stat -c%s raw-engine/libraw.wasm)" -gt 500000
-
-      - name: Commit vendored runtime
-        shell: bash
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add raw-engine
-          if git diff --cached --quiet; then
-            echo "RAW runtime is already up to date."
-          else
-            git commit -m "Vendor local LibRaw WebAssembly runtime"
-            git push origin HEAD:main
-          fi
+          printf 'Upstream: LibRaw-Wasm %s (ISC package license)\n' "$revision" > raw-engine/UPSTREAM-LICENSE.txt
+      - name: Save verified files for review
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: verified-raw-engine
+          path: raw-engine/
+          if-no-files-found: error
