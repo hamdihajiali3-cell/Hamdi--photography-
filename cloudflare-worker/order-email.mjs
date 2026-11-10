@@ -34,11 +34,15 @@ export function orderEmailText(order, id) {
   ].filter(Boolean).join('\n');
 }
 
-export async function signedMailEnvelope(order, id, secret, now = Date.now()) {
-  const payload = JSON.stringify({ version:1, id, sentAt:now, order });
+export async function signedOrderEnvelope(entry, secret) {
+  const payload = JSON.stringify(entry);
   const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(secret), { name:'HMAC', hash:'SHA-256' }, false, ['sign']);
   const bytes = new Uint8Array(await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(payload)));
   return { payload, signature:Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('') };
+}
+
+export function signedMailEnvelope(order, id, secret, now = Date.now()) {
+  return signedOrderEnvelope({ version:1, id, sentAt:now, order }, secret);
 }
 
 export async function sendOrderEmail(order, id, env, fetchImpl = fetch) {

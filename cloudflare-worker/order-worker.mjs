@@ -1,6 +1,9 @@
 import { validateOrder, sendOrderEmail, mailConfigured, isActivationTest } from './order-email.mjs';
 import { readOrderPrompt, cachedOrderPrompt, synthesizeOrderPrompt } from './order-speech.mjs';
 import { checkOrderDelivery, orderDeliveryChannels, sendOrderByChannel } from './order-delivery.mjs';
+import {
+  ARCHIVE_PREFIX, ARCHIVE_RETRY_MS, archiveConfigured, archiveKey, archiveTime, scheduleArchive, sendOrderArchive
+} from './order-archive.mjs';
 
 const MAX_AUDIO = 480044; // Canonical PCM WAV: mono, 16 kHz, 16 bit, at most 15 seconds.
 const KEY = 'order-guard-v1';
@@ -45,9 +48,32 @@ export async function handleOrderRequest(request,env) {
 }
 
 export class OrderGuard {
-  constructor(ctx,env,dependencies={}) {this.ctx=ctx;this.env=env;this.now=dependencies.now||Date.now;this.send=dependencies.send||sendOrderByChannel;this.synthesize=dependencies.synthesize||synthesizeOrderPrompt;}
+  constructor(ctx,env,dependencies={}) {this.ctx=ctx;this.env=env;this.now=dependencies.now||Date.now;this.send=dependencies.send||sendOrderByChannel;this.synthesize=dependencies.synthesize||synthesizeOrderPrompt;this.sendArchive=dependencies.sendArchive||sendOrderArchive;}
   state(raw) {const day=new Date(this.now()).toISOString().slice(0,10);return raw?.day===day?raw:{day,created:0,audio:0,mails:0,sessions:{}};}
-  async mutate(fn) {return this.ctx.storage.transaction(async storage=>{const state=this.state(await storage.get(KEY));const result=fn(state);await storage.put(KEY,state);return result;});}
+  async mutate(fn) {return this.ctx.storage.transaction(async storage=>{const state=this.state(await storage.get(KEY));const result=await fn(state,storage);await storage.put(KEY,state);return result;});}
+
+  async alarm() {
+    const storage = this.ctx.storage;
+    const pending = await storage.list({ prefix: ARCHIVE_PREFIX, limit: 5 });
+    const now = this.now();
+    for (const [key, entry] of pending) {
+      if (archiveTime(key) > now) break;
+      try {
+        await this.sendArchive(entry, this.env, this.now());
+      } catch {
+        await storage.transaction(async transaction => {
+          await transaction.put(archiveKey(this.now() + ARCHIVE_RETRY_MS, entry.id), entry);
+          await transaction.delete(key);
+        });
+        continue;
+      }
+      await storage.delete(key);
+    }
+    await storage.transaction(async transaction => {
+      const next = (await transaction.list({ prefix: ARCHIVE_PREFIX, limit: 1 })).keys().next();
+      if (!next.done) await scheduleArchive(storage, Math.max(this.now() + 1000, archiveTime(next.value)));
+    });
+  }
   async fetch(request) {
     if(!ready(this.env))return json({error:'orders-not-configured'},503);
     const path=new URL(request.url).pathname;
@@ -99,9 +125,15 @@ export class OrderGuard {
     try {
       const result=setup?await sendOrderEmail(order,claim.id,this.env):await this.send(order,claim.id,this.env);
       const deliveryState=result?.state==='delivered'?'delivered':'accepted';
-      await this.mutate(state=>{
+      await this.mutate(async (state,storage)=>{
         const s=state.sessions[hash];
         if(s?.id===claim.id)Object.assign(s,{status:'sent',channel:order.channel,deliveryState});
+        if (archiveConfigured(this.env) && !isActivationTest(order)) {
+          const time = this.now() + 1000;
+          await storage.put(archiveKey(time, claim.id), { id: claim.id, service: order.service, when: order.when });
+          // OrderGuard uses SQLite. Alarm calls on ctx.storage share this transaction.
+          await scheduleArchive(this.ctx.storage, time);
+        }
       });
       return json({accepted:true,id:claim.id,channel:order.channel,state:deliveryState});
     }catch(error) {
