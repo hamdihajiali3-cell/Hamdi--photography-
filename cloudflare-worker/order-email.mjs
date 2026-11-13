@@ -1,5 +1,5 @@
 export const OWNER_EMAIL = 'hamdihajiali76@gmail.com';
-export const ORDER_SERVICES = Object.freeze({ color:'تعديل ألوان الصور', graduation:'تصوير التخرج', hair:'تصوير الحلاقة وقصّات الشعر', id:'صور الجواز والهويات' });
+export const ORDER_SERVICES = Object.freeze({ color:'تعديل ألوان الصور', graduation:'تصوير التخرج', hair:'تصوير الحلاقة وقصّات الشعر', id:'صور الجواز والهويات', portrait:'تصوير شخصي' });
 export const ORDER_PAGE = 'https://hamdihajiali3-cell.github.io/Hamdi--photography-/';
 export const isActivationTest = order => order.service==='color' && order.name==='اختبار الربط — طلب تجريبي فقط' && order.channel==='email' && order.contact==='test@example.com' && order.when==='' && order.language==='ar' && order.notes==='هذه تجربة إعداد بطلب صاحب الموقع. لا تمثل طلب زبون أو حجز موعد.';
 export const mailConfigured = env => (env.ORDER_MAIL_SECRET || '').length >= 32 && (env.ORDER_MAIL_PROVIDER === 'formsubmit' || (env.ORDER_MAIL_PROVIDER === 'web3forms' && /^[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}$/i.test(env.WEB3FORMS_ACCESS_KEY || '')) || /^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(env.ORDER_MAIL_ENDPOINT || ''));

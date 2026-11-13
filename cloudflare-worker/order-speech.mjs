@@ -24,6 +24,7 @@ export const ORDER_PROMPTS = Object.freeze({
 export const PROMPT_VERSION='aoede-v1';
 const channelPrompts = {
   ar:{
+    service:'شو الخدمة اللي بدك ياها؟ تعديل ألوان، تصوير تخرج، تصوير الحلاقة، صور جواز وهويات، أو تصوير شخصي؟',
     channel:'بأي طريقة بدك المساعد يرسل طلبك لحمدي؟ اختار من القنوات المتاحة.',
     email:'حتى يقدر حمدي يتواصل معك، قول رقم هاتفك رقم رقم، أو أعطينا بريدك الإلكتروني.',
     sent:'قبلت خدمة الإرسال طلبك. احتفظ برقم الطلب للتواصل مع الاستوديو.',
@@ -32,6 +33,7 @@ const channelPrompts = {
     delivered:'وصل طلبك لحمدي. ملخص طلبك ورقمه ظاهرين قدّامك.'
   },
   tr:{
+    service:'Hangi hizmeti istiyorsun? Renk düzenleme, mezuniyet, berber çekimi, pasaport ve kimlik fotoğrafı veya portre çekimi?',
     channel:'Asistan talebini Hamdi’ye nasıl göndersin? Kullanılabilir kanallardan birini seç.',
     email:'Hamdi sana ulaşabilsin diye telefon numaranı rakam rakam söyle veya e-posta adresini ver.',
     sent:'Gönderim sağlayıcısı talebini kabul etti. Stüdyoyla görüşmek için talep numaranı sakla.',

@@ -1,5 +1,5 @@
 const VOICE_ORIGIN = 'https://hamdi--photography.hamdihajiali3.workers.dev';
-const SERVICES = new Set(['', 'color', 'graduation', 'hair', 'id']);
+const SERVICES = new Set(['', 'color', 'graduation', 'hair', 'id', 'portrait']);
 
 export function readBookingRequest(event, expectedWindow) {
   if (!expectedWindow || event.source !== expectedWindow || event.origin !== VOICE_ORIGIN) return null;
