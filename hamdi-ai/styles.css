@@ -63,6 +63,69 @@ html[data-voice-state=speaking] .orb{box-shadow:inset -13px -15px 20px #031e1860
 @keyframes order-orb-float{50%{transform:translateY(-6px)}}
 @keyframes order-orb-ring{to{transform:rotate(339deg)}}
 @media(prefers-reduced-motion:reduce){.order-avatar .orb,.order-avatar::after{animation:none!important}.order-avatar::before{transition:none}}
+
+.orb-scene {
+  --voice-glow: #b2ce9c;
+  --orb-rise: -5px;
+  --orb-tilt: 2deg;
+}
+.orb-scene::before {
+  max-width: 100%;
+  background: radial-gradient(ellipse, var(--voice-glow), transparent 68%);
+  opacity: .34;
+}
+.orb-scene > .orb {
+  border-radius: 49% 49% 46% 46% / 53% 53% 46% 46%;
+}
+html[data-voice-state="connecting"] .orb-scene { --voice-glow: #9bbcf0; }
+html[data-voice-state="listening"] .orb-scene {
+  --voice-glow: #73cfac;
+  --orb-rise: -8px;
+}
+html[data-voice-state="speaking"] .orb-scene {
+  --voice-glow: #e4bb73;
+  --orb-rise: -10px;
+  --orb-tilt: 4deg;
+}
+html[data-voice-state="connecting"] .orb-scene::before,
+html[data-voice-state="listening"] .orb-scene::before,
+html[data-voice-state="speaking"] .orb-scene::before { opacity: .78; }
+html[data-voice-state="listening"] .orb-scene .wave i { background: #b9edd3; }
+html[data-voice-state="muted"] .orb-scene::before { opacity: .12; }
+html[data-voice-state="muted"] .orb-scene .wave { opacity: .46; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .orb-scene > .orb { animation: hamdi-orb-float 6s ease-in-out infinite; }
+  html[data-voice-state="connecting"] .orb-scene::before,
+  html[data-voice-state="listening"] .orb-scene::before,
+  html[data-voice-state="speaking"] .orb-scene::before {
+    animation: hamdi-orb-glow 3s ease-in-out infinite;
+  }
+  html[data-voice-state="listening"] .orb-scene > .orb { animation-duration: 4s; }
+  html[data-voice-state="speaking"] .orb-scene > .orb { animation-duration: 2.6s; }
+  html[data-voice-state="speaking"] .orb-scene .orbit-one { animation-duration: 14s; }
+  html[data-voice-state="speaking"] .orb-scene .orbit-two { animation-duration: 18s; }
+  .orb-scene.live .wave i { animation-name: hamdi-orb-wave; }
+  html[data-voice-state="speaking"] .orb-scene .wave i { animation-duration: .72s; }
+  html[data-voice-state="muted"] .orb-scene :is(.orb,.orbit) { animation-play-state: paused; }
+  .order-dialog:is([data-phase="listening"],[data-phase="speaking"]) .order-avatar .wave i {
+    animation: hamdi-orb-wave .9s ease-in-out infinite alternate;
+  }
+  .order-dialog:is([data-phase="listening"],[data-phase="speaking"]) .order-avatar .wave i:nth-child(even) {
+    animation-delay: -.37s;
+  }
+}
+@keyframes hamdi-orb-float {
+  50% { transform: translateY(var(--orb-rise)) rotate(var(--orb-tilt)); }
+}
+@keyframes hamdi-orb-glow {
+  0%, 100% { transform: translate(-50%, -50%) scale(.97); }
+  50% { transform: translate(-50%, -50%) scale(1.1); }
+}
+@keyframes hamdi-orb-wave {
+  0% { transform: scaleY(.35); }
+  100% { transform: scaleY(1); }
+}
 .art-portrait {
   border-radius: 25px 25px 5px 5px;
   border-color: #ac7759;
