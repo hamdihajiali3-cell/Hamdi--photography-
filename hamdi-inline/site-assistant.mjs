@@ -23,8 +23,10 @@ if (typeof document !== 'undefined') {
   const close = document.querySelector('#hamdi-ai-close');
   const book = document.querySelector('#hamdi-ai-book');
   const subtitle = document.querySelector('#hamdi-ai-subtitle');
+  const bookingSelect = document.querySelector('#booking-service');
   let ordersReady = false;
   let selectedService = '';
+  let gmailForm = false;
   const language = () => document.documentElement.lang === 'tr' ? 'tr' : 'ar';
   const labels = () => {
     const tr = language() === 'tr';
@@ -42,13 +44,14 @@ if (typeof document !== 'undefined') {
   };
   const openBooking = (service = '', requestedLanguage = language()) => {
     closeAssistant();
+    gmailForm = true;
     if (requestedLanguage !== language()) document.querySelector(`[data-lang="${requestedLanguage}"]`)?.click();
-    const select = document.querySelector('#booking-service');
-    if (service) select.value = service;
+    if (service) bookingSelect.value = service;
     document.querySelector('#booking').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
-    (service ? document.querySelector('#booking-name') : select).focus({ preventScroll: true });
+    (service ? document.querySelector('#booking-name') : bookingSelect).focus({ preventScroll: true });
   };
   const openAssistant = (service = '') => {
+    gmailForm = false;
     selectedService = service;
     labels();
     const source = new URL('/hamdi-ai/', VOICE_ORIGIN);
@@ -70,6 +73,17 @@ if (typeof document !== 'undefined') {
     event.preventDefault();
     openAssistant(service);
   }, { capture: true }));
+  bookingSelect.addEventListener('change', () => {
+    const service = bookingSelect.value;
+    if (gmailForm || !service || !SERVICES.has(service)) return;
+    openAssistant(service);
+    bookingSelect.value = '';
+  });
+  document.querySelectorAll('a[href="#booking"]').forEach(link => link.addEventListener('click', () => {
+    if (!gmailForm) return;
+    gmailForm = false;
+    bookingSelect.value = '';
+  }));
   close.addEventListener('click', closeAssistant);
   book.addEventListener('click', () => {
     if (ordersReady && !selectedService) frame.contentWindow.postMessage({ type:'hamdi-ai:start-order' }, VOICE_ORIGIN);
