@@ -364,8 +364,8 @@ async function fetchOrder(url, timeout, options = {}, controller = new AbortCont
 }
 
 class OrderAssistant {
-  constructor({ getLanguage, stopOtherVoice, onState }) {
-    Object.assign(this,{getLanguage,stopOtherVoice,onState,enabled:false,run:0,captureRun:0,turnRun:0,channels:{}});
+  constructor({ getLanguage, stopOtherVoice, onState, onPromptRequested }) {
+    Object.assign(this,{getLanguage,stopOtherVoice,onState,onPromptRequested,enabled:false,run:0,captureRun:0,turnRun:0,channels:{}});
     this.dialog = document.createElement('dialog');
     this.dialog.className = 'order-dialog';
     this.dialog.id = 'order-dialog';
@@ -514,7 +514,10 @@ class OrderAssistant {
       '<section id="order-receipt" hidden><h3>'+c.receiptTitle+'</h3><dl id="order-summary"></dl><p>'+c.pending+'</p></section>'
     ].join('');
     this.el('close').onclick = ()=>{ if (!this.sending) this.close(); };
-    this.el('start').onclick = ()=>this.start(true);
+    this.el('start').onclick = ()=>{
+      this.onPromptRequested?.();
+      this.start(true);
+    };
     this.el('typed').onclick = ()=>this.start(false);
     this.el('next').onclick = ()=>this.advance();
     this.el('skip').onclick = ()=>{
@@ -526,6 +529,7 @@ class OrderAssistant {
       this.setPhase('idle',c.typedHint);
     };
     this.el('repeat').onclick = ()=>{
+      this.onPromptRequested?.();
       if (this.stage < 5) this.ask(this.currentPrompt);
       else this.speak('review');
     };
@@ -615,7 +619,10 @@ class OrderAssistant {
 
   showStep(play = Boolean(this.stream)) {
     const key = orderFields[this.stage];
-    if (this.inline) this.el('consent').hidden = key !== 'name' || play || !this.canRecord();
+    if (this.inline) {
+      this.el('consent').hidden = key !== 'name' || play || !this.canRecord();
+      this.el('repeat').hidden = key !== 'name' || play;
+    }
     this.dialog.querySelectorAll('[data-order-field]').forEach(el=>{ el.hidden = el.dataset.orderField !== key; });
     this.el('skip').hidden = key !== 'when';
     if (key === 'contact') this.updateContactField();
@@ -671,7 +678,7 @@ class OrderAssistant {
     this.el('step-tools').hidden = true;
     if (this.inline) this.el('consent').hidden = true;
     this.el('send').hidden = automatically;
-    this.el('repeat').hidden = automatically;
+    this.el('repeat').hidden = this.inline || automatically;
     this.el('question').textContent = automatically ? this.c.receiptTitle : this.c.review;
     this.setPhase('review');
     if (automatically) this.send();
@@ -992,6 +999,12 @@ const requestedService = pageOptions.get('bookingService');
 const bookingService = embedded && Object.hasOwn(SERVICES, requestedService) ? requestedService : '';
 const inlineBooking = Boolean(bookingService && pageOptions.get('presentation') === 'inline');
 if (inlineBooking) document.documentElement.dataset.inlineBooking = 'true';
+const consultation = embedded && !inlineBooking;
+if (consultation) {
+  document.documentElement.dataset.consultation = 'true';
+  copy.ar.voiceDescription = 'اسأل عن خدمات التصوير والمساعد بيساعدك تختار الجلسة. للحجز، افتح بطاقة الخدمة.';
+  copy.tr.voiceDescription = 'Çekim hizmetlerini sor, asistan uygun çekimi seçmene yardım etsin. Talep oluşturmak için hizmet kartını aç.';
+}
 if (embedded) {
   document.documentElement.dataset.embedded = 'true';
   Object.assign(copy.ar, { bookingAction:'طلب موعد ↙' });
@@ -1057,9 +1070,25 @@ function setVoiceState(state) {
   $('#mute-voice').textContent = text(state === 'muted' ? 'unmute' : 'mute');
   if (!active) { transcriptText = ''; $('#transcript').textContent = ''; $('#transcript').hidden = true; }
 }
-const voice = new CustomerVoice({ onState: setVoiceState, onTranscript: value => { transcriptText = (transcriptText + value).slice(-1500); $('#transcript').textContent = transcriptText; $('#transcript').hidden = false; }, matchService: orderService, onOrder: service => { if (orderAssistant.enabled) orderAssistant.open(service); else { selectService(service); openBooking(); } } });
-const orderAssistant = new OrderAssistant({ getLanguage: () => language, stopOtherVoice: () => voice.stop(false), onState: state => setVoiceState(state) });
-orderAssistant.configure().then(enabled => {
+const voice = new CustomerVoice({ onState: setVoiceState, onTranscript: value => { transcriptText = (transcriptText + value).slice(-1500); $('#transcript').textContent = transcriptText; $('#transcript').hidden = false; }, matchService: orderService, onOrder: service => {
+  if (consultation) {
+    window.parent.postMessage({type:'hamdi-ai:booking',service:Object.hasOwn(SERVICES,service) ? service : '',language}, embeddedParent);
+  } else if (orderAssistant.enabled) {
+    orderAssistant.open(service);
+  } else {
+    selectService(service);
+    openBooking();
+  }
+} });
+const orderAssistant = new OrderAssistant({
+  getLanguage: () => language,
+  stopOtherVoice: () => voice.stop(false),
+  onState: setVoiceState,
+  onPromptRequested: inlineBooking
+    ? () => window.parent.postMessage({type:'hamdi-ai:stop-opening-audio'}, embeddedParent)
+    : undefined,
+});
+if (!consultation) orderAssistant.configure().then(enabled => {
   if (!enabled) {
     if (bookingService) window.parent.postMessage({type:'hamdi-ai:booking',service:bookingService,language}, embeddedParent);
     return;
@@ -1068,7 +1097,6 @@ orderAssistant.configure().then(enabled => {
   Object.assign(copy.tr, { voiceDescription:'Çekim talebini sesle hazırla. Asistan yanıtlarını dinler ve talebini sesle seçtiğin kanalla otomatik gönderir.', bookingAction:'Asistanla çekim talebi ↘' });
   $('[data-t="voiceDescription"]').textContent = text('voiceDescription');
   $('.voice-booking').textContent = text('bookingAction');
-  if (embedded) window.parent.postMessage({type:'hamdi-ai:order-ready'}, embeddedParent);
   if (bookingService) orderAssistant.open(bookingService, { typed: true, inline: inlineBooking });
   if (inlineBooking) {
     const booking = orderAssistant.dialog;
@@ -1078,11 +1106,6 @@ orderAssistant.configure().then(enabled => {
     }).observe(booking);
   }
 });
-window.addEventListener('message', event => {
-  if (embedded && event.origin === embeddedParent && event.source === window.parent && event.data?.type === 'hamdi-ai:start-order'
-    && Object.keys(event.data).length === 1 && orderAssistant.enabled) orderAssistant.open($('#service').value);
-});
-
 function updateConsent() {
   $('#confirm-voice').disabled = !configured || !$('#adult-check').checked || !$('#voice-check').checked;
   $('#voice-dialog-status').textContent = configured ? '' : text('voiceDisabled');

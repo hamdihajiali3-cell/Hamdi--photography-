@@ -2,14 +2,14 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; frame-src 'self' https://hamdi--photography.hamdihajiali3.workers.dev; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; frame-src 'self' https://hamdi--photography.hamdihajiali3.workers.dev; connect-src 'self'; media-src https://hamdi--photography.hamdihajiali3.workers.dev/api/order/prompt/aoede-v1/; object-src 'none'; base-uri 'none'; form-action 'none'" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#20231f" />
   <meta name="description" content="Hamdi Photography — خدمات تصوير واضحة وحجز موعد عبر Gmail." />
   <title>Hamdi Photography | مكتب الحجز</title>
   <link rel="stylesheet" href="style.css?v=portrait-20261114" />
   <link rel="stylesheet" href="flags.css?v=turkey-flag-20261102" />
-  <link rel="stylesheet" href="hamdi-inline/assistant.css?v=card-position-20261115" />
+  <link rel="stylesheet" href="hamdi-inline/assistant.css?v=automatic-question-20261115" />
 </head>
 <body>
   <a class="skip" href="#content" data-i18n="skip">انتقل إلى المحتوى</a>
@@ -76,9 +76,9 @@
   </div><script src="script.js?v=guided-booking-20261115"></script>
 
   <dialog id="hamdi-ai-dialog" aria-labelledby="hamdi-ai-dialog-title">
-    <div class="hamdi-ai-bar"><div class="hamdi-ai-heading"><h2 id="hamdi-ai-dialog-title">HAMDI AI</h2><p id="hamdi-ai-subtitle">مساعد الاستوديو الصوتي</p></div><button type="button" id="hamdi-ai-book">طلب موعد</button><button type="button" id="hamdi-ai-close" aria-label="إغلاق">×</button></div>
+    <div class="hamdi-ai-bar"><div class="hamdi-ai-heading"><h2 id="hamdi-ai-dialog-title">HAMDI AI</h2><p id="hamdi-ai-subtitle">مساعد الاستوديو الصوتي</p></div><button type="button" id="hamdi-ai-close" aria-label="إغلاق">×</button></div>
     <iframe id="hamdi-ai-frame" title="مساعد حمدي AI الصوتي" allow="microphone; autoplay" sandbox="allow-scripts allow-same-origin allow-forms" referrerpolicy="strict-origin-when-cross-origin"></iframe>
   </dialog>
-  <script type="module" src="hamdi-inline/site-assistant.mjs?v=card-position-20261115"></script>
+  <script type="module" src="hamdi-inline/site-assistant.mjs?v=automatic-question-20261115"></script>
 </body>
 </html>

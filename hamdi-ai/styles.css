@@ -8,6 +8,7 @@ html[dir=ltr] .request-intro h2{font-family:var(--serif);line-height:1.2;font-si
 @media(max-width:370px){.wrap{width:calc(100% - 28px)}.hero h1{font-size:48px}.hero-actions{gap:15px}.button{padding-inline:15px}.hero-notes{gap:15px;font-size:8px}.form-grid{grid-template-columns:1fr}.service-card h3{font-size:14px}.service-desc{font-size:10px}.steps{gap:10px}.service-card{min-height:265px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important}}
 .voice-booking{display:flex;width:100%;margin-top:16px;text-align:center}
+[data-consultation] :is(.voice-booking,#skip-to-form){display:none}
 /* Refine the existing reception design and mobile controls. */
 .mic-icon svg{display:block;width:16px;height:16px}
 #open-voice-test{display:flex;align-items:center;justify-content:center;width:100%;min-height:44px;margin-top:8px;padding:9px 14px;border:1px solid #c7d2be;border-radius:6px;color:#35513c;line-height:1.6}
@@ -48,7 +49,7 @@ html[data-voice-state=speaking] .orb{box-shadow:inset -13px -15px 20px #031e1860
 .order-dialog #order-receipt dt{font-weight:600}
 .order-dialog #order-receipt dd{margin:0;overflow-wrap:anywhere}
 [data-inline-booking] body > :not(#order-dialog),
-[data-inline-booking] :is(.order-avatar,#order-close,#order-repeat) {
+[data-inline-booking] :is(.order-avatar,#order-close) {
   display: none;
 }
 [data-inline-booking] { background: #f6f2ea; }
