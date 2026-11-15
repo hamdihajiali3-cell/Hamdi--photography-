@@ -53,7 +53,9 @@ html[data-voice-state=speaking] .orb{box-shadow:inset -13px -15px 20px #031e1860
   display: none;
 }
 [data-inline-booking] { background: #f6f2ea; }
-[data-inline-booking] #order-consent { border-top: 1px solid var(--line); margin-top: 1rem; padding-top: .25rem; }
+[data-inline-booking] #order-consent { border-bottom: 1px solid var(--line); margin-bottom: .65rem; }
+[data-inline-booking] #order-consent .dialog-alert { font-size: .8rem; margin: .45rem 0 .7rem; }
+[data-inline-booking] #order-start { margin-top: 0; }
 [data-inline-booking] #order-dialog[open] {
   position: relative;
   inset: auto;
