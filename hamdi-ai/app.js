@@ -303,6 +303,7 @@ const orderCopy = {
     channelUnavailable:'قناة الإرسال هذه غير مفعّلة. اختَر إحدى القنوات المتاحة إذا كانت تناسبك.',
     smsLimit:'نص الطلب طويل لرسالة SMS أو يحتوي رابطًا. اختصر التفاصيل واحذف الروابط.',
     error:'تعذّرت المتابعة. يمكنك الكتابة أو المحاولة لاحقًا.', limit:'وصلنا لحد الجلسات اليوم. يمكنك التواصل مباشرة مع الاستوديو.',
+    sessionsBusy:'كل جلسات الحجز مشغولة حاليًا. جرّب بعد شوي.',
     expired:'انتهت جلسة الطلب قبل الإرسال. افتح طلبًا جديدًا إذا أردت المتابعة.',
     mailBusy:'خدمة البريد طلبت الانتظار. تعذّر إكمال إرسال الطلب الآن.',
     mailRejected:'خدمة البريد رفضت الإرسال. تواصل مع الاستوديو لمتابعة طلبك.',
@@ -337,6 +338,7 @@ const orderCopy = {
     channelUnavailable:'Bu gönderim kanalı etkin değil. Sana uygunsa kullanılabilir bir kanal seç.',
     smsLimit:'SMS için metin fazla uzun veya bağlantı içeriyor. Ayrıntıları kısalt ve bağlantıları kaldır.',
     error:'Devam edilemedi. Yazabilir veya daha sonra deneyebilirsin.', limit:'Bugünkü oturum sınırına ulaşıldı. Stüdyoyla doğrudan iletişim kurabilirsin.',
+    sessionsBusy:'Tüm talep oturumları şu anda dolu. Biraz sonra tekrar dene.',
     expired:'Talep gönderilmeden oturum sona erdi. Devam etmek için yeni bir talep aç.',
     mailBusy:'E-posta hizmeti beklemeyi istedi. Talep şu anda gönderilemedi.',
     mailRejected:'E-posta hizmeti gönderimi reddetti. Talebin için stüdyoyla iletişime geç.',
@@ -369,6 +371,13 @@ async function fetchOrder(url, timeout, options = {}, controller = new AbortCont
   } finally {
     clearTimeout(timer);
   }
+}
+
+function releaseOrderSession(token) {
+  if (!token) return;
+  fetch('/api/order/session/close',{
+    method:'POST',keepalive:true,headers:{authorization:'Bearer '+token}
+  }).catch(()=>{});
 }
 
 class OrderAssistant {
@@ -404,6 +413,12 @@ class OrderAssistant {
   }
 
   get c() { return orderCopy[this.language === 'tr' ? 'tr' : 'ar']; }
+  sessionMessage(error) {
+    if (error.message === 'order-sessions-busy') return this.c.sessionsBusy;
+    if (error.message === 'order-limit') return this.c.limit;
+    if (error.message === 'session-required') return this.c.expired;
+    return this.c.error;
+  }
   field(key) { return this.dialog.querySelector('[name="'+key+'"]'); }
   el(id) { return this.dialog.querySelector('#order-'+id); }
   channelLabel(channel) {
@@ -612,8 +627,11 @@ class OrderAssistant {
         this.setPhase('idle',this.c.micUnavailable);
         return;
       }
-      const token = await this.requestSession();
-      if (run !== this.run || !this.dialog.open) return;
+      const token = this.token || await this.requestSession();
+      if (run !== this.run || !this.dialog.open) {
+        releaseOrderSession(token);
+        return;
+      }
       this.token = token;
       if (this.inline && this.stream) {
         this.el('mute').hidden = false;
@@ -625,7 +643,7 @@ class OrderAssistant {
     } catch(error) {
       if (run !== this.run) return;
       this.cancelRecording();
-      this.setPhase('idle',error.message === 'order-limit' ? this.c.limit : this.c.error);
+      this.setPhase('idle',this.sessionMessage(error));
     } finally {
       if (run === this.run) {
         this.starting = false;
@@ -846,6 +864,7 @@ class OrderAssistant {
       if (isOrderCancellation(transcript)) {
         this.cancelRecording();
         this.stopPrompt();
+        releaseOrderSession(this.token);
         this.token = '';
         this.stage = -1;
         this.el('form').hidden = true;
@@ -878,7 +897,11 @@ class OrderAssistant {
       if (error.message === 'no-speech') this.repeatAnswer();
       else {
         this.cancelRecording();
-        this.setPhase('idle',error.message === 'order-limit' ? this.c.limit : this.c.error);
+        if (['session-required','order-limit'].includes(error.message)) {
+          releaseOrderSession(this.token);
+          this.token = '';
+        }
+        this.setPhase('idle',this.sessionMessage(error));
       }
     }
   }
@@ -941,11 +964,14 @@ class OrderAssistant {
       if (this.inline && !this.token) {
         try {
           const token = await this.requestSession();
-          if (run !== this.run) return;
+          if (run !== this.run) {
+            releaseOrderSession(token);
+            return;
+          }
           this.token = token;
         } catch (error) {
           if (run !== this.run) return;
-          this.setPhase('review',error.message === 'order-limit' ? this.c.limit : this.c.error);
+          this.setPhase('review',this.sessionMessage(error));
           this.el('send').disabled = false;
           return;
         }
@@ -999,6 +1025,7 @@ class OrderAssistant {
     this.stopPrompt();
     this.promptAudio = null;
     if (this.dialog.open) this.dialog.close();
+    if (!this.sending) releaseOrderSession(this.token);
     this.token = '';
     this.dialog.innerHTML = '';
   }

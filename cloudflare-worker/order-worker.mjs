@@ -7,6 +7,7 @@ import {
 
 const MAX_AUDIO = 480044; // Canonical PCM WAV: mono, 16 kHz, 16 bit, at most 15 seconds.
 const KEY = 'order-guard-v1';
+const ORDER_POST_ROUTES = new Set(['/api/order/session','/api/order/session/close','/api/order/transcribe','/api/order/send']);
 const json = (body, status=200) => Response.json(body,{status,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
 const ready = env => env.ORDER_ENABLED === 'true' && Boolean(env.AI) && (env.ORDER_MAIL_SECRET || '').length >= 32;
 const digest = async value => Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(value))),b=>b.toString(16).padStart(2,'0')).join('');
@@ -40,7 +41,7 @@ export async function handleOrderRequest(request,env) {
     const enabled=ready(env)&&Boolean(env.ORDER_GUARD)&&Object.values(channels).some(Boolean);
     return json({enabled,voice:enabled,channels});
   }
-  if(request.method!=='POST'||!['/api/order/session','/api/order/transcribe','/api/order/send'].includes(path))return json({error:'not-found'},404);
+  if(request.method!=='POST'||!ORDER_POST_ROUTES.has(path))return json({error:'not-found'},404);
   if(!ready(env)||!env.ORDER_GUARD)return json({error:'orders-not-configured'},503);
   if(request.headers.get('origin')!==new URL(request.url).origin||request.headers.get('sec-fetch-site')==='cross-site')return json({error:'same-origin-required'},403);
   try { return await env.ORDER_GUARD.get(env.ORDER_GUARD.idFromName('hamdi-orders-v1')).fetch(request); }
@@ -49,7 +50,7 @@ export async function handleOrderRequest(request,env) {
 
 export class OrderGuard {
   constructor(ctx,env,dependencies={}) {this.ctx=ctx;this.env=env;this.now=dependencies.now||Date.now;this.send=dependencies.send||sendOrderByChannel;this.synthesize=dependencies.synthesize||synthesizeOrderPrompt;this.sendArchive=dependencies.sendArchive||sendOrderArchive;}
-  state(raw) {const day=new Date(this.now()).toISOString().slice(0,10);return raw?.day===day?raw:{day,created:0,audio:0,mails:0,sessions:{}};}
+  state(raw) {const day=new Date(this.now()).toISOString().slice(0,10);return raw?.day===day?raw:{day,audio:0,mails:0,sessions:{}};}
   async mutate(fn) {return this.ctx.storage.transaction(async storage=>{const state=this.state(await storage.get(KEY));const result=await fn(state,storage);await storage.put(KEY,state);return result;});}
 
   async alarm() {
@@ -79,27 +80,48 @@ export class OrderGuard {
     const path=new URL(request.url).pathname;
     if(path.startsWith('/api/order/prompt/')) {const prompt=readOrderPrompt(request);return prompt?cachedOrderPrompt(this,prompt,request.headers.get('range')):json({error:'not-found'},404);}
     if(request.method!=='POST'||request.headers.get('origin')!==new URL(request.url).origin||request.headers.get('sec-fetch-site')==='cross-site')return json({error:'same-origin-required'},403);
-    if(!['/api/order/session','/api/order/transcribe','/api/order/send'].includes(path))return json({error:'not-found'},404);
+    if(!ORDER_POST_ROUTES.has(path))return json({error:'not-found'},404);
     const ip=await digest((request.headers.get('cf-connecting-ip')||'unknown')+'|'+this.env.ORDER_MAIL_SECRET);
     if(path==='/api/order/session') {
       let body;try {if(request.headers.get('content-type')?.split(';')[0]!=='application/json')throw 0;body=JSON.parse(new TextDecoder().decode(await readLimited(request,512)));}catch{return json({error:'invalid-request'},400);}
       if(body?.consent!==true||!['ar','tr'].includes(body.language)||Object.keys(body).some(k=>!['consent','language'].includes(k)))return json({error:'consent-required'},400);
       const token=crypto.randomUUID()+crypto.randomUUID(),hash=await digest(token);
       const accepted=await this.mutate(state=>{
-        if(state.created>=20||Object.values(state.sessions).filter(s=>s.ip===ip).length>=8)return false;
-        state.created++;state.sessions[hash]={ip,language:body.language,expires:this.now()+1200000,turns:0,status:'open'};return true;
+        const now = this.now();
+        for (const [key, session] of Object.entries(state.sessions)) {
+          if (session.expires <= now && session.status !== 'pending') delete state.sessions[key];
+        }
+        const open = Object.values(state.sessions).filter(session => session.status === 'open');
+        if (open.length >= 20 || open.filter(session => session.ip === ip).length >= 8) return false;
+        state.sessions[hash]={ip,language:body.language,expires:now+1200000,turns:0,status:'open'};
+        return true;
       });
-      return accepted?json({token,maxAudioSeconds:15}):json({error:'order-limit'},429);
+      return accepted?json({token,maxAudioSeconds:15}):json({error:'order-sessions-busy'},429);
     }
     const token=request.headers.get('authorization')?.replace(/^Bearer /,'');
     if(!/^[a-f0-9-]{72}$/.test(token||''))return json({error:'session-required'},403);
     const hash=await digest(token);
+    if(path==='/api/order/session/close') {
+      await this.mutate(state=>{
+        const session = state.sessions[hash];
+        if (session?.ip === ip && session.status === 'open') delete state.sessions[hash];
+      });
+      return json({closed:true});
+    }
     if(path==='/api/order/transcribe') {
       if(request.headers.get('content-type')?.split(';')[0]!=='audio/wav')return json({error:'audio-required'},415);
       let bytes;try{bytes=await readLimited(request,MAX_AUDIO);}catch{return json({error:'audio-too-large'},413);}
       if(!validOrderWav(bytes))return json({error:'invalid-audio'},400);
-      const language=await this.mutate(state=>{const s=state.sessions[hash];if(!s||s.ip!==ip||s.expires<this.now()||s.status!=='open'||s.turns>=8||state.audio>=160)return null;s.turns++;state.audio++;return s.language;});
-      if(!language)return json({error:'order-limit'},429);
+      const admission=await this.mutate(state=>{
+        const session = state.sessions[hash];
+        if (!session || session.ip !== ip || session.expires <= this.now() || session.status !== 'open') return {error:'session-required'};
+        if (session.turns >= 8 || state.audio >= 160) return {error:'order-limit'};
+        session.turns++;
+        state.audio++;
+        return {language:session.language};
+      });
+      if(admission.error)return json(admission,admission.error==='session-required'?403:429);
+      const {language}=admission;
       try {
         let binary='';for(let i=0;i<bytes.length;i+=8192)binary+=String.fromCharCode(...bytes.subarray(i,i+8192));
         const output=await this.env.AI.run('@cf/openai/whisper-large-v3-turbo',{audio:btoa(binary),language,task:'transcribe',vad_filter:true,condition_on_previous_text:false});
