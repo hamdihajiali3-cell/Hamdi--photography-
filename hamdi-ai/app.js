@@ -308,7 +308,13 @@ const orderCopy = {
     reference:'رقم الطلب', qService:'شو الخدمة اللي بدك ياها؟ تعديل ألوان، تصوير تخرج، تصوير الحلاقة، صور جواز وهويات، أو تصوير شخصي؟', qName:'شو اسمك؟',
     qChannel:'بأي طريقة بدك المساعد يرسل طلبك لحمدي؟ اختار من القنوات المتاحة.',
     qPhone:'قول رقمك رقم رقم، أو اكتبه بالخانة.', qEmail:'حتى يقدر حمدي يتواصل معك، قول رقم هاتفك رقم رقم، أو أعطينا بريدك الإلكتروني.',
-    qWhen:'أي يوم ووقت بتفضّل؟ إذا بدك نتفق بعدين، قول «بدون موعد».'
+    qWhen:'أي يوم ووقت بتفضّل؟ إذا بدك نتفق بعدين، قول «بدون موعد».',
+    directQuestions: {
+      qChannel:'كيف بتحب تبعت طلبك لحمدي؟',
+      qPhone:'اكتب رقم هاتفك للتواصل.',
+      qEmail:'اكتب رقم هاتفك أو بريدك الإلكتروني حتى يقدر حمدي يتواصل معك.',
+      qWhen:'أي يوم ووقت بيناسبك؟ فيك تترك الموعد للنقاش لاحقًا.'
+    }
   },
   tr:{
     title:'Hamdi ile talebin', intro:'Gönderim kanalını sesle seç. Yanıtların tamamlanınca asistan talebini otomatik gönderir, özeti ve talep numarasını gösterir.',
@@ -332,7 +338,13 @@ const orderCopy = {
     reference:'Talep numarası', qService:'Hangi hizmeti istiyorsun? Renk düzenleme, mezuniyet, berber çekimi, pasaport ve kimlik fotoğrafı veya portre çekimi?', qName:'Adın nedir?',
     qChannel:'Asistan talebini Hamdi’ye nasıl göndersin? Kullanılabilir kanallardan birini seç.',
     qPhone:'Telefon numaranı rakam rakam söyle veya kutuya yaz.', qEmail:'Hamdi sana ulaşabilsin diye telefon numaranı rakam rakam söyle veya e-posta adresini ver.',
-    qWhen:'Hangi gün ve saati tercih edersin? İstersen “zamanı sonra kararlaştıralım” de.'
+    qWhen:'Hangi gün ve saati tercih edersin? İstersen “zamanı sonra kararlaştıralım” de.',
+    directQuestions: {
+      qChannel:'Talebini Hamdi’ye nasıl göndermek istersin?',
+      qPhone:'İletişim için telefon numaranı yaz.',
+      qEmail:'Hamdi’nin sana ulaşabilmesi için telefon numaranı veya e-posta adresini yaz.',
+      qWhen:'Hangi gün ve saat sana uygun? İstersen daha sonra belirleyebilirsin.'
+    }
   }
 };
 const orderFields = ['service','name','channel','contact','when'];
@@ -599,7 +611,7 @@ class OrderAssistant {
     if (key === 'contact') this.updateContactField();
     const prompt = key === 'contact' ? (this.field('channel').value === 'email' ? 'email' : 'phone') : key;
     const copyKey = {service:'qService',name:'qName',channel:'qChannel',email:'qEmail',phone:'qPhone',when:'qWhen'}[prompt];
-    this.el('question').textContent = this.c[copyKey];
+    this.el('question').textContent = (this.inline && this.c.directQuestions[copyKey]) || this.c[copyKey];
     this.currentPrompt = prompt;
     if (play) this.ask(prompt);
     else this.setPhase('idle');
