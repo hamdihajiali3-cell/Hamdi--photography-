@@ -21,9 +21,9 @@ if (typeof document !== 'undefined') {
   const directFrame = document.querySelector('#direct-booking-frame');
   const directClose = document.querySelector('#direct-booking-close');
   const directFallback = document.querySelector('#direct-booking-fallback');
+  const openingAudio = document.querySelector('#direct-booking-audio');
   let gmailForm = false;
   let directTrigger;
-  let openingAudio;
   const language = () => document.documentElement.lang === 'tr' ? 'tr' : 'ar';
   const labels = () => {
     const tr = language() === 'tr';
@@ -59,14 +59,15 @@ if (typeof document !== 'undefined') {
     document.documentElement.classList.add('hamdi-assistant-open');
   };
   const stopOpeningAudio = () => {
-    openingAudio?.pause();
-    openingAudio = null;
+    if (!openingAudio.hasAttribute('src')) return;
+    openingAudio.pause();
+    openingAudio.removeAttribute('src');
+    openingAudio.load();
   };
   const playOpeningQuestion = () => {
     stopOpeningAudio();
-    if (!window.Audio) return;
     const source = new URL(`/api/order/prompt/aoede-v1/${language()}/name.wav`, VOICE_ORIGIN);
-    openingAudio = new window.Audio(source.href);
+    openingAudio.src = source.href;
     openingAudio.play().catch(() => {});
   };
   const closeDirectBooking = () => {

@@ -48,6 +48,7 @@
           <button type="button" id="direct-booking-close">إغلاق الطلب</button>
           <iframe id="direct-booking-frame" title="طلب جلسة" height="340" allow="microphone; autoplay" sandbox="allow-scripts allow-same-origin allow-forms" referrerpolicy="strict-origin-when-cross-origin"></iframe>
           <button type="button" id="direct-booking-fallback" hidden>تابع عبر نموذج Gmail</button>
+          <audio id="direct-booking-audio" preload="none" hidden></audio>
         </div>
       </section>
       <section class="booking-section" aria-labelledby="booking-title">
@@ -79,6 +80,6 @@
     <div class="hamdi-ai-bar"><div class="hamdi-ai-heading"><h2 id="hamdi-ai-dialog-title">HAMDI AI</h2><p id="hamdi-ai-subtitle">مساعد الاستوديو الصوتي</p></div><button type="button" id="hamdi-ai-close" aria-label="إغلاق">×</button></div>
     <iframe id="hamdi-ai-frame" title="مساعد حمدي AI الصوتي" allow="microphone; autoplay" sandbox="allow-scripts allow-same-origin allow-forms" referrerpolicy="strict-origin-when-cross-origin"></iframe>
   </dialog>
-  <script type="module" src="hamdi-inline/site-assistant.mjs?v=automatic-question-20261115"></script>
+  <script type="module" src="hamdi-inline/site-assistant.mjs?v=question-playback-20261115"></script>
 </body>
 </html>
