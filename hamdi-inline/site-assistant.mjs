@@ -70,11 +70,14 @@ if (typeof document !== 'undefined') {
     openingAudio.src = source.href;
     openingAudio.play().catch(() => {});
   };
-  const closeDirectBooking = () => {
+  const closeDirectBooking = ({ restoreFocus = true } = {}) => {
+    if (!directBooking.open) return;
     stopOpeningAudio();
-    directBooking.hidden = true;
+    directBooking.close();
     directFrame.src = 'about:blank';
     if (directTrigger?.matches('[data-service]')) directTrigger.setAttribute('aria-expanded', 'false');
+    if (restoreFocus) directTrigger?.focus({ preventScroll: true });
+    directTrigger = null;
   };
   const openDirectBooking = (service, trigger) => {
     gmailForm = false;
@@ -85,15 +88,16 @@ if (typeof document !== 'undefined') {
     directClose.textContent = tr ? 'Talebi kapat' : 'إغلاق الطلب';
     directFallback.textContent = tr ? 'Gmail formuyla devam et' : 'تابع عبر نموذج Gmail';
     directFrame.title = tr ? 'Çekim talebi' : 'طلب جلسة';
+    directBooking.setAttribute('aria-label', directFrame.title);
     directFallback.hidden = true;
     directFrame.hidden = false;
     const source = assistantUrl();
     source.searchParams.set('bookingService', service);
     source.searchParams.set('presentation', 'inline');
     directFrame.height = 340;
-    (trigger.closest('label') || trigger).after(directBooking);
     directFrame.src = source.href;
-    directBooking.hidden = false;
+    if (!directBooking.open) directBooking.showModal();
+    directBooking.scrollTop = 0;
     playOpeningQuestion();
   };
   document.querySelectorAll('[data-open-hamdi-ai]').forEach(link => link.addEventListener('click', event => {
@@ -102,6 +106,7 @@ if (typeof document !== 'undefined') {
   }));
   document.querySelectorAll('[data-service]').forEach(button => {
     button.setAttribute('aria-controls', 'direct-booking');
+    button.setAttribute('aria-haspopup', 'dialog');
     button.setAttribute('aria-expanded', 'false');
     button.addEventListener('click', event => {
       const service = button.dataset.service;
@@ -124,20 +129,29 @@ if (typeof document !== 'undefined') {
   close.addEventListener('click', closeAssistant);
   directClose.addEventListener('click', () => {
     closeDirectBooking();
-    directTrigger?.focus({ preventScroll: true });
+  });
+  directBooking.addEventListener('cancel', event => {
+    event.preventDefault();
+    closeDirectBooking();
   });
   document.querySelectorAll('[data-lang]').forEach(button => button.addEventListener('click', () => {
-    if (!directBooking.hidden) closeDirectBooking();
+    closeDirectBooking({ restoreFocus: false });
   }));
   dialog.addEventListener('close', closeAssistant);
-  dialog.addEventListener('click', event => {
-    if (event.target !== dialog) return;
-    const box = dialog.getBoundingClientRect();
-    if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) closeAssistant();
+  const closeOnBackdrop = (modal, dismiss) => modal.addEventListener('click', event => {
+    if (event.target !== modal) return;
+    const box = modal.getBoundingClientRect();
+    if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) dismiss();
   });
+  closeOnBackdrop(dialog, closeAssistant);
+  closeOnBackdrop(directBooking, closeDirectBooking);
   window.addEventListener('message', event => {
-    if (!directBooking.hidden && event.source === directFrame.contentWindow && event.origin === VOICE_ORIGIN) {
+    if (directBooking.open && event.source === directFrame.contentWindow && event.origin === VOICE_ORIGIN) {
       const data = event.data;
+      if (data?.type === 'hamdi-ai:close-booking' && Object.keys(data).length === 1) {
+        closeDirectBooking();
+        return;
+      }
       if (data?.type === 'hamdi-ai:stop-opening-audio' && Object.keys(data).length === 1) {
         stopOpeningAudio();
         return;
@@ -151,7 +165,7 @@ if (typeof document !== 'undefined') {
         directFrame.hidden = true;
         directFallback.hidden = false;
         directFallback.onclick = () => {
-          closeDirectBooking();
+          closeDirectBooking({ restoreFocus: false });
           openBooking(request.service, request.language);
         };
       }
@@ -164,14 +178,12 @@ if (typeof document !== 'undefined') {
     const serviceButton = request.service && document.querySelector(`button[data-service="${request.service}"]`);
     if (serviceButton) {
       openDirectBooking(request.service, serviceButton);
-      serviceButton.focus({ preventScroll: true });
-      serviceButton.scrollIntoView({ block: 'nearest' });
     } else {
       document.querySelector('#services').scrollIntoView({ block: 'start' });
     }
   });
   window.addEventListener('pagehide', () => {
-    stopOpeningAudio();
+    closeDirectBooking({ restoreFocus: false });
     closeAssistant();
   });
   labels();

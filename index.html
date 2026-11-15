@@ -9,7 +9,7 @@
   <title>Hamdi Photography | مكتب الحجز</title>
   <link rel="stylesheet" href="style.css?v=portrait-20261114" />
   <link rel="stylesheet" href="flags.css?v=turkey-flag-20261102" />
-  <link rel="stylesheet" href="hamdi-inline/assistant.css?v=automatic-question-20261115" />
+  <link rel="stylesheet" href="hamdi-inline/assistant.css?v=booking-dialog-20261115" />
 </head>
 <body>
   <a class="skip" href="#content" data-i18n="skip">انتقل إلى المحتوى</a>
@@ -44,12 +44,6 @@
         <article class="card ident"><div class="art photo" aria-hidden="true"><i></i><i></i><i></i></div><div><span>04</span><h3 data-i18n="idTitle">صور الجواز والهويات</h3><p data-i18n="idText">صور شخصية واضحة لمعاملاتك.</p><button type="button" data-service="id"><b data-i18n="choose">اختر الخدمة</b><i>↗</i></button></div></article>
         <article class="card portrait"><div class="art portrait-art" aria-hidden="true"><i></i></div><div><span>05</span><h3 data-i18n="portraitTitle">تصوير شخصي</h3><p data-i18n="portraitText">جلسة بورتريه تبرز شخصيتك.</p><button type="button" data-service="portrait"><b data-i18n="choose">اختر الخدمة</b><i>↗</i></button></div></article>
       </div>
-        <div id="direct-booking" tabindex="-1" hidden>
-          <button type="button" id="direct-booking-close">إغلاق الطلب</button>
-          <iframe id="direct-booking-frame" title="طلب جلسة" height="340" allow="microphone; autoplay" sandbox="allow-scripts allow-same-origin allow-forms" referrerpolicy="strict-origin-when-cross-origin"></iframe>
-          <button type="button" id="direct-booking-fallback" hidden>تابع عبر نموذج Gmail</button>
-          <audio id="direct-booking-audio" preload="none" hidden></audio>
-        </div>
       </section>
       <section class="booking-section" aria-labelledby="booking-title">
         <form id="booking" class="booking" aria-describedby="booking-note booking-status">
@@ -80,6 +74,14 @@
     <div class="hamdi-ai-bar"><div class="hamdi-ai-heading"><h2 id="hamdi-ai-dialog-title">HAMDI AI</h2><p id="hamdi-ai-subtitle">مساعد الاستوديو الصوتي</p></div><button type="button" id="hamdi-ai-close" aria-label="إغلاق">×</button></div>
     <iframe id="hamdi-ai-frame" title="مساعد حمدي AI الصوتي" allow="microphone; autoplay" sandbox="allow-scripts allow-same-origin allow-forms" referrerpolicy="strict-origin-when-cross-origin"></iframe>
   </dialog>
-  <script type="module" src="hamdi-inline/site-assistant.mjs?v=question-playback-20261115"></script>
+  <dialog id="direct-booking" aria-label="طلب جلسة">
+    <div class="direct-booking-bar">
+      <button type="button" id="direct-booking-close">إغلاق الطلب</button>
+    </div>
+    <iframe id="direct-booking-frame" title="طلب جلسة" height="340" allow="microphone; autoplay" sandbox="allow-scripts allow-same-origin allow-forms" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+    <button type="button" id="direct-booking-fallback" hidden>تابع عبر نموذج Gmail</button>
+    <audio id="direct-booking-audio" preload="none" hidden></audio>
+  </dialog>
+  <script type="module" src="hamdi-inline/site-assistant.mjs?v=booking-dialog-20261115"></script>
 </body>
 </html>

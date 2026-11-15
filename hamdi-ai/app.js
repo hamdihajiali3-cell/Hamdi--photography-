@@ -998,7 +998,14 @@ const embedded = pageOptions.get('embed') === '1' && window.parent !== window
 const requestedService = pageOptions.get('bookingService');
 const bookingService = embedded && Object.hasOwn(SERVICES, requestedService) ? requestedService : '';
 const inlineBooking = Boolean(bookingService && pageOptions.get('presentation') === 'inline');
-if (inlineBooking) document.documentElement.dataset.inlineBooking = 'true';
+if (inlineBooking) {
+  document.documentElement.dataset.inlineBooking = 'true';
+  document.addEventListener('keydown', event => {
+    if (event.key !== 'Escape' || event.defaultPrevented) return;
+    event.preventDefault();
+    window.parent.postMessage({type:'hamdi-ai:close-booking'}, embeddedParent);
+  });
+}
 const consultation = embedded && !inlineBooking;
 if (consultation) {
   document.documentElement.dataset.consultation = 'true';
