@@ -294,7 +294,11 @@ const orderCopy = {
     service:'الخدمة', name:'اسمك', channel:'قناة إرسال الطلب لحمدي', contact:'رقم التواصل أو البريد', when:'الموعد المقترح (اختياري)', notes:'ملاحظات (اختياري)',
     choose:'اختر', next:'التالي', skip:'نتفق على الموعد لاحقًا', review:'راجع التفاصيل وقناة الإرسال قبل التأكيد.',
     send:'أرسل الطلب', pending:'هذا طلب للتنسيق. يؤكد حمدي الموعد والسعر بعد التواصل.',
-    speaking:'عم اسألك…', listening:'عم اسمعك…', processing:'عم أفهم جوابك…', typedHint:'يمكنك كتابة الجواب والمتابعة.',
+    speaking:'عم اسألك…', listening:'عم اسمعك… احكي هلّق.', processing:'عم أفهم جوابك…', typedHint:'يمكنك كتابة الجواب والمتابعة.',
+    connectingMic:'عم جهّز الميكروفون… احكي لما يظهر «عم اسمعك».',
+    microphoneOff:'الميكروفون مغلق. اضغط «ابدأ الحجز بالصوت» لتحكي.',
+    noVoice:'ما وصلني صوت. بتقدر تعيد المحاولة أو تكتب جوابك.',
+    spokenName:'الاسم اللي سمعته:',
     invalid:'راجع جوابك أو قلْه مرة ثانية بعد سماع السؤال.', micUnavailable:'الميكروفون غير متاح هون. فيك تتابع كتابة، أو تفتح نفس الموقع في Safari أو Chrome وتسمح بالميكروفون.',
     channelUnavailable:'قناة الإرسال هذه غير مفعّلة. اختَر إحدى القنوات المتاحة إذا كانت تناسبك.',
     smsLimit:'نص الطلب طويل لرسالة SMS أو يحتوي رابطًا. اختصر التفاصيل واحذف الروابط.',
@@ -324,7 +328,11 @@ const orderCopy = {
     service:'Hizmet', name:'Adın', channel:'Talebin Hamdi’ye iletileceği kanal', contact:'Telefon veya e-posta', when:'Önerilen zaman (isteğe bağlı)', notes:'Notlar (isteğe bağlı)',
     choose:'Seç', next:'İleri', skip:'Zamanı sonra kararlaştıralım', review:'Onaylamadan önce ayrıntıları ve gönderim kanalını incele.',
     send:'Talebi gönder', pending:'Bu bir planlama talebidir. Zamanı ve fiyatı Hamdi görüşmeden sonra onaylar.',
-    speaking:'Soruyu okuyorum…', listening:'Dinliyorum…', processing:'Yanıtın anlaşılıyor…', typedHint:'Yanıtını yazarak devam edebilirsin.',
+    speaking:'Soruyu okuyorum…', listening:'Dinliyorum… Şimdi konuşabilirsin.', processing:'Yanıtın anlaşılıyor…', typedHint:'Yanıtını yazarak devam edebilirsin.',
+    connectingMic:'Mikrofon hazırlanıyor… “Dinliyorum” yazınca konuşabilirsin.',
+    microphoneOff:'Mikrofon kapalı. Konuşmak için “Sesli talebi başlat”a bas.',
+    noVoice:'Ses duyamadım. Tekrar deneyebilir veya yanıtını yazabilirsin.',
+    spokenName:'Duyduğum isim:',
     invalid:'Yanıtı kontrol et veya soruyu dinleyip tekrar söyle.', micUnavailable:'Mikrofon burada kullanılamıyor. Yazarak devam edebilir veya aynı siteyi Safari ya da Chrome’da açıp mikrofona izin verebilirsin.',
     channelUnavailable:'Bu gönderim kanalı etkin değil. Sana uygunsa kullanılabilir bir kanal seç.',
     smsLimit:'SMS için metin fazla uzun veya bağlantı içeriyor. Ayrıntıları kısalt ve bağlantıları kaldır.',
@@ -403,6 +411,12 @@ class OrderAssistant {
     return channel === 'whatsapp' ? 'WhatsApp' : 'SMS';
   }
   setPhase(phase, message) {
+    if (this.inline && orderFields[this.stage]) {
+      const showStart = !this.stream && this.canRecord();
+      this.el('consent').hidden = !showStart;
+      this.el('repeat').hidden = Boolean(this.stream);
+      if (phase === 'idle' && showStart && !message) message = this.c.microphoneOff;
+    }
     this.dialog.dataset.phase = phase;
     this.el('status').textContent = message || '';
     this.onState?.(phase === 'listening' ? 'listening' : phase === 'speaking' ? 'speaking' : 'ready');
@@ -497,6 +511,8 @@ class OrderAssistant {
       '<div class="order-avatar" aria-hidden="true"><div class="orb"><div class="orb-shine"></div>'+
         '<div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div>',
       '<h2 id="order-title">'+(inline ? (tr ? 'Çekim talebi' : 'طلب جلسة') : c.title)+'</h2><p>'+intro+'</p>',
+      '<p id="order-status" role="status" aria-live="polite"></p>',
+      inline ? '<p id="order-spoken-name" hidden></p>' : '',
       inline ? '' : consent,
       '<form id="order-form" hidden><p id="order-question" class="order-question" aria-live="polite"></p>',
       inline ? consent : '',
@@ -511,7 +527,6 @@ class OrderAssistant {
       '<div class="order-step-tools" id="order-step-tools"><button type="button" class="button primary" id="order-next">'+c.next+'</button>',
       '<button type="button" class="text-link" id="order-skip">'+c.skip+'</button></div>',
       '<p>'+c.pending+'</p><button type="submit" class="button primary" id="order-send" hidden>'+c.send+'</button></form>',
-      '<p id="order-status" role="status" aria-live="polite"></p>',
       '<section id="order-receipt" hidden><h3>'+c.receiptTitle+'</h3><dl id="order-summary"></dl><p>'+c.pending+'</p></section>'
     ].join('');
     this.el('close').onclick = ()=>{ if (!this.sending) this.close(); };
@@ -538,6 +553,7 @@ class OrderAssistant {
       if (this.sending) return;
       this.stopTurn();
       this.stopPrompt();
+      if (this.inline && event.target === this.field('name')) this.el('spoken-name').hidden = true;
       if (event.target === this.field('channel')) {
         this.automaticChannel = '';
         this.updateContactField();
@@ -588,26 +604,33 @@ class OrderAssistant {
     this.el('start').disabled = this.el('typed').disabled = true;
     const run = this.run;
     try {
+      if (withVoice) this.setPhase('processing',this.c.connectingMic);
       if (withVoice && this.canRecord()) this.unlockPromptAudio();
       const mic = withVoice && await this.prepareMicrophone();
       if (run !== this.run || !this.dialog.open) return;
       if (this.inline && !mic) {
         this.setPhase('idle',this.c.micUnavailable);
-        this.el('start').disabled = false;
         return;
       }
       const token = await this.requestSession();
       if (run !== this.run || !this.dialog.open) return;
       this.token = token;
-      this.beginForm(mic && Boolean(this.stream));
+      if (this.inline && this.stream) {
+        this.el('mute').hidden = false;
+        this.showStep(true, { listenImmediately: true });
+      } else {
+        this.beginForm(mic && Boolean(this.stream));
+      }
       if (withVoice && !mic) this.setPhase('idle',this.c.micUnavailable);
     } catch(error) {
       if (run !== this.run) return;
       this.cancelRecording();
       this.setPhase('idle',error.message === 'order-limit' ? this.c.limit : this.c.error);
-      this.el('start').disabled = this.el('typed').disabled = false;
     } finally {
-      if (run === this.run) this.starting = false;
+      if (run === this.run) {
+        this.starting = false;
+        this.el('start').disabled = this.el('typed').disabled = false;
+      }
     }
   }
 
@@ -618,12 +641,8 @@ class OrderAssistant {
     this.field('contact').inputMode = email ? 'text' : 'tel';
   }
 
-  showStep(play = Boolean(this.stream)) {
+  showStep(play = Boolean(this.stream), { listenImmediately = false } = {}) {
     const key = orderFields[this.stage];
-    if (this.inline) {
-      this.el('consent').hidden = key !== 'name' || play || !this.canRecord();
-      this.el('repeat').hidden = play;
-    }
     this.dialog.querySelectorAll('[data-order-field]').forEach(el=>{ el.hidden = el.dataset.orderField !== key; });
     this.el('skip').hidden = key !== 'when';
     if (key === 'contact') this.updateContactField();
@@ -631,7 +650,9 @@ class OrderAssistant {
     const copyKey = {service:'qService',name:'qName',channel:'qChannel',email:'qEmail',phone:'qPhone',when:'qWhen'}[prompt];
     this.el('question').textContent = (this.inline && !play && this.c.directQuestions[copyKey]) || this.c[copyKey];
     this.currentPrompt = prompt;
-    if (play || (this.inline && key !== 'name')) {
+    if (listenImmediately) {
+      this.listenForAnswer();
+    } else if (play || (this.inline && key !== 'name')) {
       this.onPromptRequested?.();
       this.ask(prompt);
     } else {
@@ -641,7 +662,8 @@ class OrderAssistant {
 
   ask(prompt) {
     this.stopTurn();
-    this.setPhase('speaking',this.c.speaking);
+    const message = this.inline && !this.stream ? this.c.microphoneOff : this.c.speaking;
+    this.setPhase('speaking',message);
     this.speak(prompt,()=>{
       if (this.stream) this.listenForAnswer();
       else this.setPhase('idle');
@@ -745,7 +767,7 @@ class OrderAssistant {
       if (this.turn?.bytes) this.finishRecording();
       else {
         this.cancelRecording();
-        this.setPhase('idle',this.c.typedHint);
+        this.setPhase('idle',this.c.noVoice);
       }
     },15000);
   }
@@ -843,6 +865,11 @@ class OrderAssistant {
       if (!this.validField(key)) {
         this.repeatAnswer();
         return;
+      }
+      if (this.inline && key === 'name') {
+        const spokenName = this.el('spoken-name');
+        spokenName.textContent = this.c.spokenName+' '+this.field('name').value;
+        spokenName.hidden = false;
       }
       if (key === 'channel') this.automaticChannel = value;
       this.advance();

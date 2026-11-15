@@ -44,6 +44,8 @@ html[data-voice-state=speaking] .orb{box-shadow:inset -13px -15px 20px #031e1860
 .order-dialog .order-speech-note{font-size:.75rem;opacity:.75}
 .order-step-tools{display:flex;flex-wrap:wrap;gap:.6rem;margin:1rem 0}
 .order-dialog #order-status{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.8;font-size:.9rem}
+.order-dialog #order-status:empty{display:none}
+.order-dialog[data-phase="listening"] #order-status,.order-dialog #order-spoken-name{font-weight:700;color:#1d5743}
 .order-dialog #order-receipt{padding:.85rem 1rem;border:1px solid var(--line);border-radius:.75rem;background:#fff9}
 .order-dialog #order-receipt dl{display:grid;grid-template-columns:minmax(6rem,auto) minmax(0,1fr);gap:.4rem 1rem}
 .order-dialog #order-receipt dt{font-weight:600}
