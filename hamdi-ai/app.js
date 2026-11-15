@@ -460,6 +460,7 @@ class OrderAssistant {
     this.stopOtherVoice();
     this.close();
     this.language = this.getLanguage();
+    this.inline = inline;
     this.stage = -1;
     this.sending = false;
     const c = this.c, tr = this.language === 'tr';
@@ -532,13 +533,32 @@ class OrderAssistant {
     this.setPhase('idle');
     if (inline) this.dialog.setAttribute('open', '');
     else this.dialog.showModal();
-    if (typed && serviceLabel) {
+    if (inline) {
+      this.beginForm();
+    } else if (typed && serviceLabel) {
       this.el('start').hidden = true;
       this.start(false);
     } else if (!this.canRecord()) {
       this.el('start').hidden = true;
       this.setPhase('idle',c.micUnavailable);
     }
+  }
+
+  async requestSession() {
+    const {response,result} = await fetchOrder('/api/order/session',10000,{
+      method:'POST',headers:{'content-type':'application/json'},
+      body:JSON.stringify({language:this.language,consent:true})
+    });
+    if (!response.ok || !result.token) throw new Error(result.error);
+    return result.token;
+  }
+
+  beginForm(play = false) {
+    this.el('consent').hidden = true;
+    this.el('form').hidden = false;
+    this.el('mute').hidden = !this.stream;
+    this.stage = this.field('service').value ? 1 : 0;
+    this.showStep(play);
   }
 
   async start(withVoice) {
@@ -550,18 +570,10 @@ class OrderAssistant {
       if (withVoice && this.canRecord()) this.unlockPromptAudio();
       const mic = withVoice && await this.prepareMicrophone();
       if (run !== this.run || !this.dialog.open) return;
-      const {response,result} = await fetchOrder('/api/order/session',10000,{
-        method:'POST',headers:{'content-type':'application/json'},
-        body:JSON.stringify({language:this.language,consent:true})
-      });
+      const token = await this.requestSession();
       if (run !== this.run || !this.dialog.open) return;
-      if (!response.ok) throw new Error(result.error);
-      this.token = result.token;
-      this.el('consent').hidden = true;
-      this.el('form').hidden = false;
-      this.el('mute').hidden = !this.stream;
-      this.stage = this.field('service').value ? 1 : 0;
-      this.showStep(mic && Boolean(this.stream));
+      this.token = token;
+      this.beginForm(mic && Boolean(this.stream));
       if (withVoice && !mic) this.setPhase('idle',this.c.micUnavailable);
     } catch(error) {
       if (run !== this.run) return;
@@ -862,6 +874,18 @@ class OrderAssistant {
     const run = this.run;
     this.setPhase('processing',this.c.sending+' '+this.channelLabel(data.channel));
     try {
+      if (this.inline && !this.token) {
+        try {
+          const token = await this.requestSession();
+          if (run !== this.run) return;
+          this.token = token;
+        } catch (error) {
+          if (run !== this.run) return;
+          this.setPhase('review',error.message === 'order-limit' ? this.c.limit : this.c.error);
+          this.el('send').disabled = false;
+          return;
+        }
+      }
       const {response,result} = await fetchOrder('/api/order/send',35000,{
         method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+this.token},
         body:JSON.stringify(data)
@@ -890,7 +914,7 @@ class OrderAssistant {
       const status = delivered ? this.c.delivered : this.c.accepted;
       this.setPhase('review',status+' '+this.channelLabel(result.channel)+'.');
       this.showReceipt(data,result.id);
-      this.speak(delivered?'delivered':'received');
+      if (!this.inline) this.speak(delivered?'delivered':'received');
     } catch {
       if (run !== this.run) return;
       this.setPhase('idle',this.c.unknown);
