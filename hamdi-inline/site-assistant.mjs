@@ -89,7 +89,6 @@ if (typeof document !== 'undefined') {
     (trigger.closest('label') || trigger).after(directBooking);
     directFrame.src = source.href;
     directBooking.hidden = false;
-    directBooking.focus({ preventScroll: true });
   };
   document.querySelectorAll('[data-open-hamdi-ai]').forEach(link => link.addEventListener('click', event => {
     event.preventDefault();
