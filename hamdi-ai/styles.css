@@ -48,10 +48,11 @@ html[data-voice-state=speaking] .orb{box-shadow:inset -13px -15px 20px #031e1860
 .order-dialog #order-receipt dt{font-weight:600}
 .order-dialog #order-receipt dd{margin:0;overflow-wrap:anywhere}
 [data-inline-booking] body > :not(#order-dialog),
-[data-inline-booking] :is(.order-avatar,#order-close,#order-repeat,#order-consent .dialog-alert) {
+[data-inline-booking] :is(.order-avatar,#order-close,#order-repeat) {
   display: none;
 }
 [data-inline-booking] { background: #f6f2ea; }
+[data-inline-booking] #order-consent { border-top: 1px solid var(--line); margin-top: 1rem; padding-top: .25rem; }
 [data-inline-booking] #order-dialog[open] {
   position: relative;
   inset: auto;

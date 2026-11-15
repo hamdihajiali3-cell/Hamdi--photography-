@@ -473,6 +473,7 @@ class OrderAssistant {
     this.close();
     this.language = this.getLanguage();
     this.inline = inline;
+    this.automaticSubmission = false;
     this.stage = -1;
     this.sending = false;
     const c = this.c, tr = this.language === 'tr';
@@ -487,14 +488,15 @@ class OrderAssistant {
       ? (tr ? ' Web3Forms e-posta taleplerini 7 gün saklar.' : ' يحتفظ Web3Forms بتفاصيل طلبات البريد 7 أيام.')
       : '';
     const intro = typed && serviceLabel ? serviceLabel+' · '+c.typedIntro+emailNotice : c.intro;
+    const consent = '<section id="order-consent"><p class="dialog-alert">'+c.privacy+emailNotice+'</p>'+
+      '<button type="button" class="button primary" id="order-start">'+c.start+'</button>'+
+      '<button type="button" class="text-link" id="order-typed">'+c.typed+'</button></section>';
     this.dialog.innerHTML = [
       '<button type="button" id="order-close" class="dialog-close" aria-label="'+c.close+'">×</button>',
       '<div class="order-avatar" aria-hidden="true"><div class="orb"><div class="orb-shine"></div>'+
         '<div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div>',
       '<h2 id="order-title">'+(inline ? (tr ? 'Çekim talebi' : 'طلب جلسة') : c.title)+'</h2><p>'+intro+'</p>',
-      '<section id="order-consent"><p class="dialog-alert">'+c.privacy+emailNotice+'</p>',
-      '<button type="button" class="button primary" id="order-start">'+c.start+'</button>',
-      '<button type="button" class="text-link" id="order-typed">'+c.typed+'</button></section>',
+      inline ? '' : consent,
       '<form id="order-form" hidden><p id="order-question" class="order-question" aria-live="polite"></p>',
       '<button type="button" class="text-link" id="order-repeat">'+c.replay+'</button>',
       '<button type="button" class="text-link" id="order-mute" hidden>'+c.mute+'</button>',
@@ -507,6 +509,7 @@ class OrderAssistant {
       '<div class="order-step-tools" id="order-step-tools"><button type="button" class="button primary" id="order-next">'+c.next+'</button>',
       '<button type="button" class="text-link" id="order-skip">'+c.skip+'</button></div>',
       '<p>'+c.pending+'</p><button type="submit" class="button primary" id="order-send" hidden>'+c.send+'</button></form>',
+      inline ? consent : '',
       '<p id="order-status" role="status" aria-live="polite"></p>',
       '<section id="order-receipt" hidden><h3>'+c.receiptTitle+'</h3><dl id="order-summary"></dl><p>'+c.pending+'</p></section>'
     ].join('');
@@ -546,6 +549,7 @@ class OrderAssistant {
     if (inline) this.dialog.setAttribute('open', '');
     else this.dialog.showModal();
     if (inline) {
+      this.el('typed').hidden = true;
       this.beginForm();
     } else if (typed && serviceLabel) {
       this.el('start').hidden = true;
@@ -582,6 +586,11 @@ class OrderAssistant {
       if (withVoice && this.canRecord()) this.unlockPromptAudio();
       const mic = withVoice && await this.prepareMicrophone();
       if (run !== this.run || !this.dialog.open) return;
+      if (this.inline && !mic) {
+        this.setPhase('idle',this.c.micUnavailable);
+        this.el('start').disabled = false;
+        return;
+      }
       const token = await this.requestSession();
       if (run !== this.run || !this.dialog.open) return;
       this.token = token;
@@ -606,12 +615,13 @@ class OrderAssistant {
 
   showStep(play = Boolean(this.stream)) {
     const key = orderFields[this.stage];
+    if (this.inline) this.el('consent').hidden = key !== 'name' || play || !this.canRecord();
     this.dialog.querySelectorAll('[data-order-field]').forEach(el=>{ el.hidden = el.dataset.orderField !== key; });
     this.el('skip').hidden = key !== 'when';
     if (key === 'contact') this.updateContactField();
     const prompt = key === 'contact' ? (this.field('channel').value === 'email' ? 'email' : 'phone') : key;
     const copyKey = {service:'qService',name:'qName',channel:'qChannel',email:'qEmail',phone:'qPhone',when:'qWhen'}[prompt];
-    this.el('question').textContent = (this.inline && this.c.directQuestions[copyKey]) || this.c[copyKey];
+    this.el('question').textContent = (this.inline && !play && this.c.directQuestions[copyKey]) || this.c[copyKey];
     this.currentPrompt = prompt;
     if (play) this.ask(prompt);
     else this.setPhase('idle');
@@ -636,6 +646,7 @@ class OrderAssistant {
   }
 
   advance() {
+    if (this.starting) return;
     const key = orderFields[this.stage];
     if (!key || !this.validField(key)) {
       this.setPhase('idle',this.c.invalid);
@@ -653,16 +664,18 @@ class OrderAssistant {
   review() {
     const automatically = Boolean(this.stream && this.automaticChannel
       && this.automaticChannel === this.field('channel').value);
+    this.automaticSubmission = automatically;
     this.stage = orderFields.length;
     this.cancelRecording();
     this.dialog.querySelectorAll('[data-order-field]').forEach(el=>{ el.hidden = false; });
     this.el('step-tools').hidden = true;
+    if (this.inline) this.el('consent').hidden = true;
     this.el('send').hidden = automatically;
     this.el('repeat').hidden = automatically;
     this.el('question').textContent = automatically ? this.c.receiptTitle : this.c.review;
     this.setPhase('review');
     if (automatically) this.send();
-    else this.speak('review');
+    else if (!this.inline) this.speak('review');
   }
 
   async prepareMicrophone() {
@@ -926,7 +939,7 @@ class OrderAssistant {
       const status = delivered ? this.c.delivered : this.c.accepted;
       this.setPhase('review',status+' '+this.channelLabel(result.channel)+'.');
       this.showReceipt(data,result.id);
-      if (!this.inline) this.speak(delivered?'delivered':'received');
+      if (!this.inline || this.automaticSubmission) this.speak(delivered?'delivered':'received');
     } catch {
       if (run !== this.run) return;
       this.setPhase('idle',this.c.unknown);
