@@ -288,6 +288,7 @@ function isOrderCancellation(text) {
 const orderCopy = {
   ar:{
     title:'طلبك مع حمدي', intro:'اختَر قناة الإرسال بصوتك. بعد اكتمال الأجوبة، المساعد يرسل الطلب تلقائيًا لحمدي ويعرض لك الملخص ورقم الطلب.',
+    typedIntro:'جاوب خطوة بخطوة وراجع التفاصيل قبل ما ترسل طلبك.',
     privacy:'عند بدء الحجز بالصوت، يُحوّل Cloudflare أجوبتك إلى نص. باختيار قناة الإرسال بصوتك، توافق على إرسال تفاصيل الطلب عبرها فور اكتمالها. يمكنك قول «ألغِ الطلب» قبل الإرسال.',
     start:'ابدأ الحجز بالصوت', typed:'المتابعة كتابة', mute:'أوقف الميكروفون', replay:'اسمع السؤال', close:'إغلاق',
     service:'الخدمة', name:'اسمك', channel:'قناة إرسال الطلب لحمدي', contact:'رقم التواصل أو البريد', when:'الموعد المقترح (اختياري)', notes:'ملاحظات (اختياري)',
@@ -311,6 +312,7 @@ const orderCopy = {
   },
   tr:{
     title:'Hamdi ile talebin', intro:'Gönderim kanalını sesle seç. Yanıtların tamamlanınca asistan talebini otomatik gönderir, özeti ve talep numarasını gösterir.',
+    typedIntro:'Soruları sırayla yanıtla ve göndermeden önce talebini incele.',
     privacy:'Sesli talebi başlattığında Cloudflare yanıtlarını metne dönüştürür. Kanalı sesle seçtiğinde, ayrıntılar tamamlanınca o kanalla gönderilmesine izin verirsin. Gönderimden önce “talebi iptal et” diyebilirsin.',
     start:'Sesli talebi başlat', typed:'Yazarak devam et', mute:'Mikrofonu kapat', replay:'Soruyu dinle', close:'Kapat',
     service:'Hizmet', name:'Adın', channel:'Talebin Hamdi’ye iletileceği kanal', contact:'Telefon veya e-posta', when:'Önerilen zaman (isteğe bağlı)', notes:'Notlar (isteğe bağlı)',
@@ -453,7 +455,7 @@ class OrderAssistant {
       && (document.permissionsPolicy || document.featurePolicy)?.allowsFeature?.('microphone') !== false);
   }
 
-  open(service = '') {
+  open(service = '', { typed = false } = {}) {
     if (!this.enabled) return;
     this.stopOtherVoice();
     this.close();
@@ -464,16 +466,20 @@ class OrderAssistant {
     const services = tr
       ? ['Fotoğraf renk düzenleme','Mezuniyet çekimi','Berber ve saç kesimi çekimi','Pasaport ve kimlik fotoğrafları','Portre çekimi']
       : ['تعديل ألوان الصور','تصوير التخرج','تصوير الحلاقة وقصّات الشعر','صور الجواز والهويات','تصوير شخصي'];
+    const serviceLabel = services[orderServiceKeys.indexOf(service)];
     const options = orderServiceKeys.map((key,i)=>'<option value="'+key+'">'+services[i]+'</option>').join('');
     const channels = orderChannels.filter(key=>this.channels[key])
       .map(key=>'<option value="'+key+'">'+this.channelLabel(key)+'</option>').join('');
+    const emailNotice = this.channels.email
+      ? (tr ? ' Web3Forms e-posta taleplerini 7 gün saklar.' : ' يحتفظ Web3Forms بتفاصيل طلبات البريد 7 أيام.')
+      : '';
+    const intro = typed && serviceLabel ? serviceLabel+' · '+c.typedIntro+emailNotice : c.intro;
     this.dialog.innerHTML = [
       '<button type="button" id="order-close" class="dialog-close" aria-label="'+c.close+'">×</button>',
       '<div class="order-avatar" aria-hidden="true"><div class="orb"><div class="orb-shine"></div>'+
         '<div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div>',
-      '<h2 id="order-title">'+c.title+'</h2><p>'+c.intro+'</p>',
-      '<section id="order-consent"><p class="dialog-alert">'+c.privacy+
-        (this.channels.email?(tr?' Web3Forms e-posta taleplerini 7 gün saklar.':' يحتفظ Web3Forms بتفاصيل طلبات البريد 7 أيام.'):'')+'</p>',
+      '<h2 id="order-title">'+c.title+'</h2><p>'+intro+'</p>',
+      '<section id="order-consent"><p class="dialog-alert">'+c.privacy+emailNotice+'</p>',
       '<button type="button" class="button primary" id="order-start">'+c.start+'</button>',
       '<button type="button" class="text-link" id="order-typed">'+c.typed+'</button></section>',
       '<form id="order-form" hidden><p id="order-question" class="order-question" aria-live="polite"></p>',
@@ -522,10 +528,13 @@ class OrderAssistant {
       if (this.stage < 5) this.advance();
       else this.send();
     };
-    if (orderServiceKeys.includes(service)) this.field('service').value = service;
+    if (serviceLabel) this.field('service').value = service;
     this.setPhase('idle');
     this.dialog.showModal();
-    if (!this.canRecord()) {
+    if (typed && serviceLabel) {
+      this.el('start').hidden = true;
+      this.start(false);
+    } else if (!this.canRecord()) {
       this.el('start').hidden = true;
       this.setPhase('idle',c.micUnavailable);
     }
@@ -929,6 +938,8 @@ const pageOptions = new URLSearchParams(location.search);
 const embeddedParent = pageOptions.get('parentOrigin');
 const embedded = pageOptions.get('embed') === '1' && window.parent !== window
   && ['https://hamdihajiali3-cell.github.io', 'https://hamdi--photography.hamdihajiali3.workers.dev'].includes(embeddedParent);
+const requestedService = pageOptions.get('bookingService');
+const bookingService = embedded && Object.hasOwn(SERVICES, requestedService) ? requestedService : '';
 if (embedded) {
   document.documentElement.dataset.embedded = 'true';
   Object.assign(copy.ar, { bookingAction:'طلب موعد ↙' });
@@ -997,12 +1008,16 @@ function setVoiceState(state) {
 const voice = new CustomerVoice({ onState: setVoiceState, onTranscript: value => { transcriptText = (transcriptText + value).slice(-1500); $('#transcript').textContent = transcriptText; $('#transcript').hidden = false; }, matchService: orderService, onOrder: service => { if (orderAssistant.enabled) orderAssistant.open(service); else { selectService(service); openBooking(); } } });
 const orderAssistant = new OrderAssistant({ getLanguage: () => language, stopOtherVoice: () => voice.stop(false), onState: state => setVoiceState(state) });
 orderAssistant.configure().then(enabled => {
-  if (!enabled) return;
+  if (!enabled) {
+    if (bookingService) window.parent.postMessage({type:'hamdi-ai:booking',service:bookingService,language}, embeddedParent);
+    return;
+  }
   Object.assign(copy.ar, { voiceDescription:'اطلب جلستك بالصوت. المساعد يسمع أجوبتك ويرسل الطلب تلقائيًا عبر القناة التي تختارها بصوتك.', bookingAction:'احجز طلب عبر المساعد ↙' });
   Object.assign(copy.tr, { voiceDescription:'Çekim talebini sesle hazırla. Asistan yanıtlarını dinler ve talebini sesle seçtiğin kanalla otomatik gönderir.', bookingAction:'Asistanla çekim talebi ↘' });
   $('[data-t="voiceDescription"]').textContent = text('voiceDescription');
   $('.voice-booking').textContent = text('bookingAction');
   if (embedded) window.parent.postMessage({type:'hamdi-ai:order-ready'}, embeddedParent);
+  if (bookingService) orderAssistant.open(bookingService, { typed: true });
 });
 window.addEventListener('message', event => {
   if (embedded && event.origin === embeddedParent && event.source === window.parent && event.data?.type === 'hamdi-ai:start-order'

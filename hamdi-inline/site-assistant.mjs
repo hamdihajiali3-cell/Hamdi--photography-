@@ -24,16 +24,18 @@ if (typeof document !== 'undefined') {
   const book = document.querySelector('#hamdi-ai-book');
   const subtitle = document.querySelector('#hamdi-ai-subtitle');
   let ordersReady = false;
+  let selectedService = '';
   const language = () => document.documentElement.lang === 'tr' ? 'tr' : 'ar';
   const labels = () => {
     const tr = language() === 'tr';
     subtitle.textContent = tr ? 'Stüdyonun sesli asistanı' : 'مساعد الاستوديو الصوتي';
-    book.textContent = tr ? 'Randevu talebi' : 'طلب موعد';
+    book.textContent = selectedService ? (tr ? 'Gmail formu' : 'نموذج Gmail') : (tr ? 'Randevu talebi' : 'طلب موعد');
     close.setAttribute('aria-label', tr ? 'Kapat' : 'إغلاق');
     frame.title = tr ? 'Hamdi AI sesli asistanı' : 'مساعد حمدي AI الصوتي';
   };
   const closeAssistant = () => {
     ordersReady = false;
+    selectedService = '';
     if (dialog.open) dialog.close();
     frame.src = 'about:blank';
     document.documentElement.classList.remove('hamdi-assistant-open');
@@ -44,23 +46,34 @@ if (typeof document !== 'undefined') {
     const select = document.querySelector('#booking-service');
     if (service) select.value = service;
     document.querySelector('#booking').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
-    select.focus({ preventScroll: true });
+    (service ? document.querySelector('#booking-name') : select).focus({ preventScroll: true });
   };
-  document.querySelectorAll('[data-open-hamdi-ai]').forEach(link => link.addEventListener('click', event => {
-    event.preventDefault();
+  const openAssistant = (service = '') => {
+    selectedService = service;
     labels();
     const source = new URL('/hamdi-ai/', VOICE_ORIGIN);
     source.searchParams.set('embed', '1');
     source.searchParams.set('lang', language());
     source.searchParams.set('parentOrigin', location.origin);
+    if (service) source.searchParams.set('bookingService', service);
     frame.src = source.href;
     dialog.showModal();
     document.documentElement.classList.add('hamdi-assistant-open');
+  };
+  document.querySelectorAll('[data-open-hamdi-ai]').forEach(link => link.addEventListener('click', event => {
+    event.preventDefault();
+    openAssistant();
   }));
+  document.querySelectorAll('[data-service]').forEach(button => button.addEventListener('click', event => {
+    const service = button.dataset.service;
+    if (!service || !SERVICES.has(service)) return;
+    event.preventDefault();
+    openAssistant(service);
+  }, { capture: true }));
   close.addEventListener('click', closeAssistant);
   book.addEventListener('click', () => {
-    if (ordersReady) frame.contentWindow.postMessage({ type:'hamdi-ai:start-order' }, VOICE_ORIGIN);
-    else openBooking();
+    if (ordersReady && !selectedService) frame.contentWindow.postMessage({ type:'hamdi-ai:start-order' }, VOICE_ORIGIN);
+    else openBooking(selectedService);
   });
   dialog.addEventListener('close', closeAssistant);
   dialog.addEventListener('click', event => {
