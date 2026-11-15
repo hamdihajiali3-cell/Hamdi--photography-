@@ -52,7 +52,10 @@ export function voiceSetup(settings, language) {
     generationConfig: { responseModalities: ['AUDIO'] },
     systemInstruction: { parts: [{ text: studioInstructions(language, settings.orders) }] },
     realtimeInputConfig: { automaticActivityDetection: { disabled: false } },
-    ...(settings.orders ? { tools:[{ functionDeclarations:[{ name:'start_order', description:'Open the separate intake when the customer asks to request an appointment. Pass only the selected service code, or omit it to open a blank form. Opening the form does not send a request or confirm an appointment.', parameters:{ type:'OBJECT', properties:{ service:{ type:'STRING', enum:['color','graduation','hair','id','portrait'] } } } }] }] } : {}),
+    ...(settings.orders ? {
+      inputAudioTranscription: {},
+      tools:[{ functionDeclarations:[{ name:'start_order', behavior:'BLOCKING', description:'Open the separate intake when the customer asks to request an appointment. Pass only the selected service code, or omit it to open a blank form. Opening the form does not send a request or confirm an appointment.', parameters:{ type:'OBJECT', properties:{ service:{ type:'STRING', enum:['color','graduation','hair','id','portrait'] } } } }] }],
+    } : {}),
     outputAudioTranscription: {},
   };
 }

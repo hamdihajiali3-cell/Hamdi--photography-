@@ -65,8 +65,21 @@ function providerFailure(error) {
   return 'unavailable';
 }
 
+function confirmsBooking(text, language) {
+  const words = text.toLowerCase().normalize('NFKC')
+    .replace(/[\u0307\u0640\u064b-\u065f\u0670]/g, '').replace(/[أإآ]/g, 'ا')
+    .replace(/[.,!،؛]/g, ' ').replace(/\s+/g, ' ').trim();
+  if (/[?؟]/.test(words)) return false;
+  if (language === 'tr') {
+    return !/\b(?:istemiyorum|istemem|değil|degil|iptal|ama|sonra)\b/u.test(words)
+      && /^(?:(?:tamam|evet|peki) )?(?:(?:bu çekim için )?randevu (?:almak|oluşturmak) istiyorum|(?:bu )?çekimi rezerve etmek istiyorum)(?: |$)/u.test(words);
+  }
+  return !/(?:^| )(?:لا|ما|مو|مش|بس|الغ|الغي|بعدين)(?: |$)/u.test(words)
+    && /^(?:(?:طيب|تمام|اي|نعم|اوكي) )?(?:(?:بدي|بدي اني|اريد|حابب|حابة) (?:احجز|احجزها|احجزلي|اطلب موعد)|احجزلي|احجز لي|افتح طلب الموعد)(?: |$)/u.test(words);
+}
+
 class CustomerVoice {
-  constructor({ onState, onTranscript, onOrder }) { this.onState = onState; this.onTranscript = onTranscript; this.onOrder = onOrder; this.run = 0; this.players = new Set(); this.muted = false; }
+  constructor({ onState, onTranscript, onOrder, matchService }) { this.onState = onState; this.onTranscript = onTranscript; this.onOrder = onOrder; this.matchService = matchService; this.run = 0; this.players = new Set(); this.muted = false; }
   async start(language, { microphone = true } = {}) {
     this.stop(false);
     const run = ++this.run;
@@ -94,6 +107,8 @@ class CustomerVoice {
       if (typeof config.token !== 'string' || !config.token.startsWith('auth_tokens/') || !['v1alpha', 'v1beta'].includes(config.version)) throw new Error('unavailable');
       const socket = new WebSocket(`wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.${config.version}.GenerativeService.BidiGenerateContentConstrained?access_token=${encodeURIComponent(config.token)}`);
       this.socket = socket;
+      let discussedService = '';
+      const openOrder = service => { this.stop(false); this.onOrder(service); };
       await new Promise((resolve, reject) => {
         const timer = setTimeout(() => reject(new Error('connection-timeout')), 15000);
         socket.addEventListener('open', () => socket.send(JSON.stringify({ setup: { model: config.model } })));
@@ -113,10 +128,17 @@ class CustomerVoice {
                   && args && typeof args === 'object' && !Array.isArray(args) && Object.keys(args).every(key => key === 'service')
                   && ['', 'color', 'graduation', 'hair', 'id', 'portrait'].includes(service);
                 socket.send(JSON.stringify({ toolResponse: { functionResponses: [{ id:call.id, name:call.name, response:{ result:allowed ? 'opening_separate_order_workflow' : 'unavailable' } }] } }));
-                if (allowed) { this.stop(false); this.onOrder(service); return; }
+                if (allowed) { openOrder(service || discussedService); return; }
               }
             }
             const content = message.serverContent;
+            const spoken = content?.inputTranscription?.text;
+            if (this.active && !this.outputOnly && !this.muted && typeof this.onOrder === 'function'
+              && typeof spoken === 'string' && spoken.length <= 500) {
+              const service = this.matchService?.(spoken) || '';
+              if (confirmsBooking(spoken, language)) { openOrder(service || discussedService); return; }
+              discussedService = service || discussedService;
+            }
             if (content?.interrupted) this.clearPlayback();
             for (const part of content?.modelTurn?.parts || []) if (part.inlineData?.data && part.inlineData.mimeType?.startsWith('audio/pcm')) this.play(part.inlineData);
             if (content?.outputTranscription?.text) this.onTranscript(content.outputTranscription.text);
@@ -196,10 +218,10 @@ class CustomerVoice {
 }
 
 function orderService(value) {
-  const s=value.toLowerCase().normalize('NFKC').replace(/[\u0640\u064b-\u065f\u0670]/g,'').replace(/[أإآ]/g,'ا');
+  const s=value.toLowerCase().normalize('NFKC').replace(/[\u0307\u0640\u064b-\u065f\u0670]/g,'').replace(/[أإآ]/g,'ا');
   const matches=[['color',/color|renk|düzen|duzen|الوان|لون|تعديل/],['graduation',/graduation|mezun|تخرج/],['hair',/hair|berber|saç|sac|حلاق|شعر|قصات/],['id',/\bid\b|pasaport|kimlik|هوي|جواز/]].filter(([,re])=>re.test(s));
   // "صورة شخصية للجواز" still belongs to the document-photo service.
-  if (!matches.some(([key])=>key === 'id') && /\b(?:portrait|portre)\b|بورتريه|بورتري|(?:تصوير|صور[ةه]?|جلس[ةه])\s+شخصي[ةه]?/u.test(s)) {
+  if (!matches.some(([key])=>key === 'id') && /\b(?:portrait|portre)\b|بورتريه|بورتري|(?:تصوير|صور[ةه]?|جلس[ةه])\s+شخصي[ةه]?|صور[ةه]?\s+(?:رسمي[ةه]\s+)?ل(?:لشغل|لعمل|لبروفايل|لسير[ةه])|\b(?:iş|is|profil|cv) için (?:resmi )?(?:bir )?fotoğraf|\b(?:profesyonel|profil|cv) fotoğraf/u.test(s)) {
     matches.push(['portrait']);
   }
   return matches.length===1?matches[0][0]:'';
@@ -972,7 +994,7 @@ function setVoiceState(state) {
   $('#mute-voice').textContent = text(state === 'muted' ? 'unmute' : 'mute');
   if (!active) { transcriptText = ''; $('#transcript').textContent = ''; $('#transcript').hidden = true; }
 }
-const voice = new CustomerVoice({ onState: setVoiceState, onTranscript: value => { transcriptText = (transcriptText + value).slice(-1500); $('#transcript').textContent = transcriptText; $('#transcript').hidden = false; }, onOrder: service => { if (orderAssistant.enabled) orderAssistant.open(service); else openBooking(); } });
+const voice = new CustomerVoice({ onState: setVoiceState, onTranscript: value => { transcriptText = (transcriptText + value).slice(-1500); $('#transcript').textContent = transcriptText; $('#transcript').hidden = false; }, matchService: orderService, onOrder: service => { if (orderAssistant.enabled) orderAssistant.open(service); else { selectService(service); openBooking(); } } });
 const orderAssistant = new OrderAssistant({ getLanguage: () => language, stopOtherVoice: () => voice.stop(false), onState: state => setVoiceState(state) });
 orderAssistant.configure().then(enabled => {
   if (!enabled) return;
