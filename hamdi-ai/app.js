@@ -455,7 +455,7 @@ class OrderAssistant {
       && (document.permissionsPolicy || document.featurePolicy)?.allowsFeature?.('microphone') !== false);
   }
 
-  open(service = '', { typed = false } = {}) {
+  open(service = '', { typed = false, inline = false } = {}) {
     if (!this.enabled) return;
     this.stopOtherVoice();
     this.close();
@@ -478,7 +478,7 @@ class OrderAssistant {
       '<button type="button" id="order-close" class="dialog-close" aria-label="'+c.close+'">×</button>',
       '<div class="order-avatar" aria-hidden="true"><div class="orb"><div class="orb-shine"></div>'+
         '<div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div>',
-      '<h2 id="order-title">'+c.title+'</h2><p>'+intro+'</p>',
+      '<h2 id="order-title">'+(inline ? (tr ? 'Çekim talebi' : 'طلب جلسة') : c.title)+'</h2><p>'+intro+'</p>',
       '<section id="order-consent"><p class="dialog-alert">'+c.privacy+emailNotice+'</p>',
       '<button type="button" class="button primary" id="order-start">'+c.start+'</button>',
       '<button type="button" class="text-link" id="order-typed">'+c.typed+'</button></section>',
@@ -530,7 +530,8 @@ class OrderAssistant {
     };
     if (serviceLabel) this.field('service').value = service;
     this.setPhase('idle');
-    this.dialog.showModal();
+    if (inline) this.dialog.setAttribute('open', '');
+    else this.dialog.showModal();
     if (typed && serviceLabel) {
       this.el('start').hidden = true;
       this.start(false);
@@ -940,6 +941,8 @@ const embedded = pageOptions.get('embed') === '1' && window.parent !== window
   && ['https://hamdihajiali3-cell.github.io', 'https://hamdi--photography.hamdihajiali3.workers.dev'].includes(embeddedParent);
 const requestedService = pageOptions.get('bookingService');
 const bookingService = embedded && Object.hasOwn(SERVICES, requestedService) ? requestedService : '';
+const inlineBooking = Boolean(bookingService && pageOptions.get('presentation') === 'inline');
+if (inlineBooking) document.documentElement.dataset.inlineBooking = 'true';
 if (embedded) {
   document.documentElement.dataset.embedded = 'true';
   Object.assign(copy.ar, { bookingAction:'طلب موعد ↙' });
@@ -1017,7 +1020,14 @@ orderAssistant.configure().then(enabled => {
   $('[data-t="voiceDescription"]').textContent = text('voiceDescription');
   $('.voice-booking').textContent = text('bookingAction');
   if (embedded) window.parent.postMessage({type:'hamdi-ai:order-ready'}, embeddedParent);
-  if (bookingService) orderAssistant.open(bookingService, { typed: true });
+  if (bookingService) orderAssistant.open(bookingService, { typed: true, inline: inlineBooking });
+  if (inlineBooking) {
+    const booking = orderAssistant.dialog;
+    new ResizeObserver(() => {
+      const height = Math.ceil(booking.getBoundingClientRect().height);
+      if (height) window.parent.postMessage({type:'hamdi-ai:order-height',height}, embeddedParent);
+    }).observe(booking);
+  }
 });
 window.addEventListener('message', event => {
   if (embedded && event.origin === embeddedParent && event.source === window.parent && event.data?.type === 'hamdi-ai:start-order'
@@ -1116,6 +1126,6 @@ $('#mute-voice').addEventListener('click', () => voice.mute()); $('#end-voice').
 window.addEventListener('pagehide', () => voice.stop(false));
 document.addEventListener('visibilitychange', () => { if (document.hidden && voice.active) voice.stop(); });
 setLanguage(pageOptions.get('lang') === 'tr' ? 'tr' : 'ar');
-if (!staticDelivery && (location.protocol === 'http:' || location.protocol === 'https:')) {
+if (!inlineBooking && !staticDelivery && (location.protocol === 'http:' || location.protocol === 'https:')) {
   fetch('/api/status', { signal: AbortSignal.timeout(5000) }).then(response => response.ok ? response.json() : null).then(status => { configured = status?.configured === true; setVoiceState(''); updateConsent(); }).catch(() => { configured = false; setVoiceState(''); updateConsent(); });
 }

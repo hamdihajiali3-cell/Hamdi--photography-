@@ -11,4 +11,7 @@ html.hamdi-assistant-open{overflow:hidden}
 #hamdi-ai-dialog button:focus-visible{outline:2px solid #a86e4d}
 #hamdi-ai-frame{display:block;width:100%;height:calc(100% - 76px);border:0;background:#f6f2ea}
 #booking{scroll-margin-top:24px}
+#direct-booking{max-width:38rem;margin:1.5rem auto 0;border:1px solid #c7d2be;border-radius:14px;background:#f6f2ea;overflow:hidden;scroll-margin-top:24px}
+#direct-booking-close{display:block;margin:.5rem .75rem 0;margin-inline-start:auto;min-height:44px;padding:0 .8rem;color:#183b30;background:transparent;border:1px solid #c7d2be;border-radius:6px;font:inherit;cursor:pointer}
+#direct-booking-frame{display:block;width:100%;border:0}
 @media(max-width:420px){#hamdi-ai-dialog{width:calc(100vw - 12px);height:96dvh;max-height:96dvh;border-radius:12px}#hamdi-ai-dialog .hamdi-ai-bar{gap:8px;padding:10px;min-height:76px}#hamdi-ai-book{padding-inline:9px}#hamdi-ai-subtitle{font-size:10px}}
