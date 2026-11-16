@@ -11,6 +11,15 @@ export function readBookingRequest(event, expectedWindow) {
   return { service: data.service, language: data.language };
 }
 
+export function readLanguageRequest(event, expectedWindow) {
+  if (!expectedWindow || event.source !== expectedWindow || event.origin !== VOICE_ORIGIN) return null;
+  const data = event.data;
+  if (!data || typeof data !== 'object' || Array.isArray(data)
+    || data.type !== 'hamdi-ai:language' || !['ar', 'tr'].includes(data.language)
+    || Object.keys(data).some(key => !['type', 'language'].includes(key))) return null;
+  return data.language;
+}
+
 if (typeof document !== 'undefined') {
   const dialog = document.querySelector('#hamdi-ai-dialog');
   const frame = document.querySelector('#hamdi-ai-frame');
@@ -55,6 +64,12 @@ if (typeof document !== 'undefined') {
     document.documentElement.classList.remove(scrollLock);
   };
   const language = () => document.documentElement.lang === 'tr' ? 'tr' : 'ar';
+  const localePage = (locale, fragment) => {
+    const link = document.querySelector(`[data-lang="${locale}"]`);
+    const address = new URL(link.href);
+    address.hash = fragment;
+    return address;
+  };
   const labels = () => {
     const tr = language() === 'tr';
     subtitle.textContent = tr ? 'Stüdyonun sesli asistanı' : 'مساعد الاستوديو الصوتي';
@@ -65,11 +80,18 @@ if (typeof document !== 'undefined') {
     closeModal(dialog, 'hamdi-assistant-open');
     frame.src = 'about:blank';
   };
-  const openBooking = (service = '', requestedLanguage = language()) => {
+  const dismissAssistant = () => {
+    closeAssistant();
+    if (location.hash === '#hamdi-ai-dialog') {
+      const address = new URL(location.href);
+      address.hash = '';
+      history.replaceState(history.state, '', address);
+    }
+  };
+  const openBooking = (service = '') => {
     closeAssistant();
     gmailForm = true;
     manualBooking.hidden = false;
-    if (requestedLanguage !== language()) document.querySelector(`[data-lang="${requestedLanguage}"]`)?.click();
     if (service) bookingSelect.value = service;
     document.querySelector('#booking').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
     (service ? document.querySelector('#booking-name') : bookingSelect).focus({ preventScroll: true });
@@ -79,6 +101,7 @@ if (typeof document !== 'undefined') {
     source.searchParams.set('embed', '1');
     source.searchParams.set('lang', language());
     source.searchParams.set('parentOrigin', location.origin);
+    source.searchParams.set('languageNavigation', 'parent');
     return source;
   };
   const openAssistant = () => {
@@ -134,7 +157,7 @@ if (typeof document !== 'undefined') {
     directFallback.hidden = true;
     directFallback.onclick = () => {
       closeDirectBooking({ restoreFocus: false });
-      openBooking(service, locale);
+      openBooking(service);
     };
     directFrame.hidden = false;
     bookingStatus.textContent = tr ? 'Talep formu yükleniyor…' : 'عم نحمّل طلب الحجز…';
@@ -176,7 +199,11 @@ if (typeof document !== 'undefined') {
     gmailForm = true;
     manualBooking.scrollIntoView({ block: 'start' });
   }
-  close.addEventListener('click', closeAssistant);
+  close.addEventListener('click', dismissAssistant);
+  dialog.addEventListener('cancel', event => {
+    event.preventDefault();
+    dismissAssistant();
+  });
   directClose.addEventListener('click', () => {
     closeDirectBooking();
   });
@@ -193,7 +220,7 @@ if (typeof document !== 'undefined') {
     const box = modal.getBoundingClientRect();
     if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) dismiss();
   });
-  closeOnBackdrop(dialog, closeAssistant);
+  closeOnBackdrop(dialog, dismissAssistant);
   closeOnBackdrop(directBooking, closeDirectBooking);
   window.addEventListener('message', event => {
     if (isModalOpen(directBooking) && event.source === directFrame.contentWindow && event.origin === VOICE_ORIGIN) {
@@ -222,10 +249,21 @@ if (typeof document !== 'undefined') {
       }
       return;
     }
+    if (!isModalOpen(dialog)) return;
+    const requestedLocale = readLanguageRequest(event, frame.contentWindow);
+    if (requestedLocale && requestedLocale !== language()) {
+      location.assign(localePage(requestedLocale, '#hamdi-ai-dialog').href);
+      return;
+    }
     const request = readBookingRequest(event, frame.contentWindow);
-    if (!request || !isModalOpen(dialog)) return;
-    closeAssistant();
-    if (request.language !== language()) document.querySelector(`[data-lang="${request.language}"]`)?.click();
+    if (!request) return;
+    if (request.language !== language()) {
+      const address = localePage(request.language, '#services');
+      if (request.service) address.searchParams.set('bookingService', request.service);
+      location.assign(address.href);
+      return;
+    }
+    dismissAssistant();
     const serviceButton = request.service && document.querySelector(`button[data-service="${request.service}"]`);
     if (serviceButton) {
       openDirectBooking(request.service, serviceButton);
@@ -240,4 +278,17 @@ if (typeof document !== 'undefined') {
   window.visualViewport?.addEventListener('resize', syncModalViewport);
   window.visualViewport?.addEventListener('scroll', syncModalViewport);
   labels();
+
+  const address = new URL(location.href);
+  const pendingService = address.searchParams.get('bookingService');
+  if (pendingService !== null) {
+    address.searchParams.delete('bookingService');
+    history.replaceState(history.state, '', address);
+    if (pendingService && SERVICES.has(pendingService)) {
+      const trigger = document.querySelector(`button[data-service="${pendingService}"]`);
+      if (trigger) openDirectBooking(pendingService, trigger);
+    }
+  } else if (location.hash === '#hamdi-ai-dialog') {
+    openAssistant();
+  }
 }

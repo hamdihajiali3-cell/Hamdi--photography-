@@ -1259,7 +1259,17 @@ function setLanguage(next) {
   setVoiceState(''); updateConsent();
   if (review.open) refreshReview();
 }
-document.querySelectorAll('[data-language]').forEach(button => button.addEventListener('click', () => setLanguage(button.dataset.language)));
+document.querySelectorAll('[data-language]').forEach(button => button.addEventListener('click', () => {
+  const next = button.dataset.language;
+  if (next === language || !['ar', 'tr'].includes(next)) return;
+  if (consultation && pageOptions.get('languageNavigation') === 'parent') {
+    window.parent.postMessage({ type: 'hamdi-ai:language', language: next }, embeddedParent);
+    return;
+  }
+  const nextPage = new URL(location.href);
+  nextPage.searchParams.set('lang', next);
+  location.assign(nextPage.href);
+}));
 
 function selectService(value) {
   $('#service').value = value;

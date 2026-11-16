@@ -7,7 +7,9 @@
   <meta name="theme-color" content="#20231f" />
   <meta name="description" content="Hamdi Photography — خدمات تصوير واضحة وحجز موعد عبر Gmail." />
   <title>Hamdi Photography | مكتب الحجز</title>
-  <link rel="stylesheet" href="style.css?v=portrait-20261114" />
+  <link rel="alternate" hreflang="ar" href="./" />
+  <link rel="alternate" hreflang="tr" href="./turkce.html" />
+  <link rel="stylesheet" href="style.css?v=language-pages-20261116" />
   <link rel="stylesheet" href="flags.css?v=turkey-flag-20261102" />
   <link rel="stylesheet" href="hamdi-inline/assistant.css?v=mobile-booking-20261116" />
   <link rel="stylesheet" href="hamdi-entry/intro.css?v=20261116-logo-only" />
@@ -31,7 +33,13 @@
     <header>
       <a class="brand" href="#top" aria-label="Hamdi Photography"><b>HAMDI</b><span>PHOTOGRAPHY</span></a>
       <nav aria-label="التنقل الرئيسي" data-i18n-aria="navigation"><a href="#services" data-i18n="navServices">الخدمات</a><a href="#steps" data-i18n="navSteps">كيف نحجز؟</a><a href="#contact" data-i18n="navContact">تواصل</a><a href="#hamdi-ai-dialog" data-open-hamdi-ai data-i18n="navVoice">حمدي AI</a></nav>
-      <div class="head-tools"><div class="lang" role="group" aria-label="اللغة" data-i18n-aria="languageSwitcher"><button type="button" data-lang="ar" class="active" aria-pressed="true">عربي</button><button type="button" data-lang="tr" aria-pressed="false">TR</button></div><a class="book-top" href="#services"><span aria-hidden="true">▦</span><b data-i18n="bookTop">حجز موعد</b></a></div>
+      <div class="head-tools">
+        <div class="lang" role="group" aria-label="اللغة" data-i18n-aria="languageSwitcher">
+          <a href="./index.html" data-lang="ar" hreflang="ar" lang="ar" aria-current="page">عربي</a>
+          <a href="./turkce.html" data-lang="tr" hreflang="tr" lang="tr">TR</a>
+        </div>
+        <a class="book-top" href="#services"><span aria-hidden="true">▦</span><b data-i18n="bookTop">حجز موعد</b></a>
+      </div>
     </header>
     <main id="content">
       <section class="hero" id="top" aria-labelledby="hero-title">
@@ -78,7 +86,7 @@
       <section class="contact" id="contact" aria-labelledby="contact-title"><div><p class="eyebrow"><span data-i18n="contactKicker">تواصل مباشر</span><i></i></p><h2 id="contact-title" data-i18n-html="contactTitle">ابدأ من<br><em>التفاصيل.</em></h2></div><div class="contact-links"><a href="mailto:hamdihajiali76@gmail.com"><span>Gmail</span><b dir="ltr">hamdihajiali76@gmail.com</b><i>↗</i></a><a href="tel:05377423671"><span data-i18n="call">اتصال مباشر</span><b dir="ltr">0537 742 36 71</b><i>↗</i></a></div></section>
     </main>
     <footer><a class="brand" href="#top"><b>HAMDI</b><span>PHOTOGRAPHY</span></a><p data-i18n="footer">© Hamdi Photography. جميع الحقوق محفوظة.</p><a href="#top" data-i18n="backTop">العودة للأعلى ↑</a></footer>
-  </div><script src="script.js?v=mobile-booking-20261116"></script>
+  </div><script src="script.js?v=language-pages-20261116"></script>
 
   <dialog id="hamdi-ai-dialog" aria-labelledby="hamdi-ai-dialog-title">
     <div class="hamdi-ai-bar"><div class="hamdi-ai-heading"><h2 id="hamdi-ai-dialog-title">HAMDI AI</h2><p id="hamdi-ai-subtitle">مساعد الاستوديو الصوتي</p></div><button type="button" id="hamdi-ai-close" aria-label="إغلاق">×</button></div>
@@ -93,6 +101,6 @@
     <button type="button" id="direct-booking-fallback" hidden>تابع عبر نموذج Gmail</button>
     <audio id="direct-booking-audio" preload="none" hidden></audio>
   </dialog>
-  <script type="module" src="hamdi-inline/site-assistant.mjs?v=mobile-booking-20261116"></script>
+  <script type="module" src="hamdi-inline/site-assistant.mjs?v=language-pages-20261116"></script>
 </body>
 </html>
