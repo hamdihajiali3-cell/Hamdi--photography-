@@ -10,7 +10,6 @@
   inset: 0;
   isolation: isolate;
   display: grid;
-  grid-template-rows: 1fr auto;
   place-items: center;
   inline-size: 100%;
   block-size: 100vh;
@@ -109,34 +108,6 @@ html:has(.hamdi-entry[open]) {
   font-size: clamp(1.6rem, 6vw, 2.15rem);
   font-weight: 500;
   font-variant-numeric: tabular-nums;
-}
-
-.hamdi-entry-actions {
-  display: flex;
-  gap: .65rem;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.hamdi-entry-actions button {
-  min-block-size: 44px;
-  padding: .45rem .85rem;
-  border: 1px solid #d5ba8694;
-  border-radius: 6px;
-  color: var(--entry-white);
-  background: #14201c;
-  font: inherit;
-  font-size: .875rem;
-  cursor: pointer;
-}
-
-.hamdi-entry-actions button:disabled {
-  display: none;
-}
-
-.hamdi-entry-actions button:focus-visible {
-  outline: 2px solid var(--entry-gold);
-  outline-offset: 3px;
 }
 
 @media (prefers-reduced-motion: no-preference) {

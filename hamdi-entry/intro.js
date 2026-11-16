@@ -2,7 +2,6 @@
   const intro = document.getElementById('hamdi-entry');
   if (!intro) return;
 
-  const sound = document.getElementById('hamdi-entry-sound');
   const label = document.getElementById('hamdi-entry-label');
   const number = document.getElementById('hamdi-entry-number');
   const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -45,7 +44,6 @@
       if (!intro.open || chimePlayed || context.state !== 'running') return;
 
       chimePlayed = true;
-      if (!greeting) sound.disabled = true;
       const start = context.currentTime;
       for (const [frequency, delay] of [[523.25, 0], [783.99, .075]]) {
         const note = context.createOscillator();
@@ -65,27 +63,15 @@
     }
   }
 
-  function prepareGreeting(language) {
+  function playGreeting(language) {
     const player = new Audio(workerOrigin + '/api/order/prompt/aoede-v1/' + language + '/welcome.wav');
     player.onplaying = () => {
-      if (greeting !== player) return;
-      greetingStarted = true;
-      sound.disabled = true;
+      if (greeting === player) greetingStarted = true;
     };
     player.onended = stopGreeting;
-    player.onerror = () => {
-      if (greeting !== player) return;
-      stopGreeting();
-      sound.disabled = chimePlayed || !AudioContext;
-    };
+    player.onerror = stopGreeting;
     greeting = player;
-    sound.disabled = false;
-  }
-
-  function playWelcome() {
-    if (!intro.open) return;
-    if (greeting && !greetingStarted) void greeting.play().catch(() => {});
-    void playChime();
+    void player.play().catch(stopGreeting);
   }
 
   async function countVisit() {
@@ -106,11 +92,7 @@
   }
 
   const turkish = document.documentElement.lang === 'tr';
-  if (turkish) {
-    label.textContent = 'Site ziyaretleri';
-    sound.textContent = 'Karşılamayı dinle';
-  }
-  intro.addEventListener('click', playWelcome);
+  if (turkish) label.textContent = 'Site ziyaretleri';
   intro.addEventListener('cancel', () => revealSite());
   window.addEventListener('pagehide', () => revealSite(), { once: true });
 
@@ -118,8 +100,8 @@
   if (homeEntry && typeof intro.showModal === 'function') {
     timeout = setTimeout(() => revealSite(true), matchMedia('(prefers-reduced-motion: reduce)').matches ? 1700 : 3500);
     intro.showModal();
-    prepareGreeting(turkish ? 'tr' : 'ar');
-    playWelcome();
+    playGreeting(turkish ? 'tr' : 'ar');
+    void playChime();
   }
   if (isPublicSite) void countVisit();
 })();
