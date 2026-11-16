@@ -6,8 +6,6 @@
   const number = document.getElementById('hamdi-entry-number');
   const AudioContext = window.AudioContext || window.webkitAudioContext;
   const workerOrigin = 'https://hamdi--photography.hamdihajiali3.workers.dev';
-  const pagesOrigin = 'https://hamdihajiali3-cell.github.io';
-  const isPublicSite = location.origin === workerOrigin || location.origin === pagesOrigin;
   let timeout;
   let audio;
   let chimePlayed = false;
@@ -74,34 +72,31 @@
     void player.play().catch(stopGreeting);
   }
 
-  async function countVisit() {
-    try {
-      const response = await fetch(workerOrigin + '/api/visits', {
-        method: 'POST',
-        cache: 'no-store',
-        credentials: 'omit'
-      });
-      if (!response.ok) return;
-      const { visits } = await response.json();
-      if (!Number.isSafeInteger(visits) || visits < 1) return;
-      number.textContent = new Intl.NumberFormat('en-US').format(visits);
-      number.dataset.loaded = '';
-    } catch {
-      // Keep the placeholder if the count is temporarily unavailable.
+  function startCountdown() {
+    const end = performance.now() + 3000;
+    function tick() {
+      const remaining = end - performance.now();
+      if (remaining <= 0) {
+        revealSite(true);
+        return;
+      }
+      const seconds = Math.ceil(remaining / 1000);
+      number.textContent = String(seconds);
+      timeout = setTimeout(tick, remaining - (seconds - 1) * 1000);
     }
+    tick();
   }
 
   const turkish = document.documentElement.lang === 'tr';
-  if (turkish) label.textContent = 'Site ziyaretleri';
+  if (turkish) label.textContent = 'Site açılıyor';
   intro.addEventListener('cancel', () => revealSite());
   window.addEventListener('pagehide', () => revealSite(), { once: true });
 
   const homeEntry = !location.hash || location.hash === '#top';
   if (homeEntry && typeof intro.showModal === 'function') {
-    timeout = setTimeout(() => revealSite(true), matchMedia('(prefers-reduced-motion: reduce)').matches ? 1700 : 3500);
     intro.showModal();
+    startCountdown();
     playGreeting(turkish ? 'tr' : 'ar');
     void playChime();
   }
-  if (isPublicSite) void countVisit();
 })();

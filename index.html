@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; frame-src 'self' https://hamdi--photography.hamdihajiali3.workers.dev; connect-src 'self' https://hamdi--photography.hamdihajiali3.workers.dev/api/visits; media-src https://hamdi--photography.hamdihajiali3.workers.dev/api/order/prompt/aoede-v1/; object-src 'none'; base-uri 'none'; form-action 'none'" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; frame-src 'self' https://hamdi--photography.hamdihajiali3.workers.dev; connect-src 'self'; media-src https://hamdi--photography.hamdihajiali3.workers.dev/api/order/prompt/aoede-v1/; object-src 'none'; base-uri 'none'; form-action 'none'" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#20231f" />
   <meta name="description" content="Hamdi Photography — خدمات تصوير واضحة وحجز موعد عبر Gmail." />
@@ -10,8 +10,8 @@
   <link rel="stylesheet" href="style.css?v=portrait-20261114" />
   <link rel="stylesheet" href="flags.css?v=turkey-flag-20261102" />
   <link rel="stylesheet" href="hamdi-inline/assistant.css?v=mobile-booking-20261116" />
-  <link rel="stylesheet" href="hamdi-entry/intro.css?v=20261116-autoplay" />
-  <script defer src="hamdi-entry/intro.js?v=20261116-autoplay"></script>
+  <link rel="stylesheet" href="hamdi-entry/intro.css?v=20261116-countdown" />
+  <script defer src="hamdi-entry/intro.js?v=20261116-countdown"></script>
 </head>
 <body>
   <dialog class="hamdi-entry" id="hamdi-entry" aria-labelledby="hamdi-entry-logo">
@@ -22,8 +22,8 @@
       </div>
       <div class="hamdi-entry-light" aria-hidden="true"></div>
       <div class="hamdi-entry-count">
-        <span id="hamdi-entry-label">زيارات الموقع</span>
-        <strong id="hamdi-entry-number" dir="ltr" aria-live="polite">—</strong>
+        <span id="hamdi-entry-label">يفتح الموقع بعد لحظات</span>
+        <strong id="hamdi-entry-number" dir="ltr">3</strong>
       </div>
     </div>
   </dialog>

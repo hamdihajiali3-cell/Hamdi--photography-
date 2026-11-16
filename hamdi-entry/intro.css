@@ -112,11 +112,11 @@ html:has(.hamdi-entry[open]) {
 
 @media (prefers-reduced-motion: no-preference) {
   .hamdi-entry[open] .hamdi-entry-content::before {
-    animation: hamdi-entry-ring 3.35s ease-out both;
+    animation: hamdi-entry-ring 3s ease-out both;
   }
 
   .hamdi-entry[open] .hamdi-entry-content::after {
-    animation: hamdi-entry-ring 3.35s .1s ease-out reverse both;
+    animation: hamdi-entry-ring 2.9s .1s ease-out reverse both;
   }
 
   .hamdi-entry[open] .hamdi-entry-logo {
@@ -124,11 +124,7 @@ html:has(.hamdi-entry[open]) {
   }
 
   .hamdi-entry[open] .hamdi-entry-light {
-    animation: hamdi-entry-light 3.2s ease-in-out both;
-  }
-
-  .hamdi-entry[open] .hamdi-entry-count strong[data-loaded] {
-    animation: hamdi-entry-logo .45s ease-out both;
+    animation: hamdi-entry-light 3s ease-in-out both;
   }
 }
 
