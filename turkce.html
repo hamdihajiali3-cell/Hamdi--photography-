@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="style.css?v=language-pages-20261116">
   <link rel="stylesheet" href="flags.css?v=turkey-flag-20261102">
   <link rel="stylesheet" href="hamdi-inline/assistant.css?v=mobile-booking-20261116">
+  <link rel="stylesheet" href="booking-date-time.css?v=turkish-schedule-20261116">
   <link rel="stylesheet" href="hamdi-entry/intro.css?v=20261116-logo-only">
   <script defer src="hamdi-entry/intro.js?v=20261116-logo-only"></script>
 </head>
@@ -71,7 +72,7 @@
           <label><span data-i18n="nameLabel">Adın</span><input id="booking-name" name="name" required maxlength="80" autocomplete="name" data-i18n-placeholder="namePlaceholder" placeholder="Adını yaz"></label>
           <details class="booking-extras" id="booking-extras">
             <summary><span data-i18n="optionalDetails">Tarih veya ayrıntı ekle (isteğe bağlı)</span><i aria-hidden="true">＋</i></summary>
-            <div class="two"><label><span data-i18n="dateLabel">Uygun tarih</span><input name="date" type="date"></label><label><span data-i18n="timeLabel">Uygun saat</span><input name="time" type="time"></label></div>
+            <div class="two" data-turkish-date-time><label><span data-i18n="dateLabel">Uygun tarih</span><input name="date" type="date"></label><label><span data-i18n="timeLabel">Uygun saat</span><input name="time" type="time"></label></div>
             <label><span data-i18n="phoneLabel">Telefon numarası (isteğe bağlı)</span><input name="phone" type="tel" autocomplete="tel" inputmode="tel" data-i18n-placeholder="phonePlaceholder" placeholder="05…"></label>
             <label><span data-i18n="detailsLabel">Ek ayrıntılar</span><textarea name="details" rows="2" maxlength="1500" data-i18n-placeholder="detailsPlaceholder" placeholder="Planlamaya yardımcı olacak ayrıntıları yaz"></textarea></label>
           </details>
@@ -102,5 +103,6 @@
     <audio id="direct-booking-audio" preload="none" hidden></audio>
   </dialog>
   <script type="module" src="hamdi-inline/site-assistant.mjs?v=language-pages-20261116"></script>
+  <script type="module" src="booking-date-time.mjs?v=turkish-schedule-20261116"></script>
 </body>
 </html>

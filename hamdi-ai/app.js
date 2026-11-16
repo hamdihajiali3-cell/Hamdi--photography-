@@ -1,3 +1,5 @@
+import { mountTurkishDateTime } from '../booking-date-time.mjs?v=turkish-schedule-20261116';
+
 const CONTACT = Object.freeze({ displayPhone: '0537 742 36 71', email: 'hamdihajiali76@gmail.com' });
 const SERVICES = Object.freeze({
   color: { ar: 'تعديل ألوان الصور', tr: 'Fotoğraf renk düzenleme' },
@@ -574,19 +576,20 @@ class OrderAssistant {
       this.onPromptRequested?.();
       this.stopPrompt();
       this.setPhase('idle',c.typedHint);
-      const field = key === 'when' ? this.el('date') : this.field(key);
+      const field = key === 'when' ? (this.turkishSchedule?.dateButton || this.el('date')) : this.field(key);
       field.focus();
     };
     this.el('next').onclick = ()=>this.advance();
     this.el('skip').onclick = ()=>{
       this.field('when').value = '';
       if (inline) {
-        this.el('date').value = this.el('time').value = '';
+        this.clearSchedule();
         this.el('spoken-when').hidden = true;
       }
       this.review();
     };
     if (inline) {
+      if (tr) this.turkishSchedule = mountTurkishDateTime(this.el('date'), this.el('time'));
       this.el('date').onchange = this.el('time').onchange = () => {
         this.field('when').value = [this.el('date').value, this.el('time').value].filter(Boolean).join(' ');
         this.el('spoken-when').hidden = true;
@@ -632,6 +635,11 @@ class OrderAssistant {
       this.el('start').hidden = true;
       this.setPhase('idle',c.micUnavailable);
     }
+  }
+
+  clearSchedule() {
+    this.el('date').value = this.el('time').value = '';
+    this.turkishSchedule?.refresh();
   }
 
   async requestSession() {
@@ -937,7 +945,7 @@ class OrderAssistant {
       }
       this.field(key).value = value;
       if (this.inline && key === 'when') {
-        this.el('date').value = this.el('time').value = '';
+        this.clearSchedule();
         this.el('spoken-when').hidden = !value;
       }
       if (!this.validField(key)) {
@@ -1083,6 +1091,7 @@ class OrderAssistant {
     this.cancelRecording();
     this.stopPrompt();
     this.promptAudio = null;
+    this.turkishSchedule = null;
     if (this.dialog.open) this.dialog.close();
     if (!this.sending) releaseOrderSession(this.token);
     this.token = '';
@@ -1335,6 +1344,7 @@ $('#mute-voice').addEventListener('click', () => voice.mute()); $('#end-voice').
 window.addEventListener('pagehide', () => voice.stop(false));
 document.addEventListener('visibilitychange', () => { if (document.hidden && voice.active) voice.stop(); });
 setLanguage(pageOptions.get('lang') === 'tr' ? 'tr' : 'ar');
+if (language === 'tr' && !inlineBooking && !consultation) mountTurkishDateTime($('#date'), $('#time'));
 if (!inlineBooking && !staticDelivery && (location.protocol === 'http:' || location.protocol === 'https:')) {
   fetch('/api/status', { signal: AbortSignal.timeout(5000) }).then(response => response.ok ? response.json() : null).then(status => { configured = status?.configured === true; setVoiceState(''); updateConsent(); }).catch(() => { configured = false; setVoiceState(''); updateConsent(); });
 }

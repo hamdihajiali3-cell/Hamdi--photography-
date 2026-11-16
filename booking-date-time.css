@@ -1,0 +1,84 @@
+.turkish-schedule-field {
+  min-inline-size: 0;
+  margin: .65rem 0;
+  padding: 0;
+  border: 0;
+  color: var(--ink, #183b30);
+}
+
+.turkish-schedule-field legend {
+  padding: 0;
+  margin-block-end: .45rem;
+  font-size: .85rem;
+}
+
+.turkish-schedule-field .turkish-calendar-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
+  min-block-size: 48px;
+  padding: .65rem .75rem;
+  border: 1px solid var(--line, #dadfd3);
+  border-radius: .65rem;
+  background: #fdfcf8;
+  color: inherit;
+  cursor: pointer;
+  list-style: none;
+}
+
+.turkish-calendar-trigger::-webkit-details-marker { display: none; }
+.turkish-calendar-trigger::after { content: "▦"; font-size: 1rem; }
+
+.turkish-calendar-panel {
+  margin-block-start: .4rem;
+  padding: .45rem;
+  border: 1px solid var(--line, #dadfd3);
+  border-radius: .65rem;
+  background: #fdfcf8;
+}
+
+.turkish-calendar-heading,
+.turkish-calendar-week,
+.turkish-calendar-days {
+  display: grid;
+  align-items: center;
+  text-align: center;
+}
+
+.turkish-calendar-heading { grid-template-columns: 2.1rem minmax(0, 1fr) 2.1rem; }
+.turkish-calendar-week,
+.turkish-calendar-days { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.turkish-calendar-week { padding-block: .4rem; font-size: .69rem; }
+
+.turkish-calendar-panel button {
+  min-block-size: 2.1rem;
+  padding: .2rem;
+  border: 0;
+  border-radius: .35rem;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.turkish-calendar-panel button:hover:not(:disabled),
+.turkish-calendar-panel button:focus-visible { background: #e7eee3; }
+.turkish-calendar-panel button[aria-pressed="true"] { background: #183b30; color: #fff; }
+.turkish-calendar-panel button:disabled { opacity: .4; cursor: default; }
+.turkish-calendar-clear { text-decoration: underline; }
+.turkish-calendar-clear[hidden] { display: none; }
+
+.turkish-time-parts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .45rem;
+}
+
+.turkish-schedule-field .turkish-time-parts label {
+  display: grid;
+  gap: .3rem;
+  margin: 0;
+  font-size: .75rem;
+}
+
+.turkish-time-parts select { min-block-size: 44px; }
