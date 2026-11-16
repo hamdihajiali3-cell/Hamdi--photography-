@@ -16,7 +16,7 @@ function localDate(now = new Date()) {
 function validateBooking(input, today = localDate()) {
   const text = (value, length) => typeof value === 'string' ? value.trim().slice(0, length) : '';
   const data = {
-    service: text(input.service, 30), name: text(input.name, 100), phone: text(input.phone, 40),
+    service: text(input.service, 30), name: text(input.name, 100),
     date: text(input.date, 10), time: text(input.time, 5), notes: text(input.notes, 500),
   };
   const errors = [];
@@ -28,7 +28,6 @@ function validateBooking(input, today = localDate()) {
   }
   if (data.time && !/^([01]\d|2[0-3]):[0-5]\d$/.test(data.time)) errors.push('time');
   if (data.time && !data.date) errors.push('date');
-  if (data.phone && (!/^[+\d\s().-]+$/.test(data.phone) || data.phone.replace(/\D/g, '').length < 7 || data.phone.replace(/\D/g, '').length > 15)) errors.push('phone');
   return { data, errors: [...new Set(errors)], valid: errors.length === 0 };
 }
 
@@ -36,8 +35,8 @@ function bookingMessage(data, lang = 'ar') {
   if (!Object.hasOwn(SERVICES, data.service)) throw new Error('Unknown service');
   const ar = lang !== 'tr';
   const fields = ar
-    ? [['الخدمة', SERVICES[data.service].ar], ['الاسم', data.name], ['الهاتف', data.phone], ['التاريخ المقترح', data.date], ['الوقت المقترح', data.time], ['ملاحظات', data.notes]]
-    : [['Hizmet', SERVICES[data.service].tr], ['Ad', data.name], ['Telefon', data.phone], ['Önerilen tarih', data.date], ['Önerilen saat', data.time], ['Notlar', data.notes]];
+    ? [['الخدمة', SERVICES[data.service].ar], ['الاسم', data.name], ['التاريخ المقترح', data.date], ['الوقت المقترح', data.time], ['ملاحظات', data.notes]]
+    : [['Hizmet', SERVICES[data.service].tr], ['Ad', data.name], ['Önerilen tarih', data.date], ['Önerilen saat', data.time], ['Notlar', data.notes]];
   return [ar ? 'طلب جلسة — Hamdi Photography' : 'Çekim talebi — Hamdi Photography', '', ...fields.filter(([, value]) => value).map(([label, value]) => `${label}: ${value}`), '', ar ? 'هذا طلب للتنسيق، وليس تأكيدًا للموعد. بانتظار تأكيد الاستوديو.' : 'Bu bir planlama talebidir; randevu onayı değildir. Stüdyonun onayını bekliyorum.'].join('\n');
 }
 
@@ -238,32 +237,20 @@ function orderChannel(value) {
   ].filter(([,pattern])=>pattern.test(s));
   return matches.length===1 ? matches[0][0] : '';
 }
-function orderPhone(value) {
-  const arabic='٠١٢٣٤٥٦٧٨٩',persian='۰۱۲۳۴۵۶۷۸۹';
-  const words={صفر:'0',واحد:'1',اثنين:'2',اتنين:'2',ثلاثة:'3',ثلاثه:'3',اربعة:'4',اربعه:'4',خمسة:'5',خمسه:'5',ستة:'6',سته:'6',سبعة:'7',سبعه:'7',ثمانية:'8',ثمانيه:'8',تمانية:'8',تسعة:'9',تسعه:'9','sıfır':'0',sifir:'0',bir:'1',iki:'2','üç':'3',uc:'3','dört':'4',dort:'4','beş':'5',bes:'5','altı':'6',alti:'6',yedi:'7',sekiz:'8',dokuz:'9'};
-  const spoken = normalizedOrderReply(value).replace(/^(?:رقمي|رقم هاتفي|رقم الهاتف|telefon numaram|numaram)\s*[:،]?\s*/,'');
-  const number = spoken.replace(/[٠-٩]/g,c=>arabic.indexOf(c)).replace(/[۰-۹]/g,c=>persian.indexOf(c))
-    .replace(/[()]/g,'').split(/[\s,،.-]+/).map(word=>Object.hasOwn(words,word)?words[word]:word).join('');
-  return /^\+?\d+$/.test(number) ? number : '';
-}
-
-function orderContact(value, channel) {
+function orderEmail(value) {
   const email = /^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/;
-  if (channel === 'email') {
-    const address = value.trim();
-    if (email.test(address)) return address;
-    const spoken = normalizedOrderReply(address)
-      .replace(/^(?:بريدي(?: الالكتروني)?|ايميلي|e-posta adresim)\s*[:،]?\s*/,'')
-      .replace(/\s+(?:at|ات|ات ساين|et|kuyruklu a)\s+/g,'@')
-      .replace(/\s+(?:dot|دوت|نقطة|nokta)\s+/g,'.')
-      .replace(/\s*([@.])\s*/g,'$1')
-      .replace(/@(?:جي ?ميل|جي مايل|g mail)(?=\.)/g,'@gmail')
-      .replace(/\.(?:كوم|kom)[.!؟]?$/g,'.com')
-      .replace(/[.!؟]$/,'');
-    if (/^[\x21-\x7e]+$/.test(spoken) && email.test(spoken)) return spoken;
-  }
-  const phone = orderPhone(value);
-  return /^\+?\d{7,15}$/.test(phone) ? phone : '';
+  const address = value.trim();
+  if (email.test(address)) return address;
+  const spoken = normalizedOrderReply(address)
+    .replace(/^(?:بريدي(?: الالكتروني)?|ايميلي|e-posta adresim)\s*[:،]?\s*/,'')
+    .replace(/\s+(?:at|ات|ات ساين|et|kuyruklu a)\s+/g,'@')
+    .replace(/\s+(?:dot|دوت|نقطة|nokta)\s+/g,'.')
+    .replace(/\s*([@.])\s*/g,'$1')
+    .replace(/@(?:جي ?ميل|جي مايل|g mail)(?=\.)/g,'@gmail')
+    .replace(/\.(?:كوم|kom)[.!؟]?$/g,'.com')
+    .replace(/[.!؟]$/,'');
+  if (/^[\x21-\x7e]+$/.test(spoken) && email.test(spoken)) return spoken;
+  return '';
 }
 function orderWav(chunks) {
   const size=chunks.reduce((n,c)=>n+c.length,0),bytes=new Uint8Array(44+size),v=new DataView(bytes.buffer);
@@ -273,8 +260,8 @@ function orderWav(chunks) {
 }
 
 function orderPromptUrl(language,key) {
-  if (!['ar','tr'].includes(language) || !['service','name','channel','phone','email','when','review','sent','received','delivered'].includes(key)) return null;
-  const version = key === 'service' || ['channel','email','sent','when','received','delivered'].includes(key) ? 'aoede-v2' : 'aoede-v1';
+  if (!['ar','tr'].includes(language) || !['service','name','channel','email','when','review','sent','received','delivered'].includes(key)) return null;
+  const version = key === 'service' || ['channel','sent','when','received','delivered'].includes(key) ? 'aoede-v2' : 'aoede-v1';
   return '/api/order/prompt/'+version+'/'+language+'/'+key+'.wav';
 }
 
@@ -294,7 +281,7 @@ const orderCopy = {
     privacy:'عند بدء الحجز بالصوت، يُحوّل Cloudflare أجوبتك إلى نص. باختيار قناة الإرسال بصوتك، توافق على إرسال تفاصيل الطلب عبرها فور اكتمالها. يمكنك قول «ألغِ الطلب» قبل الإرسال.',
     inlinePrivacy:'الصوت بيتحوّل لنص عبر Cloudflare. باختيار قناة الإرسال بصوتك، بتوافق ينبعت الطلب بعد آخر جواب. قل «ألغِ الطلب» لإيقافه.',
     start:'ابدأ الحجز بالصوت', typed:'المتابعة كتابة', mute:'أوقف الميكروفون', replay:'اسمع السؤال', close:'إغلاق',
-    service:'الخدمة', name:'اسمك', nameRequired:'اكتب اسمك حتى نكمّل.', channel:'قناة إرسال الطلب لحمدي', contact:'رقم التواصل أو البريد', when:'الموعد المقترح (اختياري)', date:'التاريخ (اختياري)', time:'الوقت (اختياري)', notes:'ملاحظات (اختياري)',
+    service:'الخدمة', name:'اسمك', nameRequired:'اكتب اسمك حتى نكمّل.', channel:'قناة إرسال الطلب لحمدي', contact:'بريدك الإلكتروني', invalidEmail:'أدخل بريدًا إلكترونيًا صحيحًا حتى يقدر حمدي يتواصل معك.', when:'الموعد المقترح (اختياري)', date:'التاريخ (اختياري)', time:'الوقت (اختياري)', notes:'ملاحظات (اختياري)',
     choose:'اختر', next:'التالي', skip:'نتفق على الموعد لاحقًا', review:'راجع التفاصيل وقناة الإرسال قبل التأكيد.',
     send:'أرسل الطلب', pending:'هذا طلب للتنسيق. يؤكد حمدي الموعد والسعر بعد التواصل.',
     speaking:'عم اسألك…', listening:'عم اسمعك… احكي هلّق.', processing:'عم أفهم جوابك…', typedHint:'يمكنك كتابة الجواب والمتابعة.',
@@ -315,12 +302,11 @@ const orderCopy = {
     unknown:'لم نتمكن من تأكيد الإرسال. تواصل مع الاستوديو قبل إعادة الطلب لتجنب تكراره.',
     reference:'رقم الطلب', qService:'شو الخدمة اللي بدك ياها؟ تعديل ألوان، تصوير تخرج، تصوير الحلاقة، صور جواز وهويات، أو تصوير شخصي؟', qName:'شو اسمك؟',
     qChannel:'بأي طريقة بدك المساعد يرسل طلبك لحمدي؟ اختار من القنوات المتاحة.',
-    qPhone:'قول رقمك رقم رقم، أو اكتبه بالخانة.', qEmail:'حتى يقدر حمدي يتواصل معك، قول رقم هاتفك رقم رقم، أو أعطينا بريدك الإلكتروني.',
+    qEmail:'قول بريدك الإلكتروني أو اكتبه حتى يقدر حمدي يتواصل معك.',
     qWhen:'أي يوم ووقت بتفضّل؟ إذا بدك نتفق بعدين، قول «بدون موعد».',
     directQuestions: {
       qChannel:'كيف بتحب تبعت طلبك لحمدي؟',
-      qPhone:'اكتب رقم هاتفك للتواصل.',
-      qEmail:'اكتب رقم هاتفك أو بريدك الإلكتروني حتى يقدر حمدي يتواصل معك.',
+      qEmail:'اكتب بريدك الإلكتروني حتى يقدر حمدي يتواصل معك.',
       qWhen:'اختار التاريخ أو الوقت اللي بيناسبك. فيك تترك الخانتين فاضيين.'
     }
   },
@@ -330,7 +316,7 @@ const orderCopy = {
     privacy:'Sesli talebi başlattığında Cloudflare yanıtlarını metne dönüştürür. Kanalı sesle seçtiğinde, ayrıntılar tamamlanınca o kanalla gönderilmesine izin verirsin. Gönderimden önce “talebi iptal et” diyebilirsin.',
     inlinePrivacy:'Cloudflare sesi metne dönüştürür. Kanalı sesle seçtiğinde talep son yanıttan sonra gönderilir. Durdurmak için “talebi iptal et” de.',
     start:'Sesli talebi başlat', typed:'Yazarak devam et', mute:'Mikrofonu kapat', replay:'Soruyu dinle', close:'Kapat',
-    service:'Hizmet', name:'Adın', nameRequired:'Devam etmek için adını yaz.', channel:'Talebin Hamdi’ye iletileceği kanal', contact:'Telefon veya e-posta', when:'Önerilen zaman (isteğe bağlı)', date:'Tarih (isteğe bağlı)', time:'Saat (isteğe bağlı)', notes:'Notlar (isteğe bağlı)',
+    service:'Hizmet', name:'Adın', nameRequired:'Devam etmek için adını yaz.', channel:'Talebin Hamdi’ye iletileceği kanal', contact:'E-posta adresin', invalidEmail:'Hamdi’nin sana ulaşabilmesi için geçerli bir e-posta adresi gir.', when:'Önerilen zaman (isteğe bağlı)', date:'Tarih (isteğe bağlı)', time:'Saat (isteğe bağlı)', notes:'Notlar (isteğe bağlı)',
     choose:'Seç', next:'İleri', skip:'Zamanı sonra kararlaştıralım', review:'Onaylamadan önce ayrıntıları ve gönderim kanalını incele.',
     send:'Talebi gönder', pending:'Bu bir planlama talebidir. Zamanı ve fiyatı Hamdi görüşmeden sonra onaylar.',
     speaking:'Soruyu okuyorum…', listening:'Dinliyorum… Şimdi konuşabilirsin.', processing:'Yanıtın anlaşılıyor…', typedHint:'Yanıtını yazarak devam edebilirsin.',
@@ -351,19 +337,18 @@ const orderCopy = {
     unknown:'Gönderim doğrulanamadı. Tekrarlamadan önce stüdyoyla iletişime geç.',
     reference:'Talep numarası', qService:'Hangi hizmeti istiyorsun? Renk düzenleme, mezuniyet, berber çekimi, pasaport ve kimlik fotoğrafı veya portre çekimi?', qName:'Adın nedir?',
     qChannel:'Asistan talebini Hamdi’ye nasıl göndersin? Kullanılabilir kanallardan birini seç.',
-    qPhone:'Telefon numaranı rakam rakam söyle veya kutuya yaz.', qEmail:'Hamdi sana ulaşabilsin diye telefon numaranı rakam rakam söyle veya e-posta adresini ver.',
+    qEmail:'Hamdi sana ulaşabilsin diye e-posta adresini söyle veya yaz.',
     qWhen:'Hangi gün ve saati tercih edersin? İstersen “zamanı sonra kararlaştıralım” de.',
     directQuestions: {
       qChannel:'Talebini Hamdi’ye nasıl göndermek istersin?',
-      qPhone:'İletişim için telefon numaranı yaz.',
-      qEmail:'Hamdi’nin sana ulaşabilmesi için telefon numaranı veya e-posta adresini yaz.',
+      qEmail:'Hamdi’nin sana ulaşabilmesi için e-posta adresini yaz.',
       qWhen:'Sana uygun tarihi veya saati seç. İkisini de boş bırakabilirsin.'
     }
   }
 };
 const orderFields = ['service','name','channel','contact','when'];
 const orderServiceKeys = ['color','graduation','hair','id','portrait'];
-const orderChannels = ['email','sms'];
+const orderChannels = ['email'];
 const chunkMs = 32;
 const maxAnswerBytes = 480000;
 
@@ -552,7 +537,7 @@ class OrderAssistant {
       '<div data-order-field="name"><label>'+c.name+'<input name="name" maxlength="100" autocomplete="name" dir="auto" required></label>'+
       '<p id="order-name-error" class="order-field-error" hidden>'+c.nameRequired+'</p></div>',
       '<label data-order-field="channel">'+c.channel+'<select name="channel" required><option value="">'+c.choose+'</option>'+channels+'</select></label>',
-      '<label data-order-field="contact"><span id="order-contact-label">'+c.contact+'</span><input name="contact" maxlength="120" required dir="auto"></label>',
+      '<label data-order-field="contact"><span id="order-contact-label">'+c.contact+'</span><input name="contact" inputmode="email" autocomplete="email" maxlength="120" required dir="ltr"></label>',
       schedule,
       '<label data-order-field="notes">'+c.notes+'<textarea name="notes" maxlength="500" rows="2"></textarea></label>',
       '<div class="order-step-tools" id="order-step-tools"><button type="button" class="button primary" id="order-next">'+c.next+'</button>',
@@ -614,8 +599,8 @@ class OrderAssistant {
       }
       if (event.target === this.field('channel')) {
         this.automaticChannel = '';
-        this.updateContactField();
       }
+      if (event.target === this.field('contact')) event.target.removeAttribute('aria-invalid');
       this.setPhase('idle');
     };
     this.el('form').onsubmit = event=>{
@@ -698,20 +683,12 @@ class OrderAssistant {
     }
   }
 
-  updateContactField() {
-    const email = this.field('channel').value === 'email';
-    const tr = this.language === 'tr';
-    this.el('contact-label').textContent = email ? this.c.contact : (tr?'Telefon numaran':'رقم هاتفك');
-    this.field('contact').inputMode = email ? 'text' : 'tel';
-  }
-
   showStep(play = Boolean(this.stream), { listenImmediately = false } = {}) {
     const key = orderFields[this.stage];
     this.dialog.querySelectorAll('[data-order-field]').forEach(el=>{ el.hidden = el.dataset.orderField !== key; });
     this.el('skip').hidden = key !== 'when';
-    if (key === 'contact') this.updateContactField();
-    const prompt = key === 'contact' ? (this.field('channel').value === 'email' ? 'email' : 'phone') : key;
-    const copyKey = {service:'qService',name:'qName',channel:'qChannel',email:'qEmail',phone:'qPhone',when:'qWhen'}[prompt];
+    const prompt = key === 'contact' ? 'email' : key;
+    const copyKey = {service:'qService',name:'qName',channel:'qChannel',email:'qEmail',when:'qWhen'}[prompt];
     this.el('question').textContent = (this.inline && !play && this.c.directQuestions[copyKey]) || this.c[copyKey];
     this.currentPrompt = prompt;
     if (listenImmediately) {
@@ -739,7 +716,7 @@ class OrderAssistant {
     if (key === 'service') return orderServiceKeys.includes(value);
     if (key === 'channel') return this.channels[value] === true;
     if (key === 'name') return Boolean(value);
-    if (key === 'contact') return Boolean(orderContact(value,this.field('channel').value));
+    if (key === 'contact') return Boolean(orderEmail(value));
     return true;
   }
 
@@ -761,6 +738,11 @@ class OrderAssistant {
         field.setAttribute('aria-describedby','order-name-error');
         this.setPhase('idle');
         field.focus();
+      } else if (key === 'contact' && !this.stream) {
+        const field = this.field(key);
+        field.setAttribute('aria-invalid','true');
+        this.setPhase('idle',this.c.invalidEmail);
+        field.focus();
       } else {
         this.setPhase('idle',this.c.invalid);
       }
@@ -770,7 +752,11 @@ class OrderAssistant {
     this.stopTurn();
     this.stopPrompt();
     this.repeats = 0;
-    if (key === 'contact') this.field('contact').value = orderContact(this.field('contact').value,this.field('channel').value);
+    if (key === 'contact') {
+      const field = this.field('contact');
+      field.removeAttribute('aria-invalid');
+      field.value = orderEmail(field.value);
+    }
     this.stage++;
     if (this.stage === orderFields.length) this.review();
     else this.showStep();
@@ -937,7 +923,7 @@ class OrderAssistant {
       let value = result.text;
       if (key === 'service') value = orderService(value);
       if (key === 'channel') value = orderChannel(value);
-      if (key === 'contact') value = orderContact(value,this.field('channel').value) || value;
+      if (key === 'contact') value = orderEmail(value) || value;
       if (key === 'when' && /بدون موعد|بلا موعد|نتفق لاحقا|نتفق بعدين|sonra kararlaştıralım|zaman fark etmez/i.test(transcript)) value = '';
       if (key === 'channel' && value && !this.channels[value]) {
         this.repeatAnswer(this.c.channelUnavailable);
@@ -949,7 +935,7 @@ class OrderAssistant {
         this.el('spoken-when').hidden = !value;
       }
       if (!this.validField(key)) {
-        this.repeatAnswer();
+        this.repeatAnswer(key === 'contact' ? this.c.invalidEmail : this.c.invalid);
         return;
       }
       if (this.inline && key === 'name') {
@@ -1016,12 +1002,12 @@ class OrderAssistant {
     for (const key of ['service','name','channel','contact']) {
       if (this.validField(key)) continue;
       this.field(key).focus();
-      this.setPhase('review',this.c.invalid);
+      this.setPhase('review',key === 'contact' ? this.c.invalidEmail : this.c.invalid);
       this.el('send').hidden = false;
       return;
     }
     const data = Object.fromEntries(new FormData(this.el('form')));
-    data.contact = orderContact(data.contact,data.channel);
+    data.contact = orderEmail(data.contact);
     Object.assign(data,{language:this.language,confirmed:true});
     this.stopPrompt();
     this.sending = this.el('send').disabled = this.el('close').disabled = true;
@@ -1102,10 +1088,10 @@ class OrderAssistant {
 
 const copy = {
   ar: {
-    skip:'انتقل للمحتوى', preview:'معاينة خاصة · غير منشورة', kicker:'مكتب استقبال الاستوديو', title:'اسأل براحتك.<br><em>والطلب بيوصل.</em>', intro:'تعرّف على خدمات Hamdi Photography، ثم جهّز طلب جلستك وراجعه قبل إرساله إلى بريد الاستوديو عبر Gmail.', requestAction:'جهّز طلب جلسة ↙', servicesAction:'شوف خدمات التصوير', note1:'عربي · Türkçe', note2:'أنت تراجع وترسل', note3:'الموعد بتأكيد الاستوديو', unavailable:'قيد الإعداد', voiceKicker:'مساعد الاستوديو الصوتي', voiceTitle:'أهلًا، أنا حمدي AI.', voiceDescription:'أسئلة عن الخدمات؟ المحادثة للمعلومات العامة، وطلبك الشخصي إله نموذج مستقل.', talkAction:'تحدّث مع حمدي AI', voiceOffline:'الصوت غير مفعّل بالمعاينة. نموذج الطلب يعمل بشكل مستقل.', voiceReady:'يمكن بدء تجربة صوتية لمدة دقيقتين. التفعيل الفعلي يحتاج تجربة ناجحة.', mute:'كتم الميكروفون', unmute:'تشغيل الميكروفون', endCall:'إنهاء المحادثة', servicesKicker:'خدمات التصوير', servicesTitle:'شو حابب نصوّر؟', noPrices:'التفاصيل والأسعار تُنسّق مباشرة مع الاستوديو.', colorDesc:'تعديل الإضاءة والألوان لصورك الرقمية.', graduationDesc:'للشخص واللحظة اللي بدك تتذكّرها.', hairDesc:'تفاصيل القصّة والملمس من الزاوية المناسبة.', idDesc:'صور شخصية بحسب متطلبات معاملتك.', portraitDesc:'جلسة بورتريه تبرز شخصيتك.', requestKicker:'من هون بيبدأ التنسيق', requestTitle:'طلبك مرتب.<br><em>وكله قدامك.</em>', requestIntro:'اختر الخدمة واكتب التفاصيل المهمة. سنجهّز لك رسالة، وأنت تقرّر متى ترسلها.', step1:'املأ الطلب', step2:'راجع الرسالة', step3:'أرسلها داخل Gmail', studioPhone:'رقم الاستوديو', formPrivacy:'هذه البيانات لا تُرسل للمساعد الصوتي، ولا تُحفظ بعد إغلاق الصفحة. تنتقل إلى Gmail فقط عندما تفتح الرسالة.', formTitle:'طلب جلسة', formTag:'موعد مقترح، غير مؤكد', serviceLabel:'الخدمة المطلوبة *', chooseService:'اختر الخدمة', nameLabel:'اسمك *', namePlaceholder:'كيف نناديك؟', phoneLabel:'رقم تواصل (اختياري)', dateLabel:'التاريخ المقترح (اختياري)', timeLabel:'الوقت المقترح (اختياري)', notesLabel:'تفاصيل إضافية (اختياري)', notesPlaceholder:'اكتب اللي بيساعدنا ننسّق جلستك…', reviewAction:'راجع الطلب قبل الإرسال', formNote:'ما في إرسال تلقائي. تأكيد الموعد بيجيك من الاستوديو.', faqKicker:'تفاصيل بتهمّك', faqTitle:'قبل ما ترسل.', faq1:'هل الطلب بيأكد الموعد؟', faq1Answer:'لا. الطلب بداية للتنسيق فقط، والاستوديو بيأكد معك الوقت والتفاصيل مباشرة.', faq2:'وين بتوصل معلوماتي؟', faq2Answer:'النموذج يجهّز رسالة على جهازك. لما تفتح Gmail، بتظهر التفاصيل هناك، ولازم تضغط إرسال بنفسك. المعلومات ما بتروح للمساعد الصوتي.', faq3:'هل في أسعار ثابتة؟', faq3Answer:'ما في أسعار ثابتة معروضة. الاستوديو بيوضّح السعر بعد معرفة تفاصيل طلبك.', ownerTitle:'ملاحظة صاحب المعاينة', ownerNote:'هذه نسخة للمراجعة، ولم تُنشر أو ترتبط بالموقع العام. مسار Gmail يعمل؛ الصوت يحتاج إعداد مفتاح Gemini والتحقق من الحصة المجانية وتجربة حقيقية قبل إطلاقه للزبائن.', footerNote:'طلب واضح. وتنسيق مباشر.', reviewKicker:'الخطوة الأخيرة عندك', reviewTitle:'هاي رسالتك للاستوديو.', reviewIntro:'تأكد من التفاصيل. فتح Gmail ما يعني أنه تم إرسال الطلب.', reviewWarning:'داخل Gmail، اضغط «إرسال» ليصل الطلب. الموعد يحتاج تأكيد الاستوديو.', openGmail:'افتح الطلب في Gmail ↗', copyMessage:'انسخ الرسالة', editMessage:'ارجع وعدّل', consentTitle:'قبل ما نبدأ الصوت.', consentIntro:'المساعد آلي، ومخصص للأسئلة العامة عن خدمات التصوير. لا تذكر اسمك أو هاتفك أو أي بيانات شخصية؛ استخدم نموذج الطلب لها.', providerNotice:'الصوت ينتقل إلى خدمة Google. في الخطة المجانية قد تُستخدم المحادثة لتحسين منتجاتها. تشترط خدمة الصوت من Google أن يكون عمرك 18 سنة أو أكثر.', adultConsent:'عمري 18 سنة أو أكثر.', audioConsent:'أوافق على إرسال صوتي إلى خدمة Google لهذه المحادثة.', voiceLimit:'المعاينة تحدد المحادثة بدقيقتين، ولا تجمع بيانات الحجز بالصوت.', startVoice:'ابدأ المحادثة', skipVoice:'انتقل مباشرة لطلب جلسة', voiceDisabled:'المحادثة الصوتية ليست مفعّلة بعد. يمكنك استخدام نموذج الطلب مباشرة.', copied:'تم نسخ الرسالة.', copyFailed:'تعذّر النسخ التلقائي. يمكنك تحديد نص الرسالة ونسخه يدويًا.', openedDraft:'بعد فتح Gmail، راجع الرسالة واضغط إرسال. لم نؤكّد وصولها أو الموعد.', errorService:'اختر إحدى الخدمات.', errorName:'اكتب الاسم أولًا.', errorDate:'اختر تاريخًا صحيحًا غير سابق لليوم. الوقت يحتاج تاريخًا أيضًا.', errorPhone:'تحقق من رقم التواصل أو اتركه فارغًا.', errorTime:'تحقق من الوقت المقترح.', close:'إغلاق', connecting:'جاري تجهيز اتصال الصوت…', listening:'الميكروفون يعمل — تفضّل، عم اسمعك.', speaking:'حمدي AI يردّ بالصوت. فيك تقاطعه.', muted:'الميكروفون مكتوم.', ended:'انتهت المحادثة، وتوقف الميكروفون.', limit:'انتهت مدة التجربة. فيك تكمل طلبك بالنموذج.', permission:'لم يُسمح باستخدام الميكروفون. يمكنك متابعة الطلب كتابةً.', unsupported:'المتصفح لا يدعم هذه المحادثة الصوتية. استخدم النموذج أو متصفحًا حديثًا.', quota:'وصلت التجربة لحدّ الاستخدام. نموذج الطلب ما زال متاحًا.', voiceError:'تعذّر بدء المحادثة الصوتية. جرّب لاحقًا أو أكمل بالنموذج.', active:'محادثة جارية', ready:'جاهز للتجربة', draftService:'الخدمة المختارة'
+    skip:'انتقل للمحتوى', preview:'معاينة خاصة · غير منشورة', kicker:'مكتب استقبال الاستوديو', title:'اسأل براحتك.<br><em>والطلب بيوصل.</em>', intro:'تعرّف على خدمات Hamdi Photography، ثم جهّز طلب جلستك وراجعه قبل إرساله إلى بريد الاستوديو عبر Gmail.', requestAction:'جهّز طلب جلسة ↙', servicesAction:'شوف خدمات التصوير', note1:'عربي · Türkçe', note2:'أنت تراجع وترسل', note3:'الموعد بتأكيد الاستوديو', unavailable:'قيد الإعداد', voiceKicker:'مساعد الاستوديو الصوتي', voiceTitle:'أهلًا، أنا حمدي AI.', voiceDescription:'أسئلة عن الخدمات؟ المحادثة للمعلومات العامة، وطلبك الشخصي إله نموذج مستقل.', talkAction:'تحدّث مع حمدي AI', voiceOffline:'الصوت غير مفعّل بالمعاينة. نموذج الطلب يعمل بشكل مستقل.', voiceReady:'يمكن بدء تجربة صوتية لمدة دقيقتين. التفعيل الفعلي يحتاج تجربة ناجحة.', mute:'كتم الميكروفون', unmute:'تشغيل الميكروفون', endCall:'إنهاء المحادثة', servicesKicker:'خدمات التصوير', servicesTitle:'شو حابب نصوّر؟', noPrices:'التفاصيل والأسعار تُنسّق مباشرة مع الاستوديو.', colorDesc:'تعديل الإضاءة والألوان لصورك الرقمية.', graduationDesc:'للشخص واللحظة اللي بدك تتذكّرها.', hairDesc:'تفاصيل القصّة والملمس من الزاوية المناسبة.', idDesc:'صور شخصية بحسب متطلبات معاملتك.', portraitDesc:'جلسة بورتريه تبرز شخصيتك.', requestKicker:'من هون بيبدأ التنسيق', requestTitle:'طلبك مرتب.<br><em>وكله قدامك.</em>', requestIntro:'اختر الخدمة واكتب التفاصيل المهمة. سنجهّز لك رسالة، وأنت تقرّر متى ترسلها.', step1:'املأ الطلب', step2:'راجع الرسالة', step3:'أرسلها داخل Gmail', studioPhone:'رقم الاستوديو', formPrivacy:'هذه البيانات لا تُرسل للمساعد الصوتي، ولا تُحفظ بعد إغلاق الصفحة. تنتقل إلى Gmail فقط عندما تفتح الرسالة.', formTitle:'طلب جلسة', formTag:'موعد مقترح، غير مؤكد', serviceLabel:'الخدمة المطلوبة *', chooseService:'اختر الخدمة', nameLabel:'اسمك *', namePlaceholder:'كيف نناديك؟', dateLabel:'التاريخ المقترح (اختياري)', timeLabel:'الوقت المقترح (اختياري)', notesLabel:'تفاصيل إضافية (اختياري)', notesPlaceholder:'اكتب اللي بيساعدنا ننسّق جلستك…', reviewAction:'راجع الطلب قبل الإرسال', formNote:'ما في إرسال تلقائي. تأكيد الموعد بيجيك من الاستوديو.', faqKicker:'تفاصيل بتهمّك', faqTitle:'قبل ما ترسل.', faq1:'هل الطلب بيأكد الموعد؟', faq1Answer:'لا. الطلب بداية للتنسيق فقط، والاستوديو بيأكد معك الوقت والتفاصيل مباشرة.', faq2:'وين بتوصل معلوماتي؟', faq2Answer:'النموذج يجهّز رسالة على جهازك. لما تفتح Gmail، بتظهر التفاصيل هناك، ولازم تضغط إرسال بنفسك. المعلومات ما بتروح للمساعد الصوتي.', faq3:'هل في أسعار ثابتة؟', faq3Answer:'ما في أسعار ثابتة معروضة. الاستوديو بيوضّح السعر بعد معرفة تفاصيل طلبك.', ownerTitle:'ملاحظة صاحب المعاينة', ownerNote:'هذه نسخة للمراجعة، ولم تُنشر أو ترتبط بالموقع العام. مسار Gmail يعمل؛ الصوت يحتاج إعداد مفتاح Gemini والتحقق من الحصة المجانية وتجربة حقيقية قبل إطلاقه للزبائن.', footerNote:'طلب واضح. وتنسيق مباشر.', reviewKicker:'الخطوة الأخيرة عندك', reviewTitle:'هاي رسالتك للاستوديو.', reviewIntro:'تأكد من التفاصيل. فتح Gmail ما يعني أنه تم إرسال الطلب.', reviewWarning:'داخل Gmail، اضغط «إرسال» ليصل الطلب. الموعد يحتاج تأكيد الاستوديو.', openGmail:'افتح الطلب في Gmail ↗', copyMessage:'انسخ الرسالة', editMessage:'ارجع وعدّل', consentTitle:'قبل ما نبدأ الصوت.', consentIntro:'المساعد آلي، ومخصص للأسئلة العامة عن خدمات التصوير. لا تذكر اسمك أو هاتفك أو أي بيانات شخصية؛ استخدم نموذج الطلب لها.', providerNotice:'الصوت ينتقل إلى خدمة Google. في الخطة المجانية قد تُستخدم المحادثة لتحسين منتجاتها. تشترط خدمة الصوت من Google أن يكون عمرك 18 سنة أو أكثر.', adultConsent:'عمري 18 سنة أو أكثر.', audioConsent:'أوافق على إرسال صوتي إلى خدمة Google لهذه المحادثة.', voiceLimit:'المعاينة تحدد المحادثة بدقيقتين، ولا تجمع بيانات الحجز بالصوت.', startVoice:'ابدأ المحادثة', skipVoice:'انتقل مباشرة لطلب جلسة', voiceDisabled:'المحادثة الصوتية ليست مفعّلة بعد. يمكنك استخدام نموذج الطلب مباشرة.', copied:'تم نسخ الرسالة.', copyFailed:'تعذّر النسخ التلقائي. يمكنك تحديد نص الرسالة ونسخه يدويًا.', openedDraft:'بعد فتح Gmail، راجع الرسالة واضغط إرسال. لم نؤكّد وصولها أو الموعد.', errorService:'اختر إحدى الخدمات.', errorName:'اكتب الاسم أولًا.', errorDate:'اختر تاريخًا صحيحًا غير سابق لليوم. الوقت يحتاج تاريخًا أيضًا.', errorTime:'تحقق من الوقت المقترح.', close:'إغلاق', connecting:'جاري تجهيز اتصال الصوت…', listening:'الميكروفون يعمل — تفضّل، عم اسمعك.', speaking:'حمدي AI يردّ بالصوت. فيك تقاطعه.', muted:'الميكروفون مكتوم.', ended:'انتهت المحادثة، وتوقف الميكروفون.', limit:'انتهت مدة التجربة. فيك تكمل طلبك بالنموذج.', permission:'لم يُسمح باستخدام الميكروفون. يمكنك متابعة الطلب كتابةً.', unsupported:'المتصفح لا يدعم هذه المحادثة الصوتية. استخدم النموذج أو متصفحًا حديثًا.', quota:'وصلت التجربة لحدّ الاستخدام. نموذج الطلب ما زال متاحًا.', voiceError:'تعذّر بدء المحادثة الصوتية. جرّب لاحقًا أو أكمل بالنموذج.', active:'محادثة جارية', ready:'جاهز للتجربة', draftService:'الخدمة المختارة'
   },
   tr: {
-    skip:'İçeriğe geç', preview:'Özel ön izleme · Yayınlanmadı', kicker:'STÜDYO KARŞILAMA MASASI', title:'Rahatça sor.<br><em>Talebin ulaşsın.</em>', intro:'Hamdi Photography hizmetlerini keşfet. Çekim talebini hazırla, gözden geçir ve stüdyoya Gmail üzerinden kendin gönder.', requestAction:'Çekim talebi hazırla ↘', servicesAction:'Fotoğraf hizmetlerini keşfet', note1:'Türkçe · عربي', note2:'Sen inceler ve gönderirsin', note3:'Randevu stüdyo onayıyla', unavailable:'Hazırlanıyor', voiceKicker:'STÜDYONUN SESLİ ASİSTANI', voiceTitle:'Merhaba, ben Hamdi AI.', voiceDescription:'Hizmetlerle ilgili soruların mı var? Genel bilgi için konuş; kişisel talebini ayrı formdan ilet.', talkAction:'Hamdi AI ile konuş', voiceOffline:'Ön izlemede ses etkin değil. Talep formunu kullanabilirsin.', voiceReady:'İki dakikalık ses denemesi başlatılabilir. Gerçek bağlantı henüz doğrulanmadı.', mute:'Mikrofonu kapat', unmute:'Mikrofonu aç', endCall:'Konuşmayı bitir', servicesKicker:'FOTOĞRAF HİZMETLERİ', servicesTitle:'Ne çekelim?', noPrices:'Ayrıntılar ve fiyatlar doğrudan stüdyoyla netleştirilir.', colorDesc:'Dijital fotoğraflarında ışık ve renk düzenleme.', graduationDesc:'Hatırlamak istediğin kişi ve an için.', hairDesc:'Kesimin ve dokunun doğru açıdan detayları.', idDesc:'İşleminin gerekliliklerine uygun kişisel fotoğraflar.', portraitDesc:'Kişiliğini yansıtan bir portre çekimi.', requestKicker:'PLANLAMA BURADA BAŞLAR', requestTitle:'Talebin düzenli.<br><em>Her şey önünde.</em>', requestIntro:'Hizmeti seç ve önemli ayrıntıları yaz. Mesajını hazırlayalım; ne zaman göndereceğine sen karar ver.', step1:'Formu doldur', step2:'Mesajı incele', step3:'Gmail’de gönder', studioPhone:'Stüdyo telefonu', formPrivacy:'Bu bilgiler sesli asistana gönderilmez ve sayfa kapatılınca saklanmaz. Yalnızca mesajı açtığında Gmail’e aktarılır.', formTitle:'Çekim talebi', formTag:'Önerilen zaman; henüz onaylı değil', serviceLabel:'İstediğin hizmet *', chooseService:'Bir hizmet seç', nameLabel:'Adın *', namePlaceholder:'Sana nasıl hitap edelim?', phoneLabel:'İletişim numarası (isteğe bağlı)', dateLabel:'Önerilen tarih (isteğe bağlı)', timeLabel:'Önerilen saat (isteğe bağlı)', notesLabel:'Ek ayrıntılar (isteğe bağlı)', notesPlaceholder:'Çekimi planlamamıza yardımcı olacak ayrıntılar…', reviewAction:'Göndermeden önce incele', formNote:'Otomatik gönderilmez. Randevuyu stüdyo onaylar.', faqKicker:'BİLMEN GEREKENLER', faqTitle:'Göndermeden önce.', faq1:'Talep, randevuyu kesinleştirir mi?', faq1Answer:'Hayır. Bu yalnızca bir planlama talebidir. Stüdyo zaman ve ayrıntıları seninle doğrudan netleştirir.', faq2:'Bilgilerim nereye gider?', faq2Answer:'Form, mesajı cihazında hazırlar. Gmail’i açınca ayrıntılar orada görünür; Gönder düğmesine kendin basmalısın. Bilgiler sesli asistana gönderilmez.', faq3:'Sabit fiyat var mı?', faq3Answer:'Sabit fiyat gösterilmiyor. Stüdyo, talebinin ayrıntılarına göre fiyatı seninle netleştirir.', ownerTitle:'Ön izleme sahibi için not', ownerNote:'Bu inceleme sürümü yayınlanmadı ve genel siteye bağlanmadı. Gmail akışı çalışır; ses için Gemini anahtarı, ücretsiz kota kontrolü ve müşterilere açmadan önce gerçek bir test gerekir.', footerNote:'Net talep. Doğrudan iletişim.', reviewKicker:'SON ADIM SENDE', reviewTitle:'Stüdyoya mesajın burada.', reviewIntro:'Ayrıntıları kontrol et. Gmail’in açılması, mesajın gönderildiği anlamına gelmez.', reviewWarning:'Talebin ulaşması için Gmail’de Gönder’e bas. Randevu stüdyonun onayını gerektirir.', openGmail:'Talebi Gmail’de aç ↗', copyMessage:'Mesajı kopyala', editMessage:'Geri dön ve düzenle', consentTitle:'Ses başlamadan önce.', consentIntro:'Bu, fotoğraf hizmetleri hakkında genel bilgi sunan yapay zekâ asistanıdır. Adını, telefonunu veya kişisel bilgilerini söyleme; bunlar için ayrı formu kullan.', providerNotice:'Ses Google hizmetine aktarılır. Ücretsiz planda konuşma, ürünlerini geliştirmek için kullanılabilir. Google sesli hizmeti, 18 yaşında veya daha büyük olmanı gerektirir.', adultConsent:'18 yaşında veya daha büyüğüm.', audioConsent:'Bu konuşma için sesimin Google hizmetine aktarılmasını kabul ediyorum.', voiceLimit:'Ön izleme konuşmayı iki dakikayla sınırlar. Rezervasyon bilgileri sesle toplanmaz.', startVoice:'Konuşmayı başlat', skipVoice:'Doğrudan çekim talebine geç', voiceDisabled:'Sesli görüşme henüz etkin değil. Talep formunu doğrudan kullanabilirsin.', copied:'Mesaj kopyalandı.', copyFailed:'Otomatik kopyalama başarısız. Metni seçip elle kopyalayabilirsin.', openedDraft:'Gmail açıldığında mesajı inceleyip Gönder’e bas. İletilme veya randevu onayı verilmedi.', errorService:'Bir hizmet seç.', errorName:'Önce adını yaz.', errorDate:'Bugünden önce olmayan geçerli bir tarih seç. Saat için tarih de gerekir.', errorPhone:'Telefon numarasını kontrol et veya boş bırak.', errorTime:'Önerilen saati kontrol et.', close:'Kapat', connecting:'Ses bağlantısı hazırlanıyor…', listening:'Mikrofon açık — seni dinliyorum.', speaking:'Hamdi AI sesli yanıtlıyor. Sözünü kesebilirsin.', muted:'Mikrofon kapalı.', ended:'Konuşma bitti; mikrofon durduruldu.', limit:'Deneme süresi sona erdi. Formdan devam edebilirsin.', permission:'Mikrofon izni verilmedi. Yazılı formdan devam edebilirsin.', unsupported:'Tarayıcı sesli görüşmeyi desteklemiyor. Formu veya güncel bir tarayıcıyı kullan.', quota:'Deneme kullanım sınırına ulaştı. Talep formu hâlâ kullanılabilir.', voiceError:'Sesli görüşme başlatılamadı. Daha sonra dene veya formdan devam et.', active:'Görüşme sürüyor', ready:'Denemeye hazır', draftService:'Seçilen hizmet'
+    skip:'İçeriğe geç', preview:'Özel ön izleme · Yayınlanmadı', kicker:'STÜDYO KARŞILAMA MASASI', title:'Rahatça sor.<br><em>Talebin ulaşsın.</em>', intro:'Hamdi Photography hizmetlerini keşfet. Çekim talebini hazırla, gözden geçir ve stüdyoya Gmail üzerinden kendin gönder.', requestAction:'Çekim talebi hazırla ↘', servicesAction:'Fotoğraf hizmetlerini keşfet', note1:'Türkçe · عربي', note2:'Sen inceler ve gönderirsin', note3:'Randevu stüdyo onayıyla', unavailable:'Hazırlanıyor', voiceKicker:'STÜDYONUN SESLİ ASİSTANI', voiceTitle:'Merhaba, ben Hamdi AI.', voiceDescription:'Hizmetlerle ilgili soruların mı var? Genel bilgi için konuş; kişisel talebini ayrı formdan ilet.', talkAction:'Hamdi AI ile konuş', voiceOffline:'Ön izlemede ses etkin değil. Talep formunu kullanabilirsin.', voiceReady:'İki dakikalık ses denemesi başlatılabilir. Gerçek bağlantı henüz doğrulanmadı.', mute:'Mikrofonu kapat', unmute:'Mikrofonu aç', endCall:'Konuşmayı bitir', servicesKicker:'FOTOĞRAF HİZMETLERİ', servicesTitle:'Ne çekelim?', noPrices:'Ayrıntılar ve fiyatlar doğrudan stüdyoyla netleştirilir.', colorDesc:'Dijital fotoğraflarında ışık ve renk düzenleme.', graduationDesc:'Hatırlamak istediğin kişi ve an için.', hairDesc:'Kesimin ve dokunun doğru açıdan detayları.', idDesc:'İşleminin gerekliliklerine uygun kişisel fotoğraflar.', portraitDesc:'Kişiliğini yansıtan bir portre çekimi.', requestKicker:'PLANLAMA BURADA BAŞLAR', requestTitle:'Talebin düzenli.<br><em>Her şey önünde.</em>', requestIntro:'Hizmeti seç ve önemli ayrıntıları yaz. Mesajını hazırlayalım; ne zaman göndereceğine sen karar ver.', step1:'Formu doldur', step2:'Mesajı incele', step3:'Gmail’de gönder', studioPhone:'Stüdyo telefonu', formPrivacy:'Bu bilgiler sesli asistana gönderilmez ve sayfa kapatılınca saklanmaz. Yalnızca mesajı açtığında Gmail’e aktarılır.', formTitle:'Çekim talebi', formTag:'Önerilen zaman; henüz onaylı değil', serviceLabel:'İstediğin hizmet *', chooseService:'Bir hizmet seç', nameLabel:'Adın *', namePlaceholder:'Sana nasıl hitap edelim?', dateLabel:'Önerilen tarih (isteğe bağlı)', timeLabel:'Önerilen saat (isteğe bağlı)', notesLabel:'Ek ayrıntılar (isteğe bağlı)', notesPlaceholder:'Çekimi planlamamıza yardımcı olacak ayrıntılar…', reviewAction:'Göndermeden önce incele', formNote:'Otomatik gönderilmez. Randevuyu stüdyo onaylar.', faqKicker:'BİLMEN GEREKENLER', faqTitle:'Göndermeden önce.', faq1:'Talep, randevuyu kesinleştirir mi?', faq1Answer:'Hayır. Bu yalnızca bir planlama talebidir. Stüdyo zaman ve ayrıntıları seninle doğrudan netleştirir.', faq2:'Bilgilerim nereye gider?', faq2Answer:'Form, mesajı cihazında hazırlar. Gmail’i açınca ayrıntılar orada görünür; Gönder düğmesine kendin basmalısın. Bilgiler sesli asistana gönderilmez.', faq3:'Sabit fiyat var mı?', faq3Answer:'Sabit fiyat gösterilmiyor. Stüdyo, talebinin ayrıntılarına göre fiyatı seninle netleştirir.', ownerTitle:'Ön izleme sahibi için not', ownerNote:'Bu inceleme sürümü yayınlanmadı ve genel siteye bağlanmadı. Gmail akışı çalışır; ses için Gemini anahtarı, ücretsiz kota kontrolü ve müşterilere açmadan önce gerçek bir test gerekir.', footerNote:'Net talep. Doğrudan iletişim.', reviewKicker:'SON ADIM SENDE', reviewTitle:'Stüdyoya mesajın burada.', reviewIntro:'Ayrıntıları kontrol et. Gmail’in açılması, mesajın gönderildiği anlamına gelmez.', reviewWarning:'Talebin ulaşması için Gmail’de Gönder’e bas. Randevu stüdyonun onayını gerektirir.', openGmail:'Talebi Gmail’de aç ↗', copyMessage:'Mesajı kopyala', editMessage:'Geri dön ve düzenle', consentTitle:'Ses başlamadan önce.', consentIntro:'Bu, fotoğraf hizmetleri hakkında genel bilgi sunan yapay zekâ asistanıdır. Adını, telefonunu veya kişisel bilgilerini söyleme; bunlar için ayrı formu kullan.', providerNotice:'Ses Google hizmetine aktarılır. Ücretsiz planda konuşma, ürünlerini geliştirmek için kullanılabilir. Google sesli hizmeti, 18 yaşında veya daha büyük olmanı gerektirir.', adultConsent:'18 yaşında veya daha büyüğüm.', audioConsent:'Bu konuşma için sesimin Google hizmetine aktarılmasını kabul ediyorum.', voiceLimit:'Ön izleme konuşmayı iki dakikayla sınırlar. Rezervasyon bilgileri sesle toplanmaz.', startVoice:'Konuşmayı başlat', skipVoice:'Doğrudan çekim talebine geç', voiceDisabled:'Sesli görüşme henüz etkin değil. Talep formunu doğrudan kullanabilirsin.', copied:'Mesaj kopyalandı.', copyFailed:'Otomatik kopyalama başarısız. Metni seçip elle kopyalayabilirsin.', openedDraft:'Gmail açıldığında mesajı inceleyip Gönder’e bas. İletilme veya randevu onayı verilmedi.', errorService:'Bir hizmet seç.', errorName:'Önce adını yaz.', errorDate:'Bugünden önce olmayan geçerli bir tarih seç. Saat için tarih de gerekir.', errorTime:'Önerilen saati kontrol et.', close:'Kapat', connecting:'Ses bağlantısı hazırlanıyor…', listening:'Mikrofon açık — seni dinliyorum.', speaking:'Hamdi AI sesli yanıtlıyor. Sözünü kesebilirsin.', muted:'Mikrofon kapalı.', ended:'Konuşma bitti; mikrofon durduruldu.', limit:'Deneme süresi sona erdi. Formdan devam edebilirsin.', permission:'Mikrofon izni verilmedi. Yazılı formdan devam edebilirsin.', unsupported:'Tarayıcı sesli görüşmeyi desteklemiyor. Formu veya güncel bir tarayıcıyı kullan.', quota:'Deneme kullanım sınırına ulaştı. Talep formu hâlâ kullanılabilir.', voiceError:'Sesli görüşme başlatılamadı. Daha sonra dene veya formdan devam et.', active:'Görüşme sürüyor', ready:'Denemeye hazır', draftService:'Seçilen hizmet'
   }
 };
 
@@ -1316,7 +1302,7 @@ form.addEventListener('submit', event => {
   const result = validateBooking(Object.fromEntries(new FormData(form)));
   form.querySelectorAll('[aria-invalid]').forEach(el => el.removeAttribute('aria-invalid'));
   if (!result.valid) {
-    const labels = { service: 'errorService', name: 'errorName', date: 'errorDate', phone: 'errorPhone', time: 'errorTime' };
+    const labels = { service: 'errorService', name: 'errorName', date: 'errorDate', time: 'errorTime' };
     $('#form-error').textContent = [...new Set(result.errors)].map(key => text(labels[key])).join(' ');
     $('#form-error').hidden = false;
     result.errors.forEach(key => $(`#${key}`).setAttribute('aria-invalid', 'true'));
