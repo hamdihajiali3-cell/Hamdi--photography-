@@ -57,7 +57,32 @@ html[data-voice-state=speaking] .orb{box-shadow:inset -13px -15px 20px #031e1860
 [data-inline-booking] { background: #f6f2ea; }
 [data-inline-booking] #order-consent { border-bottom: 1px solid var(--line); margin-bottom: .65rem; }
 [data-inline-booking] #order-consent .dialog-alert { font-size: .8rem; margin: .45rem 0 .7rem; }
-[data-inline-booking] #order-start { margin-top: 0; }
+.order-mode-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+.order-dialog .order-mode-actions :is(#order-start, #order-typed) {
+  flex: 1 1 8rem;
+  width: auto;
+  margin: 0;
+  min-height: 48px;
+  padding: .6rem;
+  text-align: center;
+}
+.order-dialog .order-write {
+  border-color: #8d998d;
+  background: var(--light);
+  color: var(--ink);
+}
+.order-dialog .order-write:hover { background: #e8eee3; }
+.order-dialog #order-name-error {
+  margin-block: -.35rem .75rem;
+  color: #812e26;
+  font-size: .9rem;
+  font-weight: 600;
+}
+.order-dialog input[name="name"][aria-invalid="true"] { border-color: #a45243; }
 .order-schedule{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:.65rem}
 [data-inline-booking] #order-dialog[open] {
   position: relative;
