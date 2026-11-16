@@ -2,7 +2,6 @@
   const intro = document.getElementById('hamdi-entry');
   if (!intro) return;
 
-  const skip = document.getElementById('hamdi-entry-skip');
   const sound = document.getElementById('hamdi-entry-sound');
   const label = document.getElementById('hamdi-entry-label');
   const number = document.getElementById('hamdi-entry-number');
@@ -109,13 +108,9 @@
   const turkish = document.documentElement.lang === 'tr';
   if (turkish) {
     label.textContent = 'Site ziyaretleri';
-    skip.textContent = 'Atla';
     sound.textContent = 'Karşılamayı dinle';
   }
-  skip.addEventListener('click', () => revealSite());
-  intro.addEventListener('click', (event) => {
-    if (!skip.contains(event.target)) playWelcome();
-  });
+  intro.addEventListener('click', playWelcome);
   intro.addEventListener('cancel', () => revealSite());
   window.addEventListener('pagehide', () => revealSite(), { once: true });
 
