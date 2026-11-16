@@ -290,8 +290,9 @@ const orderCopy = {
     title:'طلبك مع حمدي', intro:'اختَر قناة الإرسال بصوتك. بعد اكتمال الأجوبة، المساعد يرسل الطلب تلقائيًا لحمدي ويعرض لك الملخص ورقم الطلب.',
     typedIntro:'جاوب خطوة بخطوة وراجع التفاصيل قبل ما ترسل طلبك.',
     privacy:'عند بدء الحجز بالصوت، يُحوّل Cloudflare أجوبتك إلى نص. باختيار قناة الإرسال بصوتك، توافق على إرسال تفاصيل الطلب عبرها فور اكتمالها. يمكنك قول «ألغِ الطلب» قبل الإرسال.',
+    inlinePrivacy:'الصوت بيتحوّل لنص عبر Cloudflare. باختيار قناة الإرسال بصوتك، بتوافق ينبعت الطلب بعد آخر جواب. قل «ألغِ الطلب» لإيقافه.',
     start:'ابدأ الحجز بالصوت', typed:'المتابعة كتابة', mute:'أوقف الميكروفون', replay:'اسمع السؤال', close:'إغلاق',
-    service:'الخدمة', name:'اسمك', channel:'قناة إرسال الطلب لحمدي', contact:'رقم التواصل أو البريد', when:'الموعد المقترح (اختياري)', notes:'ملاحظات (اختياري)',
+    service:'الخدمة', name:'اسمك', written:'الحجز الكتابي', channel:'قناة إرسال الطلب لحمدي', contact:'رقم التواصل أو البريد', when:'الموعد المقترح (اختياري)', date:'التاريخ (اختياري)', time:'الوقت (اختياري)', notes:'ملاحظات (اختياري)',
     choose:'اختر', next:'التالي', skip:'نتفق على الموعد لاحقًا', review:'راجع التفاصيل وقناة الإرسال قبل التأكيد.',
     send:'أرسل الطلب', pending:'هذا طلب للتنسيق. يؤكد حمدي الموعد والسعر بعد التواصل.',
     speaking:'عم اسألك…', listening:'عم اسمعك… احكي هلّق.', processing:'عم أفهم جوابك…', typedHint:'يمكنك كتابة الجواب والمتابعة.',
@@ -318,15 +319,16 @@ const orderCopy = {
       qChannel:'كيف بتحب تبعت طلبك لحمدي؟',
       qPhone:'اكتب رقم هاتفك للتواصل.',
       qEmail:'اكتب رقم هاتفك أو بريدك الإلكتروني حتى يقدر حمدي يتواصل معك.',
-      qWhen:'أي يوم ووقت بيناسبك؟ فيك تترك الموعد للنقاش لاحقًا.'
+      qWhen:'اختار التاريخ أو الوقت اللي بيناسبك. فيك تترك الخانتين فاضيين.'
     }
   },
   tr:{
     title:'Hamdi ile talebin', intro:'Gönderim kanalını sesle seç. Yanıtların tamamlanınca asistan talebini otomatik gönderir, özeti ve talep numarasını gösterir.',
     typedIntro:'Soruları sırayla yanıtla ve göndermeden önce talebini incele.',
     privacy:'Sesli talebi başlattığında Cloudflare yanıtlarını metne dönüştürür. Kanalı sesle seçtiğinde, ayrıntılar tamamlanınca o kanalla gönderilmesine izin verirsin. Gönderimden önce “talebi iptal et” diyebilirsin.',
+    inlinePrivacy:'Cloudflare sesi metne dönüştürür. Kanalı sesle seçtiğinde talep son yanıttan sonra gönderilir. Durdurmak için “talebi iptal et” de.',
     start:'Sesli talebi başlat', typed:'Yazarak devam et', mute:'Mikrofonu kapat', replay:'Soruyu dinle', close:'Kapat',
-    service:'Hizmet', name:'Adın', channel:'Talebin Hamdi’ye iletileceği kanal', contact:'Telefon veya e-posta', when:'Önerilen zaman (isteğe bağlı)', notes:'Notlar (isteğe bağlı)',
+    service:'Hizmet', name:'Adın', written:'Yazılı talep', channel:'Talebin Hamdi’ye iletileceği kanal', contact:'Telefon veya e-posta', when:'Önerilen zaman (isteğe bağlı)', date:'Tarih (isteğe bağlı)', time:'Saat (isteğe bağlı)', notes:'Notlar (isteğe bağlı)',
     choose:'Seç', next:'İleri', skip:'Zamanı sonra kararlaştıralım', review:'Onaylamadan önce ayrıntıları ve gönderim kanalını incele.',
     send:'Talebi gönder', pending:'Bu bir planlama talebidir. Zamanı ve fiyatı Hamdi görüşmeden sonra onaylar.',
     speaking:'Soruyu okuyorum…', listening:'Dinliyorum… Şimdi konuşabilirsin.', processing:'Yanıtın anlaşılıyor…', typedHint:'Yanıtını yazarak devam edebilirsin.',
@@ -353,7 +355,7 @@ const orderCopy = {
       qChannel:'Talebini Hamdi’ye nasıl göndermek istersin?',
       qPhone:'İletişim için telefon numaranı yaz.',
       qEmail:'Hamdi’nin sana ulaşabilmesi için telefon numaranı veya e-posta adresini yaz.',
-      qWhen:'Hangi gün ve saat sana uygun? İstersen daha sonra belirleyebilirsin.'
+      qWhen:'Sana uygun tarihi veya saati seç. İkisini de boş bırakabilirsin.'
     }
   }
 };
@@ -517,10 +519,17 @@ class OrderAssistant {
       ? (tr ? ' Web3Forms e-posta taleplerini 7 gün saklar.' : ' يحتفظ Web3Forms بتفاصيل طلبات البريد 7 أيام.')
       : '';
     const intro = typed && serviceLabel ? serviceLabel+' · '+c.typedIntro+emailNotice : c.intro;
-    const voiceNotice = '<p id="order-voice-notice" class="dialog-alert">'+c.privacy+(inline ? '' : emailNotice)+'</p>';
+    const voiceNotice = '<p id="order-voice-notice" class="dialog-alert">'+(inline ? c.inlinePrivacy : c.privacy+emailNotice)+'</p>';
     const voiceStart = '<button type="button" class="button primary" id="order-start" aria-describedby="order-voice-notice">'+c.start+'</button>';
     const consent = '<section id="order-consent">'+(inline ? voiceStart+voiceNotice : voiceNotice+voiceStart)+
       '<button type="button" class="text-link" id="order-typed">'+c.typed+'</button></section>';
+    const whenInput = '<input name="when" maxlength="160">';
+    const schedule = inline
+      ? '<div data-order-field="when"><div class="order-schedule">'+
+        '<label>'+c.date+'<input id="order-date" type="date"></label>'+
+        '<label>'+c.time+'<input id="order-time" type="time"></label></div>'+
+        '<label id="order-spoken-when" hidden>'+c.when+whenInput+'</label></div>'
+      : '<label data-order-field="when">'+c.when+whenInput+'</label>';
     this.dialog.innerHTML = [
       '<button type="button" id="order-close" class="dialog-close" aria-label="'+c.close+'">×</button>',
       '<div class="order-avatar" aria-hidden="true"><div class="orb"><div class="orb-shine"></div>'+
@@ -531,13 +540,14 @@ class OrderAssistant {
       inline ? '' : consent,
       '<form id="order-form" hidden><p id="order-question" class="order-question" aria-live="polite"></p>',
       inline ? consent : '',
+      inline ? '<p id="order-written-mode" hidden><strong>'+c.written+'</strong></p>' : '',
       '<button type="button" class="text-link" id="order-repeat">'+c.replay+'</button>',
       '<button type="button" class="text-link" id="order-mute" hidden>'+c.mute+'</button>',
       '<label data-order-field="service">'+c.service+'<select name="service" required><option value="">'+c.choose+'</option>'+options+'</select></label>',
       '<label data-order-field="name">'+c.name+'<input name="name" maxlength="100" autocomplete="name" required></label>',
       '<label data-order-field="channel">'+c.channel+'<select name="channel" required><option value="">'+c.choose+'</option>'+channels+'</select></label>',
       '<label data-order-field="contact"><span id="order-contact-label">'+c.contact+'</span><input name="contact" maxlength="120" required dir="auto"></label>',
-      '<label data-order-field="when">'+c.when+'<input name="when" maxlength="160"></label>',
+      schedule,
       '<label data-order-field="notes">'+c.notes+'<textarea name="notes" maxlength="500" rows="2"></textarea></label>',
       '<div class="order-step-tools" id="order-step-tools"><button type="button" class="button primary" id="order-next">'+c.next+'</button>',
       '<button type="button" class="text-link" id="order-skip">'+c.skip+'</button></div>',
@@ -553,8 +563,18 @@ class OrderAssistant {
     this.el('next').onclick = ()=>this.advance();
     this.el('skip').onclick = ()=>{
       this.field('when').value = '';
+      if (inline) {
+        this.el('date').value = this.el('time').value = '';
+        this.el('spoken-when').hidden = true;
+      }
       this.review();
     };
+    if (inline) {
+      this.el('date').onchange = this.el('time').onchange = () => {
+        this.field('when').value = [this.el('date').value, this.el('time').value].filter(Boolean).join(' ');
+        this.el('spoken-when').hidden = true;
+      };
+    }
     this.el('mute').onclick = ()=>{
       this.cancelRecording();
       this.setPhase('idle',c.typedHint);
@@ -661,6 +681,7 @@ class OrderAssistant {
 
   showStep(play = Boolean(this.stream), { listenImmediately = false } = {}) {
     const key = orderFields[this.stage];
+    if (this.inline) this.el('written-mode').hidden = key !== 'name' || play;
     this.dialog.querySelectorAll('[data-order-field]').forEach(el=>{ el.hidden = el.dataset.orderField !== key; });
     this.el('skip').hidden = key !== 'when';
     if (key === 'contact') this.updateContactField();
@@ -721,7 +742,10 @@ class OrderAssistant {
     this.cancelRecording();
     this.dialog.querySelectorAll('[data-order-field]').forEach(el=>{ el.hidden = false; });
     this.el('step-tools').hidden = true;
-    if (this.inline) this.el('consent').hidden = true;
+    if (this.inline) {
+      this.el('consent').hidden = true;
+      this.el('written-mode').hidden = true;
+    }
     this.el('send').hidden = automatically;
     this.el('repeat').hidden = automatically;
     this.el('question').textContent = automatically ? this.c.receiptTitle : this.c.review;
@@ -881,6 +905,10 @@ class OrderAssistant {
         return;
       }
       this.field(key).value = value;
+      if (this.inline && key === 'when') {
+        this.el('date').value = this.el('time').value = '';
+        this.el('spoken-when').hidden = !value;
+      }
       if (!this.validField(key)) {
         this.repeatAnswer();
         return;
@@ -1165,6 +1193,8 @@ if (!consultation) orderAssistant.configure().then(enabled => {
   $('.voice-booking').textContent = text('bookingAction');
   if (bookingService) orderAssistant.open(bookingService, { typed: true, inline: inlineBooking });
   if (inlineBooking) {
+    window.parent.postMessage({type:'hamdi-ai:booking-ready'}, embeddedParent);
+    if (typeof ResizeObserver !== 'function') return;
     const booking = orderAssistant.dialog;
     new ResizeObserver(() => {
       const height = Math.ceil(booking.getBoundingClientRect().height);

@@ -58,6 +58,7 @@ html[data-voice-state=speaking] .orb{box-shadow:inset -13px -15px 20px #031e1860
 [data-inline-booking] #order-consent { border-bottom: 1px solid var(--line); margin-bottom: .65rem; }
 [data-inline-booking] #order-consent .dialog-alert { font-size: .8rem; margin: .45rem 0 .7rem; }
 [data-inline-booking] #order-start { margin-top: 0; }
+.order-schedule{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:.65rem}
 [data-inline-booking] #order-dialog[open] {
   position: relative;
   inset: auto;
@@ -71,6 +72,13 @@ html[data-voice-state=speaking] .orb{box-shadow:inset -13px -15px 20px #031e1860
   border-radius: 0;
   box-shadow: none;
   overflow: visible;
+}
+@media(max-width:480px){
+  .order-schedule{grid-template-columns:minmax(0,1fr)}
+  [data-inline-booking] #order-dialog[open]{padding:14px 16px 20px}
+  [data-inline-booking] #order-dialog p{margin-block:.55rem}
+  [data-inline-booking] #order-dialog label:not(.check-label){margin:.65rem 0}
+  [data-inline-booking] #order-dialog :is(input,select,textarea){font-size:1rem}
 }
 .order-dialog :is(#order-send,#order-start){width:100%;margin-top:.75rem}
 .order-dialog :is(#order-repeat,#order-mute,#order-typed){min-height:44px;margin-inline-end:.8rem}
