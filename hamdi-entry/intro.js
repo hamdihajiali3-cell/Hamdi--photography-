@@ -3,7 +3,6 @@
   if (!intro) return;
 
   const label = document.getElementById('hamdi-entry-label');
-  const number = document.getElementById('hamdi-entry-number');
   const AudioContext = window.AudioContext || window.webkitAudioContext;
   const workerOrigin = 'https://hamdi--photography.hamdihajiali3.workers.dev';
   let timeout;
@@ -72,30 +71,15 @@
     void player.play().catch(stopGreeting);
   }
 
-  function startCountdown() {
-    const end = performance.now() + 3000;
-    function tick() {
-      const remaining = end - performance.now();
-      if (remaining <= 0) {
-        revealSite(true);
-        return;
-      }
-      const seconds = Math.ceil(remaining / 1000);
-      number.textContent = String(seconds);
-      timeout = setTimeout(tick, remaining - (seconds - 1) * 1000);
-    }
-    tick();
-  }
-
   const turkish = document.documentElement.lang === 'tr';
-  if (turkish) label.textContent = 'Site açılıyor';
+  if (turkish) label.textContent = 'Yükleniyor…';
   intro.addEventListener('cancel', () => revealSite());
   window.addEventListener('pagehide', () => revealSite(), { once: true });
 
   const homeEntry = !location.hash || location.hash === '#top';
   if (homeEntry && typeof intro.showModal === 'function') {
     intro.showModal();
-    startCountdown();
+    timeout = setTimeout(() => revealSite(true), 3000);
     playGreeting(turkish ? 'tr' : 'ar');
     void playChime();
   }

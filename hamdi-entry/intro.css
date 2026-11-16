@@ -68,7 +68,7 @@ html:has(.hamdi-entry[open]) {
 }
 
 .hamdi-entry-logo,
-.hamdi-entry-count {
+.hamdi-entry-loading {
   display: grid;
   justify-items: center;
 }
@@ -91,23 +91,34 @@ html:has(.hamdi-entry[open]) {
   letter-spacing: .31em;
 }
 
-.hamdi-entry-light {
-  block-size: 1px;
-  inline-size: min(66%, 250px);
-  margin: 1.1rem auto 1rem;
-  background: linear-gradient(90deg, transparent, #bd8f50 25%, #fff5d8 50%, #bd8f50 75%, transparent);
-}
-
-.hamdi-entry-count span {
+.hamdi-entry-loading {
+  gap: .65rem;
+  margin-block-start: 1.25rem;
   color: #efe7d4;
   font-size: .88rem;
 }
 
-.hamdi-entry-count strong {
-  color: var(--entry-gold);
-  font-size: clamp(1.6rem, 6vw, 2.15rem);
-  font-weight: 500;
-  font-variant-numeric: tabular-nums;
+.hamdi-entry-progress {
+  position: relative;
+  inline-size: min(62%, 220px);
+  block-size: 3px;
+  overflow: hidden;
+  border-radius: 1rem;
+  background: #d5ba8657;
+}
+
+.hamdi-entry-progress::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #bd8f50, #fff5d8, #d5aa69);
+  transform: scaleX(.35);
+  transform-origin: left;
+}
+
+[dir="rtl"] .hamdi-entry-progress::before {
+  transform-origin: right;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -123,8 +134,8 @@ html:has(.hamdi-entry[open]) {
     animation: hamdi-entry-logo 1.2s ease-out both;
   }
 
-  .hamdi-entry[open] .hamdi-entry-light {
-    animation: hamdi-entry-light 3s ease-in-out both;
+  .hamdi-entry[open] .hamdi-entry-progress::before {
+    animation: hamdi-entry-progress 3s ease-out both;
   }
 }
 
@@ -139,10 +150,9 @@ html:has(.hamdi-entry[open]) {
   to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes hamdi-entry-light {
-  from { opacity: .28; transform: scaleX(.45); }
-  58% { opacity: 1; transform: scaleX(1); }
-  to { opacity: .68; transform: scaleX(.93); }
+@keyframes hamdi-entry-progress {
+  from { transform: scaleX(.06); }
+  to { transform: scaleX(1); }
 }
 
 @media (max-height: 400px) {
