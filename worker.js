@@ -2,6 +2,8 @@ import { handleVoiceRequest, VoiceSessionGuard } from './cloudflare-worker/hamdi
 export { VoiceSessionGuard };
 import { handleOrderRequest, OrderGuard } from './cloudflare-worker/order-worker.mjs';
 export { OrderGuard };
+import { handleVisitRequest, VisitCounter } from './cloudflare-worker/visit-counter.mjs';
+export { VisitCounter };
 
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
@@ -266,6 +268,8 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
+    if (url.pathname === '/api/visits') return handleVisitRequest(request, env);
+
     if (url.pathname.startsWith('/api/order/')) return handleOrderRequest(request, env);
 
     if (url.pathname === "/api/status" || url.pathname === "/api/live-token") {
@@ -328,4 +332,3 @@ export default {
     return env.ASSETS.fetch(request);
   }
 };
-

@@ -16,6 +16,10 @@
       {
         "name": "ORDER_GUARD",
         "class_name": "OrderGuard"
+      },
+      {
+        "name": "VISIT_COUNTER",
+        "class_name": "VisitCounter"
       }
     ]
   },
@@ -36,6 +40,12 @@
       "tag": "v3-orders",
       "new_sqlite_classes": [
         "OrderGuard"
+      ]
+    },
+    {
+      "tag": "v4-site-visits",
+      "new_sqlite_classes": [
+        "VisitCounter"
       ]
     }
   ],

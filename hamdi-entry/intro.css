@@ -1,0 +1,184 @@
+.hamdi-entry:not([open]) {
+  display: none;
+}
+
+.hamdi-entry[open] {
+  --entry-white: #fff8e8;
+  --entry-gold: #dfbc83;
+  box-sizing: border-box;
+  position: fixed;
+  inset: 0;
+  isolation: isolate;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  place-items: center;
+  inline-size: 100%;
+  block-size: 100vh;
+  block-size: 100dvh;
+  max-inline-size: none;
+  max-block-size: none;
+  margin: 0;
+  border: 0;
+  padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right))
+    max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
+  overflow: auto;
+  overscroll-behavior: contain;
+  color: var(--entry-white);
+  background:
+    radial-gradient(ellipse at 50% 45%, #66523775, transparent 56%),
+    radial-gradient(ellipse at 8% 10%, #45504770, transparent 48%),
+    #14201c;
+  font: 400 1rem/1.5 Tahoma, Arial, sans-serif;
+}
+
+.hamdi-entry::backdrop {
+  background: #14201c;
+}
+
+html:has(.hamdi-entry[open]) {
+  overflow: hidden;
+}
+
+.hamdi-entry-content {
+  position: relative;
+  inline-size: min(100%, 570px);
+  padding-block: 2rem;
+  text-align: center;
+}
+
+.hamdi-entry-content::before,
+.hamdi-entry-content::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 50% auto auto 50%;
+  inline-size: 96%;
+  block-size: 84%;
+  border: 1px solid #e5cba648;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) rotate(-20deg);
+  pointer-events: none;
+}
+
+.hamdi-entry-content::after {
+  inline-size: 86%;
+  block-size: 96%;
+  border-color: #fff8df37;
+  transform: translate(-50%, -50%) rotate(22deg);
+}
+
+.hamdi-entry-logo,
+.hamdi-entry-count {
+  display: grid;
+  justify-items: center;
+}
+
+.hamdi-entry-logo {
+  gap: .48rem;
+}
+
+.hamdi-entry-logo b {
+  padding-inline-start: .13em;
+  font: 500 clamp(2.5rem, 11vw, 5.6rem)/1 Georgia, serif;
+  letter-spacing: .13em;
+  text-shadow: 0 0 34px #fff4ce49;
+}
+
+.hamdi-entry-logo span {
+  padding-inline-start: .31em;
+  color: var(--entry-gold);
+  font: 500 clamp(.65rem, 2.9vw, .93rem)/1.35 Arial, sans-serif;
+  letter-spacing: .31em;
+}
+
+.hamdi-entry-light {
+  block-size: 1px;
+  inline-size: min(66%, 250px);
+  margin: 1.1rem auto 1rem;
+  background: linear-gradient(90deg, transparent, #bd8f50 25%, #fff5d8 50%, #bd8f50 75%, transparent);
+}
+
+.hamdi-entry-count span {
+  color: #efe7d4;
+  font-size: .88rem;
+}
+
+.hamdi-entry-count strong {
+  color: var(--entry-gold);
+  font-size: clamp(1.6rem, 6vw, 2.15rem);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.hamdi-entry-actions {
+  display: flex;
+  gap: .65rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.hamdi-entry-actions button {
+  min-block-size: 44px;
+  padding: .45rem .85rem;
+  border: 1px solid #d5ba8694;
+  border-radius: 6px;
+  color: var(--entry-white);
+  background: #14201c;
+  font: inherit;
+  font-size: .875rem;
+  cursor: pointer;
+}
+
+.hamdi-entry-actions button:disabled {
+  display: none;
+}
+
+.hamdi-entry-actions button:focus-visible {
+  outline: 2px solid var(--entry-gold);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hamdi-entry[open] .hamdi-entry-content::before {
+    animation: hamdi-entry-ring 3.35s ease-out both;
+  }
+
+  .hamdi-entry[open] .hamdi-entry-content::after {
+    animation: hamdi-entry-ring 3.35s .1s ease-out reverse both;
+  }
+
+  .hamdi-entry[open] .hamdi-entry-logo {
+    animation: hamdi-entry-logo 1.2s ease-out both;
+  }
+
+  .hamdi-entry[open] .hamdi-entry-light {
+    animation: hamdi-entry-light 3.2s ease-in-out both;
+  }
+
+  .hamdi-entry[open] .hamdi-entry-count strong[data-loaded] {
+    animation: hamdi-entry-logo .45s ease-out both;
+  }
+}
+
+@keyframes hamdi-entry-ring {
+  from { opacity: .23; scale: .85; }
+  55% { opacity: 1; }
+  to { opacity: .58; scale: 1.04; }
+}
+
+@keyframes hamdi-entry-logo {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes hamdi-entry-light {
+  from { opacity: .28; transform: scaleX(.45); }
+  58% { opacity: 1; transform: scaleX(1); }
+  to { opacity: .68; transform: scaleX(.93); }
+}
+
+@media (max-height: 400px) {
+  .hamdi-entry-content {
+    padding-block: .5rem;
+  }
+}
