@@ -12,31 +12,45 @@
   const isPublicSite = location.origin === workerOrigin || location.origin === pagesOrigin;
   let timeout;
   let audio;
+  let chimePlayed = false;
+
+  function releaseAudio() {
+    const context = audio;
+    audio = undefined;
+    if (context && context.state !== 'closed') void context.close().catch(() => {});
+  }
 
   function revealSite() {
     clearTimeout(timeout);
     if (intro.open) intro.close();
+    if (!chimePlayed) releaseAudio();
   }
 
   async function playChime() {
+    if (!AudioContext || chimePlayed || !intro.open) return;
     try {
-      audio ??= new AudioContext();
-      if (audio.state !== 'running') await audio.resume();
-      const start = audio.currentTime;
+      const context = (audio ??= new AudioContext());
+      if (context.state !== 'running') await context.resume();
+      if (!intro.open || chimePlayed || context.state !== 'running') return;
+
+      chimePlayed = true;
+      sound.disabled = true;
+      const start = context.currentTime;
       for (const [frequency, delay] of [[523.25, 0], [783.99, .105]]) {
-        const note = audio.createOscillator();
-        const volume = audio.createGain();
+        const note = context.createOscillator();
+        const volume = context.createGain();
         const at = start + delay;
         note.frequency.value = frequency;
         volume.gain.setValueAtTime(.001, at);
         volume.gain.exponentialRampToValueAtTime(.055, at + .035);
         volume.gain.exponentialRampToValueAtTime(.001, at + .28);
-        note.connect(volume).connect(audio.destination);
+        note.connect(volume).connect(context.destination);
+        if (delay > 0) note.onended = releaseAudio;
         note.start(at);
         note.stop(at + .3);
       }
     } catch {
-      sound.disabled = true;
+      // A browser may require a gesture before allowing audio to start.
     }
   }
 
@@ -65,7 +79,9 @@
   }
   sound.disabled = !AudioContext;
   skip.addEventListener('click', revealSite);
-  sound.addEventListener('click', playChime);
+  intro.addEventListener('click', (event) => {
+    if (!skip.contains(event.target)) void playChime();
+  });
   intro.addEventListener('cancel', revealSite);
   window.addEventListener('pagehide', revealSite, { once: true });
 
@@ -73,6 +89,7 @@
   if (homeEntry && typeof intro.showModal === 'function') {
     timeout = setTimeout(revealSite, matchMedia('(prefers-reduced-motion: reduce)').matches ? 1700 : 3500);
     intro.showModal();
+    void playChime();
   }
   if (isPublicSite) void countVisit();
 })();
