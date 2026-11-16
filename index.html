@@ -10,8 +10,8 @@
   <link rel="stylesheet" href="style.css?v=portrait-20261114" />
   <link rel="stylesheet" href="flags.css?v=turkey-flag-20261102" />
   <link rel="stylesheet" href="hamdi-inline/assistant.css?v=mobile-booking-20261116" />
-  <link rel="stylesheet" href="hamdi-entry/intro.css?v=20261116-loading" />
-  <script defer src="hamdi-entry/intro.js?v=20261116-loading"></script>
+  <link rel="stylesheet" href="hamdi-entry/intro.css?v=20261116-chain" />
+  <script defer src="hamdi-entry/intro.js?v=20261116-chain"></script>
 </head>
 <body>
   <dialog class="hamdi-entry" id="hamdi-entry" aria-labelledby="hamdi-entry-logo">
@@ -20,9 +20,12 @@
         <b>HAMDI</b>
         <span>PHOTOGRAPHY</span>
       </div>
-      <div class="hamdi-entry-loading" role="status">
-        <span class="hamdi-entry-progress" aria-hidden="true"></span>
-        <span id="hamdi-entry-label">جارٍ التحميل…</span>
+      <div class="hamdi-entry-loading" id="hamdi-entry-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="تقدّم المقدّمة">
+        <span class="hamdi-entry-chain" aria-hidden="true">
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+        </span>
+        <span id="hamdi-entry-percent" dir="ltr" aria-hidden="true">0%</span>
       </div>
     </div>
   </dialog>
