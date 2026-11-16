@@ -3,6 +3,7 @@ export const ORDER_PROMPTS = Object.freeze({
   ar:Object.freeze({
     service:'شو الخدمة اللي بدك ياها؟ تعديل ألوان، تخرج، تصوير الحلاقة، أو صور جواز وهويات؟',
     name:'شو اسمك؟',
+    welcome:'أهلين فيكم بحمدي فوتوغرافي.',
     channel:'كيف بتحب حمدي يتواصل معك؟ واتساب، رسالة قصيرة، أو بريد إلكتروني؟',
     phone:'قول رقمك رقم رقم، أو اكتبه بالخانة.',
     email:'قول عنوان بريدك الإلكتروني، أو اكتبه بالخانة حتى نتأكد منه.',
@@ -13,6 +14,7 @@ export const ORDER_PROMPTS = Object.freeze({
   tr:Object.freeze({
     service:'Hangi hizmeti istiyorsun? Renk düzenleme, mezuniyet, berber çekimi veya pasaport ve kimlik fotoğrafı?',
     name:'Adın nedir?',
+    welcome:'Hamdi Photography’ye hoş geldiniz.',
     channel:'Hamdi sana nasıl ulaşsın? WhatsApp, SMS veya e-posta?',
     phone:'Telefon numaranı rakam rakam söyle veya kutuya yaz.',
     email:'E-posta adresini söyle veya doğru olması için kutuya yaz.',
