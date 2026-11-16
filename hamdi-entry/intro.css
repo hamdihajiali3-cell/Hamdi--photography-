@@ -87,18 +87,6 @@ html:has(.hamdi-entry[open]) {
   letter-spacing: .31em;
 }
 
-.hamdi-entry-loading {
-  display: grid;
-  place-items: center;
-  min-block-size: clamp(5.25rem, 24vw, 6.25rem);
-  margin-block-start: 1.05rem;
-  color: var(--entry-white);
-  font-size: clamp(2.2rem, 8vw, 3.4rem);
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-  font-weight: 600;
-}
-
 @media (prefers-reduced-motion: no-preference) {
   .hamdi-entry[open] .hamdi-entry-content::before {
     animation: hamdi-entry-ring 3s ease-out both;

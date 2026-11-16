@@ -2,12 +2,9 @@
   const intro = document.getElementById('hamdi-entry');
   if (!intro) return;
 
-  const progress = document.getElementById('hamdi-entry-progress');
-  const percent = document.getElementById('hamdi-entry-percent');
   const AudioContext = window.AudioContext || window.webkitAudioContext;
   const workerOrigin = 'https://hamdi--photography.hamdihajiali3.workers.dev';
   let timeout;
-  let frame;
   let audio;
   let chimePlayed = false;
   let greeting;
@@ -30,7 +27,6 @@
 
   function revealSite(finishGreeting = false) {
     clearTimeout(timeout);
-    cancelAnimationFrame(frame);
     if (intro.open) intro.close();
     if (!chimePlayed) releaseAudio();
     if (!finishGreeting || !greetingStarted) stopGreeting();
@@ -74,40 +70,14 @@
     void player.play().catch(stopGreeting);
   }
 
-  function updateProgress(value) {
-    progress.setAttribute('aria-valuenow', String(value));
-    percent.textContent = value + '%';
-  }
-
-  function startProgress() {
-    const duration = 2750;
-    const start = performance.now();
-    let currentValue = 0;
-    function tick(now) {
-      const elapsed = Math.max(0, now - start);
-      const value = Math.min(100, Math.floor(elapsed * 100 / duration));
-      if (currentValue !== value) {
-        currentValue = value;
-        updateProgress(value);
-      }
-      if (value < 100) frame = requestAnimationFrame(tick);
-    }
-    frame = requestAnimationFrame(tick);
-    timeout = setTimeout(() => {
-      updateProgress(100);
-      revealSite(true);
-    }, duration + 250);
-  }
-
   const turkish = document.documentElement.lang === 'tr';
-  if (turkish) progress.setAttribute('aria-label', 'Açılış ilerlemesi');
   intro.addEventListener('cancel', () => revealSite());
   window.addEventListener('pagehide', () => revealSite(), { once: true });
 
   const homeEntry = !location.hash || location.hash === '#top';
   if (homeEntry && typeof intro.showModal === 'function') {
     intro.showModal();
-    startProgress();
+    timeout = setTimeout(() => revealSite(true), 3000);
     playGreeting(turkish ? 'tr' : 'ar');
     void playChime();
   }
