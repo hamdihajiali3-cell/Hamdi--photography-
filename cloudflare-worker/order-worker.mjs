@@ -86,17 +86,31 @@ export class OrderGuard {
       let body;try {if(request.headers.get('content-type')?.split(';')[0]!=='application/json')throw 0;body=JSON.parse(new TextDecoder().decode(await readLimited(request,512)));}catch{return json({error:'invalid-request'},400);}
       if(body?.consent!==true||!['ar','tr'].includes(body.language)||Object.keys(body).some(k=>!['consent','language'].includes(k)))return json({error:'consent-required'},400);
       const token=crypto.randomUUID()+crypto.randomUUID(),hash=await digest(token);
-      const accepted=await this.mutate(state=>{
+      const admission=await this.mutate(state=>{
         const now = this.now();
+        const minute = Math.floor(now / 60000);
+        const starts = state.sessionStarts?.minute === minute
+          ? state.sessionStarts
+          : { minute, total: 0, byIp: {} };
+        if (starts.total >= 60 || (starts.byIp[ip] || 0) >= 10) {
+          return { accepted: false, retryAfter: Math.max(1, Math.ceil(((minute + 1) * 60000 - now) / 1000)) };
+        }
         for (const [key, session] of Object.entries(state.sessions)) {
           if (session.expires <= now && session.status !== 'pending') delete state.sessions[key];
         }
         const open = Object.values(state.sessions).filter(session => session.status === 'open');
-        if (open.length >= 20 || open.filter(session => session.ip === ip).length >= 8) return false;
+        if (open.length >= 20 || open.filter(session => session.ip === ip).length >= 8) return { accepted: false };
         state.sessions[hash]={ip,language:body.language,expires:now+1200000,turns:0,status:'open'};
-        return true;
+        starts.total++;
+        starts.byIp[ip] = (starts.byIp[ip] || 0) + 1;
+        state.sessionStarts = starts;
+        return { accepted: true };
       });
-      return accepted?json({token,maxAudioSeconds:15}):json({error:'order-sessions-busy'},429);
+      const response = admission.accepted
+        ? json({token,maxAudioSeconds:15})
+        : json({error:'order-sessions-busy'},429);
+      if (admission.retryAfter) response.headers.set('Retry-After', String(admission.retryAfter));
+      return response;
     }
     const token=request.headers.get('authorization')?.replace(/^Bearer /,'');
     if(!/^[a-f0-9-]{72}$/.test(token||''))return json({error:'session-required'},403);
