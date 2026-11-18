@@ -1,4 +1,5 @@
 import { mountTurkishDateTime } from '../booking-date-time.mjs?v=turkish-schedule-20261116';
+import { FounderIntroduction } from './founder.mjs?v=founder-20261118';
 
 const CONTACT = Object.freeze({ displayPhone: '0537 742 36 71', email: 'hamdihajiali76@gmail.com' });
 const SERVICES = Object.freeze({
@@ -1172,12 +1173,16 @@ if (staticDelivery) {
 const $ = selector => document.querySelector(selector);
 const form = $('#booking-form'), review = $('#review-dialog'), voiceDialog = $('#voice-dialog');
 let language = 'ar', configured = false, currentMessage = '', lastVoiceState = '', transcriptText = '', consentMode = 'microphone';
+let founderPlayer;
 const text = key => copy[language][key];
 const show = dialog => { if (!dialog.open) { if (dialog.showModal) dialog.showModal(); else dialog.setAttribute('open', ''); } };
 const hide = dialog => { if (dialog.close) dialog.close(); else dialog.removeAttribute('open'); };
 function setVoiceState(state) {
   lastVoiceState = state;
   const active = ['connecting', 'listening', 'speaking', 'muted'].includes(state);
+  if (active) founderPlayer?.stop('');
+  const founderButton = $('#founder-introduction');
+  if (founderButton) founderButton.disabled = active;
   $('#call-controls').hidden = !active;
   $('#open-voice').disabled = active || !configured;
   $('#open-voice-test').disabled = active || !configured;
@@ -1202,7 +1207,7 @@ const voice = new CustomerVoice({ onState: setVoiceState, onTranscript: value =>
 } });
 const orderAssistant = new OrderAssistant({
   getLanguage: () => language,
-  stopOtherVoice: () => voice.stop(false),
+  stopOtherVoice: () => { founderPlayer?.stop(''); voice.stop(false); },
   onState: setVoiceState,
   onPromptRequested: inlineBooking
     ? () => window.parent.postMessage({type:'hamdi-ai:stop-opening-audio'}, embeddedParent)
@@ -1228,6 +1233,11 @@ if (!consultation) orderAssistant.configure().then(enabled => {
     }).observe(booking);
   }
 });
+founderPlayer = new FounderIntroduction({
+  button: $('#founder-introduction'), panel: $('#founder-profile'),
+  description: $('#founder-description'), status: $('#founder-status'),
+  beforePlay: () => voice.stop(false),
+});
 function updateConsent() {
   $('#confirm-voice').disabled = !configured || !$('#adult-check').checked || !$('#voice-check').checked;
   $('#voice-dialog-status').textContent = configured ? '' : text('voiceDisabled');
@@ -1241,6 +1251,7 @@ function setLanguage(next) {
   if (orderAssistant.dialog.open) orderAssistant.close();
   if (voice.active) voice.stop(false);
   language = next;
+  founderPlayer.setLanguage(language);
   document.documentElement.lang = language; document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
   document.title = language === 'ar' ? 'حمدي AI | Hamdi Photography' : 'Hamdi AI | Hamdi Photography';
   document.querySelectorAll('[data-t]').forEach(el => { if (copy[language][el.dataset.t]) el.textContent = text(el.dataset.t); });
@@ -1317,7 +1328,7 @@ $('#copy-message').addEventListener('click', async () => {
   try { await navigator.clipboard.writeText(currentMessage); $('#review-status').textContent = text('copied'); }
   catch { $('#review-status').textContent = text('copyFailed'); }
 });
-function prepareVoice(mode) { consentMode = mode; $('#adult-check').checked = false; $('#voice-check').checked = false; updateConsent(); show(voiceDialog); }
+function prepareVoice(mode) { founderPlayer.stop(''); consentMode = mode; $('#adult-check').checked = false; $('#voice-check').checked = false; updateConsent(); show(voiceDialog); }
 $('#open-voice').addEventListener('click', () => prepareVoice('microphone'));
 $('#open-voice-test').addEventListener('click', () => prepareVoice('playback'));
 $('#adult-check').addEventListener('change', updateConsent); $('#voice-check').addEventListener('change', updateConsent);
@@ -1327,10 +1338,11 @@ $('#confirm-voice').addEventListener('click', async () => {
 });
 $('#skip-to-form').addEventListener('click', () => { hide(voiceDialog); openBooking(); });
 $('#mute-voice').addEventListener('click', () => voice.mute()); $('#end-voice').addEventListener('click', () => voice.stop());
-window.addEventListener('pagehide', () => voice.stop(false));
-document.addEventListener('visibilitychange', () => { if (document.hidden && voice.active) voice.stop(); });
+window.addEventListener('pagehide', () => { founderPlayer.stop(''); voice.stop(false); });
+document.addEventListener('visibilitychange', () => { if (document.hidden) { founderPlayer.stop(''); if (voice.active) voice.stop(); } });
 setLanguage(pageOptions.get('lang') === 'tr' ? 'tr' : 'ar');
 if (language === 'tr' && !inlineBooking && !consultation) mountTurkishDateTime($('#date'), $('#time'));
 if (!inlineBooking && !staticDelivery && (location.protocol === 'http:' || location.protocol === 'https:')) {
   fetch('/api/status', { signal: AbortSignal.timeout(5000) }).then(response => response.ok ? response.json() : null).then(status => { configured = status?.configured === true; setVoiceState(''); updateConsent(); }).catch(() => { configured = false; setVoiceState(''); updateConsent(); });
 }
+

@@ -4,6 +4,7 @@ export const ORDER_PROMPTS = Object.freeze({
     service:'شو الخدمة اللي بدك ياها؟ تعديل ألوان، تخرج، تصوير الحلاقة، أو صور جواز وهويات؟',
     name:'شو اسمك؟',
     welcome:'أهلين فيكم بحمدي فوتوغرافي.',
+    biography:'خلّيني عرّفك على حمدي. هو مصوّر فوتوغرافي من تركمان سوريا، وُلد بقرية البدروسية بمحافظة اللاذقية. حمدي مؤسّس حمدي فوتوغرافي وصاحب فكرة هالموقع، اللي جمع فيه خدمات التصوير والحجز والمساعد الصوتي بالعربي والتركي.',
     channel:'كيف بتحب حمدي يتواصل معك؟ واتساب، رسالة قصيرة، أو بريد إلكتروني؟',
     phone:'قول رقمك رقم رقم، أو اكتبه بالخانة.',
     email:'قول عنوان بريدك الإلكتروني، أو اكتبه بالخانة حتى نتأكد منه.',
@@ -15,6 +16,7 @@ export const ORDER_PROMPTS = Object.freeze({
     service:'Hangi hizmeti istiyorsun? Renk düzenleme, mezuniyet, berber çekimi veya pasaport ve kimlik fotoğrafı?',
     name:'Adın nedir?',
     welcome:'Hamdi Photography’ye hoş geldiniz.',
+    biography:'Sana Hamdi’yi tanıtayım. Kendisi Suriye Türkmenlerinden bir fotoğrafçı. Lazkiye ilinin Bedrusiye köyünde doğdu. Hamdi Photography’nin kurucusu ve bu sitenin fikir sahibi. Fotoğraf hizmetlerini, randevu talebini ve sesli asistanı bu sitede Arapça ve Türkçe bir araya getirdi.',
     channel:'Hamdi sana nasıl ulaşsın? WhatsApp, SMS veya e-posta?',
     phone:'Telefon numaranı rakam rakam söyle veya kutuya yaz.',
     email:'E-posta adresini söyle veya doğru olması için kutuya yaz.',
@@ -111,3 +113,4 @@ export async function cachedOrderPrompt(guard,prompt,range) {
   try {const bytes=await guard.synthesize(prompt,guard.env);await guard.ctx.storage.put(key,bytes);return promptResponse(bytes,false,range);}
   catch(error){return errorResponse(['prompt-provider-auth','prompt-provider-quota','prompt-provider-unavailable','prompt-audio-invalid'].includes(error.message)?error.message:'prompt-unavailable');}
 }
+

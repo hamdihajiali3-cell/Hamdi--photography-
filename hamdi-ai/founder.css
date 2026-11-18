@@ -1,0 +1,27 @@
+.founder-intro {
+  margin-block-start: 14px;
+  padding-block-start: 10px;
+  border-block-start: 1px solid var(--line);
+  text-align: start;
+}
+.founder-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 3px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 600;
+  text-align: start;
+}
+.founder-trigger:hover:not(:disabled) { color: var(--copper); }
+.founder-trigger [data-founder-icon] { color: var(--copper); font-size: 12px; }
+#founder-profile { padding-block: 8px 2px; }
+#founder-description { font-size: 14px; line-height: 1.95; overflow-wrap: anywhere; }
+#founder-status { min-height: 1.7em; margin-block-start: 8px; color: var(--muted); font-size: 12px; line-height: 1.7; }
