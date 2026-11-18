@@ -1,5 +1,4 @@
 import { mountTurkishDateTime } from '../booking-date-time.mjs?v=turkish-schedule-20261116';
-import { FounderIntroduction } from './founder.mjs?v=founder-20261118';
 
 const CONTACT = Object.freeze({ displayPhone: '0537 742 36 71', email: 'hamdihajiali76@gmail.com' });
 const SERVICES = Object.freeze({
@@ -422,7 +421,6 @@ class OrderAssistant {
       this.el('start').hidden = !showStart;
       this.el('voice-notice').hidden = !showStart;
       this.el('repeat').hidden = Boolean(this.stream);
-      if (phase === 'idle' && showStart && !message) message = this.c.microphoneOff;
     }
     this.dialog.dataset.phase = phase;
     this.el('status').textContent = message || '';
@@ -508,13 +506,15 @@ class OrderAssistant {
     const emailNotice = this.channels.email
       ? (tr ? ' Web3Forms e-posta taleplerini 7 gün saklar.' : ' يحتفظ Web3Forms بتفاصيل طلبات البريد 7 أيام.')
       : '';
-    const intro = typed && serviceLabel ? serviceLabel+' · '+c.typedIntro+emailNotice : c.intro;
-    const voiceNotice = '<p id="order-voice-notice" class="dialog-alert">'+(inline ? c.inlinePrivacy : c.privacy+emailNotice)+'</p>';
+    const intro = inline ? serviceLabel || '' : typed && serviceLabel ? serviceLabel+' · '+c.typedIntro+emailNotice : c.intro;
+    const voiceNoticeText = (inline ? c.inlinePrivacy : c.privacy)+emailNotice;
+    const voiceNotice = '<p id="order-voice-notice" class="dialog-alert">'+voiceNoticeText+'</p>';
+    const privacy = inline ? '<details class="order-privacy"><summary>'+(tr ? 'Gizlilik' : 'الخصوصية')+'</summary>'+voiceNotice+'</details>' : voiceNotice;
     const voiceStart = '<button type="button" class="button primary" id="order-start" aria-describedby="order-voice-notice">'+c.start+'</button>';
     const typedButton = '<button type="button" class="'+(inline ? 'button order-write' : 'text-link')+'" id="order-typed">'+c.typed+'</button>';
     const consent = '<section id="order-consent">'+(inline
-      ? '<div class="order-mode-actions">'+voiceStart+typedButton+'</div>'+voiceNotice
-      : voiceNotice+voiceStart+typedButton)+'</section>';
+      ? '<div class="order-mode-actions">'+voiceStart+typedButton+'</div>'+privacy
+      : privacy+voiceStart+typedButton)+'</section>';
     const whenInput = '<input name="when" maxlength="160">';
     const schedule = inline
       ? '<div data-order-field="when"><div class="order-schedule">'+
@@ -526,7 +526,7 @@ class OrderAssistant {
       '<button type="button" id="order-close" class="dialog-close" aria-label="'+c.close+'">×</button>',
       '<div class="order-avatar" aria-hidden="true"><div class="orb"><div class="orb-shine"></div>'+
         '<div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div>',
-      '<h2 id="order-title">'+(inline ? (tr ? 'Çekim talebi' : 'طلب جلسة') : c.title)+'</h2><p>'+intro+'</p>',
+      '<h2 id="order-title">'+(inline ? (tr ? 'Çekim talebi' : 'طلب جلسة') : c.title)+'</h2>'+(intro ? '<p class="order-service-name">'+intro+'</p>' : ''),
       '<p id="order-status" role="status" aria-live="polite"></p>',
       inline ? '<p id="order-spoken-name" hidden></p>' : '',
       inline ? '' : consent,
@@ -543,7 +543,7 @@ class OrderAssistant {
       '<label data-order-field="notes">'+c.notes+'<textarea name="notes" maxlength="500" rows="2"></textarea></label>',
       '<div class="order-step-tools" id="order-step-tools"><button type="button" class="button primary" id="order-next">'+c.next+'</button>',
       '<button type="button" class="text-link" id="order-skip">'+c.skip+'</button></div>',
-      '<p>'+c.pending+'</p><button type="submit" class="button primary" id="order-send" hidden>'+c.send+'</button></form>',
+      '<p id="order-pending" hidden>'+c.pending+'</p><button type="submit" class="button primary" id="order-send" hidden>'+c.send+'</button></form>',
       '<section id="order-receipt" hidden><h3>'+c.receiptTitle+'</h3><dl id="order-summary"></dl><p>'+c.pending+'</p></section>'
     ].join('');
     this.el('close').onclick = ()=>{ if (!this.sending) this.close(); };
@@ -561,7 +561,7 @@ class OrderAssistant {
       if (!key) return;
       this.onPromptRequested?.();
       this.stopPrompt();
-      this.setPhase('idle',c.typedHint);
+      this.setPhase('idle',inline ? '' : c.typedHint);
       const field = key === 'when' ? (this.turkishSchedule?.dateButton || this.el('date')) : this.field(key);
       field.focus();
     };
@@ -583,7 +583,7 @@ class OrderAssistant {
     }
     this.el('mute').onclick = ()=>{
       this.cancelRecording();
-      this.setPhase('idle',c.typedHint);
+      this.setPhase('idle',inline ? '' : c.typedHint);
     };
     this.el('repeat').onclick = ()=>{
       this.onPromptRequested?.();
@@ -685,6 +685,7 @@ class OrderAssistant {
   }
 
   showStep(play = Boolean(this.stream), { listenImmediately = false } = {}) {
+    this.el('pending').hidden = true;
     const key = orderFields[this.stage];
     this.dialog.querySelectorAll('[data-order-field]').forEach(el=>{ el.hidden = el.dataset.orderField !== key; });
     this.el('skip').hidden = key !== 'when';
@@ -704,8 +705,7 @@ class OrderAssistant {
 
   ask(prompt) {
     this.stopTurn();
-    const message = this.inline && !this.stream ? this.c.microphoneOff : this.c.speaking;
-    this.setPhase('speaking',message);
+    this.setPhase('speaking',this.c.speaking);
     this.speak(prompt,()=>{
       if (this.stream) this.listenForAnswer();
       else this.setPhase('idle');
@@ -775,6 +775,7 @@ class OrderAssistant {
     this.el('send').hidden = automatically;
     this.el('repeat').hidden = automatically;
     this.el('question').textContent = automatically ? this.c.receiptTitle : this.c.review;
+    this.el('pending').hidden = false;
     this.setPhase('review');
     if (automatically) this.send();
     else this.speak('review');
@@ -1173,16 +1174,12 @@ if (staticDelivery) {
 const $ = selector => document.querySelector(selector);
 const form = $('#booking-form'), review = $('#review-dialog'), voiceDialog = $('#voice-dialog');
 let language = 'ar', configured = false, currentMessage = '', lastVoiceState = '', transcriptText = '', consentMode = 'microphone';
-let founderPlayer;
 const text = key => copy[language][key];
 const show = dialog => { if (!dialog.open) { if (dialog.showModal) dialog.showModal(); else dialog.setAttribute('open', ''); } };
 const hide = dialog => { if (dialog.close) dialog.close(); else dialog.removeAttribute('open'); };
 function setVoiceState(state) {
   lastVoiceState = state;
   const active = ['connecting', 'listening', 'speaking', 'muted'].includes(state);
-  if (active) founderPlayer?.stop('');
-  const founderButton = $('#founder-introduction');
-  if (founderButton) founderButton.disabled = active;
   $('#call-controls').hidden = !active;
   $('#open-voice').disabled = active || !configured;
   $('#open-voice-test').disabled = active || !configured;
@@ -1207,7 +1204,7 @@ const voice = new CustomerVoice({ onState: setVoiceState, onTranscript: value =>
 } });
 const orderAssistant = new OrderAssistant({
   getLanguage: () => language,
-  stopOtherVoice: () => { founderPlayer?.stop(''); voice.stop(false); },
+  stopOtherVoice: () => voice.stop(false),
   onState: setVoiceState,
   onPromptRequested: inlineBooking
     ? () => window.parent.postMessage({type:'hamdi-ai:stop-opening-audio'}, embeddedParent)
@@ -1233,11 +1230,6 @@ if (!consultation) orderAssistant.configure().then(enabled => {
     }).observe(booking);
   }
 });
-founderPlayer = new FounderIntroduction({
-  button: $('#founder-introduction'), panel: $('#founder-profile'),
-  description: $('#founder-description'), status: $('#founder-status'),
-  beforePlay: () => voice.stop(false),
-});
 function updateConsent() {
   $('#confirm-voice').disabled = !configured || !$('#adult-check').checked || !$('#voice-check').checked;
   $('#voice-dialog-status').textContent = configured ? '' : text('voiceDisabled');
@@ -1251,7 +1243,6 @@ function setLanguage(next) {
   if (orderAssistant.dialog.open) orderAssistant.close();
   if (voice.active) voice.stop(false);
   language = next;
-  founderPlayer.setLanguage(language);
   document.documentElement.lang = language; document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
   document.title = language === 'ar' ? 'حمدي AI | Hamdi Photography' : 'Hamdi AI | Hamdi Photography';
   document.querySelectorAll('[data-t]').forEach(el => { if (copy[language][el.dataset.t]) el.textContent = text(el.dataset.t); });
@@ -1328,7 +1319,7 @@ $('#copy-message').addEventListener('click', async () => {
   try { await navigator.clipboard.writeText(currentMessage); $('#review-status').textContent = text('copied'); }
   catch { $('#review-status').textContent = text('copyFailed'); }
 });
-function prepareVoice(mode) { founderPlayer.stop(''); consentMode = mode; $('#adult-check').checked = false; $('#voice-check').checked = false; updateConsent(); show(voiceDialog); }
+function prepareVoice(mode) { consentMode = mode; $('#adult-check').checked = false; $('#voice-check').checked = false; updateConsent(); show(voiceDialog); }
 $('#open-voice').addEventListener('click', () => prepareVoice('microphone'));
 $('#open-voice-test').addEventListener('click', () => prepareVoice('playback'));
 $('#adult-check').addEventListener('change', updateConsent); $('#voice-check').addEventListener('change', updateConsent);
@@ -1338,11 +1329,12 @@ $('#confirm-voice').addEventListener('click', async () => {
 });
 $('#skip-to-form').addEventListener('click', () => { hide(voiceDialog); openBooking(); });
 $('#mute-voice').addEventListener('click', () => voice.mute()); $('#end-voice').addEventListener('click', () => voice.stop());
-window.addEventListener('pagehide', () => { founderPlayer.stop(''); voice.stop(false); });
-document.addEventListener('visibilitychange', () => { if (document.hidden) { founderPlayer.stop(''); if (voice.active) voice.stop(); } });
+window.addEventListener('pagehide', () => voice.stop(false));
+document.addEventListener('visibilitychange', () => { if (document.hidden && voice.active) voice.stop(); });
 setLanguage(pageOptions.get('lang') === 'tr' ? 'tr' : 'ar');
 if (language === 'tr' && !inlineBooking && !consultation) mountTurkishDateTime($('#date'), $('#time'));
 if (!inlineBooking && !staticDelivery && (location.protocol === 'http:' || location.protocol === 'https:')) {
   fetch('/api/status', { signal: AbortSignal.timeout(5000) }).then(response => response.ok ? response.json() : null).then(status => { configured = status?.configured === true; setVoiceState(''); updateConsent(); }).catch(() => { configured = false; setVoiceState(''); updateConsent(); });
 }
+
 

@@ -1,24 +1,24 @@
 html.hamdi-assistant-open{overflow:hidden}
-#hamdi-ai-dialog{width:min(560px,calc(100vw - 24px));height:min(840px,94vh);height:min(840px,94dvh);max-height:94dvh;margin:auto;padding:0;border:1px solid #c7d2be;border-radius:16px;background:#f6f2ea;color:#183b30;overflow:hidden;box-shadow:0 24px 90px #071d2866}
+#hamdi-ai-dialog{width:min(560px,calc(100vw - 24px));height:min(840px,94vh);height:min(840px,94dvh);max-height:94dvh;margin:auto;padding:0;border:1px solid #d7dfd17a;border-radius:16px;background:rgba(246,242,234,.64);color:#183b30;overflow:hidden;box-shadow:0 24px 90px #071d2840;-webkit-backdrop-filter:blur(18px) saturate(1.08);backdrop-filter:blur(18px) saturate(1.08);isolation:isolate}
 #hamdi-ai-dialog[open]{display:flex;flex-direction:column}
-#hamdi-ai-dialog::backdrop{background:#10231acc;backdrop-filter:blur(4px)}
-#hamdi-ai-dialog .hamdi-ai-bar{display:flex;flex:none;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #dadfd3;background:#f6f2ea;min-height:76px}
+#hamdi-ai-dialog::backdrop{background:rgba(16,35,26,.2);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+#hamdi-ai-dialog .hamdi-ai-bar{display:flex;flex:none;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #b6c2ad70;background:rgba(255,255,255,.14);min-height:76px}
 #hamdi-ai-dialog .hamdi-ai-heading{flex:1;min-width:0}
 #hamdi-ai-dialog h2{font:700 15px/1.4 Arial,sans-serif;letter-spacing:.09em;margin:0}
 #hamdi-ai-subtitle{font:11px/1.6 Arial,sans-serif;color:#626f5d;margin:4px 0 0}
 #hamdi-ai-dialog button{min-height:44px;cursor:pointer;font:12px/1.5 Arial,sans-serif;outline-offset:3px}
 #hamdi-ai-close{flex:none;width:40px;padding:0;border:1px solid #c7d2be;border-radius:6px;background:transparent;color:#183b30;font-size:25px!important}
 #hamdi-ai-dialog button:focus-visible{outline:2px solid #a86e4d}
-#hamdi-ai-frame{display:block;flex:1;width:100%;height:0;min-height:0;border:0;background:#f6f2ea}
+#hamdi-ai-frame{display:block;flex:1;width:100%;height:0;min-height:0;border:0;background:transparent}
 #booking{scroll-margin-top:24px}
 html.hamdi-booking-open{overflow:hidden}
-#direct-booking{width:min(38rem,calc(100vw - 24px));max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px);margin:auto;padding:0;border:1px solid #c7d2be;border-radius:16px;background:#f6f2ea;color:#183b30;overflow:auto;overscroll-behavior:contain;box-shadow:0 24px 90px #071d2866}
+#direct-booking{width:min(38rem,calc(100vw - 24px));max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px);margin:auto;padding:0;border:1px solid #d7dfd17a;border-radius:16px;background:rgba(246,242,234,.64);color:#183b30;overflow:auto;overscroll-behavior:contain;box-shadow:0 24px 90px #071d2840;-webkit-backdrop-filter:blur(18px) saturate(1.08);backdrop-filter:blur(18px) saturate(1.08);isolation:isolate}
 #direct-booking:not([open]),#hamdi-ai-dialog:not([open]),#manual-booking-section[hidden]{display:none}
-#direct-booking::backdrop{background:#10231acc;backdrop-filter:blur(4px)}
-.direct-booking-bar{position:sticky;top:0;z-index:1;display:flex;justify-content:flex-end;background:#f6f2ea;border-bottom:1px solid #dadfd3;padding:.5rem .75rem}
+#direct-booking::backdrop{background:rgba(16,35,26,.2);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.direct-booking-bar{position:sticky;top:0;z-index:1;display:flex;justify-content:flex-end;background:rgba(246,242,234,.74);border-bottom:1px solid #b6c2ad70;padding:.5rem .75rem;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
 #direct-booking-close{min-height:44px;padding:0 .8rem;color:#183b30;background:transparent;border:1px solid #c7d2be;border-radius:6px;font:inherit;cursor:pointer}
 #direct-booking-close:focus-visible,#direct-booking-fallback:focus-visible{outline:2px solid #a86e4d;outline-offset:2px}
-#direct-booking-frame{display:block;width:100%;border:0}
+#direct-booking-frame{display:block;width:100%;border:0;background:transparent}
 #direct-booking-status{margin:.75rem;text-align:center;font-size:.9rem}
 #direct-booking-fallback{margin:.5rem .75rem;min-height:44px;padding:.4rem .8rem;color:#183b30;background:transparent;border:1px solid #c7d2be;border-radius:6px;font:inherit;cursor:pointer}
 #direct-booking [hidden]{display:none}
@@ -30,3 +30,31 @@ html.hamdi-booking-open{overflow:hidden}
 #direct-booking.mobile-dialog-fallback[open],#hamdi-ai-dialog.mobile-dialog-fallback[open]{position:fixed;inset:0 0 auto;top:var(--modal-viewport-top,0px);z-index:1000;display:flex;flex-direction:column;width:100%;height:100vh;height:var(--modal-viewport-height,100dvh);max-width:none;max-height:none;margin:0;border:0;border-radius:0;overflow:hidden}
 #direct-booking.mobile-dialog-fallback[open] #direct-booking-frame{flex:1;min-height:0;height:0}
 @media(max-width:420px){#hamdi-ai-dialog .hamdi-ai-bar{gap:8px;min-height:60px}#hamdi-ai-subtitle{font-size:10px}}
+
+/* A thin moving tint stays on the perimeter, clear of the controls. */
+@supports ((mask-composite:exclude) or (-webkit-mask-composite:xor)) {
+  #hamdi-ai-dialog::before,#direct-booking::before {
+    content:"";
+    position:absolute;
+    inset:0;
+    z-index:3;
+    padding:1.5px;
+    border-radius:inherit;
+    pointer-events:none;
+    background:linear-gradient(120deg,#e9a9b3b8,#b4aed8a8,#a4c9e9bf,#a1d4bdb8,#e8c4a7b8,#e9a9b3b8);
+    background-size:300% 300%;
+    -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+    -webkit-mask-composite:xor;
+    mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+    mask-composite:exclude;
+    animation:hamdi-glass-edge 28s ease-in-out infinite;
+  }
+}
+@keyframes hamdi-glass-edge {
+  0%,100% { background-position:0% 50%; }
+  50% { background-position:100% 50%; }
+}
+@media (prefers-reduced-motion:reduce) {
+  #hamdi-ai-dialog::before,#direct-booking::before { animation:none; }
+}
+

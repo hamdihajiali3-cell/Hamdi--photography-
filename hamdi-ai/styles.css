@@ -190,3 +190,63 @@ html[data-voice-state="muted"] .orb-scene .wave { opacity: .46; }
   background: #e8c9ae;
 }
 .art-portrait i, .art-portrait i::after { background: #605344; }
+
+/* Embedded consultation inherits the glass from its host; booking stays scoped separately. */
+html[data-consultation=true], html[data-consultation=true] body {
+  background:transparent;
+}
+html[data-consultation=true] .voice-card {
+  background:transparent;
+  border-color:transparent;
+  box-shadow:none;
+}
+html[data-consultation=true] .voice-start {
+  background:rgba(255,252,246,.76);
+  border-color:rgba(132,155,121,.5);
+}
+html[data-consultation=true] .voice-copy>p:last-child,
+html[data-consultation=true] .voice-status {
+  color:#4c5b50;
+}
+html[data-consultation=true] .language {
+  border-color:rgba(132,155,121,.45);
+}
+
+/* The service request shares the host's glass, with one question at a time. */
+html[data-inline-booking], html[data-inline-booking] body,
+html[data-inline-booking] #order-dialog[open] {
+  background:transparent;
+}
+html[data-inline-booking] .order-service-name {
+  margin-block:0 .5rem;
+  color:#875435;
+  font-size:.88rem;
+}
+html[data-inline-booking] .order-privacy {
+  margin-block:.3rem;
+  color:#4c5b50;
+}
+html[data-inline-booking] .order-privacy summary {
+  width:max-content;
+  max-width:100%;
+  min-height:44px;
+  display:flex;
+  align-items:center;
+  padding-block:.5rem;
+  font-size:.75rem;
+  text-decoration:underline;
+  text-underline-offset:3px;
+}
+html[data-inline-booking] .order-privacy #order-voice-notice {
+  background:rgba(255,252,246,.55);
+  margin-block:0 .6rem;
+  color:#4c5b50;
+}
+html[data-inline-booking] #order-consent {
+  border-bottom:0;
+}
+html[data-inline-booking] #order-pending {
+  color:#4c5b50;
+  font-size:.8rem;
+}
+

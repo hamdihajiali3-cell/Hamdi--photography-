@@ -1,3 +1,5 @@
+import { OpeningChime } from './opening-chime.mjs?v=glass-20261118';
+
 const VOICE_ORIGIN = 'https://hamdi--photography.hamdihajiali3.workers.dev';
 const SERVICES = new Set(['', 'color', 'graduation', 'hair', 'id', 'portrait']);
 
@@ -33,6 +35,7 @@ if (typeof document !== 'undefined') {
   const directFallback = document.querySelector('#direct-booking-fallback');
   const bookingStatus = document.querySelector('#direct-booking-status');
   const openingAudio = document.querySelector('#direct-booking-audio');
+  const openingChime = new OpeningChime();
   let gmailForm = false;
   let directTrigger;
   let bookingLoadTimer;
@@ -77,6 +80,7 @@ if (typeof document !== 'undefined') {
     frame.title = tr ? 'Hamdi AI sesli asistanı' : 'مساعد حمدي AI الصوتي';
   };
   const closeAssistant = () => {
+    openingChime.stop();
     closeModal(dialog, 'hamdi-assistant-open');
     frame.src = 'about:blank';
   };
@@ -104,11 +108,12 @@ if (typeof document !== 'undefined') {
     source.searchParams.set('languageNavigation', 'parent');
     return source;
   };
-  const openAssistant = () => {
+  const openAssistant = ({ withChime = false } = {}) => {
     stopOpeningAudio();
     labels();
     frame.src = assistantUrl().href;
     showModal(dialog, close, 'hamdi-assistant-open');
+    if (withChime) void openingChime.play();
   };
   const stopOpeningAudio = () => {
     if (!openingAudio.hasAttribute('src')) return;
@@ -143,6 +148,7 @@ if (typeof document !== 'undefined') {
     directTrigger = null;
   };
   const openDirectBooking = (service, trigger) => {
+    openingChime.stop();
     gmailForm = false;
     manualBooking.hidden = true;
     const locale = language();
@@ -175,7 +181,7 @@ if (typeof document !== 'undefined') {
   };
   document.querySelectorAll('[data-open-hamdi-ai]').forEach(link => link.addEventListener('click', event => {
     event.preventDefault();
-    openAssistant();
+    openAssistant({ withChime: true });
   }));
   document.querySelectorAll('[data-service]').forEach(button => {
     button.setAttribute('aria-controls', 'direct-booking');
@@ -276,6 +282,7 @@ if (typeof document !== 'undefined') {
     closeAssistant();
   });
   window.visualViewport?.addEventListener('resize', syncModalViewport);
+  document.addEventListener('visibilitychange', () => { if (document.hidden) openingChime.stop(); });
   window.visualViewport?.addEventListener('scroll', syncModalViewport);
   labels();
 
@@ -292,3 +299,4 @@ if (typeof document !== 'undefined') {
     openAssistant();
   }
 }
+
