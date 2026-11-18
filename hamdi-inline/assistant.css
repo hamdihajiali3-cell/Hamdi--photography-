@@ -68,4 +68,10 @@ html.hamdi-booking-open{overflow:hidden}
   #hamdi-ai-dialog::before,#direct-booking::before { animation:none; }
 }
 
+/* Live conversation surface, matching the capsule entry beside booking. */
+#hamdi-ai-dialog{border-radius:24px;border-color:rgba(144,177,197,.4)}
+#hamdi-ai-dialog::before{padding:2px;background:linear-gradient(115deg,#8db8e5b8,#a9cbbcb8,#e1bc97b8,#b3b9e9b8,#8db8e5b8);background-size:300% 300%;animation-duration:22s}
+#hamdi-ai-dialog .hamdi-ai-bar{background:rgba(247,250,248,.2);border-bottom-color:rgba(144,177,197,.25)}
+@media(max-width:640px){#hamdi-ai-dialog[open]{border-radius:0}}
+
 

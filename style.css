@@ -108,14 +108,30 @@
 }
 
 .hero-actions .ai-entry {
-  background: rgba(247, 243, 235, .7);
+  gap: .7rem;
+  padding-inline: 1.15rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: linear-gradient(115deg, #f7f3eb, #e9eee8) padding-box, linear-gradient(120deg, #94aca0, #a4bddd, #d4a183) border-box;
   color: var(--ink);
+  box-shadow: 0 4px 14px rgba(41, 66, 53, .08);
+  font-size: .88rem;
 }
 
 .hero-actions .ai-entry:hover {
-  background: var(--light);
-  border-color: var(--copper);
+  background: linear-gradient(115deg, #fffdf8, #eef2ee) padding-box, linear-gradient(120deg, #7f9f90, #82a9db, #c48760) border-box;
 }
+
+.ai-entry .live-entry-icon { display:inline-flex; width:25px; height:25px; align-items:center; justify-content:center; color:#496e68; }
+.ai-entry .live-entry-icon svg { display:block; width:100%; height:100%; }
+@media (prefers-reduced-motion:no-preference) {
+  .ai-entry .live-entry-icon rect { transform-box:fill-box; transform-origin:center; animation:hamdi-entry-wave 1.8s ease-in-out infinite alternate; }
+  .ai-entry .live-entry-icon rect:nth-child(2) { animation-delay:-.7s; }
+  .ai-entry .live-entry-icon rect:nth-child(3) { animation-delay:-1.2s; }
+  .ai-entry .live-entry-icon rect:nth-child(4) { animation-delay:-.35s; }
+}
+@keyframes hamdi-entry-wave { from { transform:scaleY(.65); } to { transform:scaleY(1); } }
+@media (max-width:380px) { .hero-actions a { padding-inline:.75rem; gap:.5rem; font-size:.84rem; } .ai-entry .live-entry-icon { width:21px; height:21px; } }
 
 .hero-actions a:focus-visible {
   outline: 2px solid var(--copper);
@@ -198,3 +214,4 @@
 @media (min-width: 651px) and (max-width: 1050px) {
   .card.portrait { grid-column: 1 / -1; border-block-start: 1px solid var(--line); border-inline-start: 1px solid var(--line); }
 }
+

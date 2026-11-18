@@ -288,4 +288,33 @@ html[data-consultation] .voice-status {
 }
 html[data-consultation] .call-controls { margin-top:8px; }
 
+/* State-driven light waves for the original site's live voice conversation. */
+html[data-consultation] .orb-scene{max-width:390px;height:clamp(235px,41dvh,330px);--voice-glow:#9bbce2}
+html[data-consultation] .orb-scene :is(.orb-shadow,.orbit,.orbit-dot,.orb-shine){display:none}
+html[data-consultation] .orb-scene::before{width:100%;max-width:390px;height:235px;opacity:.5;background:radial-gradient(ellipse at 22% 60%,#78a9e34d,transparent 56%),radial-gradient(ellipse at 78% 40%,#8fbdae4d,transparent 55%),radial-gradient(ellipse at 55% 65%,#d4a18338,transparent 58%);filter:blur(16px)}
+html[data-consultation] .orb-scene::after{content:"";position:absolute;inset:auto 5% 15%;height:34px;border-radius:50%;background:linear-gradient(90deg,#8ab8ea,#91c2bb,#d5ad8e,#acaee0);filter:blur(22px);opacity:.27;pointer-events:none}
+html[data-consultation] .orb-scene>.orb{width:100%;height:180px;border:0;border-radius:0;background:transparent;box-shadow:none;animation:none!important}
+html[data-consultation] .orb::after{display:none}
+html[data-consultation] .orb .wave{height:180px;gap:10px;direction:ltr;align-items:center}
+html[data-consultation] .orb .wave i{width:10px;height:var(--live-height,32px);border-radius:999px;background:linear-gradient(180deg,#8fb8e8,#abd0cf 48%,#93b3d9);box-shadow:0 0 20px #8fb8e82b;transform:scaleY(.55);transition:opacity .3s,background .3s;animation:none}
+html[data-consultation] .wave i:nth-child(2),html[data-consultation] .wave i:nth-child(8){--live-height:62px}
+html[data-consultation] .wave i:nth-child(3),html[data-consultation] .wave i:nth-child(7){--live-height:105px}
+html[data-consultation] .wave i:nth-child(4),html[data-consultation] .wave i:nth-child(6){--live-height:138px}
+html[data-consultation] .wave i:nth-child(5){--live-height:164px;background:linear-gradient(180deg,#9bbde6,#f0d1ad 53%,#b4c8d8)}
+html[data-consultation][data-voice-state=listening] .wave i{background:linear-gradient(180deg,#94bfee,#9fdbd0 52%,#80b0d8)}
+html[data-consultation][data-voice-state=speaking] .wave i{background:linear-gradient(180deg,#94b7ed,#e9c5a0 54%,#a5bce2)}
+html[data-consultation][data-voice-state=muted] .wave i{opacity:.35;transform:scaleY(.25)}
+html[data-consultation] .call-controls .button{border-radius:999px;min-height:48px;padding:10px 16px}
+html[data-consultation] .orb-scene:focus-visible{outline:2px solid #7eaccc;outline-offset:4px;border-radius:24px}
+@media(prefers-reduced-motion:no-preference){
+  html[data-consultation] .orb-scene.live .wave i{animation:hamdi-live-wave 1.35s ease-in-out infinite alternate}
+  html[data-consultation] .orb-scene.live .wave i:nth-child(2n){animation-delay:-.7s}
+  html[data-consultation] .orb-scene.live .wave i:nth-child(3n){animation-delay:-.95s;animation-duration:1.1s}
+  html[data-consultation] .orb-scene.live .wave i:nth-child(4n){animation-delay:-.35s}
+  html[data-consultation][data-voice-state=speaking] .orb-scene.live .wave i{animation-duration:.8s}
+  html[data-consultation][data-voice-state=connecting] .orb-scene::before{animation:hamdi-live-connect 2.5s ease-in-out infinite alternate}
+}
+@keyframes hamdi-live-wave{0%{transform:scaleY(.28)}45%{transform:scaleY(.62)}100%{transform:scaleY(1)}}
+@keyframes hamdi-live-connect{from{opacity:.3;transform:translate(-50%,-50%) scale(.94)}to{opacity:.65;transform:translate(-50%,-50%) scale(1.04)}}
+
 
