@@ -1,4 +1,5 @@
 import { mountTurkishDateTime } from '../booking-date-time.mjs?v=turkish-schedule-20261116';
+import { AutomaticVoice, activateVoiceAudio } from './automatic-voice.mjs?v=automatic-20261118';
 
 const CONTACT = Object.freeze({ displayPhone: '0537 742 36 71', email: 'hamdihajiali76@gmail.com' });
 const SERVICES = Object.freeze({
@@ -56,7 +57,7 @@ function failureState(error) {
   if (error.name === 'NotAllowedError') return 'permission';
   if (['pilot-limit', 'provider-quota'].includes(error.message)) return 'quota';
   if (error.message === 'connection-timeout') return 'provider-network';
-  return ['unsupported', 'provider-auth', 'provider-model', 'provider-network'].includes(error.message) ? error.message : 'unavailable';
+  return ['unsupported', 'activation-required', 'provider-auth', 'provider-model', 'provider-network'].includes(error.message) ? error.message : 'unavailable';
 }
 
 function providerFailure(error) {
@@ -93,13 +94,13 @@ class CustomerVoice {
       }
       this.onState('connecting');
       this.audio = new AudioContext();
-      const activated = this.audio.resume().then(()=>true,()=>false);
+      const activated = activateVoiceAudio(this.audio);
       if (microphone) {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true, autoGainControl: true }, video: false });
         if (run !== this.run) { stream.getTracks().forEach(track => track.stop()); return; }
         this.stream = stream;
       }
-      if (!(await activated)) throw new Error('unsupported');
+      if (!(await activated)) throw new Error('activation-required');
       if (run !== this.run) return;
       const response = await fetch('/api/live-token', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ language, adult: true, consent: true }) }).catch(() => { throw new Error('provider-network'); });
       const config = await response.json();
@@ -392,9 +393,20 @@ class OrderAssistant {
 
   async configure() {
     try {
+      let saved;
+      try { saved = JSON.parse(sessionStorage.getItem('hamdi-booking-status-v1') || 'null'); } catch {}
+      if (saved && Number.isFinite(saved.at) && Date.now() >= saved.at && Date.now() - saved.at < 60000
+        && saved.enabled === true && typeof saved.channels?.email === 'boolean') {
+        this.channels = { email: saved.channels.email };
+        this.enabled = this.channels.email;
+        return this.enabled;
+      }
       const {response,result} = await fetchOrder('/api/order/status',5000);
       this.channels = Object.fromEntries(orderChannels.map(key=>[key,result.channels?.[key] === true]));
       this.enabled = response.ok && result.enabled === true && Object.values(this.channels).some(Boolean);
+      if (this.enabled) {
+        try { sessionStorage.setItem('hamdi-booking-status-v1', JSON.stringify({ at: Date.now(), enabled: true, channels: this.channels })); } catch {}
+      }
     } catch {
       this.enabled = false;
     }
@@ -1112,7 +1124,8 @@ const embedded = pageOptions.get('embed') === '1' && window.parent !== window
   && ['https://hamdihajiali3-cell.github.io', 'https://hamdi--photography.hamdihajiali3.workers.dev'].includes(embeddedParent);
 const requestedService = pageOptions.get('bookingService');
 const bookingService = embedded && Object.hasOwn(SERVICES, requestedService) ? requestedService : '';
-const inlineBooking = Boolean(bookingService && pageOptions.get('presentation') === 'inline');
+const bookingPrewarm = embedded && pageOptions.get('presentation') === 'inline' && pageOptions.get('prewarm') === '1';
+const inlineBooking = Boolean((bookingService || bookingPrewarm) && pageOptions.get('presentation') === 'inline');
 if (inlineBooking) {
   document.documentElement.dataset.inlineBooking = 'true';
   document.addEventListener('keydown', event => {
@@ -1122,6 +1135,7 @@ if (inlineBooking) {
   });
 }
 const consultation = embedded && !inlineBooking;
+const automaticConversation = consultation && pageOptions.get('autoStart') === '1';
 if (consultation) {
   document.documentElement.dataset.consultation = 'true';
   copy.ar.voiceDescription = 'اسأل عن خدمات التصوير والمساعد بيساعدك تختار الجلسة. للحجز، افتح بطاقة الخدمة.';
@@ -1172,14 +1186,25 @@ if (staticDelivery) {
   });
 }
 const $ = selector => document.querySelector(selector);
+Object.assign(copy.ar, { 'activation-required':'اضغط على المساعد لتفعيل الصوت بهالمتصفح.', automaticReady:'اضغط على المساعد لبدء المحادثة.', automaticConnecting:'عم جهّز المحادثة…', orbAction:'تشغيل المحادثة الصوتية' });
+Object.assign(copy.tr, { 'activation-required':'Bu tarayıcıda sesi etkinleştirmek için asistana dokun.', automaticReady:'Konuşmayı başlatmak için asistana dokun.', automaticConnecting:'Görüşme hazırlanıyor…', orbAction:'Sesli görüşmeyi başlat' });
 const form = $('#booking-form'), review = $('#review-dialog'), voiceDialog = $('#voice-dialog');
 let language = 'ar', configured = false, currentMessage = '', lastVoiceState = '', transcriptText = '', consentMode = 'microphone';
+let automaticVoice, pageClosing = false;
 const text = key => copy[language][key];
 const show = dialog => { if (!dialog.open) { if (dialog.showModal) dialog.showModal(); else dialog.setAttribute('open', ''); } };
 const hide = dialog => { if (dialog.close) dialog.close(); else dialog.removeAttribute('open'); };
 function setVoiceState(state) {
   lastVoiceState = state;
   const active = ['connecting', 'listening', 'speaking', 'muted'].includes(state);
+  if (consultation) {
+    const orb = $('#orb-scene');
+    orb.setAttribute('aria-hidden', 'false');
+    orb.setAttribute('aria-label', text('orbAction'));
+    orb.setAttribute('tabindex', !active && configured ? '0' : '-1');
+    if (!active && configured) orb.setAttribute('role', 'button');
+    else orb.removeAttribute('role');
+  }
   $('#call-controls').hidden = !active;
   $('#open-voice').disabled = active || !configured;
   $('#open-voice-test').disabled = active || !configured;
@@ -1189,6 +1214,7 @@ function setVoiceState(state) {
   $('#voice-badge').textContent = text(active ? 'active' : configured ? 'ready' : 'unavailable');
   const displayState = consentMode === 'playback' ? ({ listening:'test-waiting', speaking:'test-speaking' }[state] || state) : state;
   $('#voice-status').textContent = text(displayState === 'unavailable' ? 'voiceError' : displayState) || text(configured ? 'voiceReady' : 'voiceOffline');
+  if (consultation && !state && configured) $('#voice-status').textContent = text(automaticConversation ? 'automaticConnecting' : 'automaticReady');
   $('#mute-voice').textContent = text(state === 'muted' ? 'unmute' : 'mute');
   if (!active) { transcriptText = ''; $('#transcript').textContent = ''; $('#transcript').hidden = true; }
 }
@@ -1212,7 +1238,12 @@ const orderAssistant = new OrderAssistant({
 });
 if (!consultation) orderAssistant.configure().then(enabled => {
   if (!enabled) {
+    if (bookingPrewarm) return;
     if (bookingService) window.parent.postMessage({type:'hamdi-ai:booking',service:bookingService,language}, embeddedParent);
+    return;
+  }
+  if (bookingPrewarm) {
+    window.parent.postMessage({type:'hamdi-ai:booking-warm'}, embeddedParent);
     return;
   }
   Object.assign(copy.ar, { voiceDescription:'اطلب جلستك بالصوت. المساعد يسمع أجوبتك ويرسل الطلب تلقائيًا عبر القناة التي تختارها بصوتك.', bookingAction:'احجز طلب عبر المساعد ↙' });
@@ -1238,6 +1269,12 @@ function updateConsent() {
   $('#confirm-voice').textContent = text(consentMode === 'playback' ? 'testStart' : 'startVoice');
   $('#mute-voice').hidden = consentMode === 'playback';
 }
+automaticVoice = new AutomaticVoice({
+  storage: () => window.sessionStorage,
+  canStart: () => consultation && configured && !voice.active && !document.hidden && !pageClosing,
+  showConsent: () => prepareVoice('microphone'),
+  start: async () => { consentMode = 'microphone'; hide(voiceDialog); await voice.start(language, { microphone: true }); },
+});
 function setLanguage(next) {
   if (!copy[next]) return;
   if (orderAssistant.dialog.open) orderAssistant.close();
@@ -1322,19 +1359,33 @@ $('#copy-message').addEventListener('click', async () => {
 function prepareVoice(mode) { consentMode = mode; $('#adult-check').checked = false; $('#voice-check').checked = false; updateConsent(); show(voiceDialog); }
 $('#open-voice').addEventListener('click', () => prepareVoice('microphone'));
 $('#open-voice-test').addEventListener('click', () => prepareVoice('playback'));
-$('#adult-check').addEventListener('change', updateConsent); $('#voice-check').addEventListener('change', updateConsent);
+const consentChanged = () => {
+  updateConsent();
+  if (consultation && consentMode === 'microphone') void automaticVoice.accept($('#adult-check').checked, $('#voice-check').checked);
+};
+$('#adult-check').addEventListener('change', consentChanged); $('#voice-check').addEventListener('change', consentChanged);
+$('#orb-scene').addEventListener('click', () => { if (consultation) void automaticVoice.request(); });
+$('#orb-scene').addEventListener('keydown', event => {
+  if (!consultation || !['Enter', ' '].includes(event.key)) return;
+  event.preventDefault(); void automaticVoice.request();
+});
 $('#confirm-voice').addEventListener('click', async () => {
   if (!configured || !$('#adult-check').checked || !$('#voice-check').checked) return;
   hide(voiceDialog); await voice.start(language, { microphone: consentMode === 'microphone' });
 });
 $('#skip-to-form').addEventListener('click', () => { hide(voiceDialog); openBooking(); });
 $('#mute-voice').addEventListener('click', () => voice.mute()); $('#end-voice').addEventListener('click', () => voice.stop());
-window.addEventListener('pagehide', () => voice.stop(false));
+window.addEventListener('pagehide', () => { pageClosing = true; voice.stop(false); });
 document.addEventListener('visibilitychange', () => { if (document.hidden && voice.active) voice.stop(); });
 setLanguage(pageOptions.get('lang') === 'tr' ? 'tr' : 'ar');
+if (consultation) window.parent.postMessage({ type:'hamdi-ai:assistant-ready' }, embeddedParent);
 if (language === 'tr' && !inlineBooking && !consultation) mountTurkishDateTime($('#date'), $('#time'));
 if (!inlineBooking && !staticDelivery && (location.protocol === 'http:' || location.protocol === 'https:')) {
-  fetch('/api/status', { signal: AbortSignal.timeout(5000) }).then(response => response.ok ? response.json() : null).then(status => { configured = status?.configured === true; setVoiceState(''); updateConsent(); }).catch(() => { configured = false; setVoiceState(''); updateConsent(); });
+  fetch('/api/status', { signal: AbortSignal.timeout(5000) }).then(response => response.ok ? response.json() : null).then(status => {
+    configured = status?.configured === true; setVoiceState(''); updateConsent();
+    if (automaticConversation) void automaticVoice.request();
+  }).catch(() => { configured = false; setVoiceState(''); updateConsent(); });
 }
+
 
 

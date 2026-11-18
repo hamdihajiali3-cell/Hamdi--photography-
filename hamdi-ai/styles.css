@@ -250,3 +250,42 @@ html[data-inline-booking] #order-pending {
   font-size:.8rem;
 }
 
+/* Inside the original site, the assistant is a voice surface, without a card or start button. */
+html[data-consultation] .hero {
+  min-height:calc(100dvh - 70px);
+  display:grid;
+  align-items:center;
+  padding-block:8px 24px;
+}
+html[data-consultation] .voice-card {
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:10px;
+  padding:12px 10px 20px;
+  overflow:visible;
+  border:0;
+  border-radius:0;
+}
+html[data-consultation] :is(.voice-card-top,.voice-copy,#open-voice,#open-voice-test,#confirm-voice) {
+  display:none;
+}
+html[data-consultation] .orb-scene {
+  width:100%;
+  margin:0 auto;
+  height:clamp(240px,42dvh,340px);
+}
+html[data-consultation] .orb-scene[role=button] { cursor:pointer; }
+html[data-consultation] .orb-scene:focus-visible {
+  outline:2px solid var(--copper);
+  outline-offset:4px;
+  border-radius:18px;
+}
+html[data-consultation] .voice-status {
+  margin:0 auto;
+  min-height:2em;
+  font-size:13px;
+}
+html[data-consultation] .call-controls { margin-top:8px; }
+
+

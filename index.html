@@ -11,7 +11,7 @@
   <link rel="alternate" hreflang="tr" href="./tr/" />
   <link rel="stylesheet" href="style.css?v=language-pages-20261116" />
   <link rel="stylesheet" href="flags.css?v=turkey-flag-20261102" />
-  <link rel="stylesheet" href="hamdi-inline/assistant.css?v=glass-20261118" />
+  <link rel="stylesheet" href="hamdi-inline/assistant.css?v=automatic-20261118" />
   <link rel="stylesheet" href="hamdi-entry/intro.css?v=20261116-logo-only" />
   <script defer src="hamdi-entry/intro.js?v=20261116-logo-only"></script>
 </head>
@@ -95,12 +95,14 @@
     <div class="direct-booking-bar">
       <button type="button" id="direct-booking-close">إغلاق الطلب</button>
     </div>
-    <p id="direct-booking-status" role="status" hidden></p>
+    <p id="direct-booking-status" class="booking-loading-label" role="status" hidden></p>
+    <div id="direct-booking-loading" aria-hidden="true" hidden><i></i><i></i><i></i><i></i></div>
     <iframe id="direct-booking-frame" title="طلب جلسة" height="340" allow="microphone; autoplay" sandbox="allow-scripts allow-same-origin allow-forms" referrerpolicy="strict-origin-when-cross-origin"></iframe>
     <button type="button" id="direct-booking-fallback" hidden>تابع عبر نموذج Gmail</button>
     <audio id="direct-booking-audio" preload="none" hidden></audio>
   </dialog>
-  <script type="module" src="hamdi-inline/site-assistant.mjs?v=glass-20261118"></script>
+  <script type="module" src="hamdi-inline/site-assistant.mjs?v=automatic-20261118"></script>
 </body>
 </html>
+
 

@@ -35,7 +35,9 @@ if (typeof document !== 'undefined') {
   const directFallback = document.querySelector('#direct-booking-fallback');
   const bookingStatus = document.querySelector('#direct-booking-status');
   const openingAudio = document.querySelector('#direct-booking-audio');
+  const bookingLoading = document.querySelector('#direct-booking-loading');
   const openingChime = new OpeningChime();
+  let prewarming = false;
   let gmailForm = false;
   let directTrigger;
   let bookingLoadTimer;
@@ -59,6 +61,12 @@ if (typeof document !== 'undefined') {
     document.documentElement.classList.add(scrollLock);
     syncModalViewport();
   };
+  const revealFrame = (modal, content) => {
+    content.hidden = false;
+    const reveal = () => { if (isModalOpen(modal) && !content.hidden) modal.removeAttribute('data-loading'); };
+    if (typeof requestAnimationFrame === 'function') requestAnimationFrame(() => requestAnimationFrame(reveal));
+    else reveal();
+  };
   const closeModal = (modal, scrollLock) => {
     if (isModalOpen(modal)) {
       if (typeof modal.close === 'function') modal.close();
@@ -81,6 +89,7 @@ if (typeof document !== 'undefined') {
   };
   const closeAssistant = () => {
     openingChime.stop();
+    frame.hidden = true;
     closeModal(dialog, 'hamdi-assistant-open');
     frame.src = 'about:blank';
   };
@@ -100,18 +109,22 @@ if (typeof document !== 'undefined') {
     document.querySelector('#booking').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
     (service ? document.querySelector('#booking-name') : bookingSelect).focus({ preventScroll: true });
   };
-  const assistantUrl = () => {
-    const source = new URL('/hamdi-ai/', VOICE_ORIGIN);
+  const assistantUrl = (booking = false) => {
+    const source = new URL(booking ? '/hamdi-ai/booking.html' : '/hamdi-ai/assistant.html', VOICE_ORIGIN);
     source.searchParams.set('embed', '1');
     source.searchParams.set('lang', language());
     source.searchParams.set('parentOrigin', location.origin);
     source.searchParams.set('languageNavigation', 'parent');
     return source;
   };
-  const openAssistant = ({ withChime = false } = {}) => {
+  const openAssistant = ({ withChime = false, autoStart = false } = {}) => {
     stopOpeningAudio();
     labels();
-    frame.src = assistantUrl().href;
+    frame.hidden = true;
+    dialog.setAttribute('data-loading', '');
+    const address = assistantUrl();
+    if (autoStart) address.searchParams.set('autoStart', '1');
+    frame.src = address.href;
     showModal(dialog, close, 'hamdi-assistant-open');
     if (withChime) void openingChime.play();
   };
@@ -130,6 +143,7 @@ if (typeof document !== 'undefined') {
   const finishBookingLoad = () => {
     clearTimeout(bookingLoadTimer);
     bookingStatus.hidden = true;
+    bookingLoading.hidden = true;
   };
   const showBookingFallback = () => {
     finishBookingLoad();
@@ -149,6 +163,7 @@ if (typeof document !== 'undefined') {
   };
   const openDirectBooking = (service, trigger) => {
     openingChime.stop();
+    prewarming = false;
     gmailForm = false;
     manualBooking.hidden = true;
     const locale = language();
@@ -165,10 +180,12 @@ if (typeof document !== 'undefined') {
       closeDirectBooking({ restoreFocus: false });
       openBooking(service);
     };
-    directFrame.hidden = false;
+    directFrame.hidden = true;
+    bookingLoading.hidden = false;
+    directBooking.setAttribute('data-loading', '');
     bookingStatus.textContent = tr ? 'Talep formu yükleniyor…' : 'عم نحمّل طلب الحجز…';
     bookingStatus.hidden = false;
-    const source = assistantUrl();
+    const source = assistantUrl(true);
     source.searchParams.set('bookingService', service);
     source.searchParams.set('presentation', 'inline');
     directFrame.height = 340;
@@ -181,7 +198,7 @@ if (typeof document !== 'undefined') {
   };
   document.querySelectorAll('[data-open-hamdi-ai]').forEach(link => link.addEventListener('click', event => {
     event.preventDefault();
-    openAssistant({ withChime: true });
+    openAssistant({ withChime: true, autoStart: true });
   }));
   document.querySelectorAll('[data-service]').forEach(button => {
     button.setAttribute('aria-controls', 'direct-booking');
@@ -229,11 +246,17 @@ if (typeof document !== 'undefined') {
   closeOnBackdrop(dialog, dismissAssistant);
   closeOnBackdrop(directBooking, closeDirectBooking);
   window.addEventListener('message', event => {
+    if (prewarming && !isModalOpen(directBooking) && event.source === directFrame.contentWindow && event.origin === VOICE_ORIGIN
+      && event.data?.type === 'hamdi-ai:booking-warm' && Object.keys(event.data).length === 1) {
+      prewarming = false;
+      directFrame.src = 'about:blank';
+      return;
+    }
     if (isModalOpen(directBooking) && event.source === directFrame.contentWindow && event.origin === VOICE_ORIGIN) {
       const data = event.data;
       if (data?.type === 'hamdi-ai:booking-ready' && Object.keys(data).length === 1) {
         finishBookingLoad();
-        directFrame.hidden = false;
+        revealFrame(directBooking, directFrame);
         directFallback.hidden = true;
         return;
       }
@@ -256,8 +279,14 @@ if (typeof document !== 'undefined') {
       return;
     }
     if (!isModalOpen(dialog)) return;
+    if (event.source === frame.contentWindow && event.origin === VOICE_ORIGIN
+      && event.data?.type === 'hamdi-ai:assistant-ready' && Object.keys(event.data).length === 1) {
+      revealFrame(dialog, frame);
+      return;
+    }
     const requestedLocale = readLanguageRequest(event, frame.contentWindow);
     if (requestedLocale && requestedLocale !== language()) {
+      try { sessionStorage.setItem('hamdi-voice-language-open', String(Date.now())); } catch {}
       location.assign(localePage(requestedLocale, '#hamdi-ai-dialog').href);
       return;
     }
@@ -286,6 +315,18 @@ if (typeof document !== 'undefined') {
   window.visualViewport?.addEventListener('scroll', syncModalViewport);
   labels();
 
+  const warmBooking = () => {
+    if (document.hidden || isModalOpen(directBooking) || isModalOpen(dialog)) return;
+    prewarming = true;
+    const source = assistantUrl(true);
+    source.searchParams.set('presentation', 'inline');
+    source.searchParams.set('prewarm', '1');
+    directFrame.hidden = true;
+    directFrame.src = source.href;
+  };
+  if (document.readyState === 'complete') setTimeout(warmBooking, 700);
+  else window.addEventListener('load', () => setTimeout(warmBooking, 700), { once: true });
+
   const address = new URL(location.href);
   const pendingService = address.searchParams.get('bookingService');
   if (pendingService !== null) {
@@ -296,7 +337,14 @@ if (typeof document !== 'undefined') {
       if (trigger) openDirectBooking(pendingService, trigger);
     }
   } else if (location.hash === '#hamdi-ai-dialog') {
-    openAssistant();
+    let autoStart = false;
+    try {
+      const pending = Number(sessionStorage.getItem('hamdi-voice-language-open'));
+      sessionStorage.removeItem('hamdi-voice-language-open');
+      autoStart = pending > 0 && Date.now() >= pending && Date.now() - pending < 15000;
+    } catch {}
+    openAssistant({ autoStart });
   }
 }
+
 

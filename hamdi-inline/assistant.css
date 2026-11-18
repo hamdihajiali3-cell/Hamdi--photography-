@@ -10,6 +10,9 @@ html.hamdi-assistant-open{overflow:hidden}
 #hamdi-ai-close{flex:none;width:40px;padding:0;border:1px solid #c7d2be;border-radius:6px;background:transparent;color:#183b30;font-size:25px!important}
 #hamdi-ai-dialog button:focus-visible{outline:2px solid #a86e4d}
 #hamdi-ai-frame{display:block;flex:1;width:100%;height:0;min-height:0;border:0;background:transparent}
+#hamdi-ai-frame[hidden]{display:none}
+#hamdi-ai-dialog[data-loading],#direct-booking[data-loading]{background:#ece7de}
+#hamdi-ai-dialog,#direct-booking{transition:background-color .12s ease}
 #booking{scroll-margin-top:24px}
 html.hamdi-booking-open{overflow:hidden}
 #direct-booking{width:min(38rem,calc(100vw - 24px));max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px);margin:auto;padding:0;border:1px solid #d7dfd17a;border-radius:16px;background:rgba(246,242,234,.64);color:#183b30;overflow:auto;overscroll-behavior:contain;box-shadow:0 24px 90px #071d2840;-webkit-backdrop-filter:blur(18px) saturate(1.08);backdrop-filter:blur(18px) saturate(1.08);isolation:isolate}
@@ -22,6 +25,13 @@ html.hamdi-booking-open{overflow:hidden}
 #direct-booking-status{margin:.75rem;text-align:center;font-size:.9rem}
 #direct-booking-fallback{margin:.5rem .75rem;min-height:44px;padding:.4rem .8rem;color:#183b30;background:transparent;border:1px solid #c7d2be;border-radius:6px;font:inherit;cursor:pointer}
 #direct-booking [hidden]{display:none}
+#direct-booking-loading { display:grid; gap:20px; padding:28px 24px; min-height:330px; }
+#direct-booking-loading i { display:block; height:20px; border-radius:8px; background:rgba(255,252,246,.55); }
+#direct-booking-loading i:first-child { width:42%; height:30px; }
+#direct-booking-loading i:nth-child(2) { width:65%; }
+#direct-booking-loading i:nth-child(3) { height:52px; }
+#direct-booking-loading i:last-child { width:90px; height:46px; justify-self:end; background:rgba(24,59,48,.3); }
+#direct-booking .booking-loading-label { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
 @media(max-width:640px),(max-height:500px) and (pointer:coarse){
   #direct-booking[open],#hamdi-ai-dialog[open]{position:fixed;inset:0 0 auto;top:var(--modal-viewport-top,0px);display:flex;flex-direction:column;width:100%;height:100vh;height:var(--modal-viewport-height,100dvh);max-width:none;max-height:none;margin:0;border:0;border-radius:0;overflow:hidden;padding-bottom:env(safe-area-inset-bottom)}
   .direct-booking-bar,#hamdi-ai-dialog .hamdi-ai-bar{flex:none;padding-top:max(.5rem,env(safe-area-inset-top))}
@@ -57,4 +67,5 @@ html.hamdi-booking-open{overflow:hidden}
 @media (prefers-reduced-motion:reduce) {
   #hamdi-ai-dialog::before,#direct-booking::before { animation:none; }
 }
+
 
