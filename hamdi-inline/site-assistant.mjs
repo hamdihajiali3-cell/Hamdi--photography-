@@ -110,7 +110,7 @@ if (typeof document !== 'undefined') {
     (service ? document.querySelector('#booking-name') : bookingSelect).focus({ preventScroll: true });
   };
   const assistantUrl = (booking = false) => {
-    const source = new URL(booking ? '/hamdi-ai/booking.html' : '/hamdi-ai/assistant.html', VOICE_ORIGIN);
+    const source = new URL(booking ? '/hamdi-ai/booking' : '/hamdi-ai/assistant', VOICE_ORIGIN);
     source.searchParams.set('embed', '1');
     source.searchParams.set('lang', language());
     source.searchParams.set('parentOrigin', location.origin);
