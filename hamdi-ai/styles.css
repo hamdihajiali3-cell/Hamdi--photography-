@@ -317,4 +317,40 @@ html[data-consultation] .orb-scene:focus-visible{outline:2px solid #7eaccc;outli
 @keyframes hamdi-live-wave{0%{transform:scaleY(.28)}45%{transform:scaleY(.62)}100%{transform:scaleY(1)}}
 @keyframes hamdi-live-connect{from{opacity:.3;transform:translate(-50%,-50%) scale(.94)}to{opacity:.65;transform:translate(-50%,-50%) scale(1.04)}}
 
+/* The iframe's own viewport shrinks with the phone keyboard and orientation. */
+html[data-inline-booking] { scroll-padding-block:12px max(16px,env(safe-area-inset-bottom)); }
+html[data-inline-booking],html[data-inline-booking] body { overflow-x:hidden; overscroll-behavior-y:contain; }
+html[data-inline-booking] #order-dialog[open] { padding-bottom:max(20px,env(safe-area-inset-bottom)); }
+html[data-inline-booking] .order-question { overflow-wrap:anywhere; }
+html[data-inline-booking] .order-mode-actions .button { min-height:48px; margin-inline-end:0; white-space:normal; }
+@media(max-width:640px),(max-height:600px){
+  html[data-consultation] .topbar{min-height:52px;padding-block:0}
+  html[data-consultation] .language{padding:2px}
+  html[data-consultation] .language button{min-height:44px;min-width:60px;font-size:13px}
+  html[data-consultation] .hero{min-height:0;padding-block:0 8px}
+  html[data-consultation] .voice-card{min-height:calc(100dvh - 60px);padding:4px 8px 12px;gap:8px}
+  html[data-consultation] .orb-scene{height:clamp(116px,30dvh,230px);max-width:min(100%,360px)}
+  html[data-consultation] .orb-scene::before{height:160px;max-width:100%}
+  html[data-consultation] .orb-scene>.orb,html[data-consultation] .orb .wave{height:140px}
+  html[data-consultation] .orb .wave{gap:8px}
+  html[data-consultation] .orb .wave i{height:calc(var(--live-height,32px)*.78)}
+  html[data-consultation] .voice-status{font-size:14px;line-height:1.6;min-height:1.6em;max-width:34ch}
+  html[data-consultation] .call-controls{width:100%;flex-wrap:wrap;margin-top:0;gap:8px;flex-shrink:0}
+  html[data-consultation] .call-controls .button{flex:1 1 120px;font-size:13px;padding:8px 12px;min-height:48px;white-space:normal}
+  html[data-consultation] .transcript{width:100%;font-size:14px;line-height:1.6;max-height:clamp(48px,14dvh,88px);margin:4px 0 0;padding-top:8px;overscroll-behavior:contain}
+  #voice-dialog{max-height:calc(100dvh - 16px);padding:24px 18px 18px;overflow-y:auto;overscroll-behavior:contain}
+  #voice-dialog .dialog-close{width:44px;height:44px;top:4px;inset-inline-end:6px}
+  #voice-dialog .check-label{min-height:44px;align-items:center;font-size:14px;padding-block:4px}
+  #voice-dialog .check-label input{width:20px;height:20px;margin-top:0}
+}
+@media(max-height:480px){
+  html[data-consultation] .voice-card{min-height:calc(100dvh - 60px);padding:0 4px 8px;gap:4px}
+  html[data-consultation] .orb-scene{height:76px}
+  html[data-consultation] .orb-scene>.orb,html[data-consultation] .orb .wave{height:76px}
+  html[data-consultation] .orb .wave i{height:calc(var(--live-height,32px)*.42)}
+  html[data-consultation] .orb-scene::before{height:90px;filter:blur(10px)}
+  html[data-consultation] .orb-scene::after{display:none}
+  html[data-consultation] .transcript{max-height:42px;margin-top:0;padding-top:4px}
+}
+
 

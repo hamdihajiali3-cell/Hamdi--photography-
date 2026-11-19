@@ -88,7 +88,8 @@ class CustomerVoice {
     this.active = true; this.muted = false;
     this.outputOnly = !microphone; this.outputTurnComplete = false; this.playedAudio = false;
     try {
-      if (!window.AudioContext || (microphone && (!navigator.mediaDevices?.getUserMedia || !window.AudioWorkletNode
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext || (microphone && (!navigator.mediaDevices?.getUserMedia || !window.AudioWorkletNode
         || (window.document?.permissionsPolicy || window.document?.featurePolicy)?.allowsFeature?.('microphone') === false))) {
         throw new Error('unsupported');
       }
@@ -494,7 +495,7 @@ class OrderAssistant {
   }
 
   canRecord() {
-    return Boolean(window.AudioContext && window.AudioWorkletNode && navigator.mediaDevices?.getUserMedia
+    return Boolean((window.AudioContext || window.webkitAudioContext) && window.AudioWorkletNode && navigator.mediaDevices?.getUserMedia
       && (document.permissionsPolicy || document.featurePolicy)?.allowsFeature?.('microphone') !== false);
   }
 
@@ -799,10 +800,12 @@ class OrderAssistant {
     const current = ()=>run === this.run && capture === this.captureRun && !document.hidden && this.dialog.open;
     let resumeTimer;
     try {
-      const audio = new window.AudioContext();
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      const audio = new AudioContext();
       this.audio = audio;
       // Mobile browsers need resume() to be requested during the Start tap.
-      const activated = audio.resume().then(()=>true,()=>false);
+      const activated = audio.state === 'running' ? Promise.resolve(true)
+        : audio.resume().then(()=>audio.state === 'running',()=>false);
       const stream = await navigator.mediaDevices.getUserMedia({audio:{channelCount:1,echoCancellation:true,noiseSuppression:true},video:false});
       if (!current()) {
         stream.getTracks().forEach(track=>track.stop());
@@ -1188,6 +1191,20 @@ if (staticDelivery) {
 const $ = selector => document.querySelector(selector);
 Object.assign(copy.ar, { 'activation-required':'اضغط على المساعد لتفعيل الصوت بهالمتصفح.', automaticReady:'اضغط على المساعد لبدء المحادثة.', automaticConnecting:'عم جهّز المحادثة…', orbAction:'تشغيل المحادثة الصوتية' });
 Object.assign(copy.tr, { 'activation-required':'Bu tarayıcıda sesi etkinleştirmek için asistana dokun.', automaticReady:'Konuşmayı başlatmak için asistana dokun.', automaticConnecting:'Görüşme hazırlanıyor…', orbAction:'Sesli görüşmeyi başlat' });
+Object.assign(copy.ar, {
+  'activation-required':'المس الموجة لتفعيل الصوت بهالمتصفح.',
+  automaticReady:'المس الموجة لبدء المحادثة.',
+  unsupported:'الصوت غير متاح داخل هالمتصفح. افتح نفس الموقع في Chrome أو Safari، أو تابع طلبك كتابة.',
+  permission:'الميكروفون غير مسموح. فعّله من أذونات الموقع، أو تابع طلبك كتابة.',
+  quota:'الصوت وصل لحد الاستخدام المتاح حاليًا. جرّب بعد قليل أو تابع طلبك كتابة.'
+});
+Object.assign(copy.tr, {
+  'activation-required':'Bu tarayıcıda sesi açmak için dalgaya dokun.',
+  automaticReady:'Görüşmeyi başlatmak için dalgaya dokun.',
+  unsupported:'Bu tarayıcıda ses kullanılamıyor. Aynı siteyi Chrome veya Safari’de aç ya da talebini yazarak tamamla.',
+  permission:'Mikrofon izni kapalı. Site izinlerinden açabilir veya yazarak devam edebilirsin.',
+  quota:'Sesli hizmet şu an kullanım sınırına ulaştı. Biraz sonra dene veya talebini yazarak tamamla.'
+});
 const form = $('#booking-form'), review = $('#review-dialog'), voiceDialog = $('#voice-dialog');
 let language = 'ar', configured = false, currentMessage = '', lastVoiceState = '', transcriptText = '', consentMode = 'microphone';
 let automaticVoice, pageClosing = false;
@@ -1375,8 +1392,34 @@ $('#confirm-voice').addEventListener('click', async () => {
 });
 $('#skip-to-form').addEventListener('click', () => { hide(voiceDialog); openBooking(); });
 $('#mute-voice').addEventListener('click', () => voice.mute()); $('#end-voice').addEventListener('click', () => voice.stop());
+voiceDialog.addEventListener('close', () => {
+  if (consultation && !voice.active && !lastVoiceState) setVoiceState('ready');
+});
 window.addEventListener('pagehide', () => { pageClosing = true; voice.stop(false); });
 document.addEventListener('visibilitychange', () => { if (document.hidden && voice.active) voice.stop(); });
+// Keep a booking field reachable when the phone keyboard changes the iframe height.
+if (inlineBooking) {
+  let focusFrame;
+  const keepFieldVisible = () => {
+    const field = document.activeElement;
+    if (!field?.matches('input:not([type="checkbox"]),select,textarea')) return;
+    cancelAnimationFrame(focusFrame);
+    focusFrame = requestAnimationFrame(() => {
+      if (document.activeElement !== field) return;
+      const viewport = window.visualViewport;
+      const top = viewport?.offsetTop || 0;
+      const bottom = top + (viewport?.height || window.innerHeight);
+      const rect = field.getBoundingClientRect();
+      if (rect.top < top + 8 || rect.bottom > bottom - 12) {
+        field.scrollIntoView({block:'nearest',inline:'nearest',behavior:'auto'});
+      }
+    });
+  };
+  document.addEventListener('focusin', keepFieldVisible);
+  window.addEventListener('resize', keepFieldVisible);
+  window.visualViewport?.addEventListener('resize', keepFieldVisible);
+  window.addEventListener('pagehide', () => cancelAnimationFrame(focusFrame));
+}
 setLanguage(pageOptions.get('lang') === 'tr' ? 'tr' : 'ar');
 if (consultation) window.parent.postMessage({ type:'hamdi-ai:assistant-ready' }, embeddedParent);
 if (language === 'tr' && !inlineBooking && !consultation) mountTurkishDateTime($('#date'), $('#time'));

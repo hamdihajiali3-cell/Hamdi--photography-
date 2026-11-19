@@ -9,6 +9,21 @@
   let chimePlayed = false;
   let greeting;
   let greetingStarted = false;
+  let greetingPending = false;
+  let greetingAttempt = 0;
+  let greetingFinished = false;
+  let greetingTimeout;
+  let greetingBusy = false;
+
+  function stopEntrySoundsForAction(event) {
+    if (!event.isTrusted || (event.type === 'keydown' && !['Enter', ' '].includes(event.key))) return;
+    if (event.target?.closest?.('[data-open-hamdi-ai], [data-service], #hamdi-ai-dialog, #direct-booking')) {
+      stopGreeting();
+      releaseAudio();
+      return;
+    }
+    if (greetingPending && !greetingStarted && !greetingFinished) playGreeting();
+  }
 
   function releaseAudio() {
     const context = audio;
@@ -17,6 +32,13 @@
   }
 
   function stopGreeting() {
+    greetingFinished = true;
+    greetingPending = false;
+    greetingBusy = false;
+    greetingAttempt++;
+    clearTimeout(greetingTimeout);
+    document.removeEventListener('click', stopEntrySoundsForAction, true);
+    document.removeEventListener('keydown', stopEntrySoundsForAction, true);
     if (!greeting) return;
     const player = greeting;
     greeting = undefined;
@@ -29,7 +51,8 @@
     clearTimeout(timeout);
     if (intro.open) intro.close();
     if (!chimePlayed) releaseAudio();
-    if (!finishGreeting || !greetingStarted) stopGreeting();
+    // Keep a blocked greeting ready for the first permitted tap after the logo closes.
+    if (!finishGreeting) stopGreeting();
   }
 
   async function playChime() {
@@ -59,26 +82,61 @@
     }
   }
 
-  function playGreeting(language) {
+  function playGreeting() {
+    if (greetingFinished || greetingStarted || greetingBusy || document.hidden) return;
+    const player = greeting;
+    if (!player) return;
+    greetingBusy = true;
+    const attempt = ++greetingAttempt;
+    try {
+      const started = player.play();
+      Promise.resolve(started).catch(error => {
+        if (greeting !== player || attempt !== greetingAttempt) return;
+        greetingBusy = false;
+        if (error?.name === 'NotAllowedError') greetingPending = true;
+        else stopGreeting();
+      });
+    } catch (error) {
+      greetingBusy = false;
+      if (error?.name === 'NotAllowedError') greetingPending = true;
+      else stopGreeting();
+    }
+  }
+
+  function prepareGreeting(language) {
     const player = new Audio(workerOrigin + '/api/order/prompt/aoede-v1/' + language + '/welcome.wav');
+    player.preload = 'auto';
+    player.setAttribute('playsinline', '');
     player.onplaying = () => {
-      if (greeting === player) greetingStarted = true;
+      if (greeting !== player) return;
+      greetingStarted = true;
+      greetingPending = false;
+      greetingBusy = false;
+      clearTimeout(greetingTimeout);
     };
     player.onended = stopGreeting;
     player.onerror = stopGreeting;
     greeting = player;
-    void player.play().catch(stopGreeting);
+    document.addEventListener('click', stopEntrySoundsForAction, true);
+    document.addEventListener('keydown', stopEntrySoundsForAction, true);
+    greetingTimeout = setTimeout(stopGreeting, 30000);
+    playGreeting();
   }
 
   const turkish = document.documentElement.lang === 'tr';
   intro.addEventListener('cancel', () => revealSite());
   window.addEventListener('pagehide', () => revealSite(), { once: true });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) { revealSite(); releaseAudio(); }
+  });
 
   const homeEntry = !location.hash || location.hash === '#top';
-  if (homeEntry && typeof intro.showModal === 'function') {
-    intro.showModal();
-    timeout = setTimeout(() => revealSite(true), 3000);
-    playGreeting(turkish ? 'tr' : 'ar');
+  if (homeEntry) {
+    if (typeof intro.showModal === 'function') {
+      intro.showModal();
+      timeout = setTimeout(() => revealSite(true), 3000);
+    }
+    prepareGreeting(turkish ? 'tr' : 'ar');
     void playChime();
   }
 })();

@@ -44,10 +44,12 @@ if (typeof document !== 'undefined') {
   const isModalOpen = modal => modal.hasAttribute('open');
   const syncModalViewport = () => {
     const viewport = window.visualViewport;
-    if (!viewport || (!isModalOpen(dialog) && !isModalOpen(directBooking))) return;
+    if (!isModalOpen(dialog) && !isModalOpen(directBooking)) return;
+    const height = viewport?.height || window.innerHeight;
+    if (!Number.isFinite(height) || height <= 0) return;
     const style = document.documentElement.style;
-    style.setProperty('--modal-viewport-height', `${viewport.height}px`);
-    style.setProperty('--modal-viewport-top', `${viewport.offsetTop}px`);
+    style.setProperty('--modal-viewport-height', `${height}px`);
+    style.setProperty('--modal-viewport-top', `${Math.max(0, viewport?.offsetTop || 0)}px`);
   };
   const showModal = (modal, closeButton, scrollLock) => {
     if (!isModalOpen(modal)) {
@@ -311,6 +313,7 @@ if (typeof document !== 'undefined') {
     closeAssistant();
   });
   window.visualViewport?.addEventListener('resize', syncModalViewport);
+  window.addEventListener('resize', syncModalViewport);
   document.addEventListener('visibilitychange', () => { if (document.hidden) openingChime.stop(); });
   window.visualViewport?.addEventListener('scroll', syncModalViewport);
   labels();

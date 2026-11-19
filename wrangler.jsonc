@@ -63,7 +63,7 @@
     "GEMINI_MODEL": "gemini-3.8-live",
     "GEMINI_API_VERSION": "v1beta",
     "VOICE_SESSION_SECONDS": "120",
-    "VOICE_SESSIONS_PER_DAY": "10",
+    "VOICE_SESSIONS_PER_DAY": "20",
     "ORDER_ENABLED": "true",
     "ORDER_MAIL_PROVIDER": "web3forms",
     "ORDER_MAIL_ACTIVE": "true"

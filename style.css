@@ -215,3 +215,18 @@
   .card.portrait { grid-column: 1 / -1; border-block-start: 1px solid var(--line); border-inline-start: 1px solid var(--line); }
 }
 
+/* Reachable controls on narrow phones, including Arabic and Turkish labels. */
+@media (max-width:650px) {
+  header { min-height:calc(5.4rem + env(safe-area-inset-top)); padding-top:env(safe-area-inset-top); gap:.75rem; }
+  .head-tools { gap:.4rem; }
+  .lang { gap:.15rem; }
+  .lang a { display:inline-flex; align-items:center; justify-content:center; min-width:34px; min-height:44px; padding:.25rem .3rem; }
+  .hero-actions a { min-height:48px; }
+  .card button { min-height:44px; }
+  .contact-links b { overflow-wrap:anywhere; }
+  .booking :is(input,select,textarea) { font-size:16px; }
+}
+@media (hover:none), (pointer:coarse) {
+  .card:hover { transform:none; box-shadow:none; }
+}
+
