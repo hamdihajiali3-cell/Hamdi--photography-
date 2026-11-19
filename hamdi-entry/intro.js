@@ -104,7 +104,7 @@
   }
 
   function prepareGreeting(language) {
-    const player = new Audio(workerOrigin + '/api/order/prompt/aoede-v1/' + language + '/welcome.wav');
+    const player = new Audio(workerOrigin + '/api/order/prompt/aoede-v3/' + language + '/welcome.wav');
     player.preload = 'auto';
     player.setAttribute('playsinline', '');
     player.onplaying = () => {

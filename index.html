@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; frame-src 'self' https://hamdi--photography.hamdihajiali3.workers.dev; connect-src 'self'; media-src https://hamdi--photography.hamdihajiali3.workers.dev/api/order/prompt/aoede-v1/; object-src 'none'; base-uri 'none'; form-action 'none'" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; frame-src 'self' https://hamdi--photography.hamdihajiali3.workers.dev; connect-src 'self'; media-src https://hamdi--photography.hamdihajiali3.workers.dev/api/order/prompt/aoede-v1/ https://hamdi--photography.hamdihajiali3.workers.dev/api/order/prompt/aoede-v3/ar/welcome.wav; object-src 'none'; base-uri 'none'; form-action 'none'" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#20231f" />
   <meta name="description" content="Hamdi Photography — خدمات تصوير واضحة وحجز موعد عبر Gmail." />
@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="flags.css?v=turkey-flag-20261102" />
   <link rel="stylesheet" href="hamdi-inline/assistant.css?v=mobile-20261119" />
   <link rel="stylesheet" href="hamdi-entry/intro.css?v=20261116-logo-only" />
-  <script defer src="hamdi-entry/intro.js?v=mobile-20261119"></script>
+  <script defer src="hamdi-entry/intro.js?v=nur-20261119"></script>
 </head>
 <body>
   <dialog class="hamdi-entry" id="hamdi-entry" aria-labelledby="hamdi-entry-logo">
@@ -32,7 +32,7 @@
     </div>
     <header>
       <a class="brand" href="#top" aria-label="Hamdi Photography"><b>HAMDI</b><span>PHOTOGRAPHY</span></a>
-      <nav aria-label="التنقل الرئيسي" data-i18n-aria="navigation"><a href="#services" data-i18n="navServices">الخدمات</a><a href="#steps" data-i18n="navSteps">كيف نحجز؟</a><a href="#contact" data-i18n="navContact">تواصل</a><a href="#hamdi-ai-dialog" data-open-hamdi-ai data-i18n="navVoice">حمدي AI</a></nav>
+      <nav aria-label="التنقل الرئيسي" data-i18n-aria="navigation"><a href="#services" data-i18n="navServices">الخدمات</a><a href="#steps" data-i18n="navSteps">كيف نحجز؟</a><a href="#contact" data-i18n="navContact">تواصل</a><a href="#hamdi-ai-dialog" data-open-hamdi-ai data-i18n="navVoice">نور</a></nav>
       <div class="head-tools">
         <div class="lang" role="group" aria-label="اللغة" data-i18n-aria="languageSwitcher">
           <a href="./" data-lang="ar" hreflang="ar" lang="ar" aria-current="page">عربي</a>
@@ -88,8 +88,8 @@
   </div><script src="script.js?v=booking-email-20261116"></script>
 
   <dialog id="hamdi-ai-dialog" aria-labelledby="hamdi-ai-dialog-title">
-    <div class="hamdi-ai-bar"><div class="hamdi-ai-heading"><h2 id="hamdi-ai-dialog-title">HAMDI AI</h2><p id="hamdi-ai-subtitle">مساعد الاستوديو الصوتي</p></div><button type="button" id="hamdi-ai-close" aria-label="إغلاق">×</button></div>
-    <iframe id="hamdi-ai-frame" title="مساعد حمدي AI الصوتي" allow="microphone; autoplay" sandbox="allow-scripts allow-same-origin allow-forms" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+    <div class="hamdi-ai-bar"><div class="hamdi-ai-heading"><h2 id="hamdi-ai-dialog-title">نور</h2><p id="hamdi-ai-subtitle">مساعدة الاستوديو الصوتية</p></div><button type="button" id="hamdi-ai-close" aria-label="إغلاق">×</button></div>
+    <iframe id="hamdi-ai-frame" title="نور، المساعدة الصوتية" allow="microphone; autoplay" sandbox="allow-scripts allow-same-origin allow-forms" referrerpolicy="strict-origin-when-cross-origin"></iframe>
   </dialog>
   <dialog id="direct-booking" aria-label="طلب جلسة">
     <div class="direct-booking-bar">
@@ -101,7 +101,7 @@
     <button type="button" id="direct-booking-fallback" hidden>تابع عبر نموذج Gmail</button>
     <audio id="direct-booking-audio" preload="none" hidden></audio>
   </dialog>
-  <script type="module" src="hamdi-inline/site-assistant.mjs?v=mobile-20261119"></script>
+  <script type="module" src="hamdi-inline/site-assistant.mjs?v=nur-20261119"></script>
 </body>
 </html>
 

@@ -26,6 +26,12 @@ export const ORDER_PROMPTS = Object.freeze({
   })
 });
 export const PROMPT_VERSION='aoede-v1';
+// A new immutable audio URL preserves existing booking recordings and avoids
+// replaying the old welcome from browser, edge or Durable Object caches.
+export const WELCOME_PROMPTS = Object.freeze({
+  ar:Object.freeze({welcome:'أهلًا وسهلًا بزوّارنا الكرام!'}),
+  tr:Object.freeze({welcome:'Değerli ziyaretçilerimiz, hoş geldiniz!'})
+});
 const channelPrompts = {
   ar:{
     service:'شو الخدمة اللي بدك ياها؟ تعديل ألوان، تصوير تخرج، تصوير الحلاقة، صور جواز وهويات، أو تصوير شخصي؟',
@@ -46,15 +52,18 @@ const channelPrompts = {
     delivered:'Talebin Hamdi’ye ulaştı. Talep özeti ve numarası ekranda.'
   }
 };
+function promptTexts(version) {
+  return version==='aoede-v3'?WELCOME_PROMPTS:version==='aoede-v2'?channelPrompts:ORDER_PROMPTS;
+}
 export function readOrderPrompt(request) {
   const url=new URL(request.url);
   if(request.method!=='GET'||url.search)return null;
-  const match=/^\/api\/order\/prompt\/(aoede-v1|aoede-v2)\/(ar|tr)\/([a-z]+)\.wav$/.exec(url.pathname);
+  const match=/^\/api\/order\/prompt\/(aoede-v1|aoede-v2|aoede-v3)\/(ar|tr)\/([a-z]+)\.wav$/.exec(url.pathname);
   if(!match)return null;
   const [,version,language,key]=match;
-  const prompts=version==='aoede-v2'?channelPrompts:ORDER_PROMPTS;
+  const prompts=promptTexts(version);
   if(!Object.hasOwn(prompts[language],key))return null;
-  return version==='aoede-v2'?{language,key,version}:{language,key};
+  return version==='aoede-v1'?{language,key}:{language,key,version};
 }
 const errorResponse=(error,status=503)=>Response.json({error},{status,headers:{'cache-control':'no-store'}});
 export function promptResponse(bytes,cached=false,range='') {
@@ -80,7 +89,7 @@ export async function synthesizeOrderPrompt(prompt,env,fetchImpl=fetch) {
   const generate=model=>fetchImpl('https://generativelanguage.googleapis.com/v1beta/interactions',{
     method:'POST',headers:{'x-goog-api-key':env.GEMINI_API_KEY,'content-type':'application/json'},
     body:JSON.stringify({model,input:[{type:'user_input',content:[{
-      type:'text',text:(prompt.version==='aoede-v2'?channelPrompts:ORDER_PROMPTS)[prompt.language][prompt.key],
+      type:'text',text:promptTexts(prompt.version)[prompt.language][prompt.key],
       annotations:[{type:'speech_metadata',style:prompt.language==='ar'?'A warm, natural female studio receptionist, speaking gently in Syrian Arabic, at a conversational pace.':'Sıcak ve doğal bir kadın stüdyo asistanı, samimi ve sakin bir konuşma temposuyla.'}]
     }]}],response_format:{type:'audio'},generation_config:{speech_config:[{voice:'Aoede'}]}}),
     signal:AbortSignal.timeout(20000)
@@ -113,4 +122,5 @@ export async function cachedOrderPrompt(guard,prompt,range) {
   try {const bytes=await guard.synthesize(prompt,guard.env);await guard.ctx.storage.put(key,bytes);return promptResponse(bytes,false,range);}
   catch(error){return errorResponse(['prompt-provider-auth','prompt-provider-quota','prompt-provider-unavailable','prompt-audio-invalid'].includes(error.message)?error.message:'prompt-unavailable');}
 }
+
 

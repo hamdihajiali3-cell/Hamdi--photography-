@@ -85,9 +85,9 @@ if (typeof document !== 'undefined') {
   };
   const labels = () => {
     const tr = language() === 'tr';
-    subtitle.textContent = tr ? 'Stüdyonun sesli asistanı' : 'مساعد الاستوديو الصوتي';
+    subtitle.textContent = tr ? 'Stüdyonun sesli asistanı' : 'مساعدة الاستوديو الصوتية';
     close.setAttribute('aria-label', tr ? 'Kapat' : 'إغلاق');
-    frame.title = tr ? 'Hamdi AI sesli asistanı' : 'مساعد حمدي AI الصوتي';
+    frame.title = tr ? 'Nur sesli asistanı' : 'نور، المساعدة الصوتية';
   };
   const closeAssistant = () => {
     openingChime.stop();
