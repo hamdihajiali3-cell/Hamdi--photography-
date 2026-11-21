@@ -34,10 +34,6 @@
   }
 
   function stopGreeting() {
-    if (fallbackSpeech && window.speechSynthesis) {
-      window.speechSynthesis.cancel();
-      fallbackSpeech = undefined;
-    }
     greetingFinished = true;
     greetingPending = false;
     greetingBusy = false;
