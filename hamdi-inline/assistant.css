@@ -83,17 +83,3 @@ html.hamdi-booking-open{overflow:hidden}
 }
 
 
-
-
-/* TAU Voice interface uses the same navy and cyan character as the approved prototype. */
-#hamdi-ai-dialog{background:#0d1a2b;color:#ddfffa;border:1px solid #468a90;box-shadow:0 22px 95px #020b15aa}
-#hamdi-ai-dialog .hamdi-ai-bar{gap:8px;background:linear-gradient(120deg,#15283c,#0e2534);border-bottom:1px solid #23505d;color:#edfffd}
-#hamdi-ai-dialog h2{color:#9dfcf2;font:bold 15px/1.4 Tahoma,Arial,sans-serif;letter-spacing:.14em}
-#hamdi-ai-subtitle{color:#a8dcd7}
-#hamdi-ai-close{border:1px solid #4d7686;border-radius:11px;color:#d9fffb;background:#193245}
-.tau-core-small{display:block;position:relative;flex:none;width:34px;height:34px;border-radius:50%;background:radial-gradient(circle at 45% 40%,#e4fffd,#56eddf 23%,#195478 55%,#0c192e 77%);box-shadow:0 0 17px #40e6d2aa;border:1px solid #83fff5bb}
-.tau-core-small:after{position:absolute;inset:-5px;border:1px solid #50e1d57a;border-radius:50%;content:""}
-.tau-voice-shortcut,.tau-secure-shortcut{display:inline-flex;justify-content:center;align-items:center;flex:none;min-height:44px;padding:0 9px;border:1px solid #46868a;border-radius:10px;color:#a3f9f1;text-decoration:none;font:700 11px/1.4 Tahoma,Arial,sans-serif}
-.tau-secure-shortcut{background:#145260;color:#f1fffa}
-#hamdi-ai-frame{background:#0d1a2b}
-@media(max-width:420px){.tau-voice-shortcut,.tau-secure-shortcut{font-size:10px;padding:0 6px}.tau-core-small{width:25px;height:25px}}

@@ -14,8 +14,6 @@
   let greetingFinished = false;
   let greetingTimeout;
   let greetingBusy = false;
-  let greetingUserRequested = false;
-  let fallbackSpeech;
 
   function stopEntrySoundsForAction(event) {
     if (!event.isTrusted || (event.type === 'keydown' && !['Enter', ' '].includes(event.key))) return;
@@ -24,7 +22,7 @@
       releaseAudio();
       return;
     }
-    // Mobile audio starts only from the explicit welcome button, never an unrelated tap.
+    if (greetingPending && !greetingStarted && !greetingFinished) playGreeting();
   }
 
   function releaseAudio() {
@@ -84,19 +82,6 @@
     }
   }
 
-  function speakWelcomeWithDevice() {
-    if (!greetingUserRequested || !window.speechSynthesis || typeof SpeechSynthesisUtterance === 'undefined') return;
-    try {
-      const tr = document.documentElement.lang === 'tr';
-      const voice = new SpeechSynthesisUtterance(tr ? 'Hamdi Photography’ye hoş geldiniz!' : 'أهلًا وسهلًا بزوّارنا الكرام!');
-      voice.lang = tr ? 'tr-TR' : 'ar-SA';
-      voice.rate = 0.92;
-      fallbackSpeech = voice;
-      window.speechSynthesis.cancel();
-      window.speechSynthesis.speak(voice);
-    } catch { /* Native speech is optional on the device. */ }
-  }
-
   function playGreeting() {
     if (greetingFinished || greetingStarted || greetingBusy || document.hidden) return;
     const player = greeting;
@@ -109,12 +94,12 @@
         if (greeting !== player || attempt !== greetingAttempt) return;
         greetingBusy = false;
         if (error?.name === 'NotAllowedError') greetingPending = true;
-        else { speakWelcomeWithDevice(); stopGreeting(); }
+        else stopGreeting();
       });
     } catch (error) {
       greetingBusy = false;
       if (error?.name === 'NotAllowedError') greetingPending = true;
-      else { speakWelcomeWithDevice(); stopGreeting(); }
+      else stopGreeting();
     }
   }
 
@@ -130,7 +115,7 @@
       clearTimeout(greetingTimeout);
     };
     player.onended = stopGreeting;
-    player.onerror = () => { speakWelcomeWithDevice(); stopGreeting(); };
+    player.onerror = stopGreeting;
     greeting = player;
     document.addEventListener('click', stopEntrySoundsForAction, true);
     document.addEventListener('keydown', stopEntrySoundsForAction, true);
@@ -139,21 +124,6 @@
   }
 
   const turkish = document.documentElement.lang === 'tr';
-  document.querySelectorAll('[data-play-welcome]').forEach(button => {
-    button.addEventListener('click', event => {
-      event.preventDefault();
-      greetingUserRequested = true;
-      if (!greeting || greetingFinished) {
-        greetingFinished = false;
-        greetingStarted = false;
-        greetingPending = false;
-        greetingBusy = false;
-        prepareGreeting(turkish ? 'tr' : 'ar');
-      } else if (!greetingStarted) playGreeting();
-      if (intro.open) revealSite(true);
-      void playChime();
-    });
-  });
   intro.addEventListener('cancel', () => revealSite());
   window.addEventListener('pagehide', () => revealSite(), { once: true });
   document.addEventListener('visibilitychange', () => {

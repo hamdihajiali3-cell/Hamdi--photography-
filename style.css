@@ -230,7 +230,3 @@
   .card:hover { transform:none; box-shadow:none; }
 }
 
-
-
-.notes .hamdi-welcome-sound{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:.5rem .8rem;border:1px solid #abc2b4;border-radius:999px;background:#e4f4ea;color:#173e34;font:700 .83rem/1.2 Tahoma,Arial,sans-serif;cursor:pointer}
-.notes .hamdi-welcome-sound:focus-visible{outline:2px solid #207e79;outline-offset:3px}
