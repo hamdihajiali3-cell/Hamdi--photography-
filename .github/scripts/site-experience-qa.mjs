@@ -53,6 +53,21 @@ async function run() {
           await page.keyboard.press('Escape');
           assert.equal(await page.locator('#hamdi-ai-dialog').evaluate(el => el.open), false, 'Nur closes on Escape');
           await page.screenshot({ path: path.join(output, lang + '-' + label + '.png'), fullPage: true, animations: 'disabled' });
+          // User-facing language controls must really navigate and translate
+          // both ways. Merely loading the two pages separately is not enough.
+          const otherLang = lang === 'ar' ? 'tr' : 'ar';
+          const otherPath = otherLang === 'tr' ? '/tr/' : '/';
+          await page.locator('.lang a[data-lang="' + otherLang + '"]').click();
+          await page.waitForURL(url => url.pathname === otherPath, { timeout: 9000 });
+          await page.waitForFunction(() => !document.querySelector('#hamdi-entry')?.open, { timeout: 12000 });
+          assert.equal(await page.locator('html').getAttribute('lang'), otherLang, 'Language switch to ' + otherLang);
+          const otherHero = await page.locator('#hero-title').innerText();
+          assert(otherHero.includes(otherLang === 'tr' ? 'Net çekim' : 'تصوير واضح'), 'Hero translated after switching to ' + otherLang);
+          await page.locator('.lang a[data-lang="' + lang + '"]').click();
+          await page.waitForURL(url => url.pathname === (lang === 'tr' ? '/tr/' : '/'), { timeout: 9000 });
+          await page.waitForFunction(() => !document.querySelector('#hamdi-entry')?.open, { timeout: 12000 });
+          assert.equal(await page.locator('html').getAttribute('lang'), lang, 'Language switch back to ' + lang);
+          console.log('PASS language-switch', lang, label, 'round trip AR/TR');
           assert.deepEqual(pageErrors, [], 'No uncaught JS errors at ' + lang + ' ' + label);
           console.log('PASS', lang, label, 'no overflow, all cards, Nur and booking open/close');
         } finally {
