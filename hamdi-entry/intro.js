@@ -17,7 +17,7 @@
 
   function stopEntrySoundsForAction(event) {
     if (!event.isTrusted || (event.type === 'keydown' && !['Enter', ' '].includes(event.key))) return;
-    if (event.target?.closest?.('[data-open-hamdi-ai], [data-service], #hamdi-ai-dialog, #direct-booking')) {
+    if (event.target?.closest?.('[data-lang], [data-open-hamdi-ai], [data-service], #hamdi-ai-dialog, #direct-booking')) {
       stopGreeting();
       releaseAudio();
       return;
