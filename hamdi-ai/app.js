@@ -1158,6 +1158,7 @@ const consultation = embedded && !inlineBooking;
 const automaticConversation = consultation && pageOptions.get('autoStart') === '1';
 if (consultation) {
   document.documentElement.dataset.consultation = 'true';
+  document.documentElement.dataset.floatingNur = 'true';
   copy.ar.voiceDescription = 'اسأل عن خدمات التصوير والمساعد بيساعدك تختار الجلسة. للحجز، افتح بطاقة الخدمة.';
   copy.tr.voiceDescription = 'Çekim hizmetlerini sor, asistan uygun çekimi seçmene yardım etsin. Talep oluşturmak için hizmet kartını aç.';
 }
@@ -1234,9 +1235,11 @@ function setVoiceState(state) {
   if (consultation) {
     const orb = $('#orb-scene');
     orb.setAttribute('aria-hidden', 'false');
-    orb.setAttribute('aria-label', text('orbAction'));
-    orb.setAttribute('tabindex', !active && configured ? '0' : '-1');
-    if (!active && configured) orb.setAttribute('role', 'button');
+    // The visual controls are hidden in the embedded floating view. The orb
+    // remains keyboard/touch accessible to start or end the call.
+    orb.setAttribute('aria-label', active ? text('endCall') : text('orbAction'));
+    orb.setAttribute('tabindex', configured ? '0' : '-1');
+    if (configured) orb.setAttribute('role', 'button');
     else orb.removeAttribute('role');
   }
   $('#call-controls').hidden = !active;
@@ -1398,10 +1401,10 @@ $('#open-voice-test').addEventListener('click', () => prepareVoice('playback'));
 // Consent selections only enable the confirmation button; they must not start a second voice session.
 const consentChanged = () => { updateConsent(); };
 $('#adult-check').addEventListener('change', consentChanged); $('#voice-check').addEventListener('change', consentChanged);
-$('#orb-scene').addEventListener('click', () => { if (consultation) void automaticVoice.request(); });
+$('#orb-scene').addEventListener('click', () => { if (consultation) { if (voice.active) voice.stop(); else void automaticVoice.request(); } });
 $('#orb-scene').addEventListener('keydown', event => {
   if (!consultation || !['Enter', ' '].includes(event.key)) return;
-  event.preventDefault(); void automaticVoice.request();
+  event.preventDefault(); if (voice.active) voice.stop(); else void automaticVoice.request();
 });
 $('#confirm-voice').addEventListener('click', async () => {
   if (!configured || !$('#adult-check').checked || !$('#voice-check').checked) return;

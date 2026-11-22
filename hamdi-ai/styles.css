@@ -193,7 +193,7 @@ html[data-voice-state="muted"] .orb-scene > .orb .wave { opacity: .46; }
 
 /* Embedded consultation inherits the glass from its host; booking stays scoped separately. */
 html[data-consultation=true], html[data-consultation=true] body {
-  background:#f6f2ea;
+  background:transparent;
 }
 html[data-consultation=true] .voice-card {
   background:transparent;
@@ -401,3 +401,18 @@ html[data-voice-state=muted] .nur-voice-indicator{opacity:.35}
 @media(prefers-reduced-motion:no-preference){html[data-voice-state=listening] .nur-voice-bars i{animation:nur-audio-pulse 1.2s ease-in-out infinite alternate}html[data-voice-state=speaking] .nur-voice-bars i{animation:nur-audio-pulse .55s ease-in-out infinite alternate}html[data-voice-state=connecting] .nur-voice-light{animation:nur-light-pulse 1.1s ease-in-out infinite alternate}.nur-voice-bars i:nth-child(2n){animation-delay:-.3s}.nur-voice-bars i:nth-child(3n){animation-delay:-.5s}}
 @keyframes nur-audio-pulse{from{transform:scaleY(.5)}to{transform:scaleY(1.35)}}
 @keyframes nur-light-pulse{to{opacity:.4}}
+
+/* Embedded Nur floats over the photographer's original site, with the orb as
+   the single start/end interaction. Consent stays a separate visible dialog. */
+html[data-floating-nur=true],html[data-floating-nur=true] body{background:transparent!important;overflow:hidden}
+html[data-floating-nur=true] .topbar{display:none!important}
+html[data-floating-nur=true] .hero{min-height:0!important;height:auto;padding:0!important;display:flex;align-items:center;justify-content:center}
+html[data-floating-nur=true] .voice-card{min-height:0!important;background:transparent!important;border:0!important;box-shadow:none!important;padding:0 8px!important;gap:4px!important}
+html[data-floating-nur=true] :is(#open-voice,#open-voice-test,#call-controls,.voice-booking){display:none!important}
+html[data-floating-nur=true] .orb-scene{margin:0 auto!important;max-width:min(100%,360px);height:clamp(190px,34dvh,300px)!important;cursor:pointer}
+html[data-floating-nur=true] .tau-projection-wave{display:none!important}
+html[data-floating-nur=true] .voice-status{font-size:13px;line-height:1.5;margin:4px auto;max-width:36ch;text-align:center;text-shadow:0 1px 8px #faf7f2}
+html[data-floating-nur=true] .nur-voice-indicator{margin:2px auto;min-height:17px}
+html[data-floating-nur=true] .transcript{max-height:82px;overflow:auto;padding:6px 12px;border-radius:10px;background:rgba(246,242,234,.72);font-size:13px;line-height:1.5;text-align:center}
+html[data-floating-nur=true] .orb-scene:focus-visible{outline:2px solid #1f7d65;outline-offset:2px}
+@media(max-height:500px){html[data-floating-nur=true] .orb-scene{height:110px!important}html[data-floating-nur=true] .transcript{max-height:40px}}

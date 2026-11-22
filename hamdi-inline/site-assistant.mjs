@@ -117,7 +117,7 @@ if (typeof document !== 'undefined') {
     source.searchParams.set('lang', language());
     source.searchParams.set('parentOrigin', location.origin);
     source.searchParams.set('languageNavigation', 'parent');
-    source.searchParams.set('build', 'nur-20261122-voice');
+    source.searchParams.set('build', 'nur-20261122-floating');
     return source;
   };
   const openAssistant = ({ withChime = false, autoStart = false } = {}) => {
