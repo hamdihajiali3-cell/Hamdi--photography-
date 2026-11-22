@@ -96,26 +96,21 @@ async function run() {
           assert(glassSkin.blur.includes('blur('), 'Cards must have a real translucent glass backdrop');
           assert(glassSkin.lens.includes('reference-camera-lens.webp'), 'Approved mockup camera background is loaded');
 
-          const fullCamera = await page.locator('#services').evaluate(section => {
-            const bounds = section.getBoundingClientRect();
-            const background = getComputedStyle(section, '::before');
-            return {
-              sectionWidth:bounds.width,sectionHeight:bounds.height,
-              cameraWidth:parseFloat(background.width),
-              cameraHeight:parseFloat(background.height),
-              photo:background.backgroundImage,
-              size:background.backgroundSize,
-              mask:background.maskImage || background.webkitMaskImage,
-              position:background.backgroundPosition
-            };
+          const originalCamera = await page.locator('#services').evaluate(section => {
+            const backdrop = getComputedStyle(section, '::before');
+            const rect = section.getBoundingClientRect();
+            const width = parseFloat(backdrop.width);
+            const mask = backdrop.maskImage || backdrop.webkitMaskImage;
+            return {width,sectionWidth:rect.width,mask,photo:backdrop.backgroundImage};
           });
-          assert(Math.abs(fullCamera.cameraWidth-fullCamera.sectionWidth) < 2 &&
-            Math.abs(fullCamera.cameraHeight-fullCamera.sectionHeight) < 2,
-            'Photographic camera background stretches across the full services canvas');
-          assert(fullCamera.size.includes('auto') && fullCamera.photo.includes('reference-camera-lens.webp'),
-            'Camera lens stays proportional rather than being distorted to viewport width');
-          assert(fullCamera.mask.includes('linear-gradient'),
-            'Wide camera background fades into the emerald light without sharp edges');
+          if (label === 'desktop') {
+            assert(originalCamera.width < originalCamera.sectionWidth * .5,
+              'Original compact camera remains on left, not stretched across section');
+          }
+          assert(originalCamera.mask.includes('radial-gradient'),
+            'Original soft oval lens mask has been restored');
+          assert(originalCamera.photo.includes('reference-camera-lens.webp'),
+            'Original photographic lens is still visible');
           assert(glassSkin.actionBackground.includes('linear-gradient'), 'Existing booking buttons have a gold glass finish');
           const crystalFinish = await page.evaluate(() => {
             const card = document.querySelector('#services .card');
