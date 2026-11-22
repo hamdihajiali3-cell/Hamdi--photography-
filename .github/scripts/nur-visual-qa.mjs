@@ -18,15 +18,28 @@ try {
         const circleAfter = getComputedStyle(proj,'::after').content;
         const other = getComputedStyle(document.querySelector('.orb-scene'),'::before').content;
         const figureAnimation = getComputedStyle(art).animationName;
+        const lightArcs = [...document.querySelectorAll('.nur-orbit-light')];
+        const glowPoints = [...document.querySelectorAll('.nur-orbit-spark')];
+        const lightAnimations = lightArcs.map(el => getComputedStyle(el).animationName);
+        const pointAnimations = glowPoints.map(el => getComputedStyle(el).animationName);
+        const lightHitTest = lightArcs.every(el => getComputedStyle(el).pointerEvents === 'none')
+          && glowPoints.every(el => getComputedStyle(el).pointerEvents === 'none');
         if (!dlg.open) dlg.showModal();
         const glass = getComputedStyle(dlg).backgroundColor;
         const scrim = getComputedStyle(dlg,'::backdrop').backgroundColor;
-        return {circle,circleAfter,other,figureAnimation,glass,scrim};
+        return {circle,circleAfter,other,figureAnimation,glass,scrim,
+          arcCount:lightArcs.length,sparkCount:glowPoints.length,lightAnimations,pointAnimations,lightHitTest};
       });
       assert.equal(state.circle,'none','Gold wheel before image must be absent');
       assert.equal(state.circleAfter,'none','Gold wheel over image must be absent');
       assert.equal(state.other,'none','Orb pseudo-circle must be absent');
       assert(state.figureAnimation.includes('nur-figure-float'),'Nur figure should move');
+      assert.equal(state.arcCount,2,'Two light arcs, not a solid circle');
+      assert.equal(state.sparkCount,3,'Three small glowing points');
+      assert(state.lightAnimations.some(name => name.includes('nur-orbit-outer')), 'Outer Nur light must orbit');
+      assert(state.lightAnimations.some(name => name.includes('nur-orbit-inner')), 'Inner Nur light must orbit');
+      assert(state.pointAnimations.every(name => name.includes('nur-spark-drift')), 'Light sparks must move');
+      assert(state.lightHitTest,'Decorative rings and lights must not capture voice taps');
       assert(state.glass.includes('rgba('),'Consent must be translucent, not white');
       assert.equal(state.scrim,'rgba(0, 0, 0, 0)','Consent backdrop should be transparent');
       await page.screenshot({path:'qa-screenshots/nur-glass-'+label+'.png',animations:'disabled'});
