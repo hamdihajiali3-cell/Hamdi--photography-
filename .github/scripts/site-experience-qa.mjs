@@ -34,7 +34,7 @@ async function run() {
         try {
           const response = await page.goto(origin + locale, { waitUntil: 'domcontentloaded', timeout: 30000 });
           assert.equal(response.status(), 200, 'HTTP 200 expected');
-          await page.waitForFunction(() => !document.getElementById('hamdi-entry')?.open, { timeout: 10000 });
+          await page.waitForFunction(() => !document.getElementById('hamdi-entry')?.open, undefined, { timeout: 10000 });
           await page.waitForTimeout(250); // let modules initialize
           assert.equal(await page.locator('html').getAttribute('lang'), lang, 'Correct language');
           assert.equal(await page.locator('.cards .card').count(), 5, 'All five service cards present');
