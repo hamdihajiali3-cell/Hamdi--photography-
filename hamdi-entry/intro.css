@@ -117,3 +117,25 @@ html:has(.hamdi-entry[open]) {
     padding-block: .5rem;
   }
 }
+
+
+/* Automatic entry greeting: readable on mobile, no buttons or taps needed. */
+.hamdi-entry-greeting {
+  margin: clamp(1rem, 4vh, 2rem) auto 0;
+  max-width: 25ch;
+  color: #fff5dc;
+  font: 500 clamp(1rem, 3.8vw, 1.3rem)/1.6 Tahoma, Arial, sans-serif;
+  text-align: center;
+  text-wrap: balance;
+  text-shadow: 0 0 22px rgba(244, 209, 139, .38);
+}
+@media (max-width: 760px) {
+  .hamdi-entry[open] {
+    z-index: 2147483000;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+  .hamdi-entry-content { inline-size: 100%; max-inline-size: 460px; }
+  .hamdi-entry-logo b { font-size: clamp(3rem, 13vw, 5.1rem); }
+  .hamdi-entry-greeting { margin-top: 1.6rem; }
+}
