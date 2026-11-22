@@ -304,7 +304,7 @@ html[data-consultation] .orb-scene>.orb .wave i:nth-child(5){--live-height:164px
 html[data-consultation][data-voice-state=listening] .orb-scene>.orb .wave i{background:linear-gradient(180deg,#94bfee,#9fdbd0 52%,#80b0d8)}
 html[data-consultation][data-voice-state=speaking] .orb-scene>.orb .wave i{background:linear-gradient(180deg,#94b7ed,#e9c5a0 54%,#a5bce2)}
 
-/* The TAU mark is a local, decorative image. Voice state stays available through
+/* The Nur mark is a local, decorative image. Voice state stays available through
    the surrounding button and live status text, not through motion alone. */
 .tau-projection{position:relative;display:grid;place-items:center;width:auto;height:100%;max-width:100%;max-height:100%;min-width:0;min-height:0;aspect-ratio:1312/1199;isolation:isolate}
 .tau-projection-art{display:block;width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain;pointer-events:none;user-select:none;filter:drop-shadow(0 14px 24px rgba(24,59,48,.2));transform:scale(.96);transition:filter .3s ease,opacity .3s ease,transform .3s ease}
@@ -384,3 +384,20 @@ html[data-inline-booking] .order-mode-actions .button { min-height:48px; margin-
 }
 
 
+
+/* Compact Nur audio-state indicator. Only animates while connecting, listening or speaking. */
+html[data-consultation] .nur-voice-indicator{display:flex;align-items:center;justify-content:center;gap:9px;min-height:18px;margin:0 auto;color:#647d76}
+.nur-voice-light{display:block;width:8px;height:8px;border-radius:50%;background:#93a19a;box-shadow:0 0 0 3px #93a19a20}
+.nur-voice-bars{display:flex;align-items:center;gap:3px;height:16px;direction:ltr}
+.nur-voice-bars i{display:block;width:3px;height:5px;border-radius:3px;background:currentColor;transition:height .2s ease,background-color .2s ease}
+.nur-voice-bars i:nth-child(2),.nur-voice-bars i:nth-child(4){height:10px}
+.nur-voice-bars i:nth-child(3){height:15px}
+html[data-voice-state=connecting] .nur-voice-light{background:#609bb7;box-shadow:0 0 0 4px #609bb720}
+html[data-voice-state=listening] .nur-voice-indicator{color:#2c9a7a}
+html[data-voice-state=listening] .nur-voice-light{background:#2c9a7a;box-shadow:0 0 0 4px #2c9a7a22}
+html[data-voice-state=speaking] .nur-voice-indicator{color:#ba8556}
+html[data-voice-state=speaking] .nur-voice-light{background:#ba8556;box-shadow:0 0 0 4px #ba855622}
+html[data-voice-state=muted] .nur-voice-indicator{opacity:.35}
+@media(prefers-reduced-motion:no-preference){html[data-voice-state=listening] .nur-voice-bars i{animation:nur-audio-pulse 1.2s ease-in-out infinite alternate}html[data-voice-state=speaking] .nur-voice-bars i{animation:nur-audio-pulse .55s ease-in-out infinite alternate}html[data-voice-state=connecting] .nur-voice-light{animation:nur-light-pulse 1.1s ease-in-out infinite alternate}.nur-voice-bars i:nth-child(2n){animation-delay:-.3s}.nur-voice-bars i:nth-child(3n){animation-delay:-.5s}}
+@keyframes nur-audio-pulse{from{transform:scaleY(.5)}to{transform:scaleY(1.35)}}
+@keyframes nur-light-pulse{to{opacity:.4}}

@@ -61,7 +61,7 @@
     "LIVE_ENABLED": "true",
     "GEMINI_FREE_TIER_CONFIRMED": "true",
     "GEMINI_MODEL": "gemini-3.8-live",
-    "GEMINI_API_VERSION": "v1beta",
+    "GEMINI_API_VERSION": "v1alpha",
     "VOICE_SESSION_SECONDS": "120",
     "VOICE_SESSIONS_PER_DAY": "20",
     "ORDER_ENABLED": "true",

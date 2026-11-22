@@ -3,7 +3,7 @@ import { orderDeliveryChannels } from './order-delivery.mjs';
 export function liveSettings(env = process.env) {
   return {
     enabled: env.LIVE_ENABLED === 'true' && env.GEMINI_FREE_TIER_CONFIRMED === 'true', key: env.GEMINI_API_KEY || '',
-    model: env.GEMINI_MODEL || 'gemini-3.8-live', version: env.GEMINI_API_VERSION || 'v1beta',
+    model: env.GEMINI_MODEL || 'gemini-3.8-live', version: env.GEMINI_API_VERSION || 'v1alpha',
     seconds: Math.min(180, Math.max(30, Number(env.VOICE_SESSION_SECONDS) || 120)),
     daily: Math.min(20, Math.max(1, Number(env.VOICE_SESSIONS_PER_DAY) || 10)),
     orders: env.ORDER_ENABLED === 'true' && (env.ORDER_MAIL_SECRET || '').length >= 32 && Object.values(orderDeliveryChannels(env)).some(Boolean),

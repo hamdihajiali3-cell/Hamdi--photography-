@@ -87,7 +87,7 @@ if (typeof document !== 'undefined') {
     const tr = language() === 'tr';
     subtitle.textContent = tr ? 'Stüdyonun sesli asistanı' : 'مساعدة الاستوديو الصوتية';
     close.setAttribute('aria-label', tr ? 'Kapat' : 'إغلاق');
-    frame.title = tr ? 'TAU sesli asistanı' : 'تاوو، المساعدة الصوتية';
+    frame.title = tr ? 'Nur sesli asistanı' : 'نور، المساعدة الصوتية';
   };
   const closeAssistant = () => {
     openingChime.stop();
@@ -117,7 +117,7 @@ if (typeof document !== 'undefined') {
     source.searchParams.set('lang', language());
     source.searchParams.set('parentOrigin', location.origin);
     source.searchParams.set('languageNavigation', 'parent');
-    source.searchParams.set('build', 'tau-20261122-fix');
+    source.searchParams.set('build', 'nur-20261122-voice');
     return source;
   };
   const openAssistant = ({ withChime = false, autoStart = false } = {}) => {

@@ -83,3 +83,9 @@ html.hamdi-booking-open{overflow:hidden}
 }
 
 
+
+/* Nur voice surface without the former ornamental frame or glowing perimeter. */
+#hamdi-ai-dialog{border:0;border-radius:0;box-shadow:none;background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none}
+#hamdi-ai-dialog::before{content:none!important;display:none!important;animation:none!important}
+#hamdi-ai-dialog .hamdi-ai-bar{border-bottom:0;border-radius:12px;background:rgba(247,250,248,.92)}
+#hamdi-ai-dialog #hamdi-ai-close{border:0;border-radius:50%;background:rgba(246,242,234,.7)}
