@@ -87,7 +87,7 @@ if (typeof document !== 'undefined') {
     const tr = language() === 'tr';
     subtitle.textContent = tr ? 'Stüdyonun sesli asistanı' : 'مساعدة الاستوديو الصوتية';
     close.setAttribute('aria-label', tr ? 'Kapat' : 'إغلاق');
-    frame.title = tr ? 'TAU sesli asistanı' : 'تاوو، المساعدة الصوتية';
+    frame.title = tr ? 'Nur sesli asistanı' : 'نور، المساعدة الصوتية';
   };
   const closeAssistant = () => {
     openingChime.stop();
