@@ -631,3 +631,14 @@ html[data-floating-nur="true"] .voice-status {
   }
   html[data-floating-nur="true"] .nur-voice-indicator { min-height: 22px; }
 }
+
+
+/* Keep Nur's bright moving rim, but avoid a second animated blur repaint
+   while the microphone is actively streaming on lower-power touch devices. */
+@media (pointer: coarse) {
+  html[data-floating-nur="true"]:is([data-voice-state="listening"],[data-voice-state="speaking"],[data-voice-state="connecting"]) .tau-projection::before {
+    animation: none !important;
+    filter: blur(8px) !important;
+    opacity: .65;
+  }
+}
