@@ -301,7 +301,7 @@ if (typeof document !== 'undefined') {
       return;
     }
     dismissAssistant();
-    const serviceButton = request.service && document.querySelector(`button[data-service="${request.service}"]`);
+    const serviceButton = request.service && document.querySelector(`[data-service="${request.service}"]`);
     if (serviceButton) {
       openDirectBooking(request.service, serviceButton);
     } else {
@@ -336,7 +336,7 @@ if (typeof document !== 'undefined') {
     address.searchParams.delete('bookingService');
     history.replaceState(history.state, '', address);
     if (pendingService && SERVICES.has(pendingService)) {
-      const trigger = document.querySelector(`button[data-service="${pendingService}"]`);
+      const trigger = document.querySelector(`[data-service="${pendingService}"]`);
       if (trigger) openDirectBooking(pendingService, trigger);
     }
   } else if (location.hash === '#hamdi-ai-dialog') {
