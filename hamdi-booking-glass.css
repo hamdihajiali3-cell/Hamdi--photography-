@@ -23,6 +23,14 @@
   -webkit-backdrop-filter: blur(22px) saturate(1.22);
   backdrop-filter: blur(22px) saturate(1.22);
 }
+/* The legacy loading attribute had higher specificity and covered the glass
+   with an opaque cream background; preserve the same finish while loading. */
+#direct-booking[data-loading],
+#direct-booking[open][data-loading] {
+  background:
+    radial-gradient(ellipse 85% 47% at 85% -12%,rgba(94,199,133,.21),transparent 75%),
+    linear-gradient(150deg,rgba(11,58,39,.97),rgba(4,25,18,.97));
+}
 #direct-booking::backdrop {
   background: rgba(2,13,9,.68);
   -webkit-backdrop-filter: blur(8px);
