@@ -1,0 +1,101 @@
+/* Hamdi Photography / Black-hole glass portal
+   Visual-only animation for opening/closing the *existing* full-screen booking
+   dialog from the 5 service cards. No changes to form, voice, sends, links,
+   accessibility labels, dialog IDs, requests or database connections. */
+
+/* The actual dialog remains viewport-sized throughout the animation.
+   A circular mask expands from its center when opened and contracts when
+   closed — an optical "suction" effect that leaves geometry and focus intact. */
+#direct-booking {
+  opacity:0;
+  clip-path:circle(0% at 50% 50%);
+  transition:
+    clip-path 680ms cubic-bezier(.23, .88, .22, 1),
+    opacity 380ms ease-out,
+    display 680ms allow-discrete,
+    overlay 680ms allow-discrete;
+}
+#direct-booking[open],
+#direct-booking.mobile-dialog-fallback[open] {
+  opacity:1;
+  clip-path:circle(150% at 50% 50%);
+}
+@starting-style {
+  #direct-booking[open],
+  #direct-booking.mobile-dialog-fallback[open] {
+    opacity:0;
+    clip-path:circle(0% at 50% 50%);
+  }
+}
+
+/* Gold and emerald accretion ring — flashes only during the opening phase,
+   behind the functional header, close button, form and iframe. */
+#direct-booking[open]::after {
+  content:"";
+  position:absolute;
+  z-index:0;
+  inset:0;
+  top:0;
+  right:0;
+  bottom:0;
+  left:0;
+  width:100%;
+  height:100%;
+  border-radius:0;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 50% 50%,
+      transparent 0 3.5%,rgba(244,208,139,.48) 5%,
+      rgba(52,237,159,.3) 7.6%,rgba(9,37,24,.08) 12%,transparent 23%),
+    conic-gradient(from 12deg at 50% 50%,
+      transparent 0deg,rgba(255,229,169,.16) 19deg,
+      transparent 43deg,rgba(91,239,159,.18) 95deg,
+      transparent 129deg,rgba(251,197,105,.22) 198deg,
+      transparent 234deg,rgba(113,255,178,.18) 287deg,
+      transparent 325deg);
+  mix-blend-mode:screen;
+  opacity:0;
+  filter:blur(2px);
+  animation:hamdi-vortex-appear 820ms cubic-bezier(.2,.76,.24,1) both;
+}
+@keyframes hamdi-vortex-appear {
+  0%   {opacity:.92;transform:scale(.17) rotate(-68deg);filter:blur(4px);}
+  45%  {opacity:.73;transform:scale(.76) rotate(27deg);filter:blur(1px);}
+  76%  {opacity:.29;transform:scale(1.16) rotate(81deg);filter:blur(2px);}
+  100% {opacity:0;transform:scale(1.36) rotate(112deg);filter:blur(6px);}
+}
+
+/* Visually acknowledge the originating service tile without rescaling it
+   once the full-screen dialog is opened. */
+.services .card:active {
+  border-color:rgba(255,248,223,.98);
+  filter:brightness(1.08);
+}
+.services .card a[data-service]:active {
+  transform:scale(.97);
+  transform-origin:center;
+  transition:transform 130ms ease-out;
+}
+@media(max-width:650px) {
+  #direct-booking {
+    transition:
+      clip-path 520ms cubic-bezier(.24,.86,.25,1),
+      opacity 300ms ease-out,
+      display 520ms allow-discrete,
+      overlay 520ms allow-discrete;
+  }
+  #direct-booking[open]::after {animation-duration:650ms;}
+}
+@media(prefers-reduced-motion:reduce) {
+  #direct-booking,
+  #direct-booking[open],
+  #direct-booking.mobile-dialog-fallback[open] {
+    clip-path:none;
+    opacity:1;
+    transition:none!important;
+  }
+  #direct-booking::after,
+  #direct-booking[open]::after {animation:none!important;opacity:0;}
+  .services .card:active {filter:none;}
+  .services .card a[data-service]:active {transform:none;transition:none;}
+}
