@@ -1,0 +1,271 @@
+/* Hamdi Photography — luxury emerald/crystal glass service skin.
+   Presentation-only: no changes to booking, voice, worker or database code.
+   Keep all five services, their accessible links and existing 3+2 layout. */
+
+.services {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 64% 48% at 0% 52%, rgba(21,102,65,.29), transparent 79%),
+    radial-gradient(ellipse 56% 38% at 98% 3%, rgba(160,112,48,.16), transparent 85%),
+    radial-gradient(ellipse 69% 37% at 72% 92%, rgba(12,87,58,.28), transparent 82%),
+    linear-gradient(141deg, #04140e 4%, #0a291b 43%, #05130e 100%);
+}
+.services::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  pointer-events: none;
+  background: url("hamdi-assets/emerald-gold-camera-lens.svg") no-repeat -10rem 57% / clamp(29rem, 48vw, 42rem) auto;
+  opacity: .65;
+}
+.services::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 28% 14% at 76% 4%, rgba(252,209,121,.15),transparent 90%),
+    radial-gradient(ellipse 22% 40% at 13% 55%, rgba(42,206,132,.12),transparent 90%),
+    linear-gradient(128deg,transparent 38%,rgba(242,195,109,.095) 41%,transparent 44%),
+    linear-gradient(143deg,transparent 54%,rgba(115,228,171,.10) 57%,transparent 61%),
+    linear-gradient(112deg,transparent 72%,rgba(255,220,153,.08) 74%,transparent 77%);
+  opacity: .82;
+}
+.services > .section-copy,
+.services > .cards {
+  position: relative;
+  z-index: 1;
+}
+.services .section-copy h2 {
+  color: #fff8e8;
+  text-shadow: 0 5px 38px rgba(5,16,10,.36);
+}
+.services .section-copy em {
+  color: #f1c681;
+  text-shadow: 0 0 25px rgba(225,170,85,.14);
+}
+.services .section-copy > p:last-child { color: #d3e5d4; }
+.services .cards {
+  border: 0;
+  gap: clamp(.85rem, 1.55vw, 1.5rem);
+}
+
+/* Smoked glass with actual translucency: camera and light can show through. */
+.services .card,
+.services .card:first-child,
+.services .card:nth-child(3),
+.services .card:nth-child(4),
+.services .card.portrait {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  min-height: 27.5rem;
+  border: 1px solid rgba(247,205,124,.49);
+  border-radius: 24px;
+  background:
+    linear-gradient(137deg, rgba(250,236,195,.11) 0%, transparent 28%),
+    radial-gradient(ellipse 94% 54% at 54% -12%, rgba(106,211,145,.19), transparent 84%),
+    radial-gradient(ellipse 75% 70% at 98% 100%, rgba(215,169,91,.095), transparent 82%),
+    linear-gradient(160deg, rgba(12,75,47,.69), rgba(6,41,29,.76) 50%, rgba(3,25,20,.86));
+  -webkit-backdrop-filter: blur(16px) saturate(1.38);
+  backdrop-filter: blur(16px) saturate(1.38);
+  box-shadow:
+    0 19px 47px rgba(0,8,5,.43),
+    0 0 24px rgba(217,174,86,.095),
+    inset 0 1px 0 rgba(255,250,223,.44),
+    inset 0 0 0 1px rgba(255,228,162,.075),
+    inset 0 -30px 45px rgba(0,10,7,.12);
+}
+.services .card::before {
+  z-index: 3;
+  padding: 1.75px;
+  opacity: .84;
+  filter: drop-shadow(0 0 5px rgba(240,197,119,.5));
+  background: conic-gradient(
+    from var(--hamdi-gold-angle),
+    rgba(237,195,118,.3) 0deg,
+    #fff2c2 29deg,
+    #e2a953 50deg,
+    rgba(199,150,76,.22) 86deg,
+    #f6d89f 145deg,
+    rgba(128,183,141,.44) 202deg,
+    #fff8df 257deg,
+    rgba(224,177,95,.2) 320deg,
+    rgba(237,195,118,.3) 360deg
+  );
+}
+.services .card::after {
+  z-index: 0;
+  opacity: .48;
+  background:
+    radial-gradient(265px circle at var(--hamdi-spot-x,50%) var(--hamdi-spot-y,34%), rgba(255,231,167,.24), transparent 70%),
+    linear-gradient(124deg,rgba(255,255,255,.095) 0%,transparent 33%,transparent 70%,rgba(235,194,116,.07) 100%);
+}
+.services .card:hover,
+.services .card:focus-within {
+  border-color: rgba(255,228,167,.8);
+  background:
+    linear-gradient(137deg, rgba(255,240,201,.16), transparent 32%),
+    radial-gradient(ellipse 94% 63% at 48% -10%, rgba(126,218,157,.25), transparent 87%),
+    linear-gradient(160deg, rgba(14,85,54,.75), rgba(6,45,31,.82) 54%, rgba(4,29,22,.9));
+  box-shadow:
+    0 23px 50px rgba(0,8,5,.47),
+    0 0 35px rgba(245,201,111,.17),
+    inset 0 1px 0 rgba(255,246,212,.64);
+}
+.services .card:focus-within {
+  outline: 2px solid #f6d28e;
+  outline-offset: 3px;
+}
+.services .card > .art,
+.services .card > div:last-child {
+  position: relative;
+  z-index: 1;
+}
+.services .card > .art {
+  filter: drop-shadow(0 10px 15px rgba(0,0,0,.27)) drop-shadow(0 0 14px rgba(220,174,104,.11));
+}
+
+/* The inner inset is a second, softer sheet of emerald crystal. */
+.services .card > div:last-child {
+  margin: .14rem 0 0;
+  padding: 1rem .78rem .85rem;
+  border: 1px solid rgba(247,212,146,.24);
+  border-radius: 17px;
+  background:
+    linear-gradient(133deg,rgba(242,238,208,.105),transparent 33%),
+    linear-gradient(155deg,rgba(8,48,35,.36),rgba(1,21,18,.59));
+  -webkit-backdrop-filter: blur(7px) saturate(1.19);
+  backdrop-filter: blur(7px) saturate(1.19);
+  box-shadow:
+    0 9px 22px rgba(0,8,5,.16),
+    inset 0 1px rgba(255,244,211,.18),
+    inset 0 -1px rgba(232,193,124,.1);
+}
+.services .card > div:last-child > span {
+  color: #f3d59d;
+  text-shadow: 0 0 13px rgba(250,207,130,.24);
+}
+.services .card h3 {
+  color: #fff9ec;
+  font-size: clamp(1.28rem,1.93vw,1.7rem);
+  line-height: 1.27;
+  text-shadow: 0 2px 12px rgba(0,11,8,.42);
+}
+.services .card p {
+  color: #d7e6d8;
+  font-size: .83rem;
+  line-height: 1.7;
+}
+
+/* Solid champagne-glass action button, using the original link and data-service. */
+.services .card a[data-service] {
+  min-height: 48px;
+  padding: .57rem .9rem;
+  color: #172319;
+  border: 1px solid rgba(255,234,173,.96);
+  border-radius: 999px;
+  background: linear-gradient(112deg,#fae4b7,#dca75e 53%,#ffebbd);
+  box-shadow:
+    0 7px 20px rgba(0,10,5,.33),
+    inset 0 1px 0 rgba(255,255,237,.7),
+    inset 0 -2px 0 rgba(126,84,28,.23);
+  font-size: .79rem;
+  font-weight: 800;
+  text-shadow: none;
+}
+.services .card a[data-service] i { color: #183223; }
+.services .card a[data-service]:hover,
+.services .card a[data-service]:focus-visible {
+  color: #091c11;
+  border-color: #fff4cf;
+  background: linear-gradient(109deg,#fff2d2,#e9bf81 54%,#fff7de);
+  box-shadow: 0 10px 25px rgba(0,10,5,.34), 0 0 22px rgba(248,207,137,.25);
+}
+.services .card a[data-service]:focus-visible {
+  outline: 3px solid #fff1c5;
+  outline-offset: 3px;
+}
+
+/* Keep service illustrations recognizable but bring the finish up to the glass. */
+.services .cap::before {
+  background: linear-gradient(145deg,#d4b478,#283b30 46%,#101f19 80%);
+}
+.services .cap i {
+  background: linear-gradient(#fff3c7,#ab7733);
+  box-shadow: 0 0 10px rgba(238,185,100,.25);
+}
+.services .scissors::before,
+.services .scissors::after {
+  background: linear-gradient(120deg,#f3d291,#bd874b 44%,#5c3f22);
+  box-shadow: 0 0 10px rgba(240,195,116,.09);
+}
+.services .scissors i {
+  border-color: #e5ba72;
+  background: #133628;
+}
+.services .photo i {
+  border-color: rgba(250,218,150,.54);
+  background: linear-gradient(142deg,rgba(229,233,189,.15),rgba(17,66,48,.12));
+  box-shadow: 0 8px 16px rgba(0,0,0,.16);
+}
+.services .photo::after { border-color:#e7c484; }
+.services .portrait-art {
+  border-color: #ecd09a;
+  background: radial-gradient(ellipse at 28% 17%,#f6d9a6,#957647 64%,#56482d 100%);
+  box-shadow: 0 14px 30px rgba(0,7,5,.25), inset 0 1px rgba(255,251,224,.7);
+}
+
+/* Correct visual fallbacks and performance-sensitive touch layouts. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .services .card { background:linear-gradient(145deg,rgba(19,69,48,.93),rgba(4,29,22,.96)); }
+  .services .card > div:last-child { background:rgba(5,34,25,.87); }
+}
+@media (max-width: 1050px) {
+  .services::before {
+    background-position:-15rem 49%;
+    background-size:clamp(28rem,60vw,36rem) auto;
+    opacity:.47;
+  }
+}
+@media (max-width: 650px) {
+  .services {
+    padding-inline: 1.1rem;
+    background:
+      radial-gradient(ellipse 95% 24% at -20% 22%,rgba(27,128,81,.2),transparent 85%),
+      linear-gradient(145deg,#071c13,#092a1d 52%,#061910);
+  }
+  .services::before {
+    background-size:31rem auto;
+    background-position:-17rem 8rem;
+    opacity:.25;
+  }
+  .services::after { opacity:.38; }
+  .services .cards { gap: 1rem; }
+  .services .card,
+  .services .card:first-child,
+  .services .card:nth-child(3),
+  .services .card:nth-child(4),
+  .services .card.portrait {
+    min-height:22.5rem;
+    grid-template-rows:10.5rem auto;
+    padding:1rem 1.05rem;
+    border-radius:22px;
+    -webkit-backdrop-filter:blur(9px);
+    backdrop-filter:blur(9px);
+  }
+  .services .card > div:last-child {
+    padding:.64rem .62rem .66rem;
+    border-radius:15px;
+  }
+  .services .card h3 { font-size:1.37rem; }
+  .services .card a[data-service] { min-height:48px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .services .card::before { animation:none!important; }
+  .services .card, .services .card > div:last-child { transition:none; }
+}
