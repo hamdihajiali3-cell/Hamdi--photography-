@@ -15,11 +15,12 @@ function staticChecks() {
     assert(page.includes(prefix ? '../hamdi-motion.mjs?' : 'src="hamdi-motion.mjs?'), 'Motion JS linked: ' + prefix);
     assert(page.includes(prefix ? '../hamdi-glass-premium.css?' : 'href="hamdi-glass-premium.css?'), 'Luxury glass skin linked: ' + prefix);
     assert(page.includes(prefix ? '../hamdi-reference-match.css?' : 'href="hamdi-reference-match.css?'), 'Approved reference design linked: ' + prefix);
+    assert(page.includes(prefix ? '../hamdi-full-browser.css?' : 'href="hamdi-full-browser.css?'), 'Full-browser stylesheet linked: ' + prefix);
     assert(page.includes('id="hamdi-ai-dialog"') && page.includes('id="direct-booking"'), 'Both dialogs retained');
     assert(!/<a[^>]+href="[^"]*about\//.test(page), 'Removed About Hamdi link stays removed');
     assert(!/<(?:section|nav)[^>]+id="prices"/i.test(page), 'No invented pricing section');
   }
-  for (const name of ['hamdi-motion.css', 'hamdi-motion.mjs', 'hamdi-glass-premium.css', 'hamdi-reference-match.css', 'hamdi-assets/emerald-gold-camera-lens.svg', 'hamdi-assets/reference-camera-lens.webp', 'hamdi-assets/reference-service-icons.webp']) {
+  for (const name of ['hamdi-motion.css', 'hamdi-motion.mjs', 'hamdi-glass-premium.css', 'hamdi-reference-match.css', 'hamdi-full-browser.css', 'hamdi-assets/emerald-gold-camera-lens.svg', 'hamdi-assets/reference-camera-lens.webp', 'hamdi-assets/reference-service-icons.webp']) {
     assert(fs.existsSync(name), 'Missing source: ' + name);
   }
 }
@@ -55,6 +56,23 @@ async function run() {
           assert.equal(await page.locator('html').getAttribute('lang'), lang, 'Correct language');
           assert.equal(await page.locator('.cards .card').count(), 5, 'All five service cards present');
           assert.equal(await page.locator('.hero-actions a').count(), 2, 'Both hero actions present');
+          const viewportShell = await page.locator('.site-frame').evaluate(el => {
+            const bounds = el.getBoundingClientRect();
+            const style = getComputedStyle(el);
+            const hero = document.querySelector('.hero')?.getBoundingClientRect();
+            return {left:bounds.left, top:bounds.top, width:bounds.width,
+              viewport:window.innerWidth, frameBorder:style.borderTopWidth,
+              radius:style.borderTopLeftRadius, heroHeight:hero?.height};
+          });
+          assert(Math.abs(viewportShell.left) <= 1 && Math.abs(viewportShell.top) <= 1,
+            'Browser layout must start exactly at the top-left viewport edge');
+          assert(Math.abs(viewportShell.width - viewportShell.viewport) <= 2,
+            'Main site shell must span the entire browser width');
+          assert.equal(viewportShell.radius, '0px', 'Desktop browser must have no outer card-frame corners');
+          assert.equal(viewportShell.frameBorder, '0px', 'No floating outer site border');
+          if (label === 'desktop')
+            assert(viewportShell.heroHeight >= viewport.height - 150,
+              'Desktop hero fills the initial browser viewport');
           const glassSkin = await page.locator('.services .card').first().evaluate(el => {
             const card = getComputedStyle(el);
             const before = getComputedStyle(document.querySelector('.services'), '::before');
