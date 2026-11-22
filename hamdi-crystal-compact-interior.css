@@ -166,3 +166,28 @@
   .services .card > div:last-child,
   .services .card > div:last-child::before {transition:none!important;animation:none!important;}
 }
+
+
+/* Final polish: fade the camera photograph into the real background rather
+   than leaving hard edges of its rectangular source crop. */
+.services::before {
+  -webkit-mask-image:radial-gradient(ellipse 84% 53% at 29% 50%,
+    #000 0 29%,rgba(0,0,0,.96) 39%,rgba(0,0,0,.43) 63%,transparent 86%);
+  mask-image:radial-gradient(ellipse 84% 53% at 29% 50%,
+    #000 0 29%,rgba(0,0,0,.96) 39%,rgba(0,0,0,.43) 63%,transparent 86%);
+}
+/* Turkish typography: the former <br> is visually hidden in the one-line
+   heading. Restore its word space, and preserve LTR punctuation in cards. */
+html[lang="tr"] .services .section-copy h2 em::before {
+  content:" ";
+  white-space:pre;
+}
+html[lang="tr"] .services .card > div:last-child,
+html[lang="tr"] .services .card:nth-child(n+4) > div:last-child {
+  direction:ltr;
+}
+html[lang="tr"] .services .card :is(h3,p) {
+  direction:ltr;
+  unicode-bidi:plaintext;
+  text-align:center;
+}
