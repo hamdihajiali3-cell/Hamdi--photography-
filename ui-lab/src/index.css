@@ -19,3 +19,29 @@ small, .muted { color: #c5c4b8; }
 .lab-panel { background: #192a20; border: 1px solid #55674f; border-radius: 1rem; padding: 1.3rem; margin-top: 2rem; }
 .lab-demo { min-height: 250px; width: 100%; overflow: hidden; border-radius: .7rem; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
+
+.lab-actions button.is-selected { background: #f0d39d; box-shadow: 0 0 0 2px #e4cd9a; }
+.lab-demo { margin-top: 1rem; }
+.lab-demo--button {
+  height: 340px;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  background: #111318;
+}
+.lab-demo--button > p {
+  margin: 0;
+  padding: .6rem 1rem;
+  text-align: center;
+  color: #eae9dd;
+  background: #111318;
+}
+.lab-demo--button .circle-buttons { width: 100%; height: 100%; min-height: 0; }
+.lab-demo--horizon {
+  height: 330px;
+  display: grid;
+  place-items: center;
+  background: #030604;
+}
+.lab-demo--horizon .threeui-background { width: 100%; height: 100%; }
+.preview-error { padding: 1rem; color: #f3d9ad; }
+.lab-panel code { word-break: break-word; }
