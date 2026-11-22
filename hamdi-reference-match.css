@@ -523,3 +523,25 @@
     opacity:.25;
   }
 }
+
+/* Optical refraction sampled from the approved material close-up. The
+   decorative overlay is below the actual text and original booking link. */
+.services .card::after {
+  background-image:
+    radial-gradient(205px circle at var(--hamdi-spot-x,50%) var(--hamdi-spot-y,34%),
+      rgba(255,239,179,.19),transparent 75%),
+    linear-gradient(142deg,rgba(128,245,189,.09),transparent 53%),
+    url("hamdi-assets/reference-glass-material.webp");
+  background-position:center,center,center;
+  background-size:cover,cover,cover;
+  background-repeat:no-repeat;
+  opacity:.36;
+  mix-blend-mode:screen;
+}
+@media(hover:hover) and (pointer:fine) {
+  .services .card:hover::after,
+  .services .card:focus-within::after {opacity:.49;}
+}
+@media(prefers-reduced-motion:reduce) {
+  .services .card::after {transition:none!important;}
+}
