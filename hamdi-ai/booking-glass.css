@@ -259,3 +259,48 @@ html[data-inline-booking] #order-dialog[open] .order-service-name {
   }
   html[data-inline-booking] #order-dialog[open] > * {max-width:100%;}
 }
+
+
+/* Compact host compatibility: transparent inner document so the parent's
+   emerald glass remains visible through the entire embedded booking form.
+   Purely visual. Preserve all fields, accessibility, submit and voice hooks. */
+html[data-inline-booking],
+html[data-inline-booking] body {
+  background:transparent;
+  background-color:transparent;
+}
+html[data-inline-booking] #order-dialog[open] {
+  min-height:100%;
+  max-height:100dvh;
+  overflow:auto;
+  padding:clamp(14px,2.4vw,24px);
+  background:linear-gradient(135deg,rgba(229,255,234,.085),rgba(3,50,39,.13));
+  box-shadow:none;
+  border:0;
+  -webkit-backdrop-filter:blur(9px);
+  backdrop-filter:blur(9px);
+}
+html[data-inline-booking] #order-dialog[open]::before,
+html[data-inline-booking] #order-dialog[open]::after {animation:none;opacity:.16;}
+html[data-inline-booking] #order-dialog[open] > * {
+  max-width:100%;
+}
+html[data-inline-booking] #order-consent {
+  background:linear-gradient(145deg,rgba(213,253,228,.16),rgba(9,68,47,.25));
+  -webkit-backdrop-filter:blur(8px);
+  backdrop-filter:blur(8px);
+}
+html[data-inline-booking] .order-dialog :is(input:not([type=checkbox]),select,textarea) {
+  background:rgba(5,44,34,.26);
+  -webkit-backdrop-filter:blur(7px);
+  backdrop-filter:blur(7px);
+}
+@media(max-width:640px) {
+  html[data-inline-booking] #order-dialog[open] {
+    padding:14px 12px max(20px,env(safe-area-inset-bottom));
+  }
+  html[data-inline-booking] #order-form .order-question {
+    font-size:1.02rem;
+    margin:.52rem 0 .7rem;
+  }
+}
