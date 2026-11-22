@@ -17,13 +17,14 @@ function staticChecks() {
     assert(page.includes(prefix ? '../hamdi-reference-match.css?' : 'href="hamdi-reference-match.css?'), 'Approved reference design linked: ' + prefix);
     assert(page.includes(prefix ? '../hamdi-full-browser.css?' : 'href="hamdi-full-browser.css?'), 'Full-browser stylesheet linked: ' + prefix);
     assert(page.includes(prefix ? '../hamdi-crystal-finish.css?' : 'href="hamdi-crystal-finish.css?'), 'New clear crystal glass finish linked: ' + prefix);
+    assert(page.includes(prefix ? '../hamdi-crystal-compact-interior.css?' : 'href="hamdi-crystal-compact-interior.css?'), 'Compact inner glass skin is linked: ' + prefix);
     assert(page.includes(prefix ? '../hamdi-booking-glass.css?' : 'href="hamdi-booking-glass.css?'), 'Animated booking panel skin linked: ' + prefix);
     assert(page.includes('booking-glass-brand') && page.includes('id="direct-booking-frame"'), 'Booking brand and original iframe retained');
     assert(page.includes('id="hamdi-ai-dialog"') && page.includes('id="direct-booking"'), 'Both dialogs retained');
     assert(!/<a[^>]+href="[^"]*about\//.test(page), 'Removed About Hamdi link stays removed');
     assert(!/<(?:section|nav)[^>]+id="prices"/i.test(page), 'No invented pricing section');
   }
-  for (const name of ['hamdi-motion.css', 'hamdi-motion.mjs', 'hamdi-glass-premium.css', 'hamdi-reference-match.css', 'hamdi-full-browser.css', 'hamdi-crystal-finish.css', 'hamdi-booking-glass.css', 'hamdi-ai/booking-glass.css', 'hamdi-assets/emerald-gold-camera-lens.svg', 'hamdi-assets/reference-camera-lens.webp', 'hamdi-assets/reference-service-icons.webp']) {
+  for (const name of ['hamdi-motion.css', 'hamdi-motion.mjs', 'hamdi-glass-premium.css', 'hamdi-reference-match.css', 'hamdi-full-browser.css', 'hamdi-crystal-finish.css', 'hamdi-crystal-compact-interior.css', 'hamdi-booking-glass.css', 'hamdi-ai/booking-glass.css', 'hamdi-assets/emerald-gold-camera-lens.svg', 'hamdi-assets/reference-camera-lens.webp', 'hamdi-assets/reference-service-icons.webp']) {
     assert(fs.existsSync(name), 'Missing source: ' + name);
   }
   const bookingSource = fs.readFileSync('hamdi-ai/booking.html', 'utf8');
@@ -119,6 +120,26 @@ async function run() {
             'Crystal cards and inner card panels both refract the background');
           assert(crystalFinish.cardLayers.includes('rgba('),
             'Main card is built from translucent glass layers');
+          const compactGlass = await page.locator('#services .card').evaluate(el => {
+            const panel = el.querySelector(':scope > div:last-child');
+            const art = el.querySelector(':scope > .art');
+            const cardRect = el.getBoundingClientRect();
+            const panelRect = panel.getBoundingClientRect();
+            const artRect = art.getBoundingClientRect();
+            const buttonRect = el.querySelector('a[data-service]').getBoundingClientRect();
+            const panelStyle = getComputedStyle(panel);
+            return { cardWidth:cardRect.width, panelWidth:panelRect.width,
+              panelInside:panelRect.left>=cardRect.left-2 && panelRect.right<=cardRect.right+2,
+              artWidth:artRect.width, buttonHeight:buttonRect.height,
+              background:panelStyle.backgroundImage,
+              blur:panelStyle.backdropFilter || panelStyle.webkitBackdropFilter || '' };
+          });
+          assert(compactGlass.panelInside && compactGlass.panelWidth < compactGlass.cardWidth * .96,
+            'Small inner glass is narrower than the unchanged outer card');
+          assert(compactGlass.artWidth <= 93, 'Service illustration is no larger than 92px');
+          assert(compactGlass.blur.includes('blur(') && compactGlass.background.includes('rgba('),
+            'Compact service panel is translucent layered crystal');
+          assert(compactGlass.buttonHeight >= 43, 'Smaller glass keeps the booking action accessible');
           assert(crystalFinish.scene.includes('radial-gradient'),
             'Emerald and gold cinematic background is present behind cards');
           assert(crystalFinish.stepsGlass.includes('linear-gradient') &&
