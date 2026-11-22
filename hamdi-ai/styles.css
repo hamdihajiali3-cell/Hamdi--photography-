@@ -800,3 +800,99 @@ html[data-floating-nur="true"] body {
   background:transparent!important;
   background-color:transparent!important;
 }
+
+
+/* Nur: independent moving light arcs (not the removed opaque circular wheel).
+   These are decoration only; the entire scene remains one voice interaction. */
+html[data-floating-nur="true"] .tau-projection {
+  overflow:visible!important;
+}
+html[data-floating-nur="true"] .nur-orbit-light {
+  position:absolute;
+  display:block;
+  pointer-events:none;
+  border:2px solid transparent;
+  border-radius:50%;
+  background:transparent;
+  box-sizing:border-box;
+  transform-origin:center;
+  will-change:transform,opacity;
+  z-index:0;
+}
+html[data-floating-nur="true"] .nur-orbit-light--outer {
+  inset:13% -2% 20%;
+  border-top-color:rgba(255,225,157,.80);
+  border-inline-end-color:rgba(239,188,104,.30);
+  border-bottom-color:rgba(255,245,220,.10);
+  box-shadow:0 -5px 20px -9px rgba(240,196,120,.55);
+  opacity:.72;
+  transform:rotate(-23deg);
+}
+html[data-floating-nur="true"] .nur-orbit-light--inner {
+  inset:20% 8% 26%;
+  border-top-color:rgba(199,235,206,.64);
+  border-inline-start-color:rgba(235,202,135,.18);
+  border-bottom-color:rgba(255,216,143,.54);
+  box-shadow:0 8px 17px -13px rgba(218,242,190,.66);
+  opacity:.67;
+  transform:rotate(31deg);
+}
+/* Sparkles create separate soft moving points instead of drawing a full disk. */
+html[data-floating-nur="true"] .nur-orbit-spark {
+  position:absolute;
+  pointer-events:none;
+  z-index:2;
+  width:clamp(4px,.7vw,8px);
+  aspect-ratio:1;
+  border-radius:50%;
+  background:radial-gradient(circle,#fffbea 0%,#ffe4a5 48%,rgba(236,176,89,.20) 72%,transparent 100%);
+  box-shadow:0 0 10px 3px rgba(255,215,139,.35),0 0 24px rgba(250,199,110,.25);
+  transform:translate3d(0,0,0) scale(.9);
+  opacity:.8;
+  will-change:transform,opacity;
+}
+html[data-floating-nur="true"] .nur-orbit-spark--one { inset-block-start:23%; inset-inline-start:7%; }
+html[data-floating-nur="true"] .nur-orbit-spark--two { inset-block-start:33%; inset-inline-end:7%; width:5px; }
+html[data-floating-nur="true"] .nur-orbit-spark--three { inset-block-end:28%; inset-inline-start:23%; width:4px; opacity:.5; }
+@keyframes nur-orbit-outer {
+  from { transform:rotate(-23deg); }
+  to { transform:rotate(337deg); }
+}
+@keyframes nur-orbit-inner {
+  from { transform:rotate(31deg); }
+  to { transform:rotate(-329deg); }
+}
+@keyframes nur-spark-drift {
+  0%,100% { transform:translate3d(-3px,4px,0) scale(.73); opacity:.40; }
+  50% { transform:translate3d(8px,-10px,0) scale(1.22); opacity:1; }
+}
+@media (prefers-reduced-motion:no-preference) {
+  html[data-floating-nur="true"] .nur-orbit-light--outer {
+    animation:nur-orbit-outer 19s linear infinite;
+  }
+  html[data-floating-nur="true"] .nur-orbit-light--inner {
+    animation:nur-orbit-inner 27s linear infinite;
+  }
+  html[data-floating-nur="true"] .nur-orbit-spark {
+    animation:nur-spark-drift 4.4s ease-in-out infinite;
+  }
+  html[data-floating-nur="true"] .nur-orbit-spark--two { animation-delay:-1.5s; animation-duration:5.2s; }
+  html[data-floating-nur="true"] .nur-orbit-spark--three { animation-delay:-3.2s; animation-duration:6.1s; }
+  html[data-floating-nur="true"][data-voice-state="listening"] .nur-orbit-light--outer { animation-duration:11s; }
+  html[data-floating-nur="true"][data-voice-state="speaking"] .nur-orbit-light--outer { animation-duration:7s; }
+  html[data-floating-nur="true"][data-voice-state="speaking"] .nur-orbit-light--inner { animation-duration:11s; }
+  html[data-floating-nur="true"][data-voice-state="speaking"] .nur-orbit-spark { animation-duration:1.8s; }
+  html[data-floating-nur="true"][data-voice-state="muted"] :is(.nur-orbit-light,.nur-orbit-spark) { animation-play-state:paused; }
+}
+@media (prefers-reduced-motion:reduce) {
+  html[data-floating-nur="true"] :is(.nur-orbit-light,.nur-orbit-spark) {
+    animation:none!important;
+    will-change:auto!important;
+    opacity:.35;
+  }
+}
+@media (pointer:coarse) {
+  /* Keep phone GPU work small while microphone streams. */
+  html[data-floating-nur="true"] .nur-orbit-spark { box-shadow:0 0 8px rgba(254,217,161,.48); }
+  html[data-floating-nur="true"] .nur-orbit-light { box-shadow:none!important; }
+}
