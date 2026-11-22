@@ -510,3 +510,35 @@ html[data-voice-state="muted"] .tau-projection::after { opacity: .18; }
 @media (prefers-reduced-motion: reduce) {
   .tau-projection::before, .tau-projection::after { animation: none !important; }
 }
+
+
+/* Center the actual Nur illustration and increase it moderately on all screens.
+   Consent remains a separate accessible modal, not an overlay over the wheel. */
+html[data-floating-nur="true"] #main {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  align-content: center;
+}
+html[data-floating-nur="true"] #main > .hero {
+  width: 100%;
+  min-height: 0 !important;
+  margin: 0;
+  justify-content: center;
+}
+html[data-floating-nur="true"] .voice-card {
+  width: 100%;
+  max-width: 500px;
+  margin-inline: auto;
+}
+html[data-floating-nur="true"] .orb-scene {
+  width: 100%;
+  max-width: min(100%, 430px) !important;
+  height: clamp(245px, 48dvh, 360px) !important;
+  margin: 0 auto !important;
+}
+@media (max-height: 500px) {
+  html[data-floating-nur="true"] .orb-scene {
+    height: clamp(110px, 35dvh, 160px) !important;
+  }
+}
