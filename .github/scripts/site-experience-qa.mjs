@@ -19,13 +19,14 @@ function staticChecks() {
     assert(page.includes(prefix ? '../hamdi-crystal-finish.css?' : 'href="hamdi-crystal-finish.css?'), 'New clear crystal glass finish linked: ' + prefix);
     assert(page.includes(prefix ? '../hamdi-crystal-compact-interior.css?' : 'href="hamdi-crystal-compact-interior.css?'), 'Compact inner glass skin is linked: ' + prefix);
     assert(page.includes(prefix ? '../hamdi-booking-glass.css?' : 'href="hamdi-booking-glass.css?'), 'Animated booking panel skin linked: ' + prefix);
-    assert(page.includes(prefix ? '../hamdi-booking-portal.css?' : 'href="hamdi-booking-portal.css?'), 'Black-hole booking transition linked: ' + prefix);
+    assert(page.includes(prefix ? '../hamdi-booking-small-glass.css?' : 'href="hamdi-booking-small-glass.css?'), 'Compact transparent booking panel linked: ' + prefix);
+    assert(!page.includes('hamdi-booking-portal.css?'), 'Black-hole animation removed: ' + prefix);
     assert(page.includes('booking-glass-brand') && page.includes('id="direct-booking-frame"'), 'Booking brand and original iframe retained');
     assert(page.includes('id="hamdi-ai-dialog"') && page.includes('id="direct-booking"'), 'Both dialogs retained');
     assert(!/<a[^>]+href="[^"]*about\//.test(page), 'Removed About Hamdi link stays removed');
     assert(!/<(?:section|nav)[^>]+id="prices"/i.test(page), 'No invented pricing section');
   }
-  for (const name of ['hamdi-motion.css', 'hamdi-motion.mjs', 'hamdi-glass-premium.css', 'hamdi-reference-match.css', 'hamdi-full-browser.css', 'hamdi-crystal-finish.css', 'hamdi-crystal-compact-interior.css', 'hamdi-booking-glass.css', 'hamdi-booking-portal.css', 'hamdi-ai/booking-glass.css', 'hamdi-assets/emerald-gold-camera-lens.svg', 'hamdi-assets/reference-camera-lens.webp', 'hamdi-assets/reference-service-icons.webp']) {
+  for (const name of ['hamdi-motion.css', 'hamdi-motion.mjs', 'hamdi-glass-premium.css', 'hamdi-reference-match.css', 'hamdi-full-browser.css', 'hamdi-crystal-finish.css', 'hamdi-crystal-compact-interior.css', 'hamdi-booking-glass.css', 'hamdi-booking-small-glass.css', 'hamdi-ai/booking-glass.css', 'hamdi-assets/emerald-gold-camera-lens.svg', 'hamdi-assets/reference-camera-lens.webp', 'hamdi-assets/reference-service-icons.webp']) {
     assert(fs.existsSync(name), 'Missing source: ' + name);
   }
   const bookingSource = fs.readFileSync('hamdi-ai/booking.html', 'utf8');
@@ -186,25 +187,13 @@ async function run() {
           // This only checks opening/closing; no request gets submitted.
           await service.click();
           assert.equal(await page.locator('#direct-booking').evaluate(el => el.open), true, 'Booking modal opens');
-          // Animation can finish at slightly different frames on busy CI runners.
-          // Wait for a nearly complete portal instead of matching exactly 150.000%.
-          await page.waitForFunction(() => {
-            const dialog = document.querySelector('#direct-booking');
-            const style = getComputedStyle(dialog);
-            const radius = Number(style.clipPath.match(/circle\(([\d.]+)%/)?.[1]);
-            return radius >= 147 && Number(style.opacity) >= .97;
-          }, undefined, { timeout: 2500 });
-          const vortex = await page.locator('#direct-booking').evaluate(el => {
-            const style = getComputedStyle(el);
-            const radius = Number(style.clipPath.match(/circle\(([\d.]+)%/)?.[1]);
-            return {mask:style.clipPath, radius, transition:style.transitionProperty,
-              opacity:style.opacity, reduced:matchMedia('(prefers-reduced-motion: reduce)').matches};
+          const naturalBooking = await page.locator('#direct-booking').evaluate(el => {
+            const st = getComputedStyle(el);
+            return {clip:st.clipPath,opacity:st.opacity,transition:st.transitionDuration};
           });
-          assert(!vortex.reduced && vortex.radius >= 147,
-            'Booking portal expands from suction point to fullscreen');
-          assert(vortex.transition.includes('clip-path'),
-            'Booking portal has an animated reversible suction transition');
-          assert(Number(vortex.opacity) >= .97, 'Booking contents are readable after opening');
+          assert(naturalBooking.clip === 'none', 'Booking opens naturally without vortex mask');
+          assert(Number(naturalBooking.opacity) >= .99, 'Booking remains readable');
+          assert(naturalBooking.transition === '0s', 'No black-hole transition on booking');
           const bookingLook = await page.locator('#direct-booking').evaluate(el => {
             const panel = getComputedStyle(el);
             const bar = el.querySelector('.direct-booking-bar');
@@ -229,15 +218,17 @@ async function run() {
               iframeWidth:frame.getBoundingClientRect().width,
               closeVisible:el.querySelector('#direct-booking-close').getBoundingClientRect().width > 30};
           });
-          assert(Math.abs(fullBooking.left) <= 2 && Math.abs(fullBooking.top) <= 2,
-            'Booking opens at the very edge of the browser, not as a floating card');
-          assert(Math.abs(fullBooking.width - fullBooking.vw) <= 2,
-            'Booking fills the entire viewport width on computer and mobile');
-          assert(Math.abs(fullBooking.height - fullBooking.vh) <= 3,
-            'Booking fills the entire viewport height on computer and mobile');
-          assert(Math.abs(fullBooking.headerWidth - fullBooking.vw) <= 2,
-            'Booking title bar spans the full browser');
-          assert(fullBooking.closeVisible, 'Full-screen booking keeps its close button');
+          assert(fullBooking.width <= 510 && fullBooking.width <= fullBooking.vw - 20,
+            'Booking is compact with margins on both sides');
+          assert(fullBooking.height <= 705 && fullBooking.height < fullBooking.vh * .85,
+            'Booking is smaller than the browser height');
+          assert(Math.abs(fullBooking.left - (fullBooking.vw-fullBooking.width)/2) <= 3,
+            'Compact booking is horizontally centered');
+          assert(Math.abs(fullBooking.top - (fullBooking.vh-fullBooking.height)/2) <= 3,
+            'Compact booking is vertically centered');
+          assert(Math.abs(fullBooking.headerWidth - fullBooking.width) <= 2,
+            'Booking header matches compact panel width');
+          assert(fullBooking.closeVisible, 'Close button remains available in compact booking');
           assert(bookingLook.backdrop.includes('blur('), 'Luxury booking panel is translucent');
           if (lang === 'ar' && label === 'desktop') {
             await page.waitForFunction(
@@ -257,24 +248,11 @@ async function run() {
           });
           await page.locator('#direct-booking-close').click();
           assert.equal(await page.locator('#direct-booking').evaluate(el => el.open), false, 'Booking closes');
-          // Verify the CSS reverse animation after dialog.close(), not only
-          // the HTML open attribute or whether the close button works.
-          // The browser may defer its first animation frame while unloading
-          // the cross-origin iframe. Check eventual contraction, not frame 175ms.
-          await page.waitForFunction(() => {
-            const el = document.getElementById('direct-booking');
-            const st = getComputedStyle(el);
-            const radius = Number(st.clipPath.match(/circle\(([\d.]+)%/)?.[1]);
-            return radius < 135 && Number.isFinite(radius);
-          }, undefined, { timeout: 1650 });
-          const closingPortal = await page.locator('#direct-booking').evaluate(el => {
-            const st = getComputedStyle(el);
-            return {display:st.display,clip:st.clipPath,opacity:Number(st.opacity),
-              radius:Number(st.clipPath.match(/circle\(([\d.]+)%/)?.[1])};
-          });
-          console.log('Booking closing portal',lang,label,JSON.stringify(closingPortal));
-          assert(closingPortal.radius < 135,
-            'Closing portal eventually contracts toward center');
+          const closedLook = await page.locator('#direct-booking').evaluate(el => ({
+            open:el.open, display:getComputedStyle(el).display
+          }));
+          assert(!closedLook.open && closedLook.display === 'none',
+            'Booking closes immediately without lingering vortex animation');
           await page.locator('.hero-actions .ai-entry').click();
           assert.equal(await page.locator('#hamdi-ai-dialog').evaluate(el => el.open), true, 'Nur modal opens');
           await page.keyboard.press('Escape');
@@ -368,7 +346,7 @@ async function run() {
         const st=getComputedStyle(el);
         return {mask:st.clipPath,animation:st.animationName,transition:st.transitionDuration};
       });
-      assert.equal(saferPortal.mask,'none','Reduced motion removes portal mask');
+      assert.equal(saferPortal.mask,'none','Reduced motion keeps booking free of vortex mask');
       await reduced.locator('#direct-booking-close').click();
       assert.equal(await reduced.locator('#direct-booking').evaluate(el => el.open),false,'Reduced-motion booking closes');
       console.log('PASS reduced-motion preference');
