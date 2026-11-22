@@ -267,7 +267,7 @@ html[data-consultation] .voice-card {
   border:0;
   border-radius:0;
 }
-html[data-consultation] :is(.voice-card-top,.voice-copy,#open-voice,#open-voice-test,#confirm-voice) {
+html[data-consultation] :is(.voice-card-top,.voice-copy,#open-voice-test) {
   display:none;
 }
 html[data-consultation] .orb-scene {
