@@ -18,7 +18,7 @@
   <meta property="og:url" content="https://hamdiphoto.com.tr/" />
   <link rel="stylesheet" href="style.css?v=gaziantep-trust-20261122" />
   <link rel="stylesheet" href="flags.css?v=turkey-flag-20261102" />
-  <link rel="stylesheet" href="hamdi-inline/assistant.css?v=cards-fast-100ms-20261122" />
+  <link rel="stylesheet" href="hamdi-inline/assistant.css?v=gaziantep-booking-fallback-20261122" />
   <link rel="stylesheet" href="hamdi-entry/intro.css?v=mobile-welcome-auto-20261122" />
   <script defer src="hamdi-entry/intro.js?v=no-about-20261122"></script>
 </head>
@@ -110,10 +110,12 @@
     <div id="direct-booking-loading" aria-hidden="true" hidden><i></i><i></i><i></i><i></i></div>
     <iframe id="direct-booking-frame" title="طلب جلسة" height="340" allow="microphone; autoplay" sandbox="allow-scripts allow-same-origin allow-forms" referrerpolicy="strict-origin-when-cross-origin"></iframe>
     <button type="button" id="direct-booking-fallback" hidden>إعادة المحاولة</button>
+    <p id="direct-booking-error" class="booking-error" role="alert" hidden>تعذّر تحميل الحجز حاليًا. جرّب مرة ثانية أو راسلنا مباشرة.</p>
+    <a id="direct-booking-contact" class="booking-contact-fallback" href="mailto:hamdihajiali76@gmail.com" hidden>التواصل بالبريد الإلكتروني</a>
     <audio id="direct-booking-audio" preload="none" hidden></audio>
   </dialog>
   <script type="module" src="portfolio/gallery.mjs?v=gallery-20261122"></script>
-  <script type="module" src="hamdi-inline/site-assistant.mjs?v=hamdi-all-four-20261122"></script>
+  <script type="module" src="hamdi-inline/site-assistant.mjs?v=gaziantep-booking-fallback-20261122"></script>
 </body>
 </html>
 
