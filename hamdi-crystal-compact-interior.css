@@ -1,0 +1,168 @@
+/* Hamdi Photography · Compact Crystal Interior
+   Visual finishing only. Keep every outer service card exactly its previous size.
+   No changes to booking links, database, voice, translations, or scripts. */
+
+/* The inner plate is deliberately smaller than its parent, like a floating
+   crystal label inside the larger transparent service-card glass. */
+.services .card > div:last-child,
+.services .card:nth-child(n+4) > div:last-child {
+  box-sizing:border-box;
+  position:relative;
+  z-index:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  align-self:center;
+  justify-self:center;
+  width:88%;
+  max-width:100%;
+  height:auto;
+  min-height:0;
+  margin:0 auto;
+  padding:.44rem .54rem .52rem;
+  overflow:hidden;
+  border:1px solid rgba(255,243,213,.67);
+  border-top-color:rgba(255,254,233,.9);
+  border-inline-start-color:rgba(235,255,239,.65);
+  border-radius:15px;
+  background:
+    radial-gradient(ellipse 90% 40% at 10% 0%,rgba(242,255,230,.2),transparent 72%),
+    linear-gradient(144deg,rgba(229,255,235,.15),rgba(19,109,72,.16) 45%,rgba(3,44,34,.34)),
+    linear-gradient(24deg,rgba(243,203,129,.09),transparent 55%);
+  -webkit-backdrop-filter:blur(14px) saturate(1.5) brightness(1.08);
+  backdrop-filter:blur(14px) saturate(1.5) brightness(1.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,238,.55),
+    inset 1px 0 0 rgba(202,255,220,.27),
+    inset 0 -1px 0 rgba(236,190,110,.31),
+    0 8px 22px rgba(0,17,10,.2),
+    0 0 15px rgba(252,216,143,.1);
+}
+.services .card > div:last-child::before {
+  content:"";
+  position:absolute;
+  z-index:0;
+  inset:0;
+  border-radius:inherit;
+  pointer-events:none;
+  background:
+    linear-gradient(126deg,rgba(250,255,240,.15),transparent 29%),
+    linear-gradient(152deg,transparent 48%,rgba(240,255,229,.12) 61%,transparent 75%);
+}
+.services .card > div:last-child :is(h3,p,a[data-service]) {
+  position:relative;
+  z-index:1;
+}
+.services .card > div:last-child > span {
+  z-index:1;
+  top:.38rem;
+  inset-inline-end:.45rem;
+  font-size:.53rem;
+  color:rgba(255,229,179,.82);
+}
+.services .card h3,
+.services .card:nth-child(n+4) h3 {
+  max-width:100%;
+  font-size:clamp(1.03rem,1.4vw,1.23rem);
+  line-height:1.23;
+  letter-spacing:-.02em;
+}
+.services .card p,
+.services .card:nth-child(n+4) p {
+  max-width:32ch;
+  margin:.19rem auto .35rem;
+  font-size:clamp(.74rem,.86vw,.81rem);
+  line-height:1.3;
+}
+.services .card a[data-service],
+.services .card:nth-child(n+4) a[data-service] {
+  min-height:44px;
+  min-width:145px;
+  padding:.35rem .88rem;
+  font-size:.75rem;
+}
+/* Service artwork also steps down slightly, leaving more visible glass. */
+.services .card > .art,
+.services .card .art.wheel,
+.services .card .art.cap,
+.services .card .art.scissors,
+.services .card .art.photo,
+.services .card .art.portrait-art {
+  width:92px;
+  height:92px;
+  min-width:92px;
+  min-height:92px;
+  max-width:92px;
+  max-height:92px;
+  margin:0 auto;
+  background-size:460px 92px;
+}
+.services .card.hair > .art {background-position:0 0;}
+.services .card.grad > .art {background-position:-92px 0;}
+.services .card.color > .art {background-position:-184px 0;}
+.services .card.portrait > .art {background-position:-276px 0;}
+.services .card.ident > .art {background-position:-368px 0;}
+/* Keep the existing compact 3+2 outer-card grid and its camera background. */
+@media(min-width:1051px) {
+  .services .card:nth-child(n+4) > div:last-child {
+    width:90%;
+    padding:.35rem .52rem .42rem;
+  }
+}
+@media(max-width:1050px) {
+  .services .card > div:last-child,
+  .services .card:nth-child(n+4) > div:last-child {
+    width:89%;
+    padding:.38rem .47rem .45rem;
+  }
+  .services .card h3,
+  .services .card:nth-child(n+4) h3 {font-size:1.09rem;}
+  .services .card p,
+  .services .card:nth-child(n+4) p {font-size:.76rem;line-height:1.29;}
+}
+@media(max-width:650px) {
+  .services .card > div:last-child,
+  .services .card:nth-child(n+4) > div:last-child {
+    width:88%;
+    max-width:100%;
+    height:auto;
+    padding:.34rem .45rem .4rem;
+    border-radius:14px;
+  }
+  .services .card h3,
+  .services .card:nth-child(n+4) h3 {
+    font-size:1.08rem;
+    line-height:1.19;
+  }
+  .services .card p,
+  .services .card:nth-child(n+4) p {
+    font-size:.76rem;
+    line-height:1.25;
+    margin:.19rem auto .31rem;
+  }
+  .services .card a[data-service],
+  .services .card:nth-child(n+4) a[data-service] {
+    min-width:140px;
+    min-height:44px;
+    font-size:.73rem;
+  }
+}
+@media(max-width:360px) {
+  .services .card > div:last-child,
+  .services .card:nth-child(n+4) > div:last-child {
+    width:91%;
+    padding:.3rem .35rem .35rem;
+  }
+  .services .card h3,
+  .services .card:nth-child(n+4) h3 {font-size:1rem;}
+  .services .card p,
+  .services .card:nth-child(n+4) p {font-size:.72rem;}
+}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))) {
+  .services .card > div:last-child {background:rgba(13,76,53,.84);}
+}
+@media(prefers-reduced-motion:reduce) {
+  .services .card > div:last-child,
+  .services .card > div:last-child::before {transition:none!important;animation:none!important;}
+}
