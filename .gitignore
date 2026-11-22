@@ -2,3 +2,7 @@
 .dev.vars.*
 .wrangler/
 node_modules/
+
+# UI lab generated artifacts
+ui-lab/dist/
+ui-lab/.vite/
