@@ -190,14 +190,23 @@ class CustomerVoice {
   }
   play(inline) {
     if (!this.audio || this.audio.state === 'closed') return;
-    const bytes = Uint8Array.from(atob(inline.data), char => char.charCodeAt(0));
+    const decoded = atob(inline.data);
+    const bytes = new Uint8Array(decoded.length);
+    for (let i = 0; i < decoded.length; i++) bytes[i] = decoded.charCodeAt(i);
     const samples = pcmSamples(bytes);
     const rate = Number(/rate=(\d+)/.exec(inline.mimeType)?.[1]) || 24000;
     const buffer = this.audio.createBuffer(1, samples.length, rate);
     buffer.copyToChannel(samples, 0);
     const player = this.audio.createBufferSource(); player.buffer = buffer; player.connect(this.audio.destination);
-    const start = Math.max(this.audio.currentTime, this.nextAudio || 0);
-    this.nextAudio = start + buffer.duration; this.players.add(player); this.onState('speaking');
+    // Hold a tiny playout cushion so network timing variations do not create
+    // audible holes between successive streamed PCM chunks.
+    const now = this.audio.currentTime;
+    const queuedUntil = this.nextAudio || 0;
+    const underflow = queuedUntil <= now;
+    const start = underflow ? now + 0.17 : Math.max(queuedUntil, now + 0.015);
+    this.nextAudio = start + buffer.duration;
+    this.players.add(player);
+    if (this.players.size === 1) this.onState('speaking');
     player.onended = () => {
       this.players.delete(player); player.disconnect(); this.playedAudio = true;
       if (this.introPending && this.introCompleted && this.players.size === 0) {
