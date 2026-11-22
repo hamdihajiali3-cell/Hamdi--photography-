@@ -1423,10 +1423,31 @@ $('#open-voice-test').addEventListener('click', () => prepareVoice('playback'));
 // Consent selections only enable the confirmation button; they must not start a second voice session.
 const consentChanged = () => { updateConsent(); };
 $('#adult-check').addEventListener('change', consentChanged); $('#voice-check').addEventListener('change', consentChanged);
-$('#orb-scene').addEventListener('click', () => { if (consultation) { if (voice.active) voice.stop(); else void automaticVoice.request(); } });
+// The floating Nur iframe occupies most of the phone viewport. Taps on its
+// transparent area cannot reach the host dialog's backdrop, so explicitly
+// forward a close request to the verified parent without showing extra buttons.
+function dismissFloatingNur() {
+  if (!consultation) return;
+  if (voice.active) voice.stop(false);
+  window.parent.postMessage({ type:'hamdi-ai:close-assistant' }, embeddedParent);
+}
+$('#orb-scene').addEventListener('click', () => {
+  if (!consultation) return;
+  if (voice.active) dismissFloatingNur();
+  else void automaticVoice.request();
+});
 $('#orb-scene').addEventListener('keydown', event => {
   if (!consultation || !['Enter', ' '].includes(event.key)) return;
-  event.preventDefault(); if (voice.active) voice.stop(); else void automaticVoice.request();
+  event.preventDefault();
+  if (voice.active) dismissFloatingNur();
+  else void automaticVoice.request();
+});
+// A single tap outside the visible orb exits the assistant on mobile.
+// Never intercept taps inside consent dialogs or other interactive controls.
+if (consultation) document.addEventListener('click', event => {
+  if (document.querySelector('dialog[open]')) return;
+  if (event.target.closest('#orb-scene, a, button, input, select, textarea, [role="button"]')) return;
+  dismissFloatingNur();
 });
 $('#confirm-voice').addEventListener('click', async () => {
   if (!configured || !$('#adult-check').checked || !$('#voice-check').checked) return;
