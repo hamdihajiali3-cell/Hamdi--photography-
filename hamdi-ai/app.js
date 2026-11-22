@@ -1393,10 +1393,8 @@ $('#copy-message').addEventListener('click', async () => {
 function prepareVoice(mode) { consentMode = mode; $('#adult-check').checked = false; $('#voice-check').checked = false; updateConsent(); show(voiceDialog); }
 $('#open-voice').addEventListener('click', () => prepareVoice('microphone'));
 $('#open-voice-test').addEventListener('click', () => prepareVoice('playback'));
-const consentChanged = () => {
-  updateConsent();
-  if (consultation && consentMode === 'microphone') void automaticVoice.accept($('#adult-check').checked, $('#voice-check').checked);
-};
+// Consent selections only enable the confirmation button; they must not start a second voice session.
+const consentChanged = () => { updateConsent(); };
 $('#adult-check').addEventListener('change', consentChanged); $('#voice-check').addEventListener('change', consentChanged);
 $('#orb-scene').addEventListener('click', () => { if (consultation) void automaticVoice.request(); });
 $('#orb-scene').addEventListener('keydown', event => {
@@ -1405,7 +1403,13 @@ $('#orb-scene').addEventListener('keydown', event => {
 });
 $('#confirm-voice').addEventListener('click', async () => {
   if (!configured || !$('#adult-check').checked || !$('#voice-check').checked) return;
-  hide(voiceDialog); await voice.start(language, { microphone: consentMode === 'microphone' });
+  if (consultation && consentMode === 'microphone') {
+    // Persist consent and start exactly once from this explicit user action.
+    await automaticVoice.accept(true, true);
+  } else {
+    hide(voiceDialog);
+    await voice.start(language, { microphone: consentMode === 'microphone' });
+  }
 });
 $('#skip-to-form').addEventListener('click', () => { hide(voiceDialog); openBooking(); });
 $('#mute-voice').addEventListener('click', () => voice.mute()); $('#end-voice').addEventListener('click', () => voice.stop());
