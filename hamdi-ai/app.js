@@ -1426,8 +1426,10 @@ $('#adult-check').addEventListener('change', consentChanged); $('#voice-check').
 // The floating Nur iframe occupies most of the phone viewport. Taps on its
 // transparent area cannot reach the host dialog's backdrop, so explicitly
 // forward a close request to the verified parent without showing extra buttons.
+let floatingNurClosing = false;
 function dismissFloatingNur() {
-  if (!consultation) return;
+  if (!consultation || floatingNurClosing) return;
+  floatingNurClosing = true;
   if (voice.active) voice.stop(false);
   window.parent.postMessage({ type:'hamdi-ai:close-assistant' }, embeddedParent);
 }
@@ -1444,11 +1446,28 @@ $('#orb-scene').addEventListener('keydown', event => {
 });
 // A single tap outside the visible orb exits the assistant on mobile.
 // Never intercept taps inside consent dialogs or other interactive controls.
-if (consultation) document.addEventListener('click', event => {
-  if (document.querySelector('dialog[open]')) return;
-  if (event.target.closest('#orb-scene, a, button, input, select, textarea, [role="button"]')) return;
-  dismissFloatingNur();
-});
+if (consultation) {
+  const closeOnEmptyArea = event => {
+    if (document.querySelector('dialog[open]')) return;
+    if (event.target.closest('#orb-scene, a, button, input, select, textarea, [role="button"]')) return;
+    dismissFloatingNur();
+  };
+  // iOS/Android can skip synthetic click events on non-interactive elements.
+  // Recognize a real, stationary finger tap as well as normal mouse clicks.
+  let touchStart = null;
+  document.addEventListener('pointerdown', event => {
+    if (event.pointerType === 'touch') touchStart = { id:event.pointerId, x:event.clientX, y:event.clientY };
+  }, { passive:true });
+  document.addEventListener('pointerup', event => {
+    if (event.pointerType !== 'touch' || !touchStart || event.pointerId !== touchStart.id) return;
+    const dx = event.clientX - touchStart.x;
+    const dy = event.clientY - touchStart.y;
+    touchStart = null;
+    if (dx * dx + dy * dy <= 324) closeOnEmptyArea(event);
+  }, { passive:true });
+  document.addEventListener('pointercancel', () => { touchStart = null; }, { passive:true });
+  document.addEventListener('click', closeOnEmptyArea);
+}
 $('#confirm-voice').addEventListener('click', async () => {
   if (!configured || !$('#adult-check').checked || !$('#voice-check').checked) return;
   if (consultation && consentMode === 'microphone') {
