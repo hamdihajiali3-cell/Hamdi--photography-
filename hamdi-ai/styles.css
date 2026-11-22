@@ -668,3 +668,122 @@ html[data-floating-nur="true"] .nur-voice-light {
     transition:none!important;
   }
 }
+
+
+/* Floating Nur v2 — no circular wheel, moving figure, transparent consent.
+   Scope to the embedded assistant: booking forms and standalone page are untouched. */
+html[data-floating-nur="true"] .tau-projection::before,
+html[data-floating-nur="true"] .tau-projection::after,
+html[data-floating-nur="true"] .orb-scene::before,
+html[data-floating-nur="true"] .orb-scene::after {
+  content:none!important;
+  display:none!important;
+  animation:none!important;
+  box-shadow:none!important;
+}
+html[data-floating-nur="true"] .tau-projection {
+  background:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+html[data-floating-nur="true"] .tau-projection-art {
+  max-height:100%;
+  transform-origin:50% 53%;
+  filter:drop-shadow(0 14px 27px rgba(209,163,84,.2));
+}
+@keyframes nur-figure-float {
+  0%,100% { transform:translate3d(0,3px,0) rotate(-1.4deg) scale(.975); }
+  50% { transform:translate3d(0,-12px,0) rotate(1.4deg) scale(1.015); }
+}
+@keyframes nur-figure-listen {
+  0%,100% { transform:translate3d(0,2px,0) rotate(-2deg) scale(.99); }
+  50% { transform:translate3d(0,-15px,0) rotate(2deg) scale(1.045); }
+}
+@keyframes nur-figure-speak {
+  0% { transform:translate3d(0,4px,0) rotate(-2deg) scale(1.005); }
+  100% { transform:translate3d(0,-10px,0) rotate(2deg) scale(1.055); }
+}
+@media (prefers-reduced-motion:no-preference) {
+  html[data-floating-nur="true"] .tau-projection-art {
+    animation:nur-figure-float 4.5s ease-in-out infinite!important;
+  }
+  html[data-floating-nur="true"][data-voice-state="listening"] .tau-projection-art {
+    animation:nur-figure-listen 2.8s ease-in-out infinite!important;
+  }
+  html[data-floating-nur="true"][data-voice-state="speaking"] .tau-projection-art {
+    animation:nur-figure-speak 1.35s ease-in-out infinite alternate!important;
+  }
+  html[data-floating-nur="true"][data-voice-state="muted"] .tau-projection-art {
+    animation-play-state:paused!important;
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  html[data-floating-nur="true"] .tau-projection-art {
+    animation:none!important;
+    transform:none!important;
+  }
+}
+/* The privacy/consent screen remains readable and functional, but is glass
+   rather than a white modal. Also eliminate the dark rectangular iframe scrim. */
+html[data-floating-nur="true"] #voice-dialog {
+  color:#fff6e8!important;
+  background:rgba(18,43,31,.58)!important;
+  border:1px solid rgba(232,195,125,.26)!important;
+  border-radius:20px;
+  box-shadow:0 18px 55px rgba(0,0,0,.19)!important;
+  -webkit-backdrop-filter:blur(15px) saturate(1.12);
+  backdrop-filter:blur(15px) saturate(1.12);
+  max-width:calc(100vw - 24px);
+}
+html[data-floating-nur="true"] #voice-dialog::backdrop {
+  background:transparent!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+}
+html[data-floating-nur="true"] #voice-dialog :is(h2, .eyebrow, .check-label) { color:#fff4de!important; }
+html[data-floating-nur="true"] #voice-dialog > p,
+html[data-floating-nur="true"] #voice-dialog .voice-limit {
+  color:#e4ecdf!important;
+}
+html[data-floating-nur="true"] #voice-dialog .dialog-alert {
+  color:#f3e5cb!important;
+  background:rgba(233,188,116,.13)!important;
+  border:1px solid rgba(236,205,151,.17);
+  border-radius:12px;
+}
+html[data-floating-nur="true"] #voice-dialog .check-label input {
+  accent-color:#eec586;
+  background:rgba(18,43,31,.75);
+}
+html[data-floating-nur="true"] #voice-dialog .dialog-close {
+  color:#f7e9cc!important;
+  background:rgba(26,48,34,.35)!important;
+  border:0;
+  border-radius:50%;
+}
+html[data-floating-nur="true"] #voice-dialog #confirm-voice {
+  background:linear-gradient(120deg,#f6dca5,#d6aa62)!important;
+  color:#1e2d20!important;
+  border-color:rgba(255,235,181,.6)!important;
+  font-weight:700;
+}
+html[data-floating-nur="true"] #voice-dialog :is(button,input):focus-visible {
+  outline:2px solid #ffe4ae!important;
+  outline-offset:3px;
+}
+html[data-floating-nur="true"] .voice-status,
+html[data-floating-nur="true"] .transcript {
+  color:#f4e9cf!important;
+  text-shadow:0 1px 6px rgba(0,0,0,.65)!important;
+}
+html[data-floating-nur="true"] .transcript {
+  background:rgba(14,32,24,.28)!important;
+  border:0!important;
+}
+@media (max-width:640px) {
+  html[data-floating-nur="true"] #voice-dialog {
+    width:min(95vw,520px);
+    padding:22px 17px 18px;
+  }
+}
