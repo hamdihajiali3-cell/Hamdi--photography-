@@ -189,3 +189,8 @@ html.hamdi-booking-open{overflow:hidden}
     padding: 0;
   }
 }
+
+/* Instant appearance of the direct booking panel; no 120 ms background fade. */
+#direct-booking { transition: none; }
+#direct-booking[open] { animation: none; }
+#direct-booking::backdrop { animation: none; }
