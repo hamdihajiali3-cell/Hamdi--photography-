@@ -231,7 +231,5 @@
 }
 
 
-/* Direct links remain usable if the embedded Cloudflare assistant is blocked. */
+/* Service cards remain clickable links if scripts are blocked. */
 .card a[data-service]{text-decoration:none;cursor:pointer}
-#hamdi-ai-dialog .hamdi-ai-direct{flex:none;display:inline-flex;align-items:center;justify-content:center;max-width:43%;min-height:40px;padding:5px 9px;border:1px solid #b6c2ad80;border-radius:6px;color:#183b30;font:700 11px/1.45 Arial,sans-serif;text-align:center;text-decoration:none}
-#hamdi-ai-dialog .hamdi-ai-direct:focus-visible{outline:2px solid #a86e4d;outline-offset:2px}
