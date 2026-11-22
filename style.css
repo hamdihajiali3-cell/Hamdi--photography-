@@ -364,3 +364,16 @@ html[lang="ar"] .about-photographer h2{letter-spacing:normal}
   html.hamdi-assistant-open .card,
   html.hamdi-booking-open .card{box-shadow:none}
 }
+
+/* Straight path to the service cards, while keeping Nur as the second option. */
+.hero-services-link{
+  display:inline-flex;align-items:center;justify-content:space-between;
+  gap:1rem;min-height:48px;padding:.7rem 1.1rem;
+  border:1px solid #333c30;border-radius:.6rem;
+  color:#fff8eb;background:var(--olive);
+  font-size:.92rem;font-weight:700;
+  transition:background-color .1s ease-out
+}
+.hero-services-link:hover{background:#1e241b}
+.hero-services-link:focus-visible{outline:3px solid #b9853e;outline-offset:3px}
+@media(max-width:420px){.hero-services-link{width:100%}}
