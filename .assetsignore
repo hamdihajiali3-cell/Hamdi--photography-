@@ -10,3 +10,16 @@
 *.php
 *.toml
 *.jsonc
+
+# Never serve repository metadata, deployment state, developer credentials, or CI configuration.
+**/.git
+**/.git/**
+**/.github
+**/.github/**
+**/.gitignore
+**/.wrangler
+**/.wrangler/**
+**/.dev.vars*
+**/.env*
+**/node_modules
+**/node_modules/**
