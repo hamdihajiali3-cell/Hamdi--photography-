@@ -1,0 +1,132 @@
+/* Hamdi Photography: lightweight, dependency-free motion layer.
+   ThreeUI/Skiper-style interactions adapted to the existing static site.
+   No React runtime, images, tracking, or remote asset requests. */
+:root {
+  --hamdi-motion-ease: cubic-bezier(.22,1,.36,1);
+  --hamdi-spot-x: 50%;
+  --hamdi-spot-y: 34%;
+}
+.hero { position: relative; isolation: isolate; overflow: hidden; }
+.hero-copy { position: relative; z-index: 1; }
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 37% 45% at 84% 13%, rgba(222,173,103,.14), transparent 75%);
+  opacity: .9;
+}
+.studio::before {
+  content: "";
+  position: absolute;
+  z-index: 3;
+  pointer-events: none;
+  inset: -18% -72%;
+  background: linear-gradient(106deg, transparent 37%, rgba(255,248,228,.13) 46%, rgba(255,250,238,.30) 50%, rgba(255,250,235,.09) 54%, transparent 64%);
+  transform: translate3d(-36%,0,0);
+  opacity: .7;
+}
+.hero-actions a {
+  transition: transform .22s var(--hamdi-motion-ease), box-shadow .22s ease, background-color .22s ease;
+}
+.card { isolation: isolate; }
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  opacity: 0;
+  pointer-events: none;
+  background: radial-gradient(280px circle at var(--hamdi-spot-x) var(--hamdi-spot-y), rgba(255,244,214,.78), rgba(229,188,118,.18) 46%, transparent 75%);
+  transition: opacity .28s ease;
+}
+.card > .art, .card > div:last-child { position: relative; z-index: 1; }
+.card .art {
+  transition: transform .42s var(--hamdi-motion-ease), filter .42s ease;
+}
+.card a[data-service] { position: relative; min-height: 44px; touch-action: manipulation; }
+.card a[data-service] i { transition: transform .22s ease; }
+.hero-services-link, .ai-entry, .booking-faq summary, nav a { touch-action: manipulation; }
+#services, #steps, #faq, #contact { scroll-margin-top: 20px; }
+
+@media (hover:hover) and (pointer:fine) {
+  .hero-actions a:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(55,45,25,.13); }
+  .card:hover::after, .card:focus-within::after { opacity: 1; }
+  .card:hover .art { transform: translateY(-4px) scale(1.035); filter: drop-shadow(0 6px 12px rgba(92,58,24,.10)); }
+  .card:hover a[data-service] i { transform: translate(2px,-2px); }
+}
+.card:focus-within::after { opacity: 1; }
+.card:focus-within { outline: 2px solid rgba(168,110,77,.65); outline-offset: 2px; }
+
+/* Fade and lift once when a section scrolls into view.
+   Elements stay visible at all times if JS/observers are blocked. */
+@keyframes hamdi-rise {
+  from { opacity: .62; transform: translate3d(0,19px,0); }
+  to { opacity: 1; transform: translate3d(0,0,0); }
+}
+@keyframes hamdi-studio-light {
+  from { transform: translate3d(-36%,0,0); }
+  to { transform: translate3d(32%,0,0); }
+}
+@media (prefers-reduced-motion:no-preference) {
+  html.has-hamdi-motion.hamdi-entry-dismissed .hero-copy .eyebrow { animation: hamdi-rise .7s .03s both var(--hamdi-motion-ease); }
+  html.has-hamdi-motion.hamdi-entry-dismissed .hero h1 { animation: hamdi-rise .8s .11s both var(--hamdi-motion-ease); }
+  html.has-hamdi-motion.hamdi-entry-dismissed .hero-copy > p:not(.eyebrow) { animation: hamdi-rise .8s .19s both var(--hamdi-motion-ease); }
+  html.has-hamdi-motion.hamdi-entry-dismissed .hero-actions { animation: hamdi-rise .8s .28s both var(--hamdi-motion-ease); }
+  html.has-hamdi-motion .motion-revealed { animation: hamdi-rise .75s var(--hamdi-delay,0s) both var(--hamdi-motion-ease); }
+  html.has-hamdi-motion .studio.motion-active::before { animation: hamdi-studio-light 10s ease-in-out infinite alternate; }
+  /* Existing perimeter effect continues only for visible cards. */
+  html.has-hamdi-motion .card:not(.motion-active)::before { animation-play-state: paused; }
+  html.hamdi-assistant-open .studio::before,
+  html.hamdi-booking-open .studio::before { animation-play-state: paused !important; }
+  html.hamdi-assistant-open .motion-revealed,
+  html.hamdi-booking-open .motion-revealed { animation-play-state: paused !important; }
+  /* Transparent Nur retains its real silhouette, not a decorative frame. */
+  #hamdi-ai-dialog[open]:not([data-loading]) #hamdi-ai-frame:not([hidden]) {
+    animation: hamdi-nur-enter .48s var(--hamdi-motion-ease) both;
+    transform-origin: center center;
+  }
+  @keyframes hamdi-nur-enter {
+    from { opacity: .5; transform: scale(.965) translateY(9px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+}
+
+/* Phone usability: shorter service cards, larger touch targets, less animation work. */
+@media (max-width:650px) {
+  .hero-actions { gap: .7rem; }
+  .hero-actions a { min-height: 48px; }
+  .hero-actions .ai-entry { justify-content: center; }
+  .card { min-height: 22.5rem; grid-template-rows: 10.5rem auto; padding: 1rem 1.1rem; }
+  .card .art { transform: scale(.79); transform-origin: center center; }
+  .card h3 { font-size: clamp(1.4rem,5.5vw,1.7rem); line-height: 1.2; }
+  .card a[data-service] { font-size: .82rem; padding-block: .45rem; }
+  .booking-faq summary { min-height: 54px; }
+  .contact-links a { min-height: 58px; }
+  .steps li { padding-block: 1.5rem; }
+  #services, #steps, #faq, #contact { scroll-margin-top: 12px; }
+}
+@media (hover:none), (pointer:coarse) {
+  /* Painted rotating borders cost CPU/GPU power on phones; keep static gold outline. */
+  .card::before { animation: none !important; filter: none; }
+  .studio::before { animation: none !important; opacity: .45; }
+  .card:active { background: #f8f3e9; }
+  .card:active::after { opacity: .8; }
+  .hero-actions a:active { transform: scale(.985); }
+}
+@media (max-width:380px) {
+  .card { min-height: 21.5rem; padding-inline: .85rem; }
+  .hero-actions .ai-entry { width: 100%; }
+  header nav { column-gap: .65rem; }
+  header nav a { font-size: .72rem; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .hero::before, .studio::before { animation: none !important; }
+  html.has-hamdi-motion .motion-revealed,
+  html.has-hamdi-motion.hamdi-entry-dismissed .hero-copy *,
+  #hamdi-ai-dialog #hamdi-ai-frame { animation: none !important; }
+  .card .art, .card a[data-service] i, .hero-actions a { transition: none !important; }
+}
+/* Keep the ambient studio beam still while the browser tab is hidden. */
+html.hamdi-motion-paused .studio::before, html.hamdi-motion-paused .card::before { animation-play-state:paused!important; }
