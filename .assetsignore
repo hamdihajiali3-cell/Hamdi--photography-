@@ -23,3 +23,6 @@
 **/.env*
 **/node_modules
 **/node_modules/**
+
+# Development-only React animation playground: exclude from Cloudflare published assets.
+/ui-lab/
