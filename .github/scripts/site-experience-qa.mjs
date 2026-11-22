@@ -34,6 +34,20 @@ async function run() {
         try {
           const response = await page.goto(origin + locale, { waitUntil: 'domcontentloaded', timeout: 30000 });
           assert.equal(response.status(), 200, 'HTTP 200 expected');
+          // The localized welcome must cover the viewport on phones and desktops.
+          const welcome = page.locator('#hamdi-entry');
+          await page.waitForFunction(() => document.getElementById('hamdi-entry')?.open, undefined, { timeout: 3000 });
+          const welcomeBounds = await welcome.evaluate(el => {
+            const rect = el.getBoundingClientRect();
+            return { left:rect.left, top:rect.top, right:rect.right, bottom:rect.bottom,
+              vw:window.innerWidth, vh:window.innerHeight };
+          });
+          assert(Math.abs(welcomeBounds.left) < 3 && Math.abs(welcomeBounds.top) < 3
+            && welcomeBounds.right >= welcomeBounds.vw - 3
+            && welcomeBounds.bottom >= welcomeBounds.vh - 3, 'Welcome covers full viewport');
+          const greetingText = await welcome.locator('.hamdi-entry-greeting').innerText();
+          assert(greetingText.includes(lang === 'tr' ? 'hoş geldiniz' : 'أهلًا وسهلًا'),
+            'Welcome greeting matches page language');
           await page.waitForFunction(() => !document.getElementById('hamdi-entry')?.open, undefined, { timeout: 10000 });
           await page.waitForTimeout(250); // let modules initialize
           assert.equal(await page.locator('html').getAttribute('lang'), lang, 'Correct language');
