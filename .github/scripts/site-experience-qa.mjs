@@ -79,6 +79,20 @@ async function run() {
       const styles = inner ? await inner.evaluate(() => {
         const selectors = ['html','body','.voice-card','.hero','#main','.orb-scene'];
         return { url: location.href, attrs: document.documentElement.outerHTML.slice(0,250),
+          glass: (() => {
+            const dlg=document.querySelector('#voice-dialog');
+            const figure=document.querySelector('.tau-projection-art');
+            const ring=document.querySelector('.tau-projection');
+            const panel=dlg && getComputedStyle(dlg);
+            return {
+              consentOpen: Boolean(dlg?.open),
+              panelColor:panel?.backgroundColor,
+              backdrop:dlg && getComputedStyle(dlg,'::backdrop').backgroundColor,
+              before:ring && getComputedStyle(ring,'::before').content,
+              after:ring && getComputedStyle(ring,'::after').content,
+              figureAnimation:figure && getComputedStyle(figure).animationName
+            };
+          })(),
           backgrounds: Object.fromEntries(selectors.map(sel => {
             const el = document.querySelector(sel);
             if(!el) return [sel, 'not found'];
