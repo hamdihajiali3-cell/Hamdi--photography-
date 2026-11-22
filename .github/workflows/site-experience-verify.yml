@@ -10,6 +10,8 @@ on:
       - "hamdi-motion.mjs"
       - "hamdi-inline/**"
       - "hamdi-ai/styles.css"
+      - "hamdi-ai/assistant.html"
+      - ".github/scripts/nur-visual-qa.mjs"
       - ".github/scripts/site-experience-qa.mjs"
       - ".github/workflows/site-experience-verify.yml"
   workflow_dispatch:
@@ -42,6 +44,7 @@ jobs:
           SERVER=$!
           trap 'kill "$SERVER" || true' EXIT
           node .github/scripts/site-experience-qa.mjs
+          node .github/scripts/nur-visual-qa.mjs
       - name: Preserve review screenshots
         if: always()
         uses: actions/upload-artifact@v4
