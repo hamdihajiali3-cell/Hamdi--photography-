@@ -27,8 +27,6 @@ if (typeof document !== 'undefined') {
   const frame = document.querySelector('#hamdi-ai-frame');
   const close = document.querySelector('#hamdi-ai-close');
   const subtitle = document.querySelector('#hamdi-ai-subtitle');
-  const manualBooking = document.querySelector('#manual-booking-section');
-  const bookingSelect = document.querySelector('#booking-service');
   const directBooking = document.querySelector('#direct-booking');
   const directFrame = document.querySelector('#direct-booking-frame');
   const directClose = document.querySelector('#direct-booking-close');
@@ -38,7 +36,6 @@ if (typeof document !== 'undefined') {
   const bookingLoading = document.querySelector('#direct-booking-loading');
   const openingChime = new OpeningChime();
   let prewarming = false;
-  let gmailForm = false;
   let directTrigger;
   let bookingLoadTimer;
   const isModalOpen = modal => modal.hasAttribute('open');
@@ -109,7 +106,7 @@ if (typeof document !== 'undefined') {
     source.searchParams.set('lang', language());
     source.searchParams.set('parentOrigin', location.origin);
     source.searchParams.set('languageNavigation', 'parent');
-    source.searchParams.set('build', 'no-manual-booking-20261122');
+    source.searchParams.set('build', 'manual-removed-20261122');
     return source;
   };
   const openAssistant = ({ withChime = false, autoStart = false } = {}) => {
@@ -159,8 +156,6 @@ if (typeof document !== 'undefined') {
   const openDirectBooking = (service, trigger) => {
     openingChime.stop();
     prewarming = false;
-    gmailForm = false;
-    manualBooking.hidden = true;
     const locale = language();
     const tr = locale === 'tr';
     if (directTrigger?.matches('[data-service]')) directTrigger.setAttribute('aria-expanded', 'false');
@@ -206,14 +201,6 @@ if (typeof document !== 'undefined') {
       openDirectBooking(service, button);
     }, { capture: true });
   });
-  bookingSelect.addEventListener('change', () => {
-    const service = bookingSelect.value;
-    if (gmailForm || !service || !SERVICES.has(service)) return;
-    openDirectBooking(service, bookingSelect);
-    bookingSelect.value = '';
-  });
-  // Manual booking form is intentionally retired from the public UI.
-  manualBooking.hidden = true;
   close.addEventListener('click', dismissAssistant);
   dialog.addEventListener('cancel', event => {
     event.preventDefault();
