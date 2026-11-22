@@ -16,13 +16,19 @@ function staticChecks() {
     assert(page.includes(prefix ? '../hamdi-glass-premium.css?' : 'href="hamdi-glass-premium.css?'), 'Luxury glass skin linked: ' + prefix);
     assert(page.includes(prefix ? '../hamdi-reference-match.css?' : 'href="hamdi-reference-match.css?'), 'Approved reference design linked: ' + prefix);
     assert(page.includes(prefix ? '../hamdi-full-browser.css?' : 'href="hamdi-full-browser.css?'), 'Full-browser stylesheet linked: ' + prefix);
+    assert(page.includes(prefix ? '../hamdi-booking-glass.css?' : 'href="hamdi-booking-glass.css?'), 'Animated booking panel skin linked: ' + prefix);
+    assert(page.includes('booking-glass-brand') && page.includes('id="direct-booking-frame"'), 'Booking brand and original iframe retained');
     assert(page.includes('id="hamdi-ai-dialog"') && page.includes('id="direct-booking"'), 'Both dialogs retained');
     assert(!/<a[^>]+href="[^"]*about\//.test(page), 'Removed About Hamdi link stays removed');
     assert(!/<(?:section|nav)[^>]+id="prices"/i.test(page), 'No invented pricing section');
   }
-  for (const name of ['hamdi-motion.css', 'hamdi-motion.mjs', 'hamdi-glass-premium.css', 'hamdi-reference-match.css', 'hamdi-full-browser.css', 'hamdi-assets/emerald-gold-camera-lens.svg', 'hamdi-assets/reference-camera-lens.webp', 'hamdi-assets/reference-service-icons.webp']) {
+  for (const name of ['hamdi-motion.css', 'hamdi-motion.mjs', 'hamdi-glass-premium.css', 'hamdi-reference-match.css', 'hamdi-full-browser.css', 'hamdi-booking-glass.css', 'hamdi-ai/booking-glass.css', 'hamdi-assets/emerald-gold-camera-lens.svg', 'hamdi-assets/reference-camera-lens.webp', 'hamdi-assets/reference-service-icons.webp']) {
     assert(fs.existsSync(name), 'Missing source: ' + name);
   }
+  const bookingSource = fs.readFileSync('hamdi-ai/booking.html', 'utf8');
+  assert(bookingSource.includes('booking-glass.css?v='), 'Real booking iframe loads its visual-only glass style');
+  const innerCss = fs.readFileSync('hamdi-ai/booking-glass.css', 'utf8');
+  assert(innerCss.includes('html[data-inline-booking] #order-dialog[open]'), 'Glass skin targets only embedded booking UI');
 }
 
 async function run() {
@@ -121,6 +127,22 @@ async function run() {
           // This only checks opening/closing; no request gets submitted.
           await service.click();
           assert.equal(await page.locator('#direct-booking').evaluate(el => el.open), true, 'Booking modal opens');
+          const bookingLook = await page.locator('#direct-booking').evaluate(el => {
+            const panel = getComputedStyle(el);
+            const bar = el.querySelector('.direct-booking-bar');
+            const close = el.querySelector('#direct-booking-close');
+            return {background:panel.backgroundImage,borderRadius:panel.borderTopLeftRadius,
+              backdrop:panel.backdropFilter || panel.webkitBackdropFilter || '',
+              logo:Boolean(bar.querySelector('.booking-glass-emblem')),
+              closeHeight:close.getBoundingClientRect().height,
+              panelWidth:el.getBoundingClientRect().width,
+              vw:window.innerWidth};
+          });
+          assert(bookingLook.background.includes('linear-gradient'), 'Booking panel has emerald crystal finish');
+          assert(bookingLook.logo, 'Luxury booking header contains a camera emblem');
+          assert(bookingLook.closeHeight >= 43, 'Close booking control stays touch-friendly');
+          assert(bookingLook.panelWidth <= bookingLook.vw + 2, 'Booking never spills off browser viewport');
+          assert(bookingLook.backdrop.includes('blur('), 'Luxury booking panel is translucent');
           await page.locator('#direct-booking-close').click();
           assert.equal(await page.locator('#direct-booking').evaluate(el => el.open), false, 'Booking closes');
           await page.locator('.hero-actions .ai-entry').click();
