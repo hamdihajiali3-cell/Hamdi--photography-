@@ -95,6 +95,27 @@ async function run() {
           });
           assert(glassSkin.blur.includes('blur('), 'Cards must have a real translucent glass backdrop');
           assert(glassSkin.lens.includes('reference-camera-lens.webp'), 'Approved mockup camera background is loaded');
+
+          const fullCamera = await page.locator('#services').evaluate(section => {
+            const bounds = section.getBoundingClientRect();
+            const background = getComputedStyle(section, '::before');
+            return {
+              sectionWidth:bounds.width,sectionHeight:bounds.height,
+              cameraWidth:parseFloat(background.width),
+              cameraHeight:parseFloat(background.height),
+              photo:background.backgroundImage,
+              size:background.backgroundSize,
+              mask:background.maskImage || background.webkitMaskImage,
+              position:background.backgroundPosition
+            };
+          });
+          assert(Math.abs(fullCamera.cameraWidth-fullCamera.sectionWidth) < 2 &&
+            Math.abs(fullCamera.cameraHeight-fullCamera.sectionHeight) < 2,
+            'Photographic camera background stretches across the full services canvas');
+          assert(fullCamera.size.includes('auto') && fullCamera.photo.includes('reference-camera-lens.webp'),
+            'Camera lens stays proportional rather than being distorted to viewport width');
+          assert(fullCamera.mask.includes('linear-gradient'),
+            'Wide camera background fades into the emerald light without sharp edges');
           assert(glassSkin.actionBackground.includes('linear-gradient'), 'Existing booking buttons have a gold glass finish');
           const crystalFinish = await page.evaluate(() => {
             const card = document.querySelector('#services .card');
