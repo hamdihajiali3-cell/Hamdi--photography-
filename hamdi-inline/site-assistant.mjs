@@ -205,6 +205,16 @@ if (typeof document !== 'undefined') {
       openDirectBooking(service, button);
     }, { capture: true });
   });
+  // On narrow touchscreens, tapping any non-interactive part of a service card
+  // should activate the same booking link exactly once. Links still work normally.
+  document.querySelectorAll('.card').forEach(card => {
+    const serviceLink = card.querySelector('a[data-service]');
+    if (!serviceLink) return;
+    card.addEventListener('click', event => {
+      if (event.defaultPrevented || event.target.closest('a,button,input,select,textarea,[role="button"]')) return;
+      serviceLink.click();
+    });
+  });
   close.addEventListener('click', dismissAssistant);
   dialog.addEventListener('cancel', event => {
     event.preventDefault();
