@@ -49,7 +49,10 @@
 
   function revealSite(finishGreeting = false) {
     clearTimeout(timeout);
-    if (intro.open) intro.close();
+    if (intro.open) {
+      if (typeof intro.close === 'function') intro.close();
+      else intro.removeAttribute('open');
+    }
     if (!chimePlayed) releaseAudio();
     // Keep a blocked greeting ready for the first permitted tap after the logo closes.
     if (!finishGreeting) stopGreeting();
@@ -131,11 +134,22 @@
   });
 
   const homeEntry = !location.hash || location.hash === '#top';
-  if (homeEntry) {
-    if (typeof intro.showModal === 'function') {
-      intro.showModal();
-      timeout = setTimeout(() => revealSite(true), 3000);
+  const mobileEntry = window.matchMedia?.('(max-width: 760px), (pointer: coarse)').matches === true;
+  // Phones commonly restore a section hash on reload. Show the brand entrance
+  // there too, but don't block an explicit deep link into Nur or booking.
+  const deepLink = location.hash === '#hamdi-ai-dialog'
+    || new URLSearchParams(location.search).has('bookingService');
+  if ((homeEntry || mobileEntry) && !deepLink) {
+    try {
+      if (typeof intro.showModal === 'function') intro.showModal();
+      else intro.setAttribute('open', '');
+    } catch {
+      // Older embedded mobile browsers may not support modal dialog opening.
+      intro.setAttribute('open', '');
     }
+    // The visual welcome is automatic. Browsers may defer audio until the
+    // first natural tap; the existing document listener handles that gesture.
+    timeout = setTimeout(() => revealSite(true), mobileEntry ? 3800 : 3000);
     prepareGreeting(turkish ? 'tr' : 'ar');
     void playChime();
   }
