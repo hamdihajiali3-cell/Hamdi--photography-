@@ -120,7 +120,7 @@ async function run() {
             'Crystal cards and inner card panels both refract the background');
           assert(crystalFinish.cardLayers.includes('rgba('),
             'Main card is built from translucent glass layers');
-          const compactGlass = await page.locator('#services .card').evaluate(el => {
+          const compactGlass = await page.locator('#services .card').first().evaluate(el => {
             const panel = el.querySelector(':scope > div:last-child');
             const art = el.querySelector(':scope > .art');
             const cardRect = el.getBoundingClientRect();
