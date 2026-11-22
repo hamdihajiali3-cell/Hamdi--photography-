@@ -377,3 +377,94 @@ html[lang="ar"] .about-photographer h2{letter-spacing:normal}
 .hero-services-link:hover{background:#1e241b}
 .hero-services-link:focus-visible{outline:3px solid #b9853e;outline-offset:3px}
 @media(max-width:420px){.hero-services-link{width:100%}}
+
+
+/* Gaziantep service details and accessible booking guidance, without stock imagery. */
+.contact-region{
+  max-width:31rem;
+  margin:1.3rem 0 0;
+  color:var(--muted);
+  font-size:clamp(.92rem,1.25vw,1.05rem);
+  line-height:1.9;
+}
+.booking-faq{
+  display:grid;
+  grid-template-columns:minmax(0,.86fr) minmax(0,1.14fr);
+  gap:clamp(2rem,6vw,6rem);
+  padding:clamp(3.5rem,7vw,7rem) clamp(1.5rem,6vw,7rem);
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  background:#f6f0e6;
+}
+.booking-faq-heading{max-width:30rem}
+.booking-faq-heading h2{
+  margin:0;
+  font:600 clamp(2.5rem,4.3vw,4.4rem)/1.1 var(--serif);
+}
+html[lang="ar"] .booking-faq-heading h2{letter-spacing:normal}
+.booking-faq-heading h2 em{color:var(--copper);font-weight:500}
+.booking-faq-heading>p:last-child{
+  margin:1.2rem 0 0;
+  color:var(--muted);
+  font-size:.93rem;
+  line-height:1.9;
+}
+.booking-faq-list{min-width:0;border-top:1px solid var(--line)}
+.booking-faq details{border-bottom:1px solid var(--line)}
+.booking-faq summary{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:1rem;
+  min-height:58px;
+  padding:1rem .25rem;
+  font-size:1rem;
+  font-weight:700;
+  color:var(--olive);
+  list-style:none;
+  cursor:pointer;
+  touch-action:manipulation;
+}
+.booking-faq summary::-webkit-details-marker{display:none}
+.booking-faq summary::after{
+  content:"+";
+  flex:none;
+  color:var(--copper);
+  font-size:1.6rem;
+  font-weight:400;
+  line-height:1;
+}
+.booking-faq details[open] summary::after{content:"−"}
+.booking-faq details>p{
+  margin:0;padding:0 .25rem 1.35rem;
+  color:var(--muted);
+  font-size:.93rem;
+  line-height:1.9;
+}
+.booking-faq summary:focus-visible{
+  outline:3px solid var(--copper);
+  outline-offset:2px;
+  border-radius:.25rem;
+}
+/* Keep every navigation choice visible instead of hiding the last items off-screen. */
+@media (max-width:760px){
+  header nav{
+    flex-wrap:wrap;
+    gap:0 .9rem;
+    overflow:visible;
+    white-space:normal;
+    padding:.2rem 0 .35rem;
+  }
+  header nav a{
+    min-height:40px;
+    font-size:.74rem;
+    padding:.3rem 0;
+  }
+  .booking-faq{grid-template-columns:1fr;gap:1.7rem;padding:3.25rem 1.25rem}
+  .booking-faq summary{font-size:.95rem}
+  .contact-region{margin-top:1rem}
+}
+@media (max-width:380px) {
+  header nav{gap:0 .7rem}
+  header nav a{font-size:.72rem}
+}
