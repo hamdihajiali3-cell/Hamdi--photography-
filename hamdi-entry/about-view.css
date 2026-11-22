@@ -1,0 +1,61 @@
+/* About Hamdi: a separate cinematic screen, not a section of the homepage. */
+:root{color-scheme:dark;--night:#101914;--night-2:#1a2720;--cream:#fff7e9;--gold:#e0bd83;--soft:#cabfb0}
+*{box-sizing:border-box}
+html{min-height:100%;background:var(--night);scroll-behavior:smooth}
+body{min-height:100vh;min-height:100dvh;margin:0;background:var(--night);color:var(--cream);font-family:Arial,Tahoma,sans-serif}
+button{font:inherit}
+.about-screen{position:relative;isolation:isolate;min-height:100dvh;display:flex;flex-direction:column;overflow:hidden}
+.about-screen::before{position:absolute;z-index:-1;inset:0;content:"";pointer-events:none;background:radial-gradient(ellipse at 82% 43%,rgba(212,157,74,.12),transparent 47%),radial-gradient(ellipse at 12% 10%,rgba(131,166,134,.12),transparent 35%),linear-gradient(140deg,#101914,#19261e 65%,#111b16)}
+.about-topbar{display:flex;align-items:center;justify-content:space-between;gap:1.2rem;padding:clamp(1.1rem,3vw,2.3rem) clamp(1.3rem,6vw,6.5rem);border-bottom:1px solid rgba(238,209,161,.2)}
+.about-mark{display:grid;gap:.35rem;letter-spacing:.12em;line-height:1}
+.about-mark strong{font:500 clamp(1.6rem,3vw,2.2rem)/1 Georgia,serif;color:var(--gold);letter-spacing:.19em}
+.about-mark span{font-size:.58rem;letter-spacing:.31em;color:var(--soft);font-weight:700}
+.about-controls{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;justify-content:flex-end}
+.about-back,.about-language{appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:.65rem;min-height:44px;padding:.65rem 1.05rem;cursor:pointer;border:1px solid rgba(238,209,161,.35);border-radius:30px;background:transparent;color:var(--cream);transition:background-color .2s,border-color .2s,transform .2s}
+.about-back{background:rgba(224,189,131,.12)}
+.about-back:hover,.about-language:hover{background:rgba(224,189,131,.2);border-color:var(--gold)}
+.about-back:focus-visible,.about-language:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.about-back .arrow{font-size:1.35rem;color:var(--gold);line-height:1}
+.about-language{color:var(--gold)}
+.about-main{width:min(100%,1480px);margin:auto;flex:1;display:grid;grid-template-columns:minmax(280px,.85fr) minmax(0,1.2fr);gap:clamp(2rem,7vw,8rem);align-items:center;padding:clamp(2.5rem,7vw,7rem) clamp(1.3rem,6vw,6.5rem)}
+.about-visual{position:relative;isolation:isolate;width:min(100%,490px);aspect-ratio:1;margin-inline:auto;display:grid;place-items:center}
+.about-visual::before{content:"";position:absolute;inset:2%;border:1px solid rgba(229,186,111,.64);border-radius:50%;box-shadow:inset 0 0 55px rgba(231,187,108,.055),0 0 50px rgba(222,174,98,.08)}
+.about-visual::after{content:"";position:absolute;inset:-4%;border-radius:50%;background:conic-gradient(from 20deg,transparent 0 20%,rgba(241,200,134,.75) 23%,transparent 27% 54%,rgba(241,200,134,.4) 58%,transparent 62%);-webkit-mask:radial-gradient(transparent 65.5%,#000 66%,#000 66.5%,transparent 67%);mask:radial-gradient(transparent 65.5%,#000 66%,#000 66.5%,transparent 67%);animation:about-orbit 18s linear infinite}
+.about-visual__inner{width:78%;aspect-ratio:1;display:grid;place-items:center;position:relative;border-radius:50%;border:1px solid rgba(224,189,131,.25);background:radial-gradient(circle at 38% 35%,#384738,#1b2920 55%,#0c140f 78%);box-shadow:inset 0 10px 48px rgba(0,0,0,.4),0 25px 55px rgba(0,0,0,.27)}
+.about-visual__inner::after{content:"";position:absolute;inset:6%;border:1px solid rgba(255,240,203,.16);border-radius:50%}
+.about-visual__inner strong{font:400 clamp(7rem,21vw,13rem)/1 Georgia,serif;color:#f4d69f;text-shadow:0 0 50px rgba(245,207,140,.25)}
+.about-visual__inner small{position:absolute;bottom:14%;font-size:clamp(.55rem,1vw,.8rem);letter-spacing:.35em;color:#e8cfa5}
+.about-copy{max-width:700px}
+.about-eyebrow{display:flex;align-items:center;gap:1rem;margin:0 0 clamp(1rem,3vw,2.1rem);color:var(--gold);font-size:.77rem;letter-spacing:.19em;font-weight:700;text-transform:uppercase}
+.about-eyebrow::after{content:"";width:3rem;height:1px;background:var(--gold)}
+.about-title{font:500 clamp(3.5rem,8.5vw,8rem)/1.08 Georgia,Tahoma,serif;letter-spacing:-.04em;margin:0 0 clamp(1.5rem,3vw,2.6rem);overflow-wrap:break-word}
+html[lang=ar] .about-title{font-family:Tahoma,Arial,sans-serif;font-weight:700;letter-spacing:normal;line-height:1.2}
+.about-title em{display:block;font-style:normal;color:var(--gold)}
+.about-summary{color:#f2eee6;font-size:clamp(1.06rem,1.65vw,1.32rem);line-height:2.05;margin:0 0 1.2rem}
+.about-extra{color:var(--soft);font-size:clamp(.88rem,1.2vw,1rem);line-height:1.95;margin:0}
+.about-rule{display:flex;align-items:center;gap:1.2rem;margin-top:clamp(2rem,5vw,3.5rem);color:var(--gold)}
+.about-rule::before{content:"";width:5.5rem;height:1px;background:linear-gradient(90deg,var(--gold),transparent)}
+.about-rule span{font-size:.72rem;letter-spacing:.12em}
+.about-footer{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding:1.5rem clamp(1.3rem,6vw,6.5rem);border-top:1px solid rgba(238,209,161,.16);font-size:.72rem;letter-spacing:.1em;color:#b8ad9c}
+@keyframes about-orbit{to{transform:rotate(360deg)}}
+@keyframes about-arrive{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.about-copy,.about-visual{animation:about-arrive .7s ease-out both}
+.about-visual{animation-delay:.08s}
+html.hamdi-page-leaving .about-screen{opacity:0;transform:translateY(-10px);transition:opacity .2s ease,transform .2s ease}
+@media(max-width:780px){
+  .about-main{grid-template-columns:1fr;gap:1.5rem;padding:2.3rem 1.3rem 3.5rem}
+  .about-visual{width:min(67vw,310px)}
+  .about-title{font-size:clamp(2.7rem,10vw,4.4rem)}
+  .about-copy{max-width:640px}
+  .about-footer{padding:1.4rem 1.3rem}
+}
+@media(max-width:440px){
+  .about-topbar{padding:1rem 1.1rem}
+  .about-mark strong{font-size:1.5rem}
+  .about-controls{gap:.35rem}
+  .about-back,.about-language{padding:.55rem .75rem;font-size:.76rem}
+  .about-main{padding:1.6rem 1.15rem 2.5rem}
+  .about-visual{width:min(63vw,250px)}
+  .about-summary{font-size:1.03rem}
+}
+@media(prefers-reduced-motion:reduce){.about-visual,.about-copy{animation:none}.about-visual::after{animation:none}.about-back,.about-language,html.hamdi-page-leaving .about-screen{transition:none}}
