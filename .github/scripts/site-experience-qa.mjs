@@ -69,6 +69,12 @@ async function run() {
       await nurPage.locator('.hero-actions .ai-entry').click();
       await nurPage.waitForTimeout(2800);
       await nurPage.screenshot({ path: path.join(output, 'nur-prod-open.png'), animations:'disabled' });
+      const iframe = nurPage.locator('#hamdi-ai-frame');
+      await iframe.evaluate(node => { node.style.colorScheme = 'light'; });
+      await nurPage.screenshot({ path: path.join(output, 'nur-prod-frame-light.png'), animations:'disabled' });
+      await iframe.evaluate(node => { node.style.colorScheme = 'dark'; });
+      await nurPage.screenshot({ path: path.join(output, 'nur-prod-frame-dark.png'), animations:'disabled' });
+      await iframe.evaluate(node => { node.style.removeProperty('color-scheme'); });
       const outer = await nurPage.locator('#hamdi-ai-dialog').evaluate(el => ({
         bg: getComputedStyle(el).backgroundColor,
         frameBg:getComputedStyle(el.querySelector('iframe')).backgroundColor,
