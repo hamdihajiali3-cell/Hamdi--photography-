@@ -194,3 +194,41 @@ html.hamdi-booking-open{overflow:hidden}
 #direct-booking { transition: none; }
 #direct-booking[open] { animation: none; }
 #direct-booking::backdrop { animation: none; }
+
+
+/* Clear fallback if a remote booking form fails, with a non-JavaScript email path. */
+#direct-booking .booking-error{
+  margin:.6rem 1.1rem .3rem;
+  color:#7c2624;
+  line-height:1.7;
+  font-size:.93rem;
+  text-align:start;
+}
+#direct-booking .booking-contact-fallback{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:44px;
+  margin:.45rem 1.1rem 1rem;
+  padding:.65rem 1rem;
+  border:1px solid #314739;
+  border-radius:.55rem;
+  background:#254334;
+  color:#fff;
+  text-decoration:none;
+  font-size:.92rem;
+  font-weight:700;
+  touch-action:manipulation;
+}
+#direct-booking .booking-contact-fallback[hidden],
+#direct-booking .booking-error[hidden]{display:none!important}
+#direct-booking .booking-contact-fallback:focus-visible{
+  outline:3px solid #a86e4d;
+  outline-offset:3px;
+}
+@media(pointer:coarse){
+  /* Pause modal perimeter effects while mobile keyboards and audio are in use. */
+  html.hamdi-booking-open #direct-booking::before{
+    animation:none!important;
+  }
+}
