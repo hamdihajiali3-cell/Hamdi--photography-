@@ -109,3 +109,42 @@ html.hamdi-booking-open{overflow:hidden}
 }
 #hamdi-ai-dialog .hamdi-ai-bar{display:none!important}
 #hamdi-ai-dialog #hamdi-ai-frame{background:transparent!important}
+
+
+/* Nur: comfortably sized and exactly centered, keeping the transparent voice layer. */
+#hamdi-ai-dialog[open],
+#hamdi-ai-dialog.mobile-dialog-fallback[open] {
+  position: fixed;
+  inset: 0;
+  top: 0;
+  width: min(550px, calc(100vw - 32px));
+  max-width: 550px;
+  height: min(700px, 82dvh);
+  max-height: 82dvh;
+  margin: auto;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+#hamdi-ai-dialog #hamdi-ai-frame {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 0;
+  width: 100%;
+  background: transparent !important;
+}
+@media (max-width: 640px), (max-height: 500px) {
+  #hamdi-ai-dialog[open],
+  #hamdi-ai-dialog.mobile-dialog-fallback[open] {
+    inset: 0;
+    top: 0;
+    width: min(94vw, 550px);
+    max-width: 550px;
+    height: min(660px, 76dvh);
+    max-height: 76dvh;
+    margin: auto;
+  }
+}
