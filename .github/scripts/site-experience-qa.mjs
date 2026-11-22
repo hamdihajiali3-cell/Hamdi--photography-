@@ -60,6 +60,35 @@ async function run() {
         }
       }
     }
+    // Non-destructive production Nur visual diagnostic. The remote Worker may
+    // fail to load on CI; keep smoke checks independent of external availability.
+    const nurPage = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+    try {
+      await nurPage.goto('https://hamdiphoto.com.tr/', { waitUntil: 'domcontentloaded', timeout: 20000 });
+      await nurPage.waitForFunction(() => !document.getElementById('hamdi-entry')?.open, undefined, { timeout: 10000 });
+      await nurPage.locator('.hero-actions .ai-entry').click();
+      await nurPage.waitForTimeout(2800);
+      await nurPage.screenshot({ path: path.join(output, 'nur-prod-open.png'), animations:'disabled' });
+      const outer = await nurPage.locator('#hamdi-ai-dialog').evaluate(el => ({
+        bg: getComputedStyle(el).backgroundColor,
+        frameBg:getComputedStyle(el.querySelector('iframe')).backgroundColor,
+        bounds: el.getBoundingClientRect().toJSON(),
+        frameUrl: el.querySelector('iframe').src
+      }));
+      const inner = nurPage.frames().find(f => f.url().includes('workers.dev/hamdi-ai/assistant'));
+      const styles = inner ? await inner.evaluate(() => {
+        const selectors = ['html','body','.voice-card','.hero','#main','.orb-scene'];
+        return { url: location.href, attrs: document.documentElement.outerHTML.slice(0,250),
+          backgrounds: Object.fromEntries(selectors.map(sel => {
+            const el = document.querySelector(sel);
+            if(!el) return [sel, 'not found'];
+            const css = getComputedStyle(el);
+            return [sel,{ bg:css.backgroundColor, color:css.color, display:css.display, visibility:css.visibility }];
+          })) };
+      }).catch(e => ({failed:String(e)})) : {failed:'frame not loaded'};
+      console.log('PRODUCTION NUR VISUAL DIAGNOSTIC', JSON.stringify({outer,inner:styles}));
+    } catch(error){ console.log('PRODUCTION NUR DIAGNOSTIC SKIPPED', String(error)); }
+    finally { await nurPage.close(); }
     const reduced = await browser.newPage({ viewport: { width: 375, height: 812 }, reducedMotion: 'reduce' });
     try {
       await reduced.goto(origin, { waitUntil: 'domcontentloaded' });
