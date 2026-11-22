@@ -31,6 +31,8 @@ if (typeof document !== 'undefined') {
   const directFrame = document.querySelector('#direct-booking-frame');
   const directClose = document.querySelector('#direct-booking-close');
   const directFallback = document.querySelector('#direct-booking-fallback');
+  const bookingError = document.querySelector('#direct-booking-error');
+  const bookingContact = document.querySelector('#direct-booking-contact');
   const bookingStatus = document.querySelector('#direct-booking-status');
   const openingAudio = document.querySelector('#direct-booking-audio');
   const bookingLoading = document.querySelector('#direct-booking-loading');
@@ -142,6 +144,8 @@ if (typeof document !== 'undefined') {
     stopOpeningAudio();
     directFrame.hidden = true;
     directFallback.hidden = false;
+    bookingError.hidden = false;
+    bookingContact.hidden = false;
   };
   const closeDirectBooking = ({ restoreFocus = true } = {}) => {
     if (!isModalOpen(directBooking)) return;
@@ -166,6 +170,8 @@ if (typeof document !== 'undefined') {
     directFrame.title = tr ? 'Çekim talebi' : 'طلب جلسة';
     directBooking.setAttribute('aria-label', directFrame.title);
     directFallback.hidden = true;
+    bookingError.hidden = true;
+    bookingContact.hidden = true;
     directFallback.onclick = () => {
       closeDirectBooking({ restoreFocus: false });
       openDirectBooking(service, trigger);
@@ -256,6 +262,8 @@ if (typeof document !== 'undefined') {
         finishBookingLoad();
         revealFrame(directBooking, directFrame);
         directFallback.hidden = true;
+        bookingError.hidden = true;
+        bookingContact.hidden = true;
         return;
       }
       if (data?.type === 'hamdi-ai:close-booking' && Object.keys(data).length === 1) {
