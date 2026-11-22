@@ -16,13 +16,14 @@ function staticChecks() {
     assert(page.includes(prefix ? '../hamdi-glass-premium.css?' : 'href="hamdi-glass-premium.css?'), 'Luxury glass skin linked: ' + prefix);
     assert(page.includes(prefix ? '../hamdi-reference-match.css?' : 'href="hamdi-reference-match.css?'), 'Approved reference design linked: ' + prefix);
     assert(page.includes(prefix ? '../hamdi-full-browser.css?' : 'href="hamdi-full-browser.css?'), 'Full-browser stylesheet linked: ' + prefix);
+    assert(page.includes(prefix ? '../hamdi-crystal-finish.css?' : 'href="hamdi-crystal-finish.css?'), 'New clear crystal glass finish linked: ' + prefix);
     assert(page.includes(prefix ? '../hamdi-booking-glass.css?' : 'href="hamdi-booking-glass.css?'), 'Animated booking panel skin linked: ' + prefix);
     assert(page.includes('booking-glass-brand') && page.includes('id="direct-booking-frame"'), 'Booking brand and original iframe retained');
     assert(page.includes('id="hamdi-ai-dialog"') && page.includes('id="direct-booking"'), 'Both dialogs retained');
     assert(!/<a[^>]+href="[^"]*about\//.test(page), 'Removed About Hamdi link stays removed');
     assert(!/<(?:section|nav)[^>]+id="prices"/i.test(page), 'No invented pricing section');
   }
-  for (const name of ['hamdi-motion.css', 'hamdi-motion.mjs', 'hamdi-glass-premium.css', 'hamdi-reference-match.css', 'hamdi-full-browser.css', 'hamdi-booking-glass.css', 'hamdi-ai/booking-glass.css', 'hamdi-assets/emerald-gold-camera-lens.svg', 'hamdi-assets/reference-camera-lens.webp', 'hamdi-assets/reference-service-icons.webp']) {
+  for (const name of ['hamdi-motion.css', 'hamdi-motion.mjs', 'hamdi-glass-premium.css', 'hamdi-reference-match.css', 'hamdi-full-browser.css', 'hamdi-crystal-finish.css', 'hamdi-booking-glass.css', 'hamdi-ai/booking-glass.css', 'hamdi-assets/emerald-gold-camera-lens.svg', 'hamdi-assets/reference-camera-lens.webp', 'hamdi-assets/reference-service-icons.webp']) {
     assert(fs.existsSync(name), 'Missing source: ' + name);
   }
   const bookingSource = fs.readFileSync('hamdi-ai/booking.html', 'utf8');
@@ -92,6 +93,42 @@ async function run() {
           assert(glassSkin.blur.includes('blur('), 'Cards must have a real translucent glass backdrop');
           assert(glassSkin.lens.includes('reference-camera-lens.webp'), 'Approved mockup camera background is loaded');
           assert(glassSkin.actionBackground.includes('linear-gradient'), 'Existing booking buttons have a gold glass finish');
+          const crystalFinish = await page.evaluate(() => {
+            const card = document.querySelector('#services .card');
+            const inner = card.querySelector('div:last-child');
+            const section = document.querySelector('#services');
+            const styles = {
+              card: getComputedStyle(card),
+              inner: getComputedStyle(inner),
+              aurora: getComputedStyle(section, '::after'),
+              steps: getComputedStyle(document.querySelector('.steps li')),
+              faq: getComputedStyle(document.querySelector('.booking-faq details')),
+              contact: getComputedStyle(document.querySelector('.contact-links a'))
+            };
+            return {
+              cardBlur: styles.card.backdropFilter || styles.card.webkitBackdropFilter || '',
+              innerBlur: styles.inner.backdropFilter || styles.inner.webkitBackdropFilter || '',
+              cardLayers:styles.card.backgroundImage,
+              scene:styles.aurora.backgroundImage,
+              faqGlass:styles.faq.backgroundImage,
+              stepsGlass:styles.steps.backgroundImage,
+              contactGlass:styles.contact.backgroundImage
+            };
+          });
+          assert(crystalFinish.cardBlur.includes('blur(') && crystalFinish.innerBlur.includes('blur('),
+            'Crystal cards and inner card panels both refract the background');
+          assert(crystalFinish.cardLayers.includes('rgba('),
+            'Main card is built from translucent glass layers');
+          assert(crystalFinish.scene.includes('radial-gradient'),
+            'Emerald and gold cinematic background is present behind cards');
+          assert(crystalFinish.stepsGlass.includes('linear-gradient') &&
+            crystalFinish.faqGlass.includes('linear-gradient') &&
+            crystalFinish.contactGlass.includes('linear-gradient'),
+            'Booking steps, FAQs and contact continue the same glass design');
+          await page.locator('#services').screenshot({
+            path: path.join(output, lang + '-' + label + '-crystal-services.png'),
+            animations:'disabled'
+          });
           const referenceVisual = await page.evaluate(() => {
             const section = document.querySelector('#services');
             const card = section.querySelector('.card');
