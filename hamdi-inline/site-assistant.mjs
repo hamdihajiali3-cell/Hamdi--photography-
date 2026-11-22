@@ -106,7 +106,7 @@ if (typeof document !== 'undefined') {
     source.searchParams.set('lang', language());
     source.searchParams.set('parentOrigin', location.origin);
     source.searchParams.set('languageNavigation', 'parent');
-    source.searchParams.set('build', 'manual-removed-20261122');
+    source.searchParams.set('build', 'whitegold-wheel-20261122');
     return source;
   };
   const openAssistant = ({ withChime = false, autoStart = false } = {}) => {
