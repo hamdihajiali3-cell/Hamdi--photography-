@@ -96,6 +96,17 @@ class CustomerVoice {
       }
       this.onState('connecting');
       this.audio = new AudioContext();
+      // A modest output lift with a native peak limiter; microphone stays untouched.
+      this.voiceOutput = this.audio.createGain();
+      this.voiceOutput.gain.value = 1.22;
+      this.voiceLimiter = this.audio.createDynamicsCompressor();
+      this.voiceLimiter.threshold.value = -12;
+      this.voiceLimiter.knee.value = 8;
+      this.voiceLimiter.ratio.value = 3;
+      this.voiceLimiter.attack.value = 0.004;
+      this.voiceLimiter.release.value = 0.16;
+      this.voiceOutput.connect(this.voiceLimiter);
+      this.voiceLimiter.connect(this.audio.destination);
       const activated = activateVoiceAudio(this.audio);
       if (microphone) {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true, autoGainControl: true }, video: false });
@@ -197,7 +208,7 @@ class CustomerVoice {
     const rate = Number(/rate=(\d+)/.exec(inline.mimeType)?.[1]) || 24000;
     const buffer = this.audio.createBuffer(1, samples.length, rate);
     buffer.copyToChannel(samples, 0);
-    const player = this.audio.createBufferSource(); player.buffer = buffer; player.connect(this.audio.destination);
+    const player = this.audio.createBufferSource(); player.buffer = buffer; player.connect(this.voiceOutput || this.audio.destination);
     // Hold a tiny playout cushion so network timing variations do not create
     // audible holes between successive streamed PCM chunks.
     const now = this.audio.currentTime;
@@ -236,6 +247,8 @@ class CustomerVoice {
     this.stream?.getTracks().forEach(track => track.stop()); this.stream = null;
     this.source?.disconnect(); this.microphone?.disconnect(); this.silence?.disconnect();
     this.source = null; this.microphone = null; this.silence = null;
+    this.voiceOutput?.disconnect(); this.voiceLimiter?.disconnect();
+    this.voiceOutput = null; this.voiceLimiter = null;
     if (this.audio) { this.audio.close().catch(() => {}); this.audio = null; }
     if (reason) this.onState(reason);
   }
