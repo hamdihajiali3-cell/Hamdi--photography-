@@ -267,3 +267,9 @@ html.hamdi-assistant-open .ai-entry .live-entry-icon rect,
 html.hamdi-booking-open .ai-entry .live-entry-icon rect {
   animation-play-state: paused !important;
 }
+
+/* 100 ms interaction response for service cards; keep their running gold border. */
+.card {
+  transition: background-color .1s ease-out, transform .1s ease-out, box-shadow .1s ease-out;
+}
+.card a[data-service] { transition: color .1s ease-out, border-color .1s ease-out; }
