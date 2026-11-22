@@ -1,0 +1,223 @@
+/* Hamdi Photography — cinematic glass booking dialog (host shell only).
+   Never touches iframe URLs, request payloads, voice, or database connections. */
+#direct-booking {
+  --booking-gold: #f2c986;
+  --booking-emerald: #073625;
+  position: relative;
+  isolation: isolate;
+  width: min(720px, calc(100vw - 28px));
+  max-height: min(92dvh, 920px);
+  margin: auto;
+  padding: 0;
+  overflow: auto;
+  border: 1px solid rgba(246,204,135,.65);
+  border-radius: 30px;
+  color: #fff6e6;
+  background:
+    radial-gradient(ellipse 85% 47% at 85% -12%,rgba(94,199,133,.21),transparent 75%),
+    linear-gradient(150deg,rgba(11,58,39,.97),rgba(4,25,18,.97));
+  box-shadow:
+    0 34px 105px rgba(0,8,5,.67),
+    0 0 32px rgba(233,181,90,.11),
+    inset 0 1px 0 rgba(255,233,181,.28);
+  -webkit-backdrop-filter: blur(22px) saturate(1.22);
+  backdrop-filter: blur(22px) saturate(1.22);
+}
+#direct-booking::backdrop {
+  background: rgba(2,13,9,.68);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+#direct-booking::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  box-sizing:border-box;
+  padding: 1.5px;
+  border-radius: inherit;
+  pointer-events: none;
+  background: conic-gradient(from var(--hamdi-gold-angle,0deg),
+    rgba(237,189,99,.22),#ffe9b9 45deg,#bf8840 105deg,
+    rgba(120,212,153,.53) 166deg,#fff4cd 236deg,
+    rgba(221,179,101,.24) 306deg,rgba(237,189,99,.22));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;
+  mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  mask-composite:exclude;
+  animation: hamdi-gold-border-travel 12s linear infinite;
+}
+#direct-booking::after {
+  content:"";
+  position:absolute;
+  top:-180px;
+  left:12%;
+  right:12%;
+  height:330px;
+  z-index:0;
+  pointer-events:none;
+  border-radius:50%;
+  background:radial-gradient(ellipse,rgba(86,222,151,.26),rgba(241,200,131,.09) 34%,transparent 73%);
+  filter:blur(18px);
+  animation:booking-ambient-drift 9s ease-in-out infinite alternate;
+}
+#direct-booking .direct-booking-bar {
+  position:sticky;
+  top:0;
+  z-index:5;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  min-height:84px;
+  padding:13px clamp(14px,3vw,26px);
+  border-bottom:1px solid rgba(239,199,123,.3);
+  background:linear-gradient(120deg,rgba(10,56,37,.94),rgba(4,25,20,.96));
+  -webkit-backdrop-filter:blur(17px);
+  backdrop-filter:blur(17px);
+}
+#direct-booking .booking-glass-brand {
+  display:flex;
+  align-items:center;
+  min-width:0;
+  gap:13px;
+  color:#fff5df;
+  pointer-events:none;
+}
+#direct-booking .booking-glass-emblem {
+  position:relative;
+  flex:none;
+  display:grid;
+  place-items:center;
+  width:48px;
+  height:48px;
+  border:1px solid rgba(255,217,148,.72);
+  border-radius:15px;
+  background:
+    radial-gradient(circle at 40% 30%,rgba(157,251,190,.28),transparent 65%),
+    linear-gradient(143deg,rgba(27,109,69,.75),rgba(2,28,22,.8));
+  box-shadow:inset 0 1px rgba(255,248,217,.24),0 0 20px rgba(227,178,103,.2);
+}
+#direct-booking .booking-glass-emblem::before {
+  content:"";
+  width:19px;
+  height:19px;
+  border:2px solid #f2d59e;
+  border-radius:50%;
+  box-shadow:0 0 0 4px rgba(242,213,158,.12);
+  animation:booking-lens-breathe 4.5s ease-in-out infinite;
+}
+#direct-booking .booking-glass-heading {display:grid;gap:2px;min-width:0;}
+#direct-booking .booking-glass-heading b {
+  font:700 11px/1.45 Arial,sans-serif;
+  letter-spacing:.2em;
+  color:#f1cc8e;
+}
+#direct-booking .booking-glass-heading small {
+  color:#f7f4e8;
+  font:700 16px/1.5 Tahoma,Arial,sans-serif;
+  letter-spacing:normal;
+}
+#direct-booking #direct-booking-close {
+  flex:none;
+  min-height:44px;
+  padding:.55rem .95rem;
+  border:1px solid rgba(245,211,155,.65);
+  border-radius:999px;
+  color:#ffebbf;
+  background:rgba(1,23,18,.44);
+  font-weight:700;
+  transition:background-color .18s ease,border-color .18s ease;
+}
+#direct-booking #direct-booking-close:hover {
+  border-color:#ffedba;
+  background:rgba(128,97,49,.28);
+}
+#direct-booking #direct-booking-close:focus-visible {
+  outline:3px solid #ffe7aa;
+  outline-offset:3px;
+}
+#direct-booking #direct-booking-frame {
+  position:relative;
+  z-index:1;
+  width:100%;
+  background:transparent;
+}
+#direct-booking #direct-booking-loading {
+  position:relative;
+  z-index:1;
+  padding:28px 25px 34px;
+  gap:18px;
+  background:transparent;
+}
+#direct-booking #direct-booking-loading i {
+  border:1px solid rgba(231,198,137,.25);
+  background:linear-gradient(105deg,rgba(30,97,67,.5),rgba(135,193,139,.19),rgba(34,85,66,.48));
+  background-size:220% 100%;
+  border-radius:12px;
+  animation:booking-skeleton-light 2.6s ease-in-out infinite;
+}
+#direct-booking #direct-booking-loading i:nth-child(3) {
+  height:55px;
+  border-radius:15px;
+}
+#direct-booking #direct-booking-loading i:last-child {
+  background:linear-gradient(120deg,#fae5b7,#d9ac6b,#f8dfaa);
+}
+#direct-booking #direct-booking-status,
+#direct-booking #direct-booking-error {
+  position:relative;z-index:1;
+  color:#f5dbac;
+}
+#direct-booking .booking-error {color:#ffd5bd!important;}
+#direct-booking #direct-booking-fallback {
+  position:relative;z-index:1;
+  color:#0e291b;
+  border-color:#ffdf9e;
+  border-radius:999px;
+  background:linear-gradient(110deg,#f7dda6,#dbac64);
+}
+#direct-booking .booking-contact-fallback {
+  position:relative;z-index:1;
+  background:linear-gradient(110deg,#f6dda6,#d8a766);
+  color:#132719;
+  border-color:rgba(255,232,180,.8);
+}
+@keyframes booking-ambient-drift {
+  from{transform:translate3d(-14px,0,0) scale(.94);opacity:.63}
+  to{transform:translate3d(18px,22px,0) scale(1.07);opacity:1}
+}
+@keyframes booking-lens-breathe {
+  50%{box-shadow:0 0 0 8px rgba(242,213,158,.18),0 0 18px rgba(255,211,132,.22)}
+}
+@keyframes booking-skeleton-light {
+  50%{background-position:100% 0}
+}
+@media(max-width:640px),(max-height:500px) {
+  #direct-booking[open],
+  #direct-booking.mobile-dialog-fallback[open] {
+    width:100%;
+    height:var(--modal-viewport-height,100dvh);
+    max-height:none;
+    border:0;
+    border-radius:0;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+  }
+  #direct-booking .direct-booking-bar {
+    flex:none;
+    min-height:73px;
+    padding-inline:max(13px,env(safe-area-inset-left)) max(13px,env(safe-area-inset-right));
+  }
+  #direct-booking .booking-glass-emblem{width:42px;height:42px;border-radius:13px}
+  #direct-booking .booking-glass-heading b{font-size:10px}
+  #direct-booking .booking-glass-heading small{font-size:14px}
+  #direct-booking #direct-booking-close{min-height:44px;padding:.5rem .78rem;font-size:.85rem}
+  #direct-booking #direct-booking-frame{flex:1;min-height:0;height:0}
+}
+@media(prefers-reduced-motion:reduce) {
+  #direct-booking::before,#direct-booking::after,
+  #direct-booking .booking-glass-emblem::before,
+  #direct-booking #direct-booking-loading i {animation:none!important}
+}
