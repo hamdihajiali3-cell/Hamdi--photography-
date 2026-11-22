@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+:root {
+  font-family: system-ui, "Segoe UI", Tahoma, sans-serif;
+  color: #eae9dd;
+  background: #101b15;
+  font-synthesis: none;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+button { font: inherit; cursor: pointer; }
+button:focus-visible { outline: 3px solid #e3c68c; outline-offset: 3px; }
+main { max-width: 1120px; margin: auto; padding: clamp(1.5rem, 5vw, 4rem); }
+h1 { font-size: clamp(2rem, 5vw, 3.6rem); line-height: 1.15; margin: 0 0 1rem; }
+p { line-height: 1.8; }
+small, .muted { color: #c5c4b8; }
+.lab-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.5rem; }
+.lab-actions button { min-height: 46px; background: #d4b576; border: 0; border-radius: .6rem; padding: .8rem 1.3rem; color: #112118; font-weight: 700; }
+.lab-panel { background: #192a20; border: 1px solid #55674f; border-radius: 1rem; padding: 1.3rem; margin-top: 2rem; }
+.lab-demo { min-height: 250px; width: 100%; overflow: hidden; border-radius: .7rem; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
