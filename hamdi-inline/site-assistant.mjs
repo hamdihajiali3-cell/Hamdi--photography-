@@ -188,10 +188,9 @@ if (typeof document !== 'undefined') {
     clearTimeout(bookingLoadTimer);
     // Slower mobile connections should not be marked as failed too early.
     bookingLoadTimer = setTimeout(showBookingFallback, 16000);
-    // Avoid competing with the browser's first paint of the modal.
-    requestAnimationFrame(() => {
-      if (isModalOpen(directBooking) && directTrigger === trigger) playOpeningQuestion();
-    });
+    // Keep playback tied to the original trusted service-card tap:
+    // Safari/iOS may block audio played later from requestAnimationFrame.
+    playOpeningQuestion();
   };
   document.querySelectorAll('[data-open-hamdi-ai]').forEach(link => link.addEventListener('click', event => {
     event.preventDefault();
