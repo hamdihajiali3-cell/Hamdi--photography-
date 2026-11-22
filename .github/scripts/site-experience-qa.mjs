@@ -59,13 +59,15 @@ async function run() {
           const otherPath = otherLang === 'tr' ? '/tr/' : '/';
           await page.locator('.lang a[data-lang="' + otherLang + '"]').click();
           await page.waitForURL(url => url.pathname === otherPath, { timeout: 9000 });
-          await page.waitForFunction(() => !document.querySelector('#hamdi-entry')?.open, { timeout: 12000 });
+          await page.waitForLoadState('domcontentloaded');
+          assert.equal(await page.locator('#hamdi-entry').evaluate(el => el.open), false, 'Language switch should skip brand welcome overlay');
           assert.equal(await page.locator('html').getAttribute('lang'), otherLang, 'Language switch to ' + otherLang);
           const otherHero = await page.locator('#hero-title').innerText();
           assert(otherHero.includes(otherLang === 'tr' ? 'Net çekim' : 'تصوير واضح'), 'Hero translated after switching to ' + otherLang);
           await page.locator('.lang a[data-lang="' + lang + '"]').click();
           await page.waitForURL(url => url.pathname === (lang === 'tr' ? '/tr/' : '/'), { timeout: 9000 });
-          await page.waitForFunction(() => !document.querySelector('#hamdi-entry')?.open, { timeout: 12000 });
+          await page.waitForLoadState('domcontentloaded');
+          assert.equal(await page.locator('#hamdi-entry').evaluate(el => el.open), false, 'Return language switch should skip intro overlay');
           assert.equal(await page.locator('html').getAttribute('lang'), lang, 'Language switch back to ' + lang);
           console.log('PASS language-switch', lang, label, 'round trip AR/TR');
           assert.deepEqual(pageErrors, [], 'No uncaught JS errors at ' + lang + ' ' + label);
