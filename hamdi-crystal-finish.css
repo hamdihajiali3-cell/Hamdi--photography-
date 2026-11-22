@@ -1,0 +1,312 @@
+/* Hamdi Photography — Emerald Crystal Finish, 23 Nov 2026.
+   Cosmetic CSS only. Preserves existing service buttons, languages, booking iframe,
+   voice permissions, contact channels, handlers and backend/database wiring. */
+
+:root {
+  --hamdi-glass-rim:rgba(255,237,197,.77);
+  --hamdi-glass-light:rgba(197,255,220,.45);
+  --hamdi-glass-text:#fff9ed;
+}
+body {
+  background:
+    radial-gradient(ellipse 95vw 65vh at 30% 0%,rgba(19,112,72,.27),transparent 85%),
+    linear-gradient(140deg,#03150f,#09271b 53%,#030f0b);
+}
+.site-frame {background:#061a12;}
+header {
+  background:
+    linear-gradient(108deg,rgba(249,207,139,.07),transparent 27%),
+    linear-gradient(103deg,rgba(6,37,26,.98),rgba(1,22,18,.98) 51%,rgba(6,45,29,.98));
+  border-bottom:1px solid rgba(242,201,129,.36);
+  box-shadow:inset 0 1px rgba(245,252,224,.11),0 8px 25px rgba(0,12,6,.15);
+}
+header .lang a[aria-current="page"] {
+  color:#ffe7b7;
+  text-shadow:0 0 12px rgba(249,204,129,.26);
+}
+.hero {
+  background:
+    radial-gradient(ellipse 40% 75% at 88% 15%,rgba(46,182,115,.23),transparent 90%),
+    radial-gradient(ellipse 55% 70% at 4% 100%,rgba(30,134,100,.17),transparent 87%),
+    linear-gradient(120deg,rgba(244,202,127,.06),transparent 25%),
+    linear-gradient(130deg,#04150f,#0a2e21 50%,#041811 100%);
+  border-bottom:1px solid rgba(234,191,117,.22);
+}
+.hero-copy .eyebrow {color:#e7c68f;}
+.hero h1 {color:#fff9e9;text-shadow:0 9px 45px rgba(0,10,6,.36);}
+.hero h1 em {color:#f3d39d;}
+.hero-copy > p:not(.eyebrow) {color:#d8eadd;}
+.hero .notes {color:#c9decc;}
+.hero .notes span::before {color:#f2d093;}
+.studio {
+  border:1px solid rgba(255,227,172,.66);
+  border-radius:26px;
+  background:
+    radial-gradient(ellipse 65% 50% at 72% 15%,rgba(138,226,172,.17),transparent 86%),
+    linear-gradient(143deg,rgba(12,79,51,.65),rgba(4,29,22,.68)),
+    url("hamdi-assets/reference-glass-material.webp") center / cover;
+  -webkit-backdrop-filter:blur(16px) saturate(1.35);
+  backdrop-filter:blur(16px) saturate(1.35);
+  box-shadow:
+    0 23px 45px rgba(0,8,5,.39),
+    0 0 34px rgba(227,181,101,.13),
+    inset 0 2px rgba(255,247,219,.45),
+    inset 0 0 0 2px rgba(210,255,226,.08);
+}
+.studio::after {border-color:rgba(255,240,202,.47);}
+.hero-actions .hero-services-link,
+.hero .hero-services-link {
+  border-color:rgba(255,225,163,.75);
+  box-shadow:inset 0 1px rgba(255,252,231,.32),0 9px 19px rgba(1,18,12,.25);
+}
+
+/* Layered landscape is vital to transparent cards: not a flat green rectangle. */
+.services {
+  position:relative;
+  isolation:isolate;
+  background:
+    radial-gradient(ellipse 28% 62% at 2% 49%,rgba(20,158,111,.28),transparent 85%),
+    radial-gradient(ellipse 42% 40% at 98% 6%,rgba(210,170,98,.18),transparent 81%),
+    radial-gradient(ellipse 72% 38% at 66% 96%,rgba(59,208,142,.19),transparent 78%),
+    linear-gradient(117deg,#02130e 0%,#0a3827 45%,#071e17 74%,#02120e 100%);
+}
+.services::before {opacity:.88;}
+.services::after {
+  opacity:.86;
+  background:
+    radial-gradient(ellipse 82% 95% at 91% -24%,transparent 61%,rgba(177,239,198,.18) 66%,transparent 72%),
+    radial-gradient(ellipse 64% 86% at 84% 113%,transparent 56%,rgba(243,200,130,.17) 63%,transparent 69%),
+    linear-gradient(139deg,transparent 29%,rgba(118,240,170,.14) 37%,transparent 48%),
+    linear-gradient(156deg,transparent 57%,rgba(251,218,156,.13) 65%,transparent 72%),
+    radial-gradient(ellipse 47% 15% at 62% 18%,rgba(216,253,218,.15),transparent 85%);
+  animation:hamdi-crystal-aurora 14s ease-in-out infinite alternate;
+}
+.services .section-copy h2 {text-shadow:0 4px 23px rgba(0,10,5,.41);}
+.services .section-copy > p:last-child {color:#e1f0dc;}
+
+/* Real multi-layer glass: semi-transparent body, luminous edges, photo refraction. */
+.services .card,
+.services .card:first-child,
+.services .card:nth-child(3),
+.services .card:nth-child(4),
+.services .card.portrait {
+  border:1px solid rgba(255,232,187,.85);
+  background:
+    linear-gradient(123deg,rgba(252,255,228,.23),rgba(191,255,215,.065) 14%,transparent 27%),
+    linear-gradient(156deg,transparent 23%,rgba(219,255,233,.11) 38%,transparent 56%),
+    radial-gradient(ellipse 105% 65% at 82% -8%,rgba(168,251,190,.2),transparent 80%),
+    linear-gradient(151deg,rgba(14,101,65,.44),rgba(4,53,39,.54) 56%,rgba(3,29,24,.66));
+  -webkit-backdrop-filter:blur(19px) saturate(1.42) brightness(1.06);
+  backdrop-filter:blur(19px) saturate(1.42) brightness(1.06);
+  box-shadow:
+    0 17px 35px rgba(0,9,6,.37),
+    0 0 25px rgba(234,196,127,.18),
+    inset 0 2px 1px rgba(255,251,224,.64),
+    inset 2px 0 1px rgba(229,255,231,.31),
+    inset -2px -2px 2px rgba(242,194,117,.2),
+    inset 0 -19px 31px rgba(0,19,12,.15);
+  transition:box-shadow .22s ease,border-color .22s ease,filter .22s ease;
+}
+.services .card::before {
+  opacity:1;
+  padding:1.6px;
+  filter:drop-shadow(0 0 7px rgba(255,224,162,.57));
+  background:conic-gradient(
+    from var(--hamdi-gold-angle,0deg),
+    rgba(255,250,222,.68) 0deg,#fff5d3 34deg,#dda75b 79deg,
+    rgba(150,245,197,.71) 143deg,#e8fff1 182deg,
+    #f8dba1 259deg,rgba(220,170,88,.51) 314deg,
+    rgba(255,250,222,.68) 360deg);
+}
+.services .card::after {
+  opacity:.43;
+  background:
+    radial-gradient(ellipse 89% 77% at 4% -12%,rgba(249,252,225,.25),transparent 74%),
+    linear-gradient(143deg,rgba(218,255,232,.16),transparent 37%),
+    url("hamdi-assets/reference-glass-material.webp") center / cover no-repeat;
+  mix-blend-mode:screen;
+  filter:saturate(1.27) contrast(1.06);
+}
+.services .card:hover,
+.services .card:focus-within {
+  border-color:rgba(255,249,219,.98);
+  background:
+    linear-gradient(124deg,rgba(252,255,229,.27),rgba(172,253,216,.12) 17%,transparent 40%),
+    radial-gradient(ellipse at 78% -10%,rgba(208,255,220,.24),transparent 74%),
+    linear-gradient(151deg,rgba(26,125,82,.53),rgba(4,63,43,.6) 53%,rgba(3,33,28,.71));
+  box-shadow:
+    0 24px 44px rgba(0,9,5,.48),0 0 36px rgba(249,209,146,.28),
+    inset 0 2px 1px rgba(255,255,229,.77),
+    inset 1px 0 rgba(239,255,233,.47);
+}
+.services .card:hover::after,.services .card:focus-within::after {opacity:.58;}
+.services .card > div:last-child,
+.services .card:nth-child(n+4) > div:last-child {
+  border:1px solid rgba(250,234,192,.51);
+  border-top-color:rgba(250,255,229,.71);
+  border-radius:17px;
+  background:
+    linear-gradient(132deg,rgba(236,255,236,.18),transparent 28%),
+    linear-gradient(173deg,rgba(14,84,58,.45),rgba(4,34,27,.67));
+  -webkit-backdrop-filter:blur(12px) saturate(1.25);
+  backdrop-filter:blur(12px) saturate(1.25);
+  box-shadow:
+    inset 0 1px 1px rgba(255,252,217,.43),
+    inset 1px 0 rgba(217,255,227,.23),
+    inset 0 -1px rgba(228,186,108,.27),
+    0 9px 18px rgba(0,17,12,.19);
+}
+.services .card > div:last-child > span {color:#ffdda2;}
+.services .card h3 {color:#fffdf2;text-shadow:0 2px 8px rgba(0,9,7,.62);}
+.services .card p {color:#ecf6ea;text-shadow:0 1px 7px rgba(0,10,7,.37);}
+
+/* Keep original clickable service buttons, style them as inset glass gems. */
+.services .card a[data-service] {
+  position:relative;
+  overflow:hidden;
+  color:#fff6da;
+  border:1px solid rgba(255,221,151,.93);
+  border-top-color:#fff2d0;
+  background:
+    linear-gradient(178deg,rgba(255,238,191,.2),transparent 48%),
+    linear-gradient(110deg,rgba(5,31,23,.83),rgba(11,63,45,.75) 54%,rgba(4,30,23,.84));
+  -webkit-backdrop-filter:blur(10px) saturate(1.28);
+  backdrop-filter:blur(10px) saturate(1.28);
+  box-shadow:inset 0 1px rgba(255,246,209,.47),
+    inset 0 -1px rgba(220,174,98,.25),
+    0 6px 13px rgba(0,9,5,.3),0 0 15px rgba(251,208,128,.1);
+  text-shadow:0 1px 4px rgba(0,10,7,.5);
+}
+.services .card a[data-service] i {color:#ffe7b3;}
+.services .card a[data-service]:hover,
+.services .card a[data-service]:focus-visible {
+  color:#fffdf1;
+  border-color:#fff4cb;
+  background:linear-gradient(112deg,rgba(23,97,65,.97),rgba(2,46,35,.91));
+  box-shadow:0 0 22px rgba(249,210,131,.31),inset 0 1px rgba(255,248,212,.47);
+}
+.services .card a[data-service]:hover i {color:#fff2cc;}
+
+/* Match the rest of the site: glass panels in the booking guide, FAQ and contact. */
+.steps {
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  background:
+    radial-gradient(ellipse 50% 90% at -5% 5%,rgba(35,154,106,.2),transparent 76%),
+    radial-gradient(ellipse 40% 66% at 105% 93%,rgba(220,184,113,.14),transparent 84%),
+    linear-gradient(135deg,#061e16,#0b3424 53%,#041711);
+  border-block:1px solid rgba(242,199,122,.29);
+}
+.steps::before {
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  background:linear-gradient(145deg,transparent 50%,rgba(198,251,216,.07) 54%,transparent 60%);
+}
+.steps > div,.steps > ol {position:relative;z-index:1;}
+.steps li {
+  border:1px solid rgba(248,213,156,.29);
+  border-radius:21px;
+  padding:clamp(1rem,1.5vw,1.6rem);
+  margin:0 .42rem;
+  background:
+    linear-gradient(135deg,rgba(242,250,224,.13),transparent 35%),
+    linear-gradient(155deg,rgba(20,91,64,.38),rgba(4,36,28,.64));
+  -webkit-backdrop-filter:blur(13px);
+  backdrop-filter:blur(13px);
+  box-shadow:inset 0 1px rgba(255,247,217,.32),0 9px 23px rgba(0,13,7,.23);
+}
+.steps ol {border-inline-start:0;gap:.85rem;}
+.steps li > span {margin-bottom:clamp(1.3rem,3vw,3rem);color:#ffe0a3;}
+.steps h3 {color:#fff9e9;}
+.steps li p {color:#d8eadc;}
+.booking-faq {
+  position:relative;
+  isolation:isolate;
+  background:
+    radial-gradient(ellipse 60% 50% at 95% 10%,rgba(39,169,111,.2),transparent 82%),
+    linear-gradient(128deg,#071c15,#0c3123 54%,#071a16);
+}
+.booking-faq .booking-faq-list {border-top:0;}
+.booking-faq details {
+  margin-bottom:.9rem;
+  padding:0 1.1rem;
+  border:1px solid rgba(250,214,149,.31);
+  border-radius:17px;
+  background:
+    linear-gradient(132deg,rgba(231,252,225,.1),transparent 33%),
+    rgba(7,57,42,.46);
+  -webkit-backdrop-filter:blur(12px);
+  backdrop-filter:blur(12px);
+  box-shadow:inset 0 1px rgba(255,249,215,.23),0 7px 15px rgba(0,13,9,.16);
+}
+.booking-faq details[open] {
+  border-color:rgba(255,221,163,.73);
+  background:linear-gradient(133deg,rgba(58,144,95,.41),rgba(5,43,32,.69));
+  box-shadow:0 11px 22px rgba(0,10,6,.19),inset 0 1px rgba(255,251,223,.35);
+}
+.booking-faq summary {min-height:60px;color:#fff7e6;}
+.booking-faq summary::after {color:#f5d092;}
+.booking-faq details > p {color:#e0ede1;}
+.contact {
+  position:relative;
+  isolation:isolate;
+  background:
+    radial-gradient(ellipse 44% 55% at -5% 75%,rgba(30,140,93,.19),transparent 83%),
+    linear-gradient(124deg,#04170f,#082b1d 54%,#04160e);
+}
+.contact-links a {
+  border:1px solid rgba(247,208,140,.37);
+  border-radius:16px;
+  padding:1rem 1.05rem;
+  background:linear-gradient(131deg,rgba(247,251,226,.12),transparent 34%),rgba(7,54,39,.49);
+  -webkit-backdrop-filter:blur(11px);
+  backdrop-filter:blur(11px);
+  box-shadow:inset 0 1px rgba(255,250,221,.27),0 7px 15px rgba(0,12,8,.15);
+}
+.contact-links a:hover,.contact-links a:focus-visible {
+  border-color:rgba(255,228,175,.83);
+  background:linear-gradient(136deg,rgba(56,136,86,.48),rgba(6,49,36,.76));
+}
+.contact-links span,.contact-links i {color:#f5d49c;}
+.contact-links b {color:#fff8ec;}
+footer {
+  border-top:1px solid rgba(240,200,130,.37);
+  background:linear-gradient(120deg,#04130e,#0c2b1e,#04110c);
+}
+@keyframes hamdi-crystal-aurora {
+  from {opacity:.67;filter:brightness(.94);}
+  to {opacity:1;filter:brightness(1.12);}
+}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))) {
+  .services .card {background:linear-gradient(145deg,rgba(15,77,50,.93),rgba(5,34,27,.97));}
+  .services .card > div:last-child {background:rgba(10,62,43,.95);}
+}
+@media(max-width:1050px){
+  .steps ol {border:0;gap:.7rem;}
+  .steps li {margin:0;min-height:0;}
+}
+@media(max-width:650px){
+  .services::after {opacity:.59;}
+  .services .card,
+  .services .card:first-child,
+  .services .card:nth-child(3),
+  .services .card:nth-child(4),
+  .services .card.portrait { -webkit-backdrop-filter:blur(11px);backdrop-filter:blur(11px);}
+  .services .card > div:last-child { -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);}
+  .steps {padding:3.6rem 1.1rem;}
+  .steps ol {grid-template-columns:1fr;gap:.8rem;}
+  .steps li {padding:1.2rem 1.3rem;min-height:auto;}
+  .steps li > span {margin-bottom:1rem;}
+  .booking-faq {padding:3.5rem 1.1rem;}
+  .booking-faq details {padding-inline:.85rem;}
+  .contact {padding:3.6rem 1.1rem;}
+  .contact-links a {padding:.9rem .85rem;}
+}
+@media (prefers-reduced-motion:reduce) {
+  .services::after {animation:none!important;}
+  .services .card {transition:none!important;}
+}
