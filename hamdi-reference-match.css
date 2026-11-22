@@ -402,3 +402,81 @@
   .services .card::before {animation:none!important;}
   .services .card,.services .card > .art {transition:none!important;}
 }
+
+/* Fidelity finish: blend the source imagery instead of showing rectangular
+   crop boundaries. Scale it to the reference's smaller left-side lens. */
+.services::before {
+  background-position:left 54%;
+  background-size:clamp(170px,17vw,228px) auto;
+  -webkit-mask-image:radial-gradient(ellipse 24% 46% at 9% 54%,
+    #000 0 35%,rgba(0,0,0,.96) 49%,rgba(0,0,0,.4) 74%,transparent 100%);
+  mask-image:radial-gradient(ellipse 24% 46% at 9% 54%,
+    #000 0 35%,rgba(0,0,0,.96) 49%,rgba(0,0,0,.4) 74%,transparent 100%);
+}
+.services .card > .art,
+.services .card .art.wheel,
+.services .card .art.cap,
+.services .card .art.scissors,
+.services .card .art.photo,
+.services .card .art.portrait-art {
+  width:104px;
+  height:104px;
+  min-width:104px;
+  min-height:104px;
+  max-width:104px;
+  max-height:104px;
+  background-size:520px 104px;
+  mix-blend-mode:screen;
+  -webkit-mask-image:radial-gradient(ellipse 61% 63% at 50% 52%,
+    #000 0 44%,rgba(0,0,0,.96) 62%,rgba(0,0,0,.3) 87%,transparent 100%);
+  mask-image:radial-gradient(ellipse 61% 63% at 50% 52%,
+    #000 0 44%,rgba(0,0,0,.96) 62%,rgba(0,0,0,.3) 87%,transparent 100%);
+}
+.services .card.hair > .art {background-position:0 0;}
+.services .card.grad > .art {background-position:-104px 0;}
+.services .card.color > .art {background-position:-208px 0;}
+.services .card.portrait > .art {background-position:-312px 0;}
+.services .card.ident > .art {background-position:-416px 0;}
+@media(min-width:1051px) {
+  .services .card,
+  .services .card:first-child,
+  .services .card:nth-child(3),
+  .services .card:nth-child(4),
+  .services .card.portrait {
+    grid-template-rows:99px minmax(0,1fr);
+    min-height:264px;
+  }
+  .services .card:nth-child(n+4) {
+    grid-template-rows:minmax(0,1fr);
+    min-height:174px;
+  }
+}
+@media(max-width:1050px) {
+  .services::before {
+    background-position:-35px 51%;
+    background-size:210px auto;
+    opacity:.55;
+  }
+}
+@media(max-width:650px) {
+  .services::before {
+    background-position:-75px 48%;
+    background-size:195px auto;
+    opacity:.28;
+  }
+  .services .card,
+  .services .card:first-child,
+  .services .card:nth-child(3),
+  .services .card:nth-child(4),
+  .services .card.portrait,
+  .services .card:nth-child(n+4) {grid-template-rows:101px minmax(0,1fr);}
+  .services .card > .art,
+  .services .card .art.wheel,
+  .services .card .art.cap,
+  .services .card .art.scissors,
+  .services .card .art.photo,
+  .services .card .art.portrait-art {
+    width:104px;height:104px;min-width:104px;min-height:104px;
+    max-width:104px;max-height:104px;
+  }
+}
