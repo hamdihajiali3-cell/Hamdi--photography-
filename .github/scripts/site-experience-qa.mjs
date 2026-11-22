@@ -14,11 +14,12 @@ function staticChecks() {
     assert(page.includes(prefix ? '../hamdi-motion.css?' : 'href="hamdi-motion.css?'), 'Motion style linked: ' + prefix);
     assert(page.includes(prefix ? '../hamdi-motion.mjs?' : 'src="hamdi-motion.mjs?'), 'Motion JS linked: ' + prefix);
     assert(page.includes(prefix ? '../hamdi-glass-premium.css?' : 'href="hamdi-glass-premium.css?'), 'Luxury glass skin linked: ' + prefix);
+    assert(page.includes(prefix ? '../hamdi-reference-match.css?' : 'href="hamdi-reference-match.css?'), 'Approved reference design linked: ' + prefix);
     assert(page.includes('id="hamdi-ai-dialog"') && page.includes('id="direct-booking"'), 'Both dialogs retained');
     assert(!/<a[^>]+href="[^"]*about\//.test(page), 'Removed About Hamdi link stays removed');
     assert(!/<(?:section|nav)[^>]+id="prices"/i.test(page), 'No invented pricing section');
   }
-  for (const name of ['hamdi-motion.css', 'hamdi-motion.mjs', 'hamdi-glass-premium.css', 'hamdi-assets/emerald-gold-camera-lens.svg']) {
+  for (const name of ['hamdi-motion.css', 'hamdi-motion.mjs', 'hamdi-glass-premium.css', 'hamdi-reference-match.css', 'hamdi-assets/emerald-gold-camera-lens.svg', 'hamdi-assets/reference-camera-lens.webp', 'hamdi-assets/reference-service-icons.webp']) {
     assert(fs.existsSync(name), 'Missing source: ' + name);
   }
 }
@@ -67,6 +68,34 @@ async function run() {
           assert(glassSkin.blur.includes('blur('), 'Cards must have a real translucent glass backdrop');
           assert(glassSkin.lens.includes('emerald-gold-camera-lens.svg'), 'Luxury photographic lens background is loaded');
           assert(glassSkin.actionBackground.includes('linear-gradient'), 'Existing booking buttons have a gold glass finish');
+          const referenceVisual = await page.evaluate(() => {
+            const section = document.querySelector('#services');
+            const card = section.querySelector('.card');
+            const secondRow = section.querySelector('.card:nth-child(4)');
+            const icon = card.querySelector('.art');
+            const photo = getComputedStyle(section,'::before').backgroundImage;
+            const picture = getComputedStyle(icon).backgroundImage;
+            const firstHeight = card.getBoundingClientRect().height;
+            const wideHeight = secondRow.getBoundingClientRect().height;
+            const bounds = [...section.querySelectorAll('.card')].map(el => {
+              const cardBox = el.getBoundingClientRect();
+              const box = el.querySelector('a[data-service]').getBoundingClientRect();
+              return {card:cardBox.toJSON(), action:box.toJSON()};
+            });
+            return {photo,picture,firstHeight,wideHeight,bounds};
+          });
+          assert(referenceVisual.photo.includes('reference-camera-lens.webp'), 'Mockup camera photograph appears as background');
+          assert(referenceVisual.picture.includes('reference-service-icons.webp'), 'Mockup service illustrations appear on all cards');
+          if (label === 'desktop') {
+            assert(referenceVisual.firstHeight <= 355, 'Desktop first-row cards should resemble compact mockup');
+            assert(referenceVisual.wideHeight <= 250, 'Desktop second-row cards should be wide and short');
+          }
+          for(const {card,action} of referenceVisual.bounds){
+            assert(action.width > 40 && action.height >= 43, 'Service booking button remains comfortably clickable');
+            assert(action.left >= card.left - 2 && action.right <= card.right + 2 &&
+              action.top >= card.top - 2 && action.bottom <= card.bottom + 2,
+              'Service action is not clipped by luxury card');
+          }
           assert(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 2),
             'Horizontal overflow at ' + lang + ' ' + label);
           const service = page.locator('.card a[data-service]').first();
