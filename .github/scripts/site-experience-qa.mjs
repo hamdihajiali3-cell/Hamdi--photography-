@@ -13,11 +13,12 @@ function staticChecks() {
     assert.equal((page.match(/data-service="/g) || []).length, 5, 'Five services must remain: ' + prefix);
     assert(page.includes(prefix ? '../hamdi-motion.css?' : 'href="hamdi-motion.css?'), 'Motion style linked: ' + prefix);
     assert(page.includes(prefix ? '../hamdi-motion.mjs?' : 'src="hamdi-motion.mjs?'), 'Motion JS linked: ' + prefix);
+    assert(page.includes(prefix ? '../hamdi-glass-premium.css?' : 'href="hamdi-glass-premium.css?'), 'Luxury glass skin linked: ' + prefix);
     assert(page.includes('id="hamdi-ai-dialog"') && page.includes('id="direct-booking"'), 'Both dialogs retained');
     assert(!/<a[^>]+href="[^"]*about\//.test(page), 'Removed About Hamdi link stays removed');
     assert(!/<(?:section|nav)[^>]+id="prices"/i.test(page), 'No invented pricing section');
   }
-  for (const name of ['hamdi-motion.css', 'hamdi-motion.mjs']) {
+  for (const name of ['hamdi-motion.css', 'hamdi-motion.mjs', 'hamdi-glass-premium.css', 'hamdi-assets/emerald-gold-camera-lens.svg']) {
     assert(fs.existsSync(name), 'Missing source: ' + name);
   }
 }
@@ -53,6 +54,19 @@ async function run() {
           assert.equal(await page.locator('html').getAttribute('lang'), lang, 'Correct language');
           assert.equal(await page.locator('.cards .card').count(), 5, 'All five service cards present');
           assert.equal(await page.locator('.hero-actions a').count(), 2, 'Both hero actions present');
+          const glassSkin = await page.locator('.services .card').first().evaluate(el => {
+            const card = getComputedStyle(el);
+            const before = getComputedStyle(document.querySelector('.services'), '::before');
+            const action = getComputedStyle(el.querySelector('a[data-service]'));
+            return {
+              blur: card.backdropFilter || card.webkitBackdropFilter || '',
+              lens: before.backgroundImage,
+              actionBackground: action.backgroundImage
+            };
+          });
+          assert(glassSkin.blur.includes('blur('), 'Cards must have a real translucent glass backdrop');
+          assert(glassSkin.lens.includes('emerald-gold-camera-lens.svg'), 'Luxury photographic lens background is loaded');
+          assert(glassSkin.actionBackground.includes('linear-gradient'), 'Existing booking buttons have a gold glass finish');
           assert(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 2),
             'Horizontal overflow at ' + lang + ' ' + label);
           const service = page.locator('.card a[data-service]').first();
