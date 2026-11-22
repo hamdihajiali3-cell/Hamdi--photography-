@@ -14,10 +14,10 @@
   box-sizing:border-box;
   display:flex;
   flex-direction:column;
-  width:min(490px,calc(100vw - 28px));
+  width:min(460px,calc(100vw - 32px));
   min-width:0;
-  max-width:calc(100vw - 28px);
-  height:min(72dvh,690px);
+  max-width:calc(100vw - 32px);
+  height:min(62dvh,560px);
   min-height:0;
   max-height:calc(100dvh - 28px);
   margin:auto;
@@ -27,10 +27,10 @@
   border-radius:24px;
   color:#fff8eb;
   background:
-    linear-gradient(147deg,rgba(220,255,231,.15),rgba(17,87,62,.25) 40%,rgba(3,43,34,.35)),
-    radial-gradient(ellipse 75% 50% at 85% 3%,rgba(243,214,151,.11),transparent 85%);
-  -webkit-backdrop-filter:blur(24px) saturate(1.4);
-  backdrop-filter:blur(24px) saturate(1.4);
+    linear-gradient(147deg,rgba(230,255,238,.09),rgba(17,87,62,.095) 40%,rgba(3,43,34,.13)),
+    radial-gradient(ellipse 75% 50% at 85% 3%,rgba(243,214,151,.06),transparent 85%);
+  -webkit-backdrop-filter:blur(6px) saturate(1.16);
+  backdrop-filter:blur(6px) saturate(1.16);
   box-shadow:
     0 25px 80px rgba(0,12,8,.42),
     0 0 23px rgba(236,202,141,.13),
@@ -47,8 +47,8 @@
 #direct-booking[open][data-loading],
 #direct-booking.mobile-dialog-fallback[open][data-loading] {
   background:
-    linear-gradient(147deg,rgba(220,255,231,.15),rgba(17,87,62,.25) 40%,rgba(3,43,34,.35)),
-    radial-gradient(ellipse 75% 50% at 85% 3%,rgba(243,214,151,.11),transparent 85%);
+    linear-gradient(147deg,rgba(230,255,238,.09),rgba(17,87,62,.095) 40%,rgba(3,43,34,.13)),
+    radial-gradient(ellipse 75% 50% at 85% 3%,rgba(243,214,151,.06),transparent 85%);
 }
 
 /* Reflections are static; no black-hole movement or distracting vortex. */
@@ -72,9 +72,9 @@
   filter:blur(19px);
 }
 #direct-booking::backdrop {
-  background:rgba(1,16,11,.34);
-  -webkit-backdrop-filter:blur(5px);
-  backdrop-filter:blur(5px);
+  background:rgba(1,16,11,.12);
+  -webkit-backdrop-filter:blur(1px);
+  backdrop-filter:blur(1px);
 }
 
 /* Compact glass header. Close remains a full-size accessible touch target. */
@@ -90,7 +90,7 @@
   border-bottom:1px solid rgba(255,224,160,.26);
   background:
     linear-gradient(123deg,rgba(231,255,235,.11),rgba(3,45,34,.18)),
-    rgba(6,52,38,.28);
+    rgba(6,52,38,.12);
   -webkit-backdrop-filter:blur(12px) saturate(1.2);
   backdrop-filter:blur(12px) saturate(1.2);
 }
@@ -109,7 +109,7 @@
   min-height:44px;
   font-size:.78rem;
   border-radius:13px;
-  background:rgba(10,52,39,.33);
+  background:rgba(10,52,39,.18);
 }
 
 /* Let the original remote booking form scroll within the small glass panel.
@@ -150,9 +150,9 @@
     right:0;
     bottom:0;
     left:0;
-    width:calc(100vw - 24px);
-    max-width:430px;
-    height:min(77dvh,620px);
+    width:calc(100vw - 36px);
+    max-width:420px;
+    height:min(66dvh,535px);
     max-height:calc(100dvh - 20px);
     margin:auto;
     border:1px solid rgba(247,225,182,.66);
