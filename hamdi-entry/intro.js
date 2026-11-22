@@ -139,7 +139,14 @@
   // there too, but don't block an explicit deep link into Nur or booking.
   const deepLink = location.hash === '#hamdi-ai-dialog'
     || new URLSearchParams(location.search).has('bookingService');
-  if ((homeEntry || mobileEntry) && !deepLink) {
+  let changedLanguage = false;
+  try {
+    changedLanguage = sessionStorage.getItem('hamdi-language-nav') === '1';
+    sessionStorage.removeItem('hamdi-language-nav');
+  } catch {}
+  // A user who chose another language should see translated content right
+  // away rather than watching the brand's intro again.
+  if ((homeEntry || mobileEntry) && !deepLink && !changedLanguage) {
     try {
       if (typeof intro.showModal === 'function') intro.showModal();
       else intro.setAttribute('open', '');
