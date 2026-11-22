@@ -1,0 +1,51 @@
+name: Verify public site UX and responsive layout
+
+on:
+  push:
+    paths:
+      - "index.html"
+      - "tr/index.html"
+      - "style.css"
+      - "hamdi-motion.css"
+      - "hamdi-motion.mjs"
+      - "hamdi-inline/**"
+      - "hamdi-ai/styles.css"
+      - ".github/scripts/site-experience-qa.mjs"
+      - ".github/workflows/site-experience-verify.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  responsive-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: JavaScript syntax checks
+        run: |
+          node --check hamdi-motion.mjs
+          node --check hamdi-inline/site-assistant.mjs
+          node --check hamdi-ai/app.js
+          node --check hamdi-entry/intro.js
+      - name: Install isolated browser test runtime
+        run: npm install --no-save --no-package-lock --no-audit --no-fund playwright@1.58.2
+      - name: Install headless Chromium
+        run: npx playwright install chromium
+      - name: Exercise Arabic and Turkish desktop/phone layouts
+        run: |
+          python3 -m http.server 8090 --bind 127.0.0.1 > /tmp/hamdi-qa-http.log 2>&1 &
+          SERVER=$!
+          trap 'kill "$SERVER" || true' EXIT
+          node .github/scripts/site-experience-qa.mjs
+      - name: Preserve review screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-responsive-qa
+          path: qa-screenshots/
+          if-no-files-found: ignore
