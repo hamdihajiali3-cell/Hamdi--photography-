@@ -66,7 +66,7 @@ async function run() {
             };
           });
           assert(glassSkin.blur.includes('blur('), 'Cards must have a real translucent glass backdrop');
-          assert(glassSkin.lens.includes('emerald-gold-camera-lens.svg'), 'Luxury photographic lens background is loaded');
+          assert(glassSkin.lens.includes('reference-camera-lens.webp'), 'Approved mockup camera background is loaded');
           assert(glassSkin.actionBackground.includes('linear-gradient'), 'Existing booking buttons have a gold glass finish');
           const referenceVisual = await page.evaluate(() => {
             const section = document.querySelector('#services');
