@@ -377,3 +377,23 @@ html[lang="ar"] .about-photographer h2{letter-spacing:normal}
 .hero-services-link:hover{background:#1e241b}
 .hero-services-link:focus-visible{outline:3px solid #b9853e;outline-offset:3px}
 @media(max-width:420px){.hero-services-link{width:100%}}
+
+
+/* The separate About Hamdi page has no links to or from the main navigation. */
+.standalone-about-page main{display:block}
+.standalone-about{
+  min-height:min(75dvh,800px);
+  border-top:0;
+}
+.standalone-about h1{
+  margin:0;
+  font:600 clamp(2.6rem,5.7vw,5.2rem)/1.08 var(--serif);
+  letter-spacing:-.035em;
+}
+html[lang="ar"] .standalone-about h1{letter-spacing:normal}
+.standalone-about h1 em{color:var(--copper);font-weight:500}
+.standalone-about-page footer{justify-content:center;text-align:center}
+@media(max-width:650px){
+  .standalone-about{min-height:calc(100dvh - 175px)}
+  .standalone-about h1{font-size:clamp(2.3rem,9vw,3.4rem)}
+}
