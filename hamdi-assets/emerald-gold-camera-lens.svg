@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 1024" role="img" aria-label="Decorative emerald and champagne-gold camera lens">
+<defs>
+<radialGradient id="ambient" cx=".48" cy=".48" r=".54"><stop stop-color="#24714c" stop-opacity=".33"/><stop offset=".65" stop-color="#0d3826" stop-opacity=".16"/><stop offset="1" stop-color="#001209" stop-opacity="0"/></radialGradient>
+<radialGradient id="lens" cx=".39" cy=".29" r=".73"><stop stop-color="#2c755a"/><stop offset=".19" stop-color="#0b352f"/><stop offset=".42" stop-color="#041e22"/><stop offset=".74" stop-color="#010b13"/><stop offset=".9" stop-color="#182825"/><stop offset="1" stop-color="#070f10"/></radialGradient>
+<radialGradient id="inner" cx=".42" cy=".34" r=".7"><stop stop-color="#4fae86" stop-opacity=".56"/><stop offset=".14" stop-color="#094632"/><stop offset=".43" stop-color="#031a1b"/><stop offset=".82" stop-color="#01070b"/><stop offset="1" stop-color="#17231d"/></radialGradient>
+<linearGradient id="metal" x1=".11" y1=".05" x2=".94" y2=".93"><stop stop-color="#4b3930"/><stop offset=".12" stop-color="#f6db9a"/><stop offset=".22" stop-color="#7d5833"/><stop offset=".39" stop-color="#161a17"/><stop offset=".53" stop-color="#d7a965"/><stop offset=".67" stop-color="#273a31"/><stop offset=".82" stop-color="#f0cb86"/><stop offset="1" stop-color="#3b3024"/></linearGradient>
+<linearGradient id="reflection" x1="0" y1="0" x2=".98" y2="1"><stop stop-color="#ffffff" stop-opacity=".78"/><stop offset=".12" stop-color="#fff3c9" stop-opacity=".14"/><stop offset=".38" stop-color="#d2d8de" stop-opacity="0"/><stop offset=".65" stop-color="#92c9b7" stop-opacity=".12"/><stop offset="1" stop-color="#ffd590" stop-opacity=".6"/></linearGradient>
+<linearGradient id="body" x1="0" y1="0" x2=".93" y2="1"><stop stop-color="#15271d"/><stop offset=".38" stop-color="#030c0b"/><stop offset=".62" stop-color="#253427"/><stop offset="1" stop-color="#050a08"/></linearGradient>
+<filter id="shadow" x="-35%" y="-35%" width="170%" height="170%"><feGaussianBlur stdDeviation="33"/></filter>
+<filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="9"/></filter>
+<clipPath id="aperture"><circle cx="417" cy="516" r="174"/></clipPath>
+</defs>
+<ellipse cx="401" cy="510" rx="422" ry="464" fill="url(#ambient)"/>
+<path d="M51 237Q-70 258-63 406L-45 724Q-28 810 70 829L548 877Q647 867 700 772L770 405Q759 295 671 254L202 175Q116 177 51 237Z" fill="#000" opacity=".58" filter="url(#shadow)"/>
+<g transform="translate(-30 10) rotate(-13 417 516)">
+ <path d="M95 248Q68 245 53 303L22 728Q13 786 90 802L593 862Q685 862 724 786L768 360Q775 280 712 265L95 248Z" fill="url(#body)" stroke="#c6a975" stroke-opacity=".35" stroke-width="8"/>
+ <path d="M79 269L692 297Q720 307 718 343L690 760Q686 804 651 816L91 758Q56 753 60 709L84 311Q84 282 79 269Z" fill="none" stroke="#d5b87a" stroke-opacity=".23" stroke-width="4"/>
+ <g transform="translate(-10 0)">
+  <circle cx="417" cy="516" r="332" fill="#000" opacity=".47" filter="url(#shadow)"/>
+  <circle cx="417" cy="516" r="328" fill="#0a0e0d" stroke="#a48e67" stroke-width="8"/>
+  <circle cx="417" cy="516" r="314" fill="none" stroke="url(#metal)" stroke-width="26"/>
+  <circle cx="417" cy="516" r="297" fill="none" stroke="#080c0c" stroke-width="11"/>
+  <circle cx="417" cy="516" r="285" fill="none" stroke="#ceaf77" stroke-opacity=".74" stroke-width="4"/>
+  <circle cx="417" cy="516" r="273" fill="none" stroke="#283932" stroke-width="22"/>
+  <circle cx="417" cy="516" r="252" fill="#050c10" stroke="#101e1a" stroke-width="13"/>
+  <circle cx="417" cy="516" r="239" fill="url(#lens)" stroke="#d4b87c" stroke-opacity=".64" stroke-width="3"/>
+  <circle cx="417" cy="516" r="208" fill="none" stroke="#a3d6b4" stroke-opacity=".21" stroke-width="3"/>
+  <circle cx="417" cy="516" r="177" fill="url(#inner)" stroke="#64877a" stroke-opacity=".57" stroke-width="9"/>
+  <g clip-path="url(#aperture)" opacity=".65">
+   <path d="M417 516L234 348Q376 301 486 358Z" fill="#0d2623"/>
+   <path d="M417 516L486 358Q623 396 601 489Z" fill="#021719"/>
+   <path d="M417 516L601 489Q579 648 524 689Z" fill="#12392f"/>
+   <path d="M417 516L524 689Q379 719 302 656Z" fill="#092820"/>
+   <path d="M417 516L302 656Q222 540 234 348Z" fill="#061419"/>
+   <circle cx="417" cy="516" r="106" fill="#01090d" stroke="#3c8271" stroke-opacity=".5" stroke-width="6"/>
+   <circle cx="417" cy="516" r="82" fill="url(#lens)"/>
+   <ellipse cx="384" cy="467" rx="26" ry="40" fill="#bfffe9" opacity=".22" filter="url(#glow)"/>
+  </g>
+  <path d="M223 340C300 196 519 196 624 338" fill="none" stroke="#fff2c2" stroke-opacity=".78" stroke-width="12" stroke-linecap="round" filter="url(#glow)"/>
+  <path d="M206 363C291 205 526 203 638 357" fill="none" stroke="#fff7d4" stroke-opacity=".72" stroke-width="4" stroke-linecap="round"/>
+  <path d="M586 667Q487 773 350 727" fill="none" stroke="#cbf9e0" stroke-opacity=".33" stroke-width="10" stroke-linecap="round"/>
+  <circle cx="417" cy="516" r="317" fill="none" stroke="url(#reflection)" stroke-width="6"/>
+  <ellipse cx="316" cy="326" rx="90" ry="13" transform="rotate(-37 316 326)" fill="#fff7ca" opacity=".24" filter="url(#glow)"/>
+ </g>
+ <path d="M124 251Q230 221 359 238" fill="none" stroke="#fbd99b" stroke-opacity=".6" stroke-width="5" stroke-linecap="round"/>
+</g>
+</svg>
