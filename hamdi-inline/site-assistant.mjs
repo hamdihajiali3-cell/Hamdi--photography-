@@ -61,10 +61,9 @@ if (typeof document !== 'undefined') {
     syncModalViewport();
   };
   const revealFrame = (modal, content) => {
+    // Show an already-ready frame immediately, without waiting two paint cycles.
     content.hidden = false;
-    const reveal = () => { if (isModalOpen(modal) && !content.hidden) modal.removeAttribute('data-loading'); };
-    if (typeof requestAnimationFrame === 'function') requestAnimationFrame(() => requestAnimationFrame(reveal));
-    else reveal();
+    if (isModalOpen(modal)) modal.removeAttribute('data-loading');
   };
   const closeModal = (modal, scrollLock) => {
     if (isModalOpen(modal)) {
@@ -179,12 +178,17 @@ if (typeof document !== 'undefined') {
     source.searchParams.set('bookingService', service);
     source.searchParams.set('presentation', 'inline');
     directFrame.height = 340;
-    directFrame.src = source.href;
+    // Open the visible shell synchronously on the click; loading the remote form
+    // proceeds asynchronously and is not a fixed 100 ms network guarantee.
     showModal(directBooking, directClose, 'hamdi-booking-open');
     directBooking.scrollTop = 0;
+    directFrame.src = source.href;
     clearTimeout(bookingLoadTimer);
     bookingLoadTimer = setTimeout(showBookingFallback, 10000);
-    playOpeningQuestion();
+    // Avoid competing with the browser's first paint of the modal.
+    requestAnimationFrame(() => {
+      if (isModalOpen(directBooking) && directTrigger === trigger) playOpeningQuestion();
+    });
   };
   document.querySelectorAll('[data-open-hamdi-ai]').forEach(link => link.addEventListener('click', event => {
     event.preventDefault();
