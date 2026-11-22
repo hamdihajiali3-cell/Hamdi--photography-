@@ -480,3 +480,46 @@
     max-width:104px;max-height:104px;
   }
 }
+
+/* The lens is a bounded photographic layer with its own feathered mask.
+   Masking the entire services section leaves visible photo-rectangle edges;
+   masking the actual photo-sized element removes those seams. */
+.services::before {
+  inset:auto;
+  top:54%;
+  left:0;
+  right:auto;
+  bottom:auto;
+  width:clamp(185px,17vw,228px);
+  height:clamp(330px,30vw,408px);
+  transform:translateY(-50%);
+  background-image:url("hamdi-assets/reference-camera-lens.webp");
+  background-repeat:no-repeat;
+  background-position:center center;
+  background-size:100% 100%;
+  opacity:.96;
+  -webkit-mask-image:radial-gradient(ellipse 99% 72% at 23% 50%,
+    #000 0 31%,rgba(0,0,0,.85) 49%,rgba(0,0,0,.2) 72%,transparent 90%);
+  mask-image:radial-gradient(ellipse 99% 72% at 23% 50%,
+    #000 0 31%,rgba(0,0,0,.85) 49%,rgba(0,0,0,.2) 72%,transparent 90%);
+}
+@media(max-width:1050px) {
+  .services::before {
+    width:194px;
+    height:345px;
+    left:-42px;
+    top:53%;
+    background-position:center;
+    background-size:100% 100%;
+    opacity:.49;
+  }
+}
+@media(max-width:650px) {
+  .services::before {
+    width:175px;
+    height:315px;
+    left:-65px;
+    top:48%;
+    opacity:.25;
+  }
+}
