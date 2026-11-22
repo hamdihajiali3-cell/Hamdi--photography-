@@ -257,3 +257,13 @@
 @media (prefers-reduced-motion: reduce) {
   .card::before { animation: none; }
 }
+/* Keep the decorative card lights still while a voice dialog is active,
+   so the main thread can focus on microphone and audio playback. */
+html.hamdi-assistant-open .card::before,
+html.hamdi-booking-open .card::before {
+  animation-play-state: paused !important;
+}
+html.hamdi-assistant-open .ai-entry .live-entry-icon rect,
+html.hamdi-booking-open .ai-entry .live-entry-icon rect {
+  animation-play-state: paused !important;
+}
