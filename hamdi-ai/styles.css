@@ -416,3 +416,22 @@ html[data-floating-nur=true] .nur-voice-indicator{margin:2px auto;min-height:17p
 html[data-floating-nur=true] .transcript{max-height:82px;overflow:auto;padding:6px 12px;border-radius:10px;background:rgba(246,242,234,.72);font-size:13px;line-height:1.5;text-align:center}
 html[data-floating-nur=true] .orb-scene:focus-visible{outline:2px solid #1f7d65;outline-offset:2px}
 @media(max-height:500px){html[data-floating-nur=true] .orb-scene{height:110px!important}html[data-floating-nur=true] .transcript{max-height:40px}}
+
+/* Nur iframe: make the entire voice surface clear and keep the orb interactive.
+   Consent dialog controls deliberately remain visible until accepted. */
+html[data-consultation="true"],html[data-consultation="true"] body{
+  background:transparent!important;background-color:transparent!important;
+  box-shadow:none!important;
+}
+html[data-consultation="true"] .topbar,
+html[data-consultation="true"] .top-right,
+html[data-consultation="true"] .language{display:none!important}
+html[data-consultation="true"] .voice-card{
+  background:transparent!important;border:0!important;outline:0!important;
+  border-radius:0!important;box-shadow:none!important;
+}
+html[data-consultation="true"] #open-voice,
+html[data-consultation="true"] #open-voice-test,
+html[data-consultation="true"] #call-controls,
+html[data-consultation="true"] .voice-booking{display:none!important}
+html[data-consultation="true"] .orb-scene{cursor:pointer}
