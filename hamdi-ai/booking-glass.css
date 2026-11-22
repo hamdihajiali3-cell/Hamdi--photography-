@@ -223,3 +223,39 @@ html[data-inline-booking] #order-receipt h3 {color:#ffdf9b;}
   html[data-inline-booking] :is(#order-dialog[open]::before,#order-dialog[open]::after),
   html[data-inline-booking] #order-form [data-order-field]:not([hidden]) {animation:none!important;}
 }
+
+
+/* The iframe is now viewport-wide; center the actual questions/fields
+   within a spacious full-screen emerald canvas for 4K and mobile alike.
+   Only visual descendants are targeted; IDs/handlers/submission are intact. */
+html[data-inline-booking],
+html[data-inline-booking] body {min-height:100%;}
+html[data-inline-booking] #order-dialog[open] {
+  box-sizing:border-box;
+  width:100%;
+  min-height:100dvh;
+  padding:clamp(24px,5.5vh,72px) clamp(16px,5vw,84px);
+  background:
+    radial-gradient(ellipse 36% 32% at 8% 18%,rgba(232,183,100,.13),transparent 83%),
+    radial-gradient(ellipse 36% 50% at 98% 75%,rgba(81,219,140,.2),transparent 83%),
+    linear-gradient(150deg,rgba(8,65,44,.69),rgba(2,27,22,.9));
+}
+html[data-inline-booking] #order-dialog[open] > * {
+  max-width:min(900px,100%);
+  margin-inline:auto;
+}
+html[data-inline-booking] #order-dialog[open] #order-form {
+  width:100%;
+}
+html[data-inline-booking] #order-dialog[open] #order-consent {
+  width:100%;
+}
+html[data-inline-booking] #order-dialog[open] .order-service-name {
+  max-width:max-content;
+}
+@media(max-width:640px) {
+  html[data-inline-booking] #order-dialog[open] {
+    padding:22px 16px max(28px,env(safe-area-inset-bottom));
+  }
+  html[data-inline-booking] #order-dialog[open] > * {max-width:100%;}
+}
