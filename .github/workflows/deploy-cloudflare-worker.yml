@@ -1,0 +1,61 @@
+name: Deploy Hamdi Cloudflare Worker
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/deploy-cloudflare-worker.yml"
+      - "worker.js"
+      - "wrangler.jsonc"
+      - ".assetsignore"
+      - "cloudflare-worker/**"
+      - "hamdi-ai/**"
+      - "hamdi-motion.css"
+      - "hamdi-motion.mjs"
+      - "index.html"
+      - "tr/index.html"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hamdi-production-cloudflare-worker
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check Cloudflare deployment credentials
+        id: auth
+        shell: bash
+        run: |
+          if [[ -z "${CLOUDFLARE_API_TOKEN}" || -z "${CLOUDFLARE_ACCOUNT_ID}" ]]; then
+            echo "::error::Cloudflare deployment not started: add repository Actions secrets CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID, or deploy from an authenticated Codespaces terminal."
+            exit 1
+          fi
+      - name: Check Worker source syntax
+        run: |
+          node --check worker.js
+          node --check cloudflare-worker/hamdi-live.mjs
+          node --check hamdi-ai/app.js
+      - name: Publish Worker and static assets
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy --config wrangler.jsonc
+      - name: Verify public Worker readiness
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --retry 3 --retry-delay 2 --max-time 20 \
+            "https://hamdi--photography.hamdihajiali3.workers.dev/api/health" \
+            | grep -q '"ok":true'
+          echo "Cloudflare Worker health endpoint is responding"
