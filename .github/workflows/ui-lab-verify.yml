@@ -26,6 +26,23 @@ jobs:
       - name: Check ThreeUI development lab build
         run: npm run build
         working-directory: ui-lab
+      - name: Render the actual ThreeUI components in React
+        working-directory: ui-lab
+        run: |
+          node --input-type=module <<'NODE'
+          import React from 'react';
+          import { renderToStaticMarkup } from 'react-dom/server';
+          import { CircleButtons } from '@designcodeio/threeui/components/CircleButtons';
+          import { EmeraldHorizonBackground } from '@designcodeio/threeui/components/EmeraldHorizonBackground';
+          if (typeof CircleButtons !== 'function' || typeof EmeraldHorizonBackground !== 'function') {
+            throw new Error('Expected ThreeUI Community component is not exported');
+          }
+          const html = renderToStaticMarkup(React.createElement(CircleButtons, { variant: 'plus' }));
+          if (!html.includes('circle-buttons')) throw new Error('CircleButtons did not render');
+          const horizonHtml = renderToStaticMarkup(React.createElement(EmeraldHorizonBackground));
+          if (!horizonHtml.includes('emerald-horizon')) throw new Error('EmeraldHorizonBackground did not render');
+          console.log('Both current ThreeUI components exported and rendered successfully');
+          NODE
       - name: Install one free Skiper UI registry component in lab
         run: npx shadcn@latest add @skiper-ui/skiper26 --yes
         working-directory: ui-lab
