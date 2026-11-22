@@ -9,7 +9,7 @@
   <title>Hamdi Photography | Randevu Masası</title>
   <link rel="alternate" hreflang="ar" href="../">
   <link rel="alternate" hreflang="tr" href="./">
-  <link rel="stylesheet" href="../style.css?v=mobile-20261119">
+  <link rel="stylesheet" href="../style.css?v=no-manual-booking-20261122">
   <link rel="stylesheet" href="../flags.css?v=turkey-flag-20261102">
   <link rel="stylesheet" href="../hamdi-inline/assistant.css?v=nur-20261122-clear">
   <link rel="stylesheet" href="../booking-date-time.css?v=turkish-schedule-20261116">
@@ -39,7 +39,7 @@
           <a href="../" data-lang="ar" hreflang="ar" lang="ar">عربي</a>
           <a href="./" data-lang="tr" hreflang="tr" lang="tr" aria-current="page">TR</a>
         </div>
-        <a class="book-top" href="#booking"><span aria-hidden="true">▦</span><b data-i18n="bookTop">Randevu al</b></a>
+        
       </div>
     </header>
     <main id="content">
@@ -49,7 +49,7 @@
           <h1 id="hero-title" data-i18n-html="heroTitle">Net çekim.<br><em>Kolay talep.</em></h1>
           <p data-i18n="heroText">Hizmetini seç ve randevunu stüdyoyla planla.</p>
           <div class="hero-actions">
-            <a class="hero-book" href="#booking"><span data-i18n="heroBook">Çekim talebi</span><span aria-hidden="true">↘</span></a>
+            
             <a class="ai-entry" href="https://hamdi--photography.hamdihajiali3.workers.dev/hamdi-ai/assistant" data-open-hamdi-ai><span data-i18n="voiceLink">Sesli asistan</span><span class="live-entry-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><rect x="3" y="8" width="3" height="8" rx="1.5" fill="currentColor"/><rect x="8" y="4" width="3" height="16" rx="1.5" fill="currentColor"/><rect x="13" y="1" width="3" height="22" rx="1.5" fill="currentColor"/><rect x="18" y="6" width="3" height="12" rx="1.5" fill="currentColor"/></svg></span></a>
           </div>
           <div class="notes"><span data-i18n="noteOne">Beş fotoğraf hizmeti</span><span data-i18n="noteTwo">Sabit fiyat yok</span></div>
@@ -64,7 +64,7 @@
         <article class="card portrait"><div class="art portrait-art" aria-hidden="true"><i></i></div><div><span>05</span><h3 data-i18n="portraitTitle">Portre çekimi</h3><p data-i18n="portraitText">Kişiliğini yansıtan bir portre çekimi.</p><a href="#booking" data-service="portrait"><b data-i18n="choose">Hizmeti seç</b><i>↗</i></a></div></article>
       </div>
       </section>
-      <section class="booking-section" id="manual-booking-section" aria-labelledby="booking-title">
+      <section class="booking-section" id="manual-booking-section" aria-labelledby="booking-title" hidden>
         <form id="booking" class="booking" aria-describedby="booking-note booking-status">
           <div class="booking-head"><div><span data-i18n="bookingOverline">Gmail ile</span><h2 id="booking-title" data-i18n="bookingTitle">Elle randevu talebi</h2></div><i aria-hidden="true">▦</i></div>
           <p class="booking-intro" data-i18n="bookingIntro">Hizmeti seç ve adını yaz. Diğer bilgiler isteğe bağlı.</p>
@@ -99,10 +99,10 @@
     <p id="direct-booking-status" class="booking-loading-label" role="status" hidden></p>
     <div id="direct-booking-loading" aria-hidden="true" hidden><i></i><i></i><i></i><i></i></div>
     <iframe id="direct-booking-frame" title="Çekim talebi" height="340" allow="microphone; autoplay" sandbox="allow-scripts allow-same-origin allow-forms" referrerpolicy="strict-origin-when-cross-origin"></iframe>
-    <button type="button" id="direct-booking-fallback" hidden>Gmail formuyla devam et</button>
+    <button type="button" id="direct-booking-fallback" hidden>Tekrar dene</button>
     <audio id="direct-booking-audio" preload="none" hidden></audio>
   </dialog>
-  <script type="module" src="../hamdi-inline/site-assistant.mjs?v=nur-20261122-clear"></script>
+  <script type="module" src="../hamdi-inline/site-assistant.mjs?v=no-manual-booking-20261122"></script>
   <script type="module" src="../booking-date-time.mjs?v=turkish-schedule-20261116"></script>
 </body>
 </html>
