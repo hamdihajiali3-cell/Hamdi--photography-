@@ -1,0 +1,31 @@
+name: Verify optional UI libraries
+
+on:
+  push:
+    paths:
+      - "ui-lab/**"
+      - ".github/workflows/ui-lab-verify.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install ThreeUI and supporting packages in isolated lab
+        run: npm install --no-audit --no-fund
+        working-directory: ui-lab
+      - name: Check ThreeUI development lab build
+        run: npm run build
+        working-directory: ui-lab
+      - name: Install one free Skiper UI registry component in lab
+        run: npx shadcn@latest add @skiper-ui/skiper26 --yes
+        working-directory: ui-lab
