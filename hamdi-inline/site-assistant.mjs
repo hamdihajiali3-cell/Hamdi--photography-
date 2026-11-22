@@ -133,6 +133,7 @@ if (typeof document !== 'undefined') {
   };
   const finishBookingLoad = () => {
     clearTimeout(bookingLoadTimer);
+    directBooking.removeAttribute('aria-busy');
     bookingStatus.hidden = true;
     bookingLoading.hidden = true;
   };
@@ -172,6 +173,7 @@ if (typeof document !== 'undefined') {
     directFrame.hidden = true;
     bookingLoading.hidden = false;
     directBooking.setAttribute('data-loading', '');
+    directBooking.setAttribute('aria-busy', 'true');
     bookingStatus.textContent = tr ? 'Talep formu yükleniyor…' : 'عم نحمّل طلب الحجز…';
     bookingStatus.hidden = false;
     const source = assistantUrl(true);
@@ -184,7 +186,8 @@ if (typeof document !== 'undefined') {
     directBooking.scrollTop = 0;
     directFrame.src = source.href;
     clearTimeout(bookingLoadTimer);
-    bookingLoadTimer = setTimeout(showBookingFallback, 10000);
+    // Slower mobile connections should not be marked as failed too early.
+    bookingLoadTimer = setTimeout(showBookingFallback, 16000);
     // Avoid competing with the browser's first paint of the modal.
     requestAnimationFrame(() => {
       if (isModalOpen(directBooking) && directTrigger === trigger) playOpeningQuestion();
