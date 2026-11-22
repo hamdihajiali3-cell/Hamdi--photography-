@@ -139,14 +139,15 @@
   // there too, but don't block an explicit deep link into Nur or booking.
   const deepLink = location.hash === '#hamdi-ai-dialog'
     || new URLSearchParams(location.search).has('bookingService');
-  let changedLanguage = false;
+  let switchedLanguage = false;
   try {
-    changedLanguage = sessionStorage.getItem('hamdi-language-nav') === '1';
+    switchedLanguage = sessionStorage.getItem('hamdi-language-nav') === '1';
     sessionStorage.removeItem('hamdi-language-nav');
   } catch {}
-  // A user who chose another language should see translated content right
-  // away rather than watching the brand's intro again.
-  if ((homeEntry || mobileEntry) && !deepLink && !changedLanguage) {
+  // Every explicit AR/TR switch navigates to the fully localized HTML page
+  // and replays its full-screen welcome in that language. Preserve normal
+  // deep-link handling for Nur and booking.
+  if ((homeEntry || mobileEntry || switchedLanguage) && !deepLink) {
     try {
       if (typeof intro.showModal === 'function') intro.showModal();
       else intro.setAttribute('open', '');
