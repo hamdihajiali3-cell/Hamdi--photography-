@@ -133,20 +133,13 @@
     if (document.hidden) { revealSite(); releaseAudio(); }
   });
 
-  // Returning from the separate About screen should show the homepage
-  // immediately instead of replaying the welcome splash for several seconds.
-  let returningFromAbout = false;
-  try {
-    returningFromAbout = sessionStorage.getItem('hamdi-about-return-20261122') === '1';
-    sessionStorage.removeItem('hamdi-about-return-20261122');
-  } catch {}
   const homeEntry = !location.hash || location.hash === '#top';
   const mobileEntry = window.matchMedia?.('(max-width: 760px), (pointer: coarse)').matches === true;
   // Phones commonly restore a section hash on reload. Show the brand entrance
   // there too, but don't block an explicit deep link into Nur or booking.
   const deepLink = location.hash === '#hamdi-ai-dialog'
     || new URLSearchParams(location.search).has('bookingService');
-  if ((homeEntry || mobileEntry) && !deepLink && !returningFromAbout) {
+  if ((homeEntry || mobileEntry) && !deepLink) {
     try {
       if (typeof intro.showModal === 'function') intro.showModal();
       else intro.setAttribute('open', '');
