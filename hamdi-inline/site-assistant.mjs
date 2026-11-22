@@ -103,21 +103,13 @@ if (typeof document !== 'undefined') {
       history.replaceState(history.state, '', address);
     }
   };
-  const openBooking = (service = '') => {
-    closeAssistant();
-    gmailForm = true;
-    manualBooking.hidden = false;
-    if (service) bookingSelect.value = service;
-    document.querySelector('#booking').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
-    (service ? document.querySelector('#booking-name') : bookingSelect).focus({ preventScroll: true });
-  };
   const assistantUrl = (booking = false) => {
     const source = new URL(booking ? '/hamdi-ai/booking' : '/hamdi-ai/assistant', VOICE_ORIGIN);
     source.searchParams.set('embed', '1');
     source.searchParams.set('lang', language());
     source.searchParams.set('parentOrigin', location.origin);
     source.searchParams.set('languageNavigation', 'parent');
-    source.searchParams.set('build', 'nur-20261122-clear');
+    source.searchParams.set('build', 'no-manual-booking-20261122');
     return source;
   };
   const openAssistant = ({ withChime = false, autoStart = false } = {}) => {
@@ -175,13 +167,13 @@ if (typeof document !== 'undefined') {
     directTrigger = trigger;
     if (trigger.matches('[data-service]')) trigger.setAttribute('aria-expanded', 'true');
     directClose.textContent = tr ? 'Talebi kapat' : 'إغلاق الطلب';
-    directFallback.textContent = tr ? 'Gmail formuyla devam et' : 'تابع عبر نموذج Gmail';
+    directFallback.textContent = tr ? 'Tekrar dene' : 'إعادة المحاولة';
     directFrame.title = tr ? 'Çekim talebi' : 'طلب جلسة';
     directBooking.setAttribute('aria-label', directFrame.title);
     directFallback.hidden = true;
     directFallback.onclick = () => {
       closeDirectBooking({ restoreFocus: false });
-      openBooking(service);
+      openDirectBooking(service, trigger);
     };
     directFrame.hidden = true;
     bookingLoading.hidden = false;
@@ -220,11 +212,8 @@ if (typeof document !== 'undefined') {
     openDirectBooking(service, bookingSelect);
     bookingSelect.value = '';
   });
-  if (location.hash === '#booking') {
-    manualBooking.hidden = false;
-    gmailForm = true;
-    manualBooking.scrollIntoView({ block: 'start' });
-  }
+  // Manual booking form is intentionally retired from the public UI.
+  manualBooking.hidden = true;
   close.addEventListener('click', dismissAssistant);
   dialog.addEventListener('cancel', event => {
     event.preventDefault();
