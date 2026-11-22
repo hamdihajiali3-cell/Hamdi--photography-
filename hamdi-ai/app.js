@@ -1124,7 +1124,12 @@ for (const [locale,message] of [
 const pageOptions = new URLSearchParams(location.search);
 const embeddedParent = pageOptions.get('parentOrigin');
 const embedded = pageOptions.get('embed') === '1' && window.parent !== window
-  && ['https://hamdihajiali3-cell.github.io', 'https://hamdi--photography.hamdihajiali3.workers.dev'].includes(embeddedParent);
+  && [
+    'https://hamdihajiali3-cell.github.io',
+    'https://hamdi--photography.hamdihajiali3.workers.dev',
+    'https://hamdiphoto.com.tr',
+    'https://www.hamdiphoto.com.tr',
+  ].includes(embeddedParent);
 const requestedService = pageOptions.get('bookingService');
 const bookingService = embedded && Object.hasOwn(SERVICES, requestedService) ? requestedService : '';
 const bookingPrewarm = embedded && pageOptions.get('presentation') === 'inline' && pageOptions.get('prewarm') === '1';

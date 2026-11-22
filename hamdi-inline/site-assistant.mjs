@@ -117,6 +117,7 @@ if (typeof document !== 'undefined') {
     source.searchParams.set('lang', language());
     source.searchParams.set('parentOrigin', location.origin);
     source.searchParams.set('languageNavigation', 'parent');
+    source.searchParams.set('build', 'tau-20261122-fix');
     return source;
   };
   const openAssistant = ({ withChime = false, autoStart = false } = {}) => {
