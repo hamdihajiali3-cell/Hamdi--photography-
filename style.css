@@ -233,3 +233,6 @@
 
 /* Service cards remain clickable links if scripts are blocked. */
 .card a[data-service]{text-decoration:none;cursor:pointer}
+
+/* Keep only the direct service flow and Nur voice assistant visible. */
+#manual-booking-section { display: none !important; }
