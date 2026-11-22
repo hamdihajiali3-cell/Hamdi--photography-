@@ -8,6 +8,8 @@
   box-sizing: border-box;
   position: fixed;
   inset: 0;
+  /* Also cover the viewport if showModal is unavailable (older browsers). */
+  z-index: 2147483000;
   isolation: isolate;
   display: grid;
   place-items: center;
