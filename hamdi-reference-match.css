@@ -1,0 +1,404 @@
+/* Reference-match pass: faithfully translates the owner's approved luxury mockup.
+   Only the #services visual surface is changed. Booking, voice, forms,
+   language navigation, databases and all data-service URLs remain untouched. */
+
+/* The mockup has a photographic lens on the left, emerald light ribbons,
+   a centered single-line section heading, three compact cards and two
+   horizontal wide cards, not five tall solid-colored panels. */
+.services {
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  padding:clamp(3rem,5vw,4.5rem) clamp(2rem,5.2vw,5rem) clamp(3.8rem,6vw,5.2rem) clamp(10rem,16.2vw,16rem);
+  background:
+    radial-gradient(ellipse 65% 86% at 89% -3%, rgba(21,113,66,.32),transparent 70%),
+    radial-gradient(ellipse 55% 54% at 87% 94%,rgba(17,105,71,.32),transparent 77%),
+    radial-gradient(ellipse 36% 54% at 3% 55%,rgba(18,80,65,.23),transparent 76%),
+    linear-gradient(120deg,#03110d 4%,#073021 50%,#03130f 100%);
+}
+.services::before {
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  background: url("hamdi-assets/reference-camera-lens.webp") no-repeat left 53% / clamp(215px,23vw,325px) auto;
+  opacity:.97;
+  pointer-events:none;
+}
+.services::after {
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse 85% 120% at 93% -22%,transparent 56%,rgba(200,145,58,.17) 63%,transparent 69%),
+    radial-gradient(ellipse 66% 86% at 91% -14%,transparent 58%,rgba(45,188,117,.19) 62%,transparent 66%),
+    radial-gradient(ellipse 68% 88% at 82% 119%,transparent 55%,rgba(69,201,142,.22) 61%,transparent 68%),
+    linear-gradient(132deg,transparent 42%,rgba(244,193,104,.1) 44%,transparent 48%),
+    linear-gradient(160deg,transparent 58%,rgba(73,219,135,.09) 62%,transparent 67%);
+  opacity:1;
+}
+.services > .section-copy,
+.services > .cards {position:relative; z-index:1;}
+.services .section-copy {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:.4rem;
+  margin:0 0 1.35rem;
+  text-align:center;
+}
+.services .section-copy .eyebrow {
+  order:-1;
+  align-self:center;
+  margin:0;
+  color:#dfbc7d;
+  font-size:.68rem;
+  letter-spacing:.13em;
+}
+.services .section-copy .eyebrow i {display:none;}
+.services .section-copy h2 {
+  margin:.1rem 0 0;
+  max-width:none;
+  color:#fff7e7;
+  font-size:clamp(2rem,3.15vw,3.25rem);
+  line-height:1.12;
+  font-weight:700;
+  letter-spacing:-.035em;
+  text-align:center;
+  text-shadow:0 6px 30px rgba(0,8,4,.45);
+}
+.services .section-copy h2 br {display:none;}
+.services .section-copy h2 em {
+  display:inline;
+  color:#fff2d1;
+  font-weight:inherit;
+  font-style:normal;
+  text-shadow:0 0 28px rgba(244,201,133,.19);
+}
+.services .section-copy h2::after {
+  content:"";
+  display:block;
+  width:168px;
+  height:22px;
+  margin:.44rem auto 0;
+  background:
+    radial-gradient(circle at center, #f1cb85 0 6px, #4b361a 6px 7px, transparent 8px),
+    linear-gradient(90deg,transparent 0 1%,#d2a666 12%,#d2a666 42%,transparent 43% 57%,#d2a666 58%,#d2a666 88%,transparent 99%) center/100% 1px no-repeat;
+}
+.services .section-copy > p:last-child {
+  margin:0;
+  max-width:none;
+  color:#d2e0d4;
+  font-size:.84rem;
+}
+
+.services .cards {
+  display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:clamp(.85rem,1.4vw,1.25rem);
+  margin:0;
+  border:0;
+  width:100%;
+  overflow:visible;
+}
+.services .card,
+.services .card:first-child,
+.services .card:nth-child(3),
+.services .card:nth-child(4),
+.services .card.portrait {
+  position:relative;
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  grid-template-rows:104px minmax(0,1fr);
+  grid-column:span 2;
+  align-items:stretch;
+  align-content:stretch;
+  min-height:281px;
+  height:auto;
+  padding:10px 10px 11px;
+  border:1px solid rgba(249,213,143,.75);
+  border-radius:24px;
+  overflow:hidden;
+  isolation:isolate;
+  background:
+    linear-gradient(131deg, rgba(253,244,209,.13),transparent 19%),
+    linear-gradient(24deg,transparent 17%,rgba(45,195,112,.15) 35%,transparent 52%),
+    linear-gradient(156deg,transparent 48%,rgba(247,218,146,.095) 63%,transparent 72%),
+    radial-gradient(ellipse 95% 55% at 36% -4%,rgba(61,166,93,.28),transparent 70%),
+    linear-gradient(147deg,rgba(5,68,43,.67),rgba(2,40,29,.81) 52%,rgba(2,23,20,.88));
+  -webkit-backdrop-filter:blur(15px) saturate(1.35);
+  backdrop-filter:blur(15px) saturate(1.35);
+  box-shadow:
+    0 13px 29px rgba(0,7,5,.42),
+    0 0 19px rgba(225,177,98,.19),
+    inset 0 1px rgba(255,250,219,.53),
+    inset 0 -2px rgba(201,167,101,.12);
+  transform:none;
+  transition: box-shadow .22s ease, border-color .22s ease, background-color .22s ease;
+}
+.services .card:nth-child(n+4) {
+  grid-column:span 3;
+  min-height:183px;
+  grid-template-columns:128px minmax(0,1fr);
+  grid-template-rows:minmax(0,1fr);
+  direction:ltr;
+  column-gap:.1rem;
+  padding:10px 12px;
+}
+.services .card:nth-child(n+4) > div:last-child {direction:rtl;}
+.services .card:nth-child(n+4) > .art {direction:ltr;}
+
+/* Bright internal metallic perimeter and glass refraction on every card. */
+.services .card::before {
+  inset:0;
+  padding:1.8px;
+  border-radius:inherit;
+  opacity:.95;
+  pointer-events:none;
+  z-index:3;
+  filter:drop-shadow(0 0 6px rgba(254,207,125,.9));
+  background:conic-gradient(
+    from var(--hamdi-gold-angle),
+    #ffe9ba 0deg,#c18b49 48deg,rgba(248,225,171,.28) 96deg,
+    #fbe1aa 132deg,rgba(75,164,112,.42) 175deg,
+    #f7d399 221deg,#fff4d0 257deg,rgba(248,211,149,.15) 324deg,#ffe9ba 360deg);
+}
+.services .card::after {
+  content:"";
+  inset:0;
+  z-index:0;
+  opacity:.73;
+  pointer-events:none;
+  border-radius:inherit;
+  background:
+    linear-gradient(147deg,transparent 17%,rgba(172,236,189,.12) 24%,transparent 36%),
+    linear-gradient(37deg,transparent 51%,rgba(17,194,121,.16) 56%,transparent 69%),
+    linear-gradient(138deg,transparent 65%,rgba(241,200,122,.13) 71%,transparent 79%),
+    radial-gradient(160px circle at var(--hamdi-spot-x,50%) var(--hamdi-spot-y,34%),rgba(248,231,181,.21),transparent 75%);
+}
+.services .card:hover,
+.services .card:focus-within {
+  border-color:#fff1bf;
+  background-color:rgba(19,90,56,.17);
+  box-shadow:
+    0 17px 35px rgba(0,7,5,.5),
+    0 0 27px rgba(249,205,126,.32),
+    inset 0 1px rgba(255,246,205,.72);
+}
+.services .card:focus-within {outline:2px solid #ffdea5;outline-offset:3px;}
+.services .card > .art,
+.services .card > div:last-child {position:relative;z-index:1;}
+
+/* These are actual icon crops from the approved reference, not approximations.
+   The single sprite keeps requests and bytes low. Existing CSS art is visual
+   only, so it can be hidden without touching the service buttons. */
+.services .card > .art,
+.services .card .art.wheel,
+.services .card .art.cap,
+.services .card .art.scissors,
+.services .card .art.photo,
+.services .card .art.portrait-art {
+  display:block;
+  width:112px;
+  height:112px;
+  min-width:112px;
+  min-height:112px;
+  max-width:112px;
+  max-height:112px;
+  margin:-5px auto -2px;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background-color:transparent;
+  background-image:url("hamdi-assets/reference-service-icons.webp");
+  background-repeat:no-repeat;
+  background-size:560px 112px;
+  background-position:0 0;
+  box-shadow:none;
+  filter:drop-shadow(0 6px 9px rgba(0,0,0,.12));
+  transform:none;
+}
+.services .card > .art::before,
+.services .card > .art::after,
+.services .card > .art i {display:none!important;content:none!important;}
+.services .card.hair > .art {background-position:0 0;}
+.services .card.grad > .art {background-position:-112px 0;}
+.services .card.color > .art {background-position:-224px 0;}
+.services .card.portrait > .art {background-position:-336px 0;}
+.services .card.ident > .art {background-position:-448px 0;}
+
+/* A secondary inner sheet, sized to the original compact mockup cards. */
+.services .card > div:last-child {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  min-width:0;
+  min-height:0;
+  gap:0;
+  margin:0;
+  padding:.42rem .48rem .52rem;
+  border:1px solid rgba(237,213,167,.17);
+  border-radius:17px;
+  background:
+    linear-gradient(130deg,rgba(236,231,178,.13),transparent 29%),
+    linear-gradient(160deg,rgba(5,40,29,.32),rgba(2,25,19,.51));
+  -webkit-backdrop-filter:blur(8px);
+  backdrop-filter:blur(8px);
+  box-shadow:inset 0 1px rgba(255,249,224,.18),0 5px 14px rgba(0,12,7,.13);
+  text-align:center;
+}
+.services .card > div:last-child > span {
+  position:absolute;
+  top:.45rem;
+  inset-inline-end:.55rem;
+  color:rgba(245,215,157,.68);
+  font-size:.58rem;
+  line-height:1;
+  grid-row:auto;
+}
+.services .card h3 {
+  grid-column:auto;
+  width:100%;
+  margin:0;
+  color:#fffdf2;
+  font-family:Tahoma,Arial,sans-serif;
+  font-size:clamp(1.13rem,1.72vw,1.45rem);
+  font-weight:800;
+  line-height:1.21;
+  letter-spacing:-.03em;
+  text-shadow:0 2px 9px rgba(0,9,5,.44);
+  text-align:center;
+}
+.services .card p {
+  grid-column:auto;
+  margin:.35rem auto .49rem;
+  width:100%;
+  max-width:24ch;
+  color:#f0f4e9;
+  font-size:clamp(.75rem,.94vw,.91rem);
+  line-height:1.34;
+  text-align:center;
+}
+.services .card a[data-service] {
+  grid-column:auto;
+  display:inline-flex;
+  flex:none;
+  align-items:center;
+  justify-content:center;
+  align-self:center;
+  gap:.7rem;
+  width:auto;
+  min-width:150px;
+  max-width:100%;
+  min-height:44px;
+  margin:0;
+  padding:.36rem 1.04rem;
+  color:#171b13;
+  border:1px solid #e9c986;
+  border-radius:999px;
+  background:linear-gradient(170deg,#fff0c7,#dfb16d 54%,#e8c68b);
+  box-shadow:inset 0 2px rgba(255,253,227,.55),0 3px 8px rgba(0,0,0,.4);
+  font-size:.75rem;
+  font-weight:800;
+  line-height:1;
+  text-decoration:none;
+}
+.services .card a[data-service] b {font-weight:800;}
+.services .card a[data-service] i {font-size:1rem;color:#192316;}
+.services .card a[data-service]:hover,
+.services .card a[data-service]:focus-visible {
+  color:#0c1911;
+  background:linear-gradient(175deg,#fff9df,#f1cf95 52%,#e9bd7b);
+  box-shadow:0 0 16px rgba(255,229,164,.26),inset 0 1px rgba(255,251,227,.8);
+}
+.services .card:nth-child(n+4) > .art {align-self:center;justify-self:center;margin:0;}
+.services .card:nth-child(n+4) > div:last-child {
+  align-self:stretch;
+  justify-content:center;
+  border-radius:16px;
+  padding:.45rem .65rem;
+}
+.services .card:nth-child(n+4) h3 {font-size:clamp(1.18rem,1.85vw,1.52rem);}
+.services .card:nth-child(n+4) p {margin:.26rem auto .38rem;max-width:31ch;}
+.services .card:nth-child(n+4) a[data-service] {min-width:155px;}
+
+/* Prevent the previous touch/hover styles from flattening or resizing cards. */
+@media (hover:none), (pointer:coarse) {
+  .services .card:hover {transform:none;box-shadow:0 13px 29px rgba(0,7,5,.42),0 0 19px rgba(225,177,98,.19),inset 0 1px rgba(255,250,219,.53);}
+  .services .card:active {background-color:rgba(18,81,52,.48);}
+}
+@media (min-width:1051px) and (max-width:1250px) {
+  .services {padding-left:clamp(9rem,14vw,12rem);padding-right:clamp(1.4rem,4vw,3rem);}
+  .services .card h3 {font-size:1.24rem;}
+}
+@media (min-width:651px) and (max-width:1050px) {
+  .services {padding:3.3rem 2.2rem 4rem 6.5rem;}
+  .services::before {background-position:-65px 55%;background-size:230px auto;opacity:.55;}
+  .services .cards {grid-template-columns:repeat(2,minmax(0,1fr));}
+  .services .card,.services .card:first-child,.services .card:nth-child(3),.services .card:nth-child(4),.services .card.portrait {grid-column:auto;grid-template-columns:minmax(0,1fr);grid-template-rows:110px minmax(0,1fr);min-height:285px;padding:10px;}
+  .services .card:nth-child(n+4) {direction:rtl;min-height:265px;column-gap:0;}
+}
+@media (max-width:650px) {
+  .services {
+    padding:3rem 1.1rem 3.8rem;
+    background:
+      radial-gradient(ellipse 80% 50% at 100% 5%,rgba(24,131,73,.22),transparent 80%),
+      radial-gradient(ellipse 110% 75% at 70% 95%,rgba(10,93,59,.25),transparent 84%),
+      linear-gradient(145deg,#04140e,#08271a 55%,#03130e);
+  }
+  .services::before {
+    background-position:-100px 52%;
+    background-size:230px auto;
+    opacity:.31;
+  }
+  .services::after {opacity:.63;}
+  .services .section-copy {margin-bottom:1.15rem;}
+  .services .section-copy h2 {font-size:clamp(1.65rem,6.7vw,2.2rem);line-height:1.18;}
+  .services .section-copy h2 br {display:none;}
+  .services .section-copy h2::after {margin:.45rem auto 0;}
+  .services .section-copy > p:last-child {font-size:.81rem;}
+  .services .cards {grid-template-columns:minmax(0,1fr);gap:.9rem;}
+  .services .card,
+  .services .card:first-child,
+  .services .card:nth-child(3),
+  .services .card:nth-child(4),
+  .services .card.portrait,
+  .services .card:nth-child(n+4) {
+    grid-column:1;
+    grid-template-columns: minmax(0,1fr);
+    grid-template-rows:106px minmax(0,1fr);
+    min-height:253px;
+    padding:9px 10px 10px;
+    direction:rtl;
+    border-radius:23px;
+  }
+  .services .card > .art,
+  .services .card .art.wheel,
+  .services .card .art.cap,
+  .services .card .art.scissors,
+  .services .card .art.photo,
+  .services .card .art.portrait-art {
+    width:112px;height:112px;min-width:112px;min-height:112px;
+    max-width:112px;max-height:112px;
+    margin:-5px auto -1px;
+    transform:none;
+  }
+  .services .card > div:last-child,
+  .services .card:nth-child(n+4) > div:last-child {
+    padding:.45rem .54rem .54rem;
+    border-radius:16px;
+    direction:rtl;
+  }
+  .services .card h3,
+  .services .card:nth-child(n+4) h3 {font-size:1.32rem;}
+  .services .card p,.services .card:nth-child(n+4) p {font-size:.84rem;margin:.25rem auto .4rem;}
+  .services .card a[data-service] {min-height:48px;min-width:155px;}
+}
+@media (prefers-reduced-motion:reduce) {
+  .services .card::before {animation:none!important;}
+  .services .card,.services .card > .art {transition:none!important;}
+}
