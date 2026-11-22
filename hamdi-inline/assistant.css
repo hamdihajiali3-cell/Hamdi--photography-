@@ -97,3 +97,15 @@ html.hamdi-booking-open{overflow:hidden}
 #hamdi-ai-dialog #hamdi-ai-frame{background:transparent!important}
 #hamdi-ai-dialog::backdrop{background:rgba(10,20,15,.14);-webkit-backdrop-filter:none;backdrop-filter:none}
 @media(max-width:640px),(max-height:500px){#hamdi-ai-dialog[open],#hamdi-ai-dialog.mobile-dialog-fallback[open]{position:fixed;inset:0;top:0;width:calc(100vw - 24px);height:min(72dvh,640px);max-height:72dvh;max-width:470px;margin:auto;padding:0;border:0;border-radius:0;overflow:hidden}}
+
+/* Nur: fully clear floating layer, without the white title bar or dimming overlay. */
+#hamdi-ai-dialog[open],#hamdi-ai-dialog[data-loading]{
+  background:transparent!important;border:0!important;outline:0!important;
+  border-radius:0!important;box-shadow:none!important;
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+}
+#hamdi-ai-dialog::backdrop{
+  background:transparent!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+}
+#hamdi-ai-dialog .hamdi-ai-bar{display:none!important}
+#hamdi-ai-dialog #hamdi-ai-frame{background:transparent!important}
