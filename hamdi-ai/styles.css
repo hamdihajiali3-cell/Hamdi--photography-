@@ -787,3 +787,16 @@ html[data-floating-nur="true"] .transcript {
     padding:22px 17px 18px;
   }
 }
+
+/* Match the dark parent page's color scheme. Chromium otherwise may paint a
+   white opaque cross-origin iframe canvas even when every background is transparent. */
+html[data-floating-nur="true"] {
+  color-scheme:dark!important;
+  background:transparent!important;
+  background-color:transparent!important;
+}
+html[data-floating-nur="true"] body {
+  color-scheme:dark!important;
+  background:transparent!important;
+  background-color:transparent!important;
+}
