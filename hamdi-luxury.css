@@ -1,0 +1,242 @@
+/* Hamdi Photography — dark emerald & warm gold visual redesign.
+   Faithful to the dark/gold UI lab direction, without importing React/ThreeJS
+   into the customer-facing site. Keep booking and Nur functionality untouched. */
+:root {
+  color-scheme: dark;
+  --paper: #101b16;
+  --light: #192c22;
+  --ink: #f3f2e9;
+  --olive: #14251d;
+  --copper: #ddb675;
+  --clight: #f0d49b;
+  --line: rgba(223,187,122,.24);
+  --muted: #b7c4b8;
+}
+html { background: #0a110e; }
+body {
+  color: var(--ink);
+  background:
+    radial-gradient(120% 75% at 95% -15%, rgba(114,145,102,.15),transparent 70%),
+    linear-gradient(120deg,#09100d,#17271d 60%,#0a120e);
+}
+body::before {
+  opacity: .16;
+  z-index: 0;
+  background-image: radial-gradient(rgba(238,216,163,.28) .6px,transparent .8px);
+  pointer-events: none;
+}
+.site-frame {
+  position: relative;
+  z-index: 1;
+  background: #101c16;
+  border: 1px solid rgba(224,188,128,.27);
+  box-shadow: 0 28px 86px rgba(0,0,0,.27), inset 0 1px rgba(255,255,255,.04);
+}
+header {
+  background: linear-gradient(110deg,rgba(9,20,15,.97),rgba(24,43,31,.97));
+  border-bottom: 1px solid rgba(222,185,117,.2);
+  box-shadow: inset 0 1px rgba(255,241,208,.04);
+}
+.brand { color: #e9c68e; }
+.brand b { text-shadow: 0 0 22px rgba(225,177,93,.11); }
+nav a { color:#eee9dc; }
+nav a:hover, nav a:focus-visible, nav a[aria-current="page"] { color: #f1d094; opacity:1; }
+.lang a { color:#e7d5b5; border-inline-color:rgba(238,210,162,.25); }
+.lang a[aria-current="page"] { color:#f8eccd; }
+.eyebrow { color: #dabb86; }
+.eyebrow i { background:#bf9353; }
+
+/* Cinematic hero with abstract CSS camera artwork; no fake portfolio photos. */
+.hero {
+  border-color:rgba(231,195,139,.18);
+  background:
+    radial-gradient(ellipse 61% 70% at 78% 40%, rgba(149,123,65,.15),transparent 72%),
+    radial-gradient(ellipse 54% 79% at 3% 80%, rgba(59,116,85,.18),transparent 80%),
+    linear-gradient(132deg,#101d16,#1a2d22 57%,#0c1912);
+}
+.hero::before {
+  background: radial-gradient(ellipse 40% 62% at 77% 8%, rgba(245,194,110,.12),transparent 74%);
+}
+.hero h1 { color:#faf7ec; text-shadow: 0 8px 46px rgba(0,0,0,.13); }
+.hero em, .section-copy em, .steps em, .contact em, .booking-faq-heading h2 em { color:#e4bc80; }
+.hero-copy > p:not(.eyebrow) { color:#c1cfc1; }
+.notes { color:#d4ddca; }
+.notes span::before { color:#d7ad6d; }
+.hero-actions a { border-radius: 999px; letter-spacing: .005em; }
+.hero-actions .hero-services-link, .hero-services-link {
+  color:#172117;
+  border:1px solid #f1d29a;
+  background:linear-gradient(110deg,#fae3b0,#dfb66c 56%,#efcf96);
+  box-shadow:0 8px 26px rgba(212,156,74,.19), inset 0 1px rgba(255,255,255,.56);
+}
+.hero-actions .hero-services-link:hover, .hero-services-link:hover {
+  color:#0e2417;
+  background:linear-gradient(115deg,#ffe9bd,#ebc37a);
+  box-shadow:0 12px 32px rgba(219,168,91,.24);
+}
+.hero-actions .ai-entry {
+  color:#f1e9d6;
+  border:1px solid rgba(233,189,120,.56);
+  background:linear-gradient(120deg,rgba(34,58,43,.9),rgba(17,33,25,.94));
+  box-shadow:inset 0 1px rgba(255,255,255,.07),0 6px 23px rgba(0,0,0,.12);
+}
+.hero-actions .ai-entry:hover {
+  color:#fff1d4;
+  border-color:#e6c17e;
+  background:linear-gradient(120deg,#31513b,#14261b);
+  box-shadow:0 9px 28px rgba(205,163,86,.16);
+}
+.ai-entry .live-entry-icon { color:#e6c384; filter:drop-shadow(0 0 5px rgba(237,192,110,.19)); }
+.hero-actions a:focus-visible, .card a:focus-visible {
+  outline:3px solid #f8d59a;
+  outline-offset:3px;
+}
+.studio {
+  border:1px solid rgba(228,180,100,.47);
+  background:
+    radial-gradient(circle at 60% 42%,rgba(226,183,100,.27),transparent 48%),
+    radial-gradient(ellipse at 12% 83%,rgba(62,106,76,.5),transparent 60%),
+    linear-gradient(135deg,#1d3427,#0c1711 76%);
+  box-shadow:0 25px 55px rgba(0,0,0,.28),inset 0 1px rgba(255,247,219,.1),0 0 45px rgba(204,164,84,.09);
+}
+.studio::after { border-color:rgba(253,220,170,.22); }
+.film { border-color:rgba(240,199,124,.34); background:repeating-linear-gradient(90deg,rgba(255,255,255,.09) 0 2.1rem,transparent 2.1rem 2.72rem),linear-gradient(135deg,#0c1711,#3c4e3e 54%,#09110d); }
+.lens { border-color:#101711; box-shadow:0 20px 40px rgba(0,0,0,.45),inset 0 0 0 .36rem #917959; }
+.copper { border-color:#f6cb85; box-shadow:0 .6rem 1.8rem rgba(232,161,67,.25); }
+.line { border-color:rgba(220,180,111,.45); }
+
+/* Glowing glass service cards — a real redesign, not just a motion effect. */
+.services { background:linear-gradient(180deg,#101b15,#15261c 74%,#14251b); }
+.section-copy > p:last-child { color:#abbcac; }
+.cards { gap:clamp(.8rem,1.5vw,1.45rem); border:0; }
+.services .card,
+.services .card:first-child,
+.services .card:nth-child(3),
+.services .card:nth-child(4),
+.services .card.portrait {
+  overflow:hidden;
+  border:1px solid rgba(224,184,110,.3);
+  border-radius:22px;
+  background:
+    radial-gradient(ellipse 110% 52% at 50% -15%,rgba(124,159,111,.19),transparent 80%),
+    linear-gradient(155deg,rgba(43,73,52,.92),rgba(22,39,29,.97) 60%,rgba(14,28,20,.99));
+  box-shadow:0 12px 38px rgba(0,0,0,.19), inset 0 1px rgba(250,227,181,.09);
+  min-height:27.5rem;
+}
+.services .card::before {
+  opacity:.63;
+  padding:1.5px;
+  filter:none;
+}
+.services .card::after {
+  background:radial-gradient(265px circle at var(--hamdi-spot-x,50%) var(--hamdi-spot-y,34%),rgba(238,194,113,.16),transparent 68%);
+}
+.services .card:hover, .services .card:focus-within {
+  background:
+    radial-gradient(ellipse 95% 67% at 40% -10%,rgba(207,171,98,.2),transparent 80%),
+    linear-gradient(155deg,#2c4834,#162c1e 64%,#122419);
+  box-shadow:0 20px 40px rgba(0,0,0,.26),0 0 28px rgba(207,169,95,.09);
+}
+.card > .art { filter:drop-shadow(0 12px 15px rgba(0,0,0,.23)); }
+.card > div:last-child { padding:.9rem .55rem .35rem; }
+.card > div:last-child > span { color:#e9bd77; }
+.card h3 { color:#f8f4e8; font-size:clamp(1.3rem,1.95vw,1.7rem); line-height:1.24; }
+.card p { color:#bccbbd; line-height:1.65; font-size:.83rem; }
+.card a[data-service] {
+  color:#f0d3a1;
+  border:1px solid rgba(221,182,108,.5);
+  border-radius:999px;
+  background:rgba(221,175,91,.09);
+  padding:.55rem .86rem;
+  min-height:46px;
+  font-size:.77rem;
+  font-weight:700;
+}
+.card a[data-service] i { color:#f4d196; }
+.card a[data-service]:hover, .card a[data-service]:focus-visible {
+  color:#18291c;
+  background:#e6c186;
+  border-color:#f5d79e;
+}
+.card a[data-service]:hover i, .card a[data-service]:focus-visible i { color:#283d28; }
+.wheel { box-shadow:inset 0 0 0 .4rem #1a3124,0 .8rem 1.5rem rgba(0,0,0,.22); }
+.wheel::before { background:#1b3023; box-shadow:0 0 0 .25rem #d2ab6d; }
+.wheel i { background:#f1d29a; }
+.scissors i { background:#182b1e; }
+.photo i { border-color:rgba(231,193,126,.46); background:rgba(222,186,119,.06); }
+.photo::after { border-color:#d8b77b; }
+.portrait-art { border-color:#d2ad78; background:radial-gradient(ellipse at 30% 18%,#bc9a6f,#674732 78%); }
+.portrait-art i, .portrait-art::after { background:#172e23; }
+
+/* Clear, cohesive booking guidance and contact sections. */
+.steps {
+  background:linear-gradient(137deg,#0f1d16,#223b2a 60%,#101c15);
+  border-block:1px solid rgba(225,182,115,.18);
+  color:#f1efe5;
+}
+.steps li { border-color:rgba(232,198,139,.17); }
+.steps li > span { color:#e4bf84; }
+.steps h3 { color:#f8f2e6; }
+.steps li p { color:#b9c8ba; }
+.booking-faq {
+  background:linear-gradient(125deg,#172a1e,#101e17);
+  border-color:rgba(219,179,108,.19);
+}
+.booking-faq-heading h2 { color:#fbf5e8; }
+.booking-faq-heading > p:last-child,
+.booking-faq details > p { color:#c0cdc0; }
+.booking-faq-list, .booking-faq details { border-color:rgba(226,190,125,.2); }
+.booking-faq summary { color:#f1e6d4; }
+.booking-faq summary:hover { color:#f2ce91; }
+.booking-faq summary::after { color:#eac486; }
+.contact { background:#111e17; }
+.contact-region { color:#b8cbbb; }
+.contact-links a { border-color:rgba(218,184,126,.24); }
+.contact-links a:hover { background:rgba(227,185,115,.055); }
+.contact-links span,.contact-links i { color:#e2bc80; }
+.contact-links b { color:#f1efea; }
+footer { background:#08120d; border-top:1px solid rgba(227,194,134,.2); }
+footer p,footer > a:last-child { color:#bbc9ba; }
+.skip:focus { background:#f7d9a1; color:#151f16; }
+
+/* Dark shell, translucent projection; Nur inside the remote iframe remains unchanged. */
+#hamdi-ai-dialog #hamdi-ai-frame { filter:drop-shadow(0 0 22px rgba(226,180,108,.13)); }
+#hamdi-ai-dialog::backdrop { background:transparent!important; }
+#direct-booking { border-color:rgba(217,173,101,.72); box-shadow:0 24px 74px rgba(0,0,0,.4); }
+#direct-booking::backdrop { background:rgba(4,15,10,.5); }
+
+/* Narrow screens show genuine card depth without scroll or hover traps. */
+@media(max-width:1050px) {
+  .cards { gap:1rem; }
+}
+@media(max-width:650px) {
+  header { background:#0b1911; }
+  .site-frame { border-radius:0; border:0; }
+  .hero { padding-block:2.35rem 2rem; }
+  .hero h1 { font-size:clamp(2.6rem,10.3vw,4.1rem); }
+  .hero-actions { gap:.8rem; }
+  .hero-actions a { justify-content:center; width:100%; }
+  .studio { border-radius:22px; }
+  .services { padding:3.5rem 1.1rem 4rem; }
+  .cards { grid-template-columns:minmax(0,1fr); gap:1rem; }
+  .services .card,
+  .services .card:first-child,
+  .services .card:nth-child(3),
+  .services .card:nth-child(4),
+  .services .card.portrait {
+    min-height:22.5rem;
+    grid-template-rows:10.5rem auto;
+    border:1px solid rgba(224,184,110,.3);
+    border-radius:20px;
+    padding:1rem 1.15rem;
+  }
+  .card h3 { font-size:1.46rem; }
+  .card > div:last-child { padding:.5rem .35rem .3rem; }
+  .card a[data-service] { min-height:48px; }
+  .steps ol { border-color:rgba(225,182,115,.18); }
+  .contact, .booking-faq { padding-inline:1.25rem; }
+  .contact-links a { border-color:rgba(218,184,126,.24); }
+}
+@media(prefers-reduced-motion:reduce) {
+  .card::before,.studio::before { animation:none!important; }
+}
