@@ -1484,6 +1484,12 @@ voiceDialog.addEventListener('close', () => {
   if (consultation && !voice.active && !lastVoiceState) setVoiceState('ready');
 });
 window.addEventListener('pagehide', () => { pageClosing = true; voice.stop(false); });
+// Mobile Safari may restore this iframe from the back-forward cache. Without
+// resetting pageClosing the voice orb can no longer start after returning.
+window.addEventListener('pageshow', event => {
+  pageClosing = false;
+  if (event.persisted && consultation) setVoiceState('');
+});
 document.addEventListener('visibilitychange', () => { if (document.hidden && voice.active) voice.stop(); });
 // Keep a booking field reachable when the phone keyboard changes the iframe height.
 if (inlineBooking) {
