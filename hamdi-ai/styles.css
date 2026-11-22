@@ -642,3 +642,29 @@ html[data-floating-nur="true"] .voice-status {
     opacity: .65;
   }
 }
+
+
+/* Nur consultation motion: animate state indicators, not the full illustration.
+   This preserves the transparent floating assistant and limits mobile repaints. */
+html[data-floating-nur="true"] .nur-voice-indicator {
+  transition: color .28s ease, opacity .28s ease;
+}
+html[data-floating-nur="true"] .nur-voice-light {
+  transition: background-color .28s ease, box-shadow .28s ease;
+}
+@keyframes hamdi-nur-active-light {
+  0%,100% { transform:scale(1); opacity:.75; }
+  50% { transform:scale(1.22); opacity:1; }
+}
+@media (prefers-reduced-motion:no-preference) {
+  html[data-floating-nur="true"]:is([data-voice-state="connecting"],[data-voice-state="listening"],[data-voice-state="speaking"]) .nur-voice-light {
+    animation: hamdi-nur-active-light 1.5s ease-in-out infinite;
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  html[data-floating-nur="true"] .nur-voice-light,
+  html[data-floating-nur="true"] .nur-voice-bars i {
+    animation:none!important;
+    transition:none!important;
+  }
+}
