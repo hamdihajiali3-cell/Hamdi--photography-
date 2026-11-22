@@ -496,7 +496,8 @@ html[data-voice-state="muted"] .tau-projection::after { opacity: .18; }
 @keyframes nur-gold-wheel-orbit { to { transform: rotate(360deg); } }
 @keyframes nur-gold-wheel-counter { to { transform: rotate(-360deg); } }
 @keyframes nur-gold-wheel-breathe {
-  50% { opacity: 1; filter: blur(19px) brightness(1.22); }
+  /* Opacity-only pulse avoids expensive animated blur repainting in-call. */
+  50% { opacity: 1; }
 }
 @media (prefers-reduced-motion: no-preference) {
   .tau-projection::before {
