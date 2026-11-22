@@ -199,3 +199,61 @@
 
 /* Service cards remain clickable links if scripts are blocked. */
 .card a[data-service]{text-decoration:none;cursor:pointer}
+
+
+/* White-and-gold running light around all five service cards.
+   The masked perimeter never covers the service text or click targets. */
+@property --hamdi-gold-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+.card {
+  isolation: isolate;
+  border-radius: 14px;
+  background-clip: padding-box;
+  box-shadow: inset 0 0 0 1px rgba(212,175,55,.28), 0 8px 24px rgba(102,76,26,.08);
+}
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  padding: 2.5px;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 3;
+  background: conic-gradient(
+    from var(--hamdi-gold-angle),
+    rgba(255,255,255,.9) 0deg,
+    #fff 32deg,
+    #e0b85c 64deg,
+    rgba(185,135,45,.32) 96deg,
+    #fff9e9 138deg,
+    #fff 178deg,
+    #d4a94a 216deg,
+    rgba(255,255,255,.45) 266deg,
+    #ecca72 308deg,
+    #fff 360deg
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  filter: drop-shadow(0 0 4px rgba(240,190,90,.8));
+}
+.card:nth-child(2)::before { animation-delay: -1.2s; }
+.card:nth-child(3)::before { animation-delay: -2.4s; }
+.card:nth-child(4)::before { animation-delay: -3.6s; }
+.card:nth-child(5)::before { animation-delay: -4.8s; }
+.card:hover {
+  box-shadow: inset 0 0 0 1px rgba(255,241,204,.65), 0 0 23px rgba(214,169,75,.3), 0 12px 28px rgba(82,64,35,.14);
+}
+@keyframes hamdi-gold-border-travel { to { --hamdi-gold-angle: 360deg; } }
+@media (prefers-reduced-motion: no-preference) {
+  .card::before { animation: hamdi-gold-border-travel 6s linear infinite; }
+  .card:hover::before, .card:focus-within::before { animation-duration: 3s; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .card::before { animation: none; }
+}
