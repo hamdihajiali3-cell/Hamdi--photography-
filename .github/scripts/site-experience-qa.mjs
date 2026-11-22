@@ -142,6 +142,24 @@ async function run() {
           assert(bookingLook.logo, 'Luxury booking header contains a camera emblem');
           assert(bookingLook.closeHeight >= 43, 'Close booking control stays touch-friendly');
           assert(bookingLook.panelWidth <= bookingLook.vw + 2, 'Booking never spills off browser viewport');
+          const fullBooking = await page.locator('#direct-booking').evaluate(el => {
+            const b = el.getBoundingClientRect();
+            const frame = el.querySelector('#direct-booking-frame');
+            const header = el.querySelector('.direct-booking-bar').getBoundingClientRect();
+            return {left:b.left,top:b.top,width:b.width,height:b.height,
+              vw:innerWidth,vh:innerHeight,headerWidth:header.width,
+              iframeWidth:frame.getBoundingClientRect().width,
+              closeVisible:el.querySelector('#direct-booking-close').getBoundingClientRect().width > 30};
+          });
+          assert(Math.abs(fullBooking.left) <= 2 && Math.abs(fullBooking.top) <= 2,
+            'Booking opens at the very edge of the browser, not as a floating card');
+          assert(Math.abs(fullBooking.width - fullBooking.vw) <= 2,
+            'Booking fills the entire viewport width on computer and mobile');
+          assert(Math.abs(fullBooking.height - fullBooking.vh) <= 3,
+            'Booking fills the entire viewport height on computer and mobile');
+          assert(Math.abs(fullBooking.headerWidth - fullBooking.vw) <= 2,
+            'Booking title bar spans the full browser');
+          assert(fullBooking.closeVisible, 'Full-screen booking keeps its close button');
           assert(bookingLook.backdrop.includes('blur('), 'Luxury booking panel is translucent');
           if (lang === 'ar' && label === 'desktop') {
             await page.waitForFunction(
