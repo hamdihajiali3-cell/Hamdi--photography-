@@ -1,0 +1,53 @@
+/* Full-browser layout for Hamdi Photography.
+   Presentation only: no edits to booking, database, speech or language logic. */
+html, body {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+}
+body {
+  background: #04140e;
+}
+/* Remove the old 1440px centered frame and its desktop gutters. */
+.site-frame {
+  width: 100%;
+  max-width: none;
+  min-height: 100vh;
+  min-height: 100svh;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: #071811;
+  overflow: hidden;
+}
+header, main, footer {
+  width: 100%;
+  max-width: none;
+}
+/* Full-viewport cinematic first screen, then continuous full-width sections. */
+@media (min-width: 761px) {
+  .hero {
+    min-height: calc(100vh - 6.9rem);
+    min-height: calc(100svh - 6.9rem);
+  }
+}
+/* Use the entire browser background, while keeping cards readable on 4K monitors. */
+.services .cards {
+  width: 100%;
+  max-width: 1640px;
+  margin-inline: auto;
+}
+.services > .section-copy {
+  max-width: 1640px;
+  margin-inline: auto;
+  margin-bottom: 1.35rem;
+}
+@media (max-width: 760px) {
+  .hero { min-height: 0; }
+  .services .cards { max-width: none; }
+  .site-frame { border: 0; border-radius: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
