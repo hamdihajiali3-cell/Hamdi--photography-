@@ -240,3 +240,11 @@ footer p,footer > a:last-child { color:#bbc9ba; }
 @media(prefers-reduced-motion:reduce) {
   .card::before,.studio::before { animation:none!important; }
 }
+
+/* Match the embedded Nur document's dark scheme to avoid an opaque white
+   cross-origin iframe canvas in Chromium/Firefox dark-mode environments. */
+#hamdi-ai-dialog, #hamdi-ai-dialog #hamdi-ai-frame {
+  color-scheme:dark!important;
+  background:transparent!important;
+  background-color:transparent!important;
+}
