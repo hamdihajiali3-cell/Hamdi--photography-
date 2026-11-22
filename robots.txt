@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://hamdihajiali3-cell.github.io/Hamdi--photography-/sitemap.xml
+Sitemap: https://hamdiphoto.com.tr/sitemap.xml
