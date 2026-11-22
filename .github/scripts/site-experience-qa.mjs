@@ -259,7 +259,14 @@ async function run() {
           assert.equal(await page.locator('#direct-booking').evaluate(el => el.open), false, 'Booking closes');
           // Verify the CSS reverse animation after dialog.close(), not only
           // the HTML open attribute or whether the close button works.
-          await page.waitForTimeout(175);
+          // The browser may defer its first animation frame while unloading
+          // the cross-origin iframe. Check eventual contraction, not frame 175ms.
+          await page.waitForFunction(() => {
+            const el = document.getElementById('direct-booking');
+            const st = getComputedStyle(el);
+            const radius = Number(st.clipPath.match(/circle\(([\d.]+)%/)?.[1]);
+            return radius < 135 && Number.isFinite(radius);
+          }, undefined, { timeout: 1650 });
           const closingPortal = await page.locator('#direct-booking').evaluate(el => {
             const st = getComputedStyle(el);
             return {display:st.display,clip:st.clipPath,opacity:Number(st.opacity),
@@ -267,7 +274,7 @@ async function run() {
           });
           console.log('Booking closing portal',lang,label,JSON.stringify(closingPortal));
           assert(closingPortal.radius < 135,
-            'Closing portal contracts from full screen toward center');
+            'Closing portal eventually contracts toward center');
           await page.locator('.hero-actions .ai-entry').click();
           assert.equal(await page.locator('#hamdi-ai-dialog').evaluate(el => el.open), true, 'Nur modal opens');
           await page.keyboard.press('Escape');
