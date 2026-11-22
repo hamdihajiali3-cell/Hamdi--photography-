@@ -86,7 +86,8 @@ class CustomerVoice {
     this.stop(false);
     const run = ++this.run;
     this.active = true; this.muted = false;
-    this.outputOnly = !microphone; this.outputTurnComplete = false; this.playedAudio = false; this.introPending = microphone;
+    this.outputOnly = !microphone; this.outputTurnComplete = false; this.playedAudio = false;
+    this.introPending = microphone; this.introCompleted = false;
     try {
       const AudioContext = window.AudioContext || window.webkitAudioContext;
       if (!AudioContext || (microphone && (!navigator.mediaDevices?.getUserMedia || !window.AudioWorkletNode
@@ -146,7 +147,8 @@ class CustomerVoice {
             for (const part of content?.modelTurn?.parts || []) if (part.inlineData?.data && part.inlineData.mimeType?.startsWith('audio/pcm')) this.play(part.inlineData);
             if (content?.outputTranscription?.text) this.onTranscript(content.outputTranscription.text);
             if (content?.turnComplete) {
-              this.introPending = false;
+              this.introCompleted = true;
+              if (this.players.size === 0) { this.introPending = false; clearTimeout(this.introReleaseTimer); }
               this.outputTurnComplete = true;
               if (!this.completeOutputTest() && this.players.size === 0) this.onState(this.muted ? 'muted' : 'listening');
             }
@@ -172,6 +174,12 @@ class CustomerVoice {
         this.source.connect(this.microphone); this.microphone.connect(this.silence); this.silence.connect(this.audio.destination);
       }
       this.onState(microphone ? 'connecting' : 'listening');
+      if (microphone) this.introReleaseTimer = setTimeout(() => {
+        if (run === this.run && this.active && this.introPending) {
+          this.introPending = false;
+          this.onState('listening');
+        }
+      }, 10000);
       socket.send(JSON.stringify({ clientContent: { turns: [{ role: 'user', parts: [{ text: language === 'tr' ? 'Kendini tek kısa cümlede tanıt ve fotoğraf hizmetleriyle ilgili nasıl yardımcı olabileceğini sor.' : 'عرّف عن نفسك بجملة قصيرة واسأل كيف تساعدني في معرفة خدمات التصوير.' }] }], turnComplete: true } }));
       this.limit = setTimeout(() => this.stop('limit'), Math.min(microphone ? 180 : 30, config.maxSeconds || 120) * 1000);
     } catch (error) {
@@ -192,6 +200,9 @@ class CustomerVoice {
     this.nextAudio = start + buffer.duration; this.players.add(player); this.onState('speaking');
     player.onended = () => {
       this.players.delete(player); player.disconnect(); this.playedAudio = true;
+      if (this.introPending && this.introCompleted && this.players.size === 0) {
+        this.introPending = false; clearTimeout(this.introReleaseTimer);
+      }
       if (this.active && this.players.size === 0 && !this.introPending && !this.completeOutputTest()) this.onState(this.muted ? 'muted' : 'listening');
     };
     player.start(start);
@@ -211,7 +222,7 @@ class CustomerVoice {
     return this.muted;
   }
   stop(reason = 'ended') {
-    this.run++; this.active = false; this.introPending = false; clearTimeout(this.limit); this.clearPlayback();
+    this.run++; this.active = false; this.introPending = false; clearTimeout(this.limit); clearTimeout(this.introReleaseTimer); this.clearPlayback();
     if (this.socket) { try { this.socket.close(); } catch {} this.socket = null; }
     this.stream?.getTracks().forEach(track => track.stop()); this.stream = null;
     this.source?.disconnect(); this.microphone?.disconnect(); this.silence?.disconnect();
@@ -1179,7 +1190,7 @@ if (delivery === 'hybrid' && !staticDelivery) {
   });
 }
 Object.assign(copy.ar, { testVoice:'اسمع صوت نور', testConsentIntro:'سنرسل نصاً تعريفياً عاماً إلى Google ونشغّل المقطع الصوتي. يمكنك سماعه بدون فتح الميكروفون.', testAudioConsent:'أوافق على طلب المقطع الصوتي من Google وتشغيله.', testStart:'شغّل المقطع الصوتي', 'test-complete':'انتهى تشغيل المقطع الصوتي.', 'provider-auth':'تعذر التحقق من خدمة الصوت. يمكنك متابعة الطلب بالنموذج.', 'provider-model':'خدمة الصوت تحتاج مراجعة إعدادها. يمكنك استخدام نموذج الطلب.', 'provider-network':'تعذر الاتصال الصوتي. حاول لاحقاً أو استخدم نموذج الطلب.' });
-Object.assign(copy.tr, { testVoice:'Nur’nun sesini dinle', testConsentIntro:'Google’a genel bir tanıtım metni gönderilir ve ses örneği oynatılır. Dinlerken mikrofonun kapalı kalır.', testAudioConsent:'Google’dan ses örneğinin istenmesini ve oynatılmasını kabul ediyorum.', testStart:'Ses örneğini oynat', 'test-complete':'Ses örneği tamamlandı.', 'provider-auth':'Sesli hizmet doğrulanamadı. Talep formundan devam edebilirsin.', 'provider-model':'Sesli hizmetin ayarları incelenmeli. Talep formunu kullanabilirsin.', 'provider-network':'Ses bağlantısı kurulamadı. Daha sonra dene veya formu kullan.' });
+Object.assign(copy.tr, { testVoice:'Nur’un sesini dinle', testConsentIntro:'Google’a genel bir tanıtım metni gönderilir ve ses örneği oynatılır. Dinlerken mikrofonun kapalı kalır.', testAudioConsent:'Google’dan ses örneğinin istenmesini ve oynatılmasını kabul ediyorum.', testStart:'Ses örneğini oynat', 'test-complete':'Ses örneği tamamlandı.', 'provider-auth':'Sesli hizmet doğrulanamadı. Talep formundan devam edebilirsin.', 'provider-model':'Sesli hizmetin ayarları incelenmeli. Talep formunu kullanabilirsin.', 'provider-network':'Ses bağlantısı kurulamadı. Daha sonra dene veya formu kullan.' });
 if (staticDelivery) {
   Object.assign(copy.ar, {
     preview:'نسخة تجريبية', title:'اختار جلستك.<br><em>وجهّز طلبك.</em>',
@@ -1205,8 +1216,8 @@ Object.assign(copy.ar, {
   quota:'الصوت وصل لحد الاستخدام المتاح حاليًا. جرّب بعد قليل أو تابع طلبك كتابة.'
 });
 Object.assign(copy.tr, {
-  'activation-required':'Bu tarayıcıda sesi açmak için Nur’ya dokun.',
-  automaticReady:'Görüşmeyi başlatmak için Nur’ya dokun.',
+  'activation-required':'Bu tarayıcıda sesi açmak için Nur’a dokun.',
+  automaticReady:'Görüşmeyi başlatmak için Nur’a dokun.',
   unsupported:'Bu tarayıcıda ses kullanılamıyor. Aynı siteyi Chrome veya Safari’de aç ya da talebini yazarak tamamla.',
   permission:'Mikrofon izni kapalı. Site izinlerinden açabilir veya yazarak devam edebilirsin.',
   quota:'Sesli hizmet şu an kullanım sınırına ulaştı. Biraz sonra dene veya talebini yazarak tamamla.'
