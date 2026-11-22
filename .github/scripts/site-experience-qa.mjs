@@ -143,6 +143,17 @@ async function run() {
           assert(bookingLook.closeHeight >= 43, 'Close booking control stays touch-friendly');
           assert(bookingLook.panelWidth <= bookingLook.vw + 2, 'Booking never spills off browser viewport');
           assert(bookingLook.backdrop.includes('blur('), 'Luxury booking panel is translucent');
+          if (lang === 'ar' && label === 'desktop') {
+            await page.waitForFunction(
+              () => !document.getElementById('direct-booking')?.hasAttribute('data-loading'),
+              undefined, { timeout: 7500 }).catch(() => {});
+            const detail = await page.locator('#direct-booking').evaluate(el => ({
+              stillLoading:el.hasAttribute('data-loading'),
+              frameHidden:el.querySelector('#direct-booking-frame').hidden,
+              iframeUrl:el.querySelector('#direct-booking-frame').src
+            }));
+            console.log('Booking iframe diagnostic (no form submission):', JSON.stringify(detail));
+          }
           await page.waitForTimeout(700); // preserve a realistic booking overlay screenshot
           await page.screenshot({
             path: path.join(output, lang + '-' + label + '-booking.png'),
