@@ -1,0 +1,34 @@
+{
+  "name": "hamdi-ui-lab",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "add:skiper": "npx shadcn@latest add @skiper-ui/skiper26"
+  },
+  "dependencies": {
+    "@designcodeio/threeui": "^1.2.0",
+    "@react-three/fiber": "^9.0.0",
+    "@react-three/drei": "^10.0.0",
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.0.0",
+    "gsap": "^3.12.5",
+    "lucide-react": "^0.468.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-use-measure": "^2.1.5",
+    "tailwind-merge": "^3.0.0",
+    "three": "^0.180.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "tailwindcss": "^4.0.0",
+    "vite": "^7.0.0"
+  }
+}
