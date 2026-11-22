@@ -1,28 +1,44 @@
-const languageLinks = document.querySelectorAll("[data-lang]");
+// Explicit language navigation: Arabic and Turkish are separate HTML pages.
+// Keep normal links as a fallback when JavaScript is unavailable.
+const languageLinks = [...document.querySelectorAll('.lang a[data-lang]')];
+const selectedLanguage = () => document.documentElement.lang.slice(0, 2);
+
 function updateLanguageLinks() {
-  const current = new URL(location.href);
-  current.searchParams.delete("bookingService");
+  const current = new URL(window.location.href);
+  current.searchParams.delete('bookingService');
   for (const link of languageLinks) {
-    const target = new URL(link.href);
+    const target = new URL(link.getAttribute('data-language-path') || link.getAttribute('href'), document.baseURI);
     target.search = current.search;
     target.hash = current.hash;
     link.href = target.href;
+    if (link.dataset.lang === selectedLanguage()) {
+      link.setAttribute('aria-current', 'page');
+    } else {
+      link.removeAttribute('aria-current');
+    }
   }
 }
-updateLanguageLinks();
-window.addEventListener("hashchange", updateLanguageLinks);
+
 for (const link of languageLinks) {
-  link.addEventListener("click", event => {
+  // Remember the original path, even after the search/hash is synchronized.
+  link.setAttribute('data-language-path', link.getAttribute('href'));
+}
+updateLanguageLinks();
+window.addEventListener('hashchange', updateLanguageLinks);
+window.addEventListener('popstate', updateLanguageLinks);
+
+for (const link of languageLinks) {
+  link.addEventListener('click', event => {
+    if (event.defaultPrevented || event.button !== 0 ||
+        event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+
     updateLanguageLinks();
-    // Clicking the already selected language should not reload the page.
-    if (link.dataset.lang === document.documentElement.lang) {
-      event.preventDefault();
-      return;
-    }
-    // Skip the cinematic welcome after an explicit language switch, so the
-    // translated page appears immediately rather than behind a 3–4s overlay.
-    if (event.defaultPrevented || event.button !== 0
-      || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
-    try { sessionStorage.setItem("hamdi-language-nav", "1"); } catch {}
+    event.preventDefault();
+    if (link.dataset.lang === selectedLanguage()) return;
+
+    // The selected locale has its own translated page. Navigate explicitly
+    // rather than relying on the browser's default anchor action.
+    try { sessionStorage.setItem('hamdi-language-nav', '1'); } catch {}
+    window.location.assign(link.href);
   });
 }
