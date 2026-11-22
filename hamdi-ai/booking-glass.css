@@ -1,0 +1,225 @@
+/* Cinematic emerald booking interior — layout-only. Guided ordering, sound,
+   contact channels and real submission remain owned by the existing app.js. */
+html[data-inline-booking] {
+  --glass-cream:#fff6e4;
+  --glass-gold:#f6d397;
+  --glass-muted:#ccdfd1;
+  --glass-line:rgba(243,208,151,.37);
+  color-scheme:dark;
+  background:#06271c;
+}
+html[data-inline-booking] body {
+  color:var(--glass-cream);
+  background:linear-gradient(160deg,#082f20,#041d19 67%,#041913);
+  font-family:Tahoma,Arial,sans-serif;
+}
+html[data-inline-booking] #order-dialog[open] {
+  isolation:isolate;
+  width:100%;
+  max-width:none;
+  margin:0;
+  padding:clamp(18px,4.4vw,32px);
+  border:0;
+  border-radius:0;
+  color:var(--glass-cream);
+  background:
+    radial-gradient(ellipse 80% 30% at 75% -12%,rgba(77,188,122,.19),transparent 75%),
+    linear-gradient(150deg,rgba(6,58,40,.68),rgba(1,29,23,.82));
+  -webkit-backdrop-filter:blur(12px) saturate(1.22);
+  backdrop-filter:blur(12px) saturate(1.22);
+  box-shadow:inset 0 1px rgba(255,230,165,.2);
+}
+html[data-inline-booking] #order-dialog[open]::before {
+  content:"";
+  position:absolute;
+  top:0;left:0;right:0;
+  height:2px;
+  pointer-events:none;
+  background:linear-gradient(90deg,transparent,#f9d99d,#a6ebbd,transparent);
+  background-size:210% 100%;
+  animation:booking-gold-sheen 9s ease-in-out infinite alternate;
+}
+html[data-inline-booking] #order-dialog[open]::after {
+  content:"";
+  position:absolute;
+  z-index:0;
+  inset:0;
+  pointer-events:none;
+  opacity:.35;
+  background:
+    radial-gradient(ellipse 75% 25% at 105% 16%,rgba(78,227,149,.25),transparent 72%),
+    linear-gradient(141deg,transparent 14%,rgba(240,210,153,.07) 24%,transparent 37%);
+  animation:booking-aurora-glide 12s ease-in-out infinite alternate;
+}
+html[data-inline-booking] #order-dialog[open] > * {position:relative;z-index:1;}
+html[data-inline-booking] #order-title {
+  margin:0 0 .4rem;
+  color:#fff9e9;
+  font:800 clamp(1.4rem,4.2vw,1.8rem)/1.4 Tahoma,Arial,sans-serif;
+  text-shadow:0 5px 25px rgba(0,10,6,.35);
+}
+html[data-inline-booking] #order-title::after {
+  content:"";
+  display:block;
+  width:110px;
+  height:2px;
+  margin-block:.65rem 1rem;
+  margin-inline:0 auto;
+  background:linear-gradient(90deg,#f4cb83,#8be3a8,transparent);
+  border-radius:99px;
+}
+html[data-inline-booking] .order-service-name {
+  display:inline-flex;
+  max-width:100%;
+  padding:.35rem .8rem;
+  margin:.15rem 0 .9rem;
+  border:1px solid rgba(241,207,144,.42);
+  border-radius:999px;
+  background:rgba(4,34,26,.62);
+  color:#ffe2ad;
+  font-size:.83rem;
+  font-weight:700;
+}
+html[data-inline-booking] :is(#order-status,#order-pending) {
+  color:#d1e7d7;
+  line-height:1.75;
+}
+html[data-inline-booking] #order-consent {
+  padding:1rem;
+  margin:.8rem 0 1rem;
+  border:1px solid var(--glass-line);
+  border-radius:20px;
+  background:
+    linear-gradient(139deg,rgba(248,236,193,.1),transparent 31%),
+    linear-gradient(170deg,rgba(10,68,44,.58),rgba(4,29,23,.72));
+  box-shadow:inset 0 1px rgba(255,241,206,.17),0 9px 24px rgba(0,12,8,.16);
+  -webkit-backdrop-filter:blur(10px);
+  backdrop-filter:blur(10px);
+}
+html[data-inline-booking] .order-mode-actions {display:flex;flex-wrap:wrap;gap:.65rem;}
+html[data-inline-booking] .order-mode-actions :is(#order-start,#order-typed) {
+  min-height:51px;
+  border-radius:14px;
+  font-weight:800;
+}
+html[data-inline-booking] :is(#order-start,#order-next,#order-send) {
+  min-height:50px;
+  padding:.7rem 1rem;
+  border:1px solid #ffebbd;
+  border-radius:14px;
+  color:#132a1b;
+  background:linear-gradient(125deg,#fcebc3,#d9aa69 54%,#f6dba6);
+  box-shadow:0 6px 18px rgba(0,9,5,.3),inset 0 1px rgba(255,252,229,.73);
+  font-weight:800;
+}
+html[data-inline-booking] :is(#order-start,#order-next,#order-send):hover:not(:disabled) {
+  background:linear-gradient(125deg,#fff5de,#ebc68e 54%,#fff1cc);
+  box-shadow:0 0 19px rgba(241,196,118,.22),0 6px 18px rgba(0,9,5,.25);
+}
+html[data-inline-booking] :is(#order-start,#order-next,#order-send):disabled {opacity:.57;}
+html[data-inline-booking] :is(#order-typed,.order-write) {
+  min-height:49px;
+  color:#f8e6c5;
+  border:1px solid rgba(238,203,140,.55);
+  border-radius:14px;
+  background:rgba(5,46,32,.75);
+}
+html[data-inline-booking] .order-privacy {color:#cbded0;}
+html[data-inline-booking] .order-privacy summary {color:#ffe2ad;text-underline-offset:4px;}
+html[data-inline-booking] .order-privacy #order-voice-notice {
+  margin-block:.5rem;
+  padding:.75rem;
+  border:1px solid rgba(246,208,145,.19);
+  border-radius:12px;
+  color:#d7e9d8;
+  background:rgba(2,30,23,.74);
+}
+html[data-inline-booking] #order-form {color:#f5f1e5;}
+html[data-inline-booking] #order-form .order-question {
+  position:relative;
+  margin:.8rem 0 1rem;
+  padding-inline-start:19px;
+  color:#fff2d5;
+  font-size:clamp(1.03rem,3.4vw,1.25rem);
+  line-height:1.6;
+  font-weight:800;
+}
+html[data-inline-booking] #order-form .order-question::before {
+  content:"";
+  position:absolute;
+  inset-inline-start:0;
+  top:.65em;
+  width:9px;height:9px;
+  border-radius:50%;
+  background:#f9d998;
+  box-shadow:0 0 0 5px rgba(248,217,159,.14),0 0 14px rgba(245,203,122,.25);
+}
+html[data-inline-booking] .order-dialog label:not(.check-label) {
+  color:#e9f0df;
+  font-size:.86rem;
+  font-weight:700;
+}
+html[data-inline-booking] .order-dialog :is(input:not([type=checkbox]),select,textarea) {
+  display:block;
+  width:100%;
+  min-width:0;
+  min-height:49px;
+  padding:.75rem .88rem;
+  border:1px solid rgba(246,211,150,.44);
+  border-radius:13px;
+  color:#fff6e6;
+  background:
+    linear-gradient(134deg,rgba(244,237,197,.09),transparent 34%),
+    rgba(2,32,25,.78);
+  box-shadow:inset 0 1px rgba(255,249,219,.13);
+  -webkit-backdrop-filter:blur(6px);
+  backdrop-filter:blur(6px);
+  font-size:16px;
+}
+html[data-inline-booking] .order-dialog :is(input,select,textarea)::placeholder {color:#c7dac5;opacity:.92;}
+html[data-inline-booking] .order-dialog :is(input,select,textarea):focus-visible {
+  border-color:#ffe4a1;
+  outline:3px solid #ffe1a0;
+  outline-offset:2px;
+  background-color:rgba(9,57,39,.88);
+}
+html[data-inline-booking] .order-dialog :is(input[type=date],input[type=time]) {color-scheme:dark;}
+html[data-inline-booking] .order-dialog option {background:#08281e;color:#fff4df;}
+html[data-inline-booking] #order-form [data-order-field]:not([hidden]) {
+  animation:booking-field-enter .34s ease-out both;
+}
+html[data-inline-booking] :is(#order-repeat,#order-mute,#order-skip) {
+  min-height:44px;
+  color:#f7d99d;
+  border-bottom-color:rgba(246,204,135,.5);
+}
+html[data-inline-booking] .order-step-tools {gap:.6rem;margin:.9rem 0;}
+html[data-inline-booking] #order-name-error {color:#ffd1bc;}
+html[data-inline-booking] #order-receipt {
+  border:1px solid var(--glass-line);
+  border-radius:17px;
+  color:#f4f0e5;
+  background:rgba(5,46,30,.77);
+}
+html[data-inline-booking] #order-receipt h3 {color:#ffdf9b;}
+@keyframes booking-gold-sheen {
+  from{background-position:0% 50%}
+  to{background-position:100% 50%}
+}
+@keyframes booking-aurora-glide {
+  from{transform:translateX(-10px);opacity:.22}
+  to{transform:translateX(14px);opacity:.48}
+}
+@keyframes booking-field-enter {
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@media(max-width:480px) {
+  html[data-inline-booking] #order-dialog[open] {padding:19px 18px 25px;}
+  html[data-inline-booking] #order-consent {padding:.82rem;border-radius:17px;}
+  html[data-inline-booking] .order-dialog :is(input,select,textarea) {font-size:16px;}
+}
+@media(prefers-reduced-motion:reduce) {
+  html[data-inline-booking] :is(#order-dialog[open]::before,#order-dialog[open]::after),
+  html[data-inline-booking] #order-form [data-order-field]:not([hidden]) {animation:none!important;}
+}
