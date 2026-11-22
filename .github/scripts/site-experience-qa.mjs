@@ -143,6 +143,11 @@ async function run() {
           assert(bookingLook.closeHeight >= 43, 'Close booking control stays touch-friendly');
           assert(bookingLook.panelWidth <= bookingLook.vw + 2, 'Booking never spills off browser viewport');
           assert(bookingLook.backdrop.includes('blur('), 'Luxury booking panel is translucent');
+          await page.waitForTimeout(700); // preserve a realistic booking overlay screenshot
+          await page.screenshot({
+            path: path.join(output, lang + '-' + label + '-booking.png'),
+            animations: 'disabled'
+          });
           await page.locator('#direct-booking-close').click();
           assert.equal(await page.locator('#direct-booking').evaluate(el => el.open), false, 'Booking closes');
           await page.locator('.hero-actions .ai-entry').click();
