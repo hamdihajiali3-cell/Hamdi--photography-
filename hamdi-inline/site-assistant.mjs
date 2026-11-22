@@ -233,6 +233,9 @@ if (typeof document !== 'undefined') {
   dialog.addEventListener('close', closeAssistant);
   const closeOnBackdrop = (modal, dismiss) => modal.addEventListener('click', event => {
     if (event.target !== modal) return;
+    // Nur's transparent full-screen dialog has no visible frame: a tap on
+    // its empty surface must close it, even within the modal's dimensions.
+    if (modal === dialog) { dismiss(); return; }
     const box = modal.getBoundingClientRect();
     if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) dismiss();
   });
@@ -272,6 +275,11 @@ if (typeof document !== 'undefined') {
       return;
     }
     if (!isModalOpen(dialog)) return;
+    if (event.source === frame.contentWindow && event.origin === VOICE_ORIGIN
+      && event.data?.type === 'hamdi-ai:close-assistant' && Object.keys(event.data).length === 1) {
+      dismissAssistant();
+      return;
+    }
     if (event.source === frame.contentWindow && event.origin === VOICE_ORIGIN
       && event.data?.type === 'hamdi-ai:assistant-ready' && Object.keys(event.data).length === 1) {
       revealFrame(dialog, frame);
