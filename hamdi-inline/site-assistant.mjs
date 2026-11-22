@@ -328,7 +328,7 @@ if (typeof document !== 'undefined') {
   labels();
 
   const warmBooking = () => {
-    if (document.hidden || isModalOpen(directBooking) || isModalOpen(dialog)) return;
+    if (prewarming || document.hidden || isModalOpen(directBooking) || isModalOpen(dialog)) return;
     prewarming = true;
     const source = assistantUrl(true);
     source.searchParams.set('presentation', 'inline');
@@ -336,8 +336,23 @@ if (typeof document !== 'undefined') {
     directFrame.hidden = true;
     directFrame.src = source.href;
   };
-  if (document.readyState === 'complete') setTimeout(warmBooking, 700);
-  else window.addEventListener('load', () => setTimeout(warmBooking, 700), { once: true });
+  // Prewarm the booking iframe only after clear interest in service cards.
+  // Avoid a heavy cross-origin request on every page view (especially mobile).
+  // Actual taps still open the booking frame synchronously in openDirectBooking.
+  const services = document.querySelector('#services');
+  if (window.matchMedia?.('(hover: hover) and (pointer: fine)').matches) {
+    services?.addEventListener('pointerenter', () => {
+      if (typeof window.requestIdleCallback === 'function') {
+        window.requestIdleCallback(warmBooking, { timeout: 1000 });
+      } else setTimeout(warmBooking, 180);
+    }, { once: true });
+  }
+  services?.addEventListener('focusin', event => {
+    if (!event.target?.matches?.(':focus-visible')) return;
+    if (typeof window.requestIdleCallback === 'function') {
+      window.requestIdleCallback(warmBooking, { timeout: 1000 });
+    } else setTimeout(warmBooking, 180);
+  });
 
   const address = new URL(location.href);
   const pendingService = address.searchParams.get('bookingService');
