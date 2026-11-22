@@ -257,6 +257,17 @@ async function run() {
           });
           await page.locator('#direct-booking-close').click();
           assert.equal(await page.locator('#direct-booking').evaluate(el => el.open), false, 'Booking closes');
+          // Verify the CSS reverse animation after dialog.close(), not only
+          // the HTML open attribute or whether the close button works.
+          await page.waitForTimeout(175);
+          const closingPortal = await page.locator('#direct-booking').evaluate(el => {
+            const st = getComputedStyle(el);
+            return {display:st.display,clip:st.clipPath,opacity:Number(st.opacity),
+              radius:Number(st.clipPath.match(/circle\(([\d.]+)%/)?.[1])};
+          });
+          console.log('Booking closing portal',lang,label,JSON.stringify(closingPortal));
+          assert(closingPortal.radius < 135,
+            'Closing portal contracts from full screen toward center');
           await page.locator('.hero-actions .ai-entry').click();
           assert.equal(await page.locator('#hamdi-ai-dialog').evaluate(el => el.open), true, 'Nur modal opens');
           await page.keyboard.press('Escape');
@@ -343,6 +354,16 @@ async function run() {
     try {
       await reduced.goto(origin, { waitUntil: 'domcontentloaded' });
       assert.equal(await reduced.locator('html.has-hamdi-motion').count(), 0, 'Reduced motion stays disabled');
+      await reduced.waitForFunction(() => !document.getElementById('hamdi-entry')?.open, undefined, {timeout:10000});
+      await reduced.locator('.card a[data-service]').first().click();
+      assert.equal(await reduced.locator('#direct-booking').evaluate(el => el.open),true,'Reduced-motion booking opens');
+      const saferPortal = await reduced.locator('#direct-booking').evaluate(el => {
+        const st=getComputedStyle(el);
+        return {mask:st.clipPath,animation:st.animationName,transition:st.transitionDuration};
+      });
+      assert.equal(saferPortal.mask,'none','Reduced motion removes portal mask');
+      await reduced.locator('#direct-booking-close').click();
+      assert.equal(await reduced.locator('#direct-booking').evaluate(el => el.open),false,'Reduced-motion booking closes');
       console.log('PASS reduced-motion preference');
     } finally { await reduced.close(); }
   } finally { await browser.close(); }
