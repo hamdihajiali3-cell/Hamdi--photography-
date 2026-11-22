@@ -427,3 +427,37 @@ html.hamdi-page-leaving .site-frame{
 @media(prefers-reduced-motion:reduce){
   header nav .about-nav-action,html.hamdi-page-leaving .site-frame{transition:none}
 }
+
+
+/* About Hamdi remains clearly visible next to language controls on phones. */
+.about-header-action { display: none; }
+@media (max-width: 1050px) {
+  header .head-tools { margin-inline-start: auto; gap: .55rem; }
+  header .about-header-action {
+    appearance: none;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: .3rem;
+    flex: none;
+    min-height: 44px;
+    padding: .45rem .7rem;
+    border: 1px solid rgba(241,199,133,.72);
+    border-radius: 10px;
+    background: rgba(224,189,131,.17);
+    color: #ffe8bc;
+    font: 700 .78rem/1.3 var(--sans);
+    white-space: nowrap;
+    touch-action: manipulation;
+    cursor: pointer;
+  }
+  header .about-header-action:hover { background: rgba(224,189,131,.3); }
+  header .about-header-action:focus-visible { outline: 3px solid #f0c687; outline-offset: 3px; }
+  header nav .about-nav-action { display: none; }
+}
+@media (max-width: 380px) {
+  header { gap: .35rem; }
+  header .head-tools { gap: .3rem; }
+  header .about-header-action { padding: .42rem .5rem; font-size: .72rem; }
+  header .lang { gap: .1rem; }
+}
