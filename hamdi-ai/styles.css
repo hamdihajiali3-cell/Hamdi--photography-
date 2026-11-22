@@ -19,7 +19,7 @@ html[dir=ltr] .request-intro h2{font-family:var(--serif);line-height:1.2;font-si
 /* Same assistant card when opened inside the photography website. */
 html[data-embedded=true] .topbar .brand,html[data-embedded=true] .preview-tag,html[data-embedded=true] .hero-copy,html[data-embedded=true] .services-section,html[data-embedded=true] .request-section,html[data-embedded=true] .faq-section,html[data-embedded=true] .owner-note,html[data-embedded=true] footer{display:none}
 html[data-embedded=true] .wrap{width:min(500px,calc(100% - 24px))}
-html[data-embedded=true] .topbar{justify-content:flex-end;padding-block:10px 0;border:0}
+html[data-embedded=true] .topbar{justify-content:flex-start;padding-block:10px 0;border:0}
 html[data-embedded=true] .hero{display:block;padding-block:10px 20px}
 html[data-embedded=true] .voice-card{width:100%;max-width:460px;margin:auto}
 /* Soft studio lighting; stronger only while the assistant is speaking. */
@@ -193,7 +193,7 @@ html[data-voice-state="muted"] .orb-scene > .orb .wave { opacity: .46; }
 
 /* Embedded consultation inherits the glass from its host; booking stays scoped separately. */
 html[data-consultation=true], html[data-consultation=true] body {
-  background:transparent;
+  background:#f6f2ea;
 }
 html[data-consultation=true] .voice-card {
   background:transparent;

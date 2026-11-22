@@ -1240,6 +1240,8 @@ function setVoiceState(state) {
     else orb.removeAttribute('role');
   }
   $('#call-controls').hidden = !active;
+  // Hide the disabled start button during a live call; end/mute controls are displayed instead.
+  if (consultation) $('#open-voice').hidden = active;
   $('#open-voice').disabled = active || !configured;
   $('#open-voice-test').disabled = active || !configured;
   document.documentElement.dataset.voiceState = state || (configured ? 'ready' : 'disabled');
