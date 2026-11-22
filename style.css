@@ -273,3 +273,94 @@ html.hamdi-booking-open .ai-entry .live-entry-icon rect {
   transition: background-color .1s ease-out, transform .1s ease-out, box-shadow .1s ease-out;
 }
 .card a[data-service] { transition: color .1s ease-out, border-color .1s ease-out; }
+
+
+/* 2026-11 owner profile + opt-in authentic photo portfolio */
+.portfolio-section[hidden]{display:none!important}
+.portfolio-section{
+  padding:clamp(3.5rem,6vw,6rem) clamp(1.5rem,6vw,7rem);
+  border-top:1px solid var(--line);
+  background:#f4efe5;
+}
+.portfolio-heading{max-width:44rem;margin-bottom:2rem}
+.portfolio-heading h2,.about-photographer h2{
+  margin:0;
+  font:600 clamp(2.4rem,5vw,4.9rem)/1.08 var(--serif);
+  letter-spacing:-.04em;
+}
+html[lang="ar"] .portfolio-heading h2,
+html[lang="ar"] .about-photographer h2{letter-spacing:normal}
+.portfolio-heading h2 em,.about-photographer h2 em{color:var(--copper);font-weight:500}
+.portfolio-heading>p:last-child{color:var(--muted);font-size:.95rem}
+.portfolio-gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.1rem}
+.portfolio-item{
+  min-width:0;margin:0;overflow:hidden;border-radius:1.15rem;
+  border:1px solid rgba(32,35,31,.11);
+  background:#e9e0d1;box-shadow:0 10px 28px rgba(40,35,25,.08)
+}
+.portfolio-item img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover}
+.portfolio-item figcaption{display:grid;gap:.25rem;padding:1rem 1.1rem}
+.portfolio-item figcaption strong{font-size:1rem}
+.portfolio-item figcaption span{font-size:.84rem;color:var(--muted)}
+.about-photographer{
+  display:grid;grid-template-columns:minmax(0,.7fr) minmax(0,1.3fr);
+  align-items:center;gap:clamp(2rem,5vw,5rem);
+  padding:clamp(3.5rem,7vw,7rem) clamp(1.5rem,6vw,7rem);
+  border-top:1px solid var(--line);
+  background:linear-gradient(130deg,#f7f2e9,#e9dfcf);
+}
+.about-photographer-symbol{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:.1rem;min-height:260px;aspect-ratio:1;
+  max-width:400px;margin:auto;width:100%;
+  background:radial-gradient(circle at 45% 45%,#353c31,#171c17 74%);
+  color:#f4dfad;border:1px solid rgba(170,120,40,.46);
+  border-radius:50%;box-shadow:inset 0 0 0 13px rgba(255,240,202,.035),0 22px 38px rgba(28,24,17,.18);
+}
+.about-photographer-symbol span{font:500 clamp(6rem,14vw,10rem)/1 var(--serif);text-shadow:0 0 34px rgba(246,217,156,.3)}
+.about-photographer-symbol small{font:600 .65rem/1.4 var(--sans);letter-spacing:.25em}
+.about-photographer-copy{max-width:45rem}
+.about-photographer-copy>p:not(.eyebrow){
+  margin:1.2rem 0 0;line-height:1.9;font-size:clamp(.94rem,1.3vw,1.12rem);
+  color:#35392e
+}
+.about-photographer-copy .about-photographer-note{color:var(--muted);font-size:.93rem}
+.about-contact-link{
+  display:inline-flex;align-items:center;gap:1rem;margin-top:1.6rem;padding:.7rem .1rem;
+  border-bottom:2px solid var(--copper);color:var(--olive);font-weight:700;
+  min-height:44px
+}
+.about-contact-link:focus-visible,header nav a:focus-visible,.card a[data-service]:focus-visible{
+  outline:3px solid #b9853e;outline-offset:4px;border-radius:3px
+}
+/* Navigate directly on phones instead of hiding every section link. */
+@media (max-width:1050px){
+  header{flex-wrap:wrap;gap:.45rem 1rem;padding-bottom:.35rem}
+  header nav{
+    display:flex;order:3;flex-basis:100%;margin:0;min-width:0;
+    gap:1.2rem;overflow-x:auto;overscroll-behavior-x:contain;
+    scrollbar-width:thin;white-space:nowrap;padding:.3rem 0;
+    -webkit-overflow-scrolling:touch;
+  }
+  header nav a{display:inline-flex;align-items:center;min-height:44px;flex:none;opacity:.85}
+}
+@media(max-width:650px){
+  .about-photographer{grid-template-columns:1fr;gap:2rem;padding:3.5rem 1.25rem}
+  .about-photographer-symbol{max-width:230px;min-height:0}
+  .about-photographer-symbol span{font-size:6rem}
+  .portfolio-section{padding:3.5rem 1.25rem}
+  .portfolio-gallery{grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem}
+  .portfolio-item figcaption{padding:.75rem}
+  .card,.card a[data-service]{touch-action:manipulation}
+  .card{cursor:pointer}
+  .card a[data-service]{min-height:44px;align-items:center}
+}
+@media(max-width:380px){.portfolio-gallery{grid-template-columns:1fr}}
+@media (prefers-reduced-motion: reduce){
+  .about-photographer-symbol,.portfolio-item{transition:none}
+}
+/* During voice calls, reduce animation overhead, particularly on mobile. */
+@media (pointer:coarse){
+  html.hamdi-assistant-open .card,
+  html.hamdi-booking-open .card{box-shadow:none}
+}
