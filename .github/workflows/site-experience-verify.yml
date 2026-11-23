@@ -3,6 +3,7 @@ name: Verify public site UX and responsive layout
 on:
   push:
     paths:
+      - "_headers"
       - "index.html"
       - "tr/index.html"
       - "style.css"

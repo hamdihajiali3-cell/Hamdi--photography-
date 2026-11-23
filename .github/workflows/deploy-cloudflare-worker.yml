@@ -12,6 +12,7 @@ on:
       - "hamdi-ai/**"
       - "hamdi-motion.css"
       - "hamdi-motion.mjs"
+      - "_headers"
       - "index.html"
       - "tr/index.html"
       - "script.js"

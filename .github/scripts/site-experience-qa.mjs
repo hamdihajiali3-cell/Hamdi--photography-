@@ -8,6 +8,9 @@ const output = path.resolve('qa-screenshots');
 fs.mkdirSync(output, { recursive: true });
 
 function staticChecks() {
+  const headers = fs.readFileSync('_headers', 'utf8');
+  assert(headers.includes('microphone=(self)'), 'Nur needs microphone permission on the official same-origin domain');
+  assert(!headers.includes('microphone=()'), 'Global permissions policy must not disable all microphones');
   for (const prefix of ['', 'tr/']) {
     const page = fs.readFileSync(prefix + 'index.html', 'utf8');
     assert.equal((page.match(/data-service="/g) || []).length, 5, 'Five services must remain: ' + prefix);
