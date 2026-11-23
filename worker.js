@@ -267,12 +267,12 @@ async function handlePostCall(request, env) {
   return json({ ok: true, callback_queued: true, callback_call_id: blandData.call_id, whatsapp_sent: whatsappResult.sent, whatsapp_reason: whatsappResult.reason || null, whatsapp_message_id: whatsappResult.message_id || null });
 }
 
-async function routeRequest(request, env) {
+async function routeRequest(request, env, ctx) {
     const url = new URL(request.url);
 
     if (url.pathname === '/api/visits') return handleVisitRequest(request, env);
 
-    if (url.pathname.startsWith('/api/order/')) return handleOrderRequest(request, env);
+    if (url.pathname.startsWith('/api/order/')) return handleOrderRequest(request, env, ctx);
 
     if (url.pathname === "/api/status" || url.pathname === "/api/live-token") {
       return handleVoiceRequest(request, env);
@@ -305,11 +305,11 @@ async function routeRequest(request, env) {
 }
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const isApi = new URL(request.url).pathname.startsWith('/api/');
-    if (!isApi) return routeRequest(request, env);
+    if (!isApi) return routeRequest(request, env, ctx);
     try {
-      return secureApiResponse(await routeRequest(request, env));
+      return secureApiResponse(await routeRequest(request, env, ctx));
     } catch {
       return secureApiResponse(json({ error: 'temporarily_unavailable' }, 503));
     }

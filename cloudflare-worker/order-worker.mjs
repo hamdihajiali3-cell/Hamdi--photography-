@@ -28,12 +28,30 @@ async function readLimited(request,max) {
   finally { reader.releaseLock(); }
   const all=new Uint8Array(count);let offset=0;for(const part of parts){all.set(part,offset);offset+=part.length;}return all;
 }
-export async function handleOrderRequest(request,env) {
+// Only immutable, studio-authored speech prompts are eligible for edge cache.
+// Personalized order/session requests must always reach their guarded handler.
+export async function handleOrderRequest(request,env,ctx) {
   const path=new URL(request.url).pathname;
   if(path.startsWith('/api/order/prompt/')) {
     if(!readOrderPrompt(request))return json({error:'not-found'},404);
     if(!ready(env)||!env.ORDER_GUARD)return json({error:'orders-not-configured'},503);
-    try {return await env.ORDER_GUARD.get(env.ORDER_GUARD.idFromName('hamdi-order-prompts-v1')).fetch(request);}
+    const cache = !request.headers.has('range') && typeof caches !== 'undefined'
+      ? caches.default : null;
+    if (cache) {
+      try {
+        const hit = await cache.match(request);
+        if (hit) return hit;
+      } catch { /* Cache is best-effort; DO remains the source of truth. */ }
+    }
+    try {
+      const response = await env.ORDER_GUARD.get(env.ORDER_GUARD.idFromName('hamdi-order-prompts-v1')).fetch(request);
+      if (cache && response.status === 200 && response.headers.get('content-type') === 'audio/wav'
+        && response.headers.get('cache-control')?.includes('immutable') && ctx?.waitUntil) {
+        // Await only inside the execution context; never delay delivery for a cache write.
+        ctx.waitUntil(Promise.resolve().then(() => cache.put(request, response.clone())).catch(() => {}));
+      }
+      return response;
+    }
     catch{return json({error:'prompt-unavailable'},503);}
   }
   if(path==='/api/order/status' && request.method==='GET') {

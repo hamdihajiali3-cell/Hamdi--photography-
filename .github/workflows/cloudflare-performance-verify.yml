@@ -26,5 +26,7 @@ jobs:
           node --check worker.js
           node --check cloudflare-worker/hamdi-voice.mjs
           node --check .github/scripts/cloudflare-status-qa.mjs
+          node --check .github/scripts/cloudflare-edge-cache-qa.mjs
+          node --check cloudflare-worker/order-worker.mjs
       - name: Verify status bypass and protected token admission
-        run: node --test .github/scripts/cloudflare-status-qa.mjs
+        run: node --test .github/scripts/cloudflare-status-qa.mjs .github/scripts/cloudflare-edge-cache-qa.mjs
