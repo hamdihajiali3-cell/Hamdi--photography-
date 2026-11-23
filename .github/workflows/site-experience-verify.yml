@@ -6,6 +6,8 @@ on:
       - "index.html"
       - "tr/index.html"
       - "style.css"
+      - "script.js"
+      - "language-auto.js"
       - "hamdi-motion.css"
       - "hamdi-motion.mjs"
       - "hamdi-inline/**"
@@ -31,6 +33,8 @@ jobs:
       - name: JavaScript syntax checks
         run: |
           node --check hamdi-motion.mjs
+          node --check script.js
+          node --check language-auto.js
           node --check hamdi-inline/site-assistant.mjs
           node --check hamdi-ai/app.js
           node --check hamdi-entry/intro.js

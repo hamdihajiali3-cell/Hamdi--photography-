@@ -299,6 +299,7 @@ if (typeof document !== 'undefined') {
     }
     const requestedLocale = readLanguageRequest(event, frame.contentWindow);
     if (requestedLocale && requestedLocale !== language()) {
+      try { localStorage.setItem('hamdi-language-mode', requestedLocale); } catch {}
       try { sessionStorage.setItem('hamdi-voice-language-open', String(Date.now())); } catch {}
       location.assign(localePage(requestedLocale, '#hamdi-ai-dialog').href);
       return;
@@ -306,6 +307,7 @@ if (typeof document !== 'undefined') {
     const request = readBookingRequest(event, frame.contentWindow);
     if (!request) return;
     if (request.language !== language()) {
+      try { localStorage.setItem('hamdi-language-mode', request.language); } catch {}
       const address = localePage(request.language, '#services');
       if (request.service) address.searchParams.set('bookingService', request.service);
       location.assign(address.href);

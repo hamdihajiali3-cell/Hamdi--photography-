@@ -1,7 +1,34 @@
-// Explicit language navigation: Arabic and Turkish are separate HTML pages.
-// Keep normal links as a fallback when JavaScript is unavailable.
+// AR and TR are separate localized HTML pages; 'auto' follows browser settings.
+// Manual selections persist across visits and take priority over automatic detection.
 const languageLinks = [...document.querySelectorAll('.lang a[data-lang]')];
+const automaticLanguageButton = document.querySelector('.lang button[data-lang="auto"]');
+const languageModeKey = 'hamdi-language-mode';
 const selectedLanguage = () => document.documentElement.lang.slice(0, 2);
+
+function getLanguageMode() {
+  try {
+    const saved = localStorage.getItem(languageModeKey);
+    return saved === 'ar' || saved === 'tr' ? saved : 'auto';
+  } catch {
+    return 'auto';
+  }
+}
+
+function saveLanguageMode(mode) {
+  try {
+    if (mode === 'auto') localStorage.removeItem(languageModeKey);
+    else localStorage.setItem(languageModeKey, mode);
+  } catch {
+    // Keep language links usable if the browser disallows storage.
+  }
+}
+
+function preferredBrowserLanguage() {
+  const available = navigator.languages?.length ? navigator.languages : [navigator.language];
+  return [...available]
+    .map(locale => String(locale || '').toLowerCase().split('-')[0])
+    .find(locale => locale === 'tr' || locale === 'ar') || 'ar';
+}
 
 function updateLanguageLinks() {
   const current = new URL(window.location.href);
@@ -17,15 +44,19 @@ function updateLanguageLinks() {
       link.removeAttribute('aria-current');
     }
   }
+  automaticLanguageButton?.setAttribute('aria-pressed', String(getLanguageMode() === 'auto'));
 }
 
 for (const link of languageLinks) {
-  // Remember the original path, even after the search/hash is synchronized.
   link.setAttribute('data-language-path', link.getAttribute('href'));
 }
 updateLanguageLinks();
 window.addEventListener('hashchange', updateLanguageLinks);
 window.addEventListener('popstate', updateLanguageLinks);
+
+function markLanguageNavigation() {
+  try { sessionStorage.setItem('hamdi-language-nav', '1'); } catch {}
+}
 
 for (const link of languageLinks) {
   link.addEventListener('click', event => {
@@ -34,11 +65,22 @@ for (const link of languageLinks) {
 
     updateLanguageLinks();
     event.preventDefault();
+    saveLanguageMode(link.dataset.lang);
+    updateLanguageLinks();
     if (link.dataset.lang === selectedLanguage()) return;
 
-    // The selected locale has its own translated page. Navigate explicitly
-    // rather than relying on the browser's default anchor action.
-    try { sessionStorage.setItem('hamdi-language-nav', '1'); } catch {}
+    markLanguageNavigation();
     window.location.assign(link.href);
   });
 }
+
+automaticLanguageButton?.addEventListener('click', () => {
+  saveLanguageMode('auto');
+  updateLanguageLinks();
+  const detected = preferredBrowserLanguage();
+  if (detected === selectedLanguage()) return;
+  const destination = languageLinks.find(link => link.dataset.lang === detected);
+  if (!destination) return;
+  markLanguageNavigation();
+  window.location.assign(destination.href);
+});

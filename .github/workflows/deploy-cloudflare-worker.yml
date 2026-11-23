@@ -14,6 +14,10 @@ on:
       - "hamdi-motion.mjs"
       - "index.html"
       - "tr/index.html"
+      - "script.js"
+      - "language-auto.js"
+      - "style.css"
+      - "hamdi-inline/site-assistant.mjs"
   workflow_dispatch:
 
 permissions:

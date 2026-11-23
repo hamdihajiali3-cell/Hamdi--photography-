@@ -11,6 +11,8 @@ function staticChecks() {
   for (const prefix of ['', 'tr/']) {
     const page = fs.readFileSync(prefix + 'index.html', 'utf8');
     assert.equal((page.match(/data-service="/g) || []).length, 5, 'Five services must remain: ' + prefix);
+    assert(page.includes('language-auto.js?v='), 'Early locale detector is loaded: ' + prefix);
+    assert(page.includes('data-lang="auto"'), 'Third device-language choice exists: ' + prefix);
     assert(page.includes(prefix ? '../hamdi-motion.css?' : 'href="hamdi-motion.css?'), 'Motion style linked: ' + prefix);
     assert(page.includes(prefix ? '../hamdi-motion.mjs?' : 'src="hamdi-motion.mjs?'), 'Motion JS linked: ' + prefix);
     assert(page.includes(prefix ? '../hamdi-glass-premium.css?' : 'href="hamdi-glass-premium.css?'), 'Luxury glass skin linked: ' + prefix);
@@ -42,7 +44,7 @@ async function run() {
   try {
     for (const [locale, lang] of [['', 'ar'], ['tr/', 'tr']]) {
       for (const [label, viewport] of [['phone', { width: 375, height: 812 }], ['desktop', { width: 1280, height: 900 }]]) {
-        const page = await browser.newPage({ viewport, reducedMotion: 'no-preference' });
+        const page = await browser.newPage({ viewport, locale: lang === 'tr' ? 'tr-TR' : 'ar-SA', reducedMotion: 'no-preference' });
         const pageErrors = [];
         page.on('pageerror', error => pageErrors.push(error.message));
         try {
@@ -323,6 +325,36 @@ async function run() {
         } finally {
           await page.close();
         }
+      }
+    }
+    // Device language is the default; a manual choice stays until Auto is re-enabled.
+    for (const [deviceLocale, expected] of [['tr-TR', 'tr'], ['ar-SA', 'ar'], ['en-US', 'ar']]) {
+      const localePage = await browser.newPage({ locale: deviceLocale });
+      try {
+        await localePage.goto(origin, { waitUntil:'domcontentloaded' });
+        await localePage.waitForURL(url => url.pathname === (expected === 'tr' ? '/tr/' : '/'));
+        assert.equal(await localePage.locator('html').getAttribute('lang'), expected,
+          'Device locale selects the translated page: ' + deviceLocale);
+        assert.equal(await localePage.locator('.lang button[data-lang="auto"]').getAttribute('aria-pressed'), 'true',
+          'Automatic mode starts enabled');
+        const manual = expected === 'tr' ? 'ar' : 'tr';
+        await localePage.locator('.lang a[data-lang="' + manual + '"]').evaluate(el => el.click());
+        await localePage.waitForURL(url => url.pathname === (manual === 'tr' ? '/tr/' : '/'));
+        assert.equal(await localePage.evaluate(() => localStorage.getItem('hamdi-language-mode')), manual,
+          'Manual choice persists');
+        await localePage.goto(origin, {waitUntil:'domcontentloaded'});
+        await localePage.waitForURL(url => url.pathname === (manual === 'tr' ? '/tr/' : '/'));
+        assert.equal(await localePage.locator('html').getAttribute('lang'), manual,
+          'Manual language takes priority on return');
+        await localePage.locator('.lang button[data-lang="auto"]').evaluate(el => el.click());
+        await localePage.waitForURL(url => url.pathname === (expected === 'tr' ? '/tr/' : '/'));
+        assert.equal(await localePage.evaluate(() => localStorage.getItem('hamdi-language-mode')), null,
+          'Automatic mode clears the manual override');
+        assert.equal(await localePage.locator('html').getAttribute('lang'), expected,
+          'Auto uses browser locale again');
+        console.log('PASS automatic-language', deviceLocale, 'manual override and restoration');
+      } finally {
+        await localePage.close();
       }
     }
     // Non-destructive production Nur visual diagnostic. The remote Worker may
