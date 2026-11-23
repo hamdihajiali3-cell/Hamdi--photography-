@@ -20,6 +20,7 @@ function staticChecks() {
     assert(page.includes(prefix ? '../hamdi-crystal-compact-interior.css?' : 'href="hamdi-crystal-compact-interior.css?'), 'Compact inner glass skin is linked: ' + prefix);
     assert(page.includes(prefix ? '../hamdi-booking-glass.css?' : 'href="hamdi-booking-glass.css?'), 'Animated booking panel skin linked: ' + prefix);
     assert(page.includes(prefix ? '../hamdi-booking-small-glass.css?' : 'href="hamdi-booking-small-glass.css?'), 'Compact transparent booking panel linked: ' + prefix);
+    assert(page.includes('hamdi-inline/site-assistant.mjs?v=instant-booking-20261123-1'), 'Zero-wait booking script is linked: ' + prefix);
     assert(!page.includes('hamdi-booking-portal.css?'), 'Black-hole animation removed: ' + prefix);
     assert(page.includes('booking-glass-brand') && page.includes('id="direct-booking-frame"'), 'Booking brand and original iframe retained');
     assert(page.includes('id="hamdi-ai-dialog"') && page.includes('id="direct-booking"'), 'Both dialogs retained');
@@ -201,7 +202,29 @@ async function run() {
           const service = page.locator('.card a[data-service]').first();
           assert((await service.boundingBox()).height >= 43, 'Booking tap target at least 44px');
           // This only checks opening/closing; no request gets submitted.
+          // The last click listener runs in the SAME event dispatch, after
+          // the site's capture listener. If it is already open here, no timer,
+          // animation, idle task or network load can delay the visual response.
+          await service.evaluate(el => {
+            el.addEventListener('click', () => {
+              const dialog = document.getElementById('direct-booking');
+              const panel = getComputedStyle(dialog);
+              const button = getComputedStyle(el);
+              window.__hamdiZeroWaitBooking = {
+                open:dialog.open,
+                visible:panel.display !== 'none',
+                loading:dialog.hasAttribute('data-loading'),
+                buttonTransition:button.transitionDuration
+              };
+            }, {once:true});
+          });
           await service.click();
+          const instant = await page.evaluate(() => window.__hamdiZeroWaitBooking);
+          assert(instant?.open && instant.visible,
+            'Booking must open synchronously within the card click, no wait');
+          assert(instant.loading, 'Remote form loads only after immediate modal display');
+          assert(instant.buttonTransition.split(',').every(t => parseFloat(t) === 0),
+            'Service card button has no transition or animation delay');
           assert.equal(await page.locator('#direct-booking').evaluate(el => el.open), true, 'Booking modal opens');
           const naturalBooking = await page.locator('#direct-booking').evaluate(el => {
             const st = getComputedStyle(el);
