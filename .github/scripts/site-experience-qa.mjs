@@ -22,7 +22,7 @@ function staticChecks() {
     assert(page.includes(prefix ? '../hamdi-crystal-compact-interior.css?' : 'href="hamdi-crystal-compact-interior.css?'), 'Compact inner glass skin is linked: ' + prefix);
     assert(page.includes(prefix ? '../hamdi-booking-glass.css?' : 'href="hamdi-booking-glass.css?'), 'Animated booking panel skin linked: ' + prefix);
     assert(page.includes(prefix ? '../hamdi-booking-small-glass.css?' : 'href="hamdi-booking-small-glass.css?'), 'Compact transparent booking panel linked: ' + prefix);
-    assert(page.includes('hamdi-inline/site-assistant.mjs?v=instant-booking-20261123-1'), 'Zero-wait booking script is linked: ' + prefix);
+    assert(page.includes('hamdi-inline/site-assistant.mjs?v=same-origin-nur-audio-20261123-1'), 'Zero-wait booking script is linked: ' + prefix);
     assert(!page.includes('hamdi-booking-portal.css?'), 'Black-hole animation removed: ' + prefix);
     assert(page.includes('booking-glass-brand') && page.includes('id="direct-booking-frame"'), 'Booking brand and original iframe retained');
     assert(page.includes('id="hamdi-ai-dialog"') && page.includes('id="direct-booking"'), 'Both dialogs retained');

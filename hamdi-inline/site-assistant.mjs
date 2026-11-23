@@ -1,6 +1,11 @@
 import { OpeningChime } from './opening-chime.mjs?v=glass-20261118';
 
-const VOICE_ORIGIN = 'https://hamdi--photography.hamdihajiali3.workers.dev';
+// On the official domain, keep Nur and booking audio on the SAME origin.
+// The legacy Worker endpoint stays available for GitHub Pages and local previews.
+const VOICE_ORIGIN = typeof location !== 'undefined'
+  && /^(?:www\.)?hamdiphoto\.com\.tr$/i.test(location.hostname)
+  ? location.origin
+  : 'https://hamdi--photography.hamdihajiali3.workers.dev';
 const SERVICES = new Set(['', 'color', 'graduation', 'hair', 'id', 'portrait']);
 
 export function readBookingRequest(event, expectedWindow) {
