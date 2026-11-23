@@ -182,14 +182,16 @@ if (typeof document !== 'undefined') {
     directBooking.setAttribute('aria-busy', 'true');
     bookingStatus.textContent = tr ? 'Talep formu yükleniyor…' : 'عم نحمّل طلب الحجز…';
     bookingStatus.hidden = false;
+    // First show the booking window on the SAME click task: zero waiting,
+    // no frame/network/audio work before the visible UI responds.
+    showModal(directBooking, directClose, 'hamdi-booking-open');
+    directBooking.scrollTop = 0;
+    // Load the remote form only after the immediate visual response.
+    // Actual network loading may still take time; never block the dialog.
     const source = assistantUrl(true);
     source.searchParams.set('bookingService', service);
     source.searchParams.set('presentation', 'inline');
     directFrame.height = 340;
-    // Open the visible shell synchronously on the click; loading the remote form
-    // proceeds asynchronously and is not a fixed 100 ms network guarantee.
-    showModal(directBooking, directClose, 'hamdi-booking-open');
-    directBooking.scrollTop = 0;
     directFrame.src = source.href;
     clearTimeout(bookingLoadTimer);
     // Slower mobile connections should not be marked as failed too early.
