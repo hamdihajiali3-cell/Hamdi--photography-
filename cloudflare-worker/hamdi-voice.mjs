@@ -57,18 +57,18 @@ export async function handleVoiceRequest(request, env) {
   const url = new URL(request.url);
   if (!isVoiceRoute(url, request.method)) return json({ error: 'not-found' }, 404);
   const settings = settingsFor(env);
-  if (!env.VOICE_SESSION_GUARD) {
-    return url.pathname === '/api/status'
-      ? statusResponse(settings, false)
-      : json({ error: 'voice-not-configured' }, 503);
+  // The read-only status is derived entirely from env configuration.
+  // Bypass the globally shared Durable Object so frequent page readiness
+  // checks cannot contend with quota-protected voice session admissions.
+  if (url.pathname === '/api/status') {
+    return statusResponse(settings, Boolean(env.VOICE_SESSION_GUARD));
   }
+  if (!env.VOICE_SESSION_GUARD) return json({ error: 'voice-not-configured' }, 503);
   try {
     const id = env.VOICE_SESSION_GUARD.idFromName(GLOBAL_GUARD_NAME);
     return await env.VOICE_SESSION_GUARD.get(id).fetch(request);
   } catch {
-    return url.pathname === '/api/status'
-      ? statusResponse(settings, false)
-      : json({ error: 'voice-temporarily-unavailable' }, 503);
+    return json({ error: 'voice-temporarily-unavailable' }, 503);
   }
 }
 

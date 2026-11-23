@@ -1,0 +1,30 @@
+name: Verify Cloudflare Worker status fast path
+
+on:
+  push:
+    paths:
+      - "worker.js"
+      - "cloudflare-worker/**"
+      - ".github/scripts/cloudflare-status-qa.mjs"
+      - ".github/workflows/cloudflare-performance-verify.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  status-fast-path:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Syntax verification
+        run: |
+          node --check worker.js
+          node --check cloudflare-worker/hamdi-voice.mjs
+          node --check .github/scripts/cloudflare-status-qa.mjs
+      - name: Verify status bypass and protected token admission
+        run: node --test .github/scripts/cloudflare-status-qa.mjs
