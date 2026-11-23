@@ -1,33 +1,13 @@
-// AR and TR are separate localized HTML pages; 'auto' follows browser settings.
-// Manual selections persist across visits and take priority over automatic detection.
+// Device/browser language is detected before page paint by language-auto.js.
+// This file keeps manual AR/TR links usable and remembers explicit choices.
 const languageLinks = [...document.querySelectorAll('.lang a[data-lang]')];
-const automaticLanguageButton = document.querySelector('.lang button[data-lang="auto"]');
 const languageModeKey = 'hamdi-language-mode';
 const selectedLanguage = () => document.documentElement.lang.slice(0, 2);
 
-function getLanguageMode() {
-  try {
-    const saved = localStorage.getItem(languageModeKey);
-    return saved === 'ar' || saved === 'tr' ? saved : 'auto';
-  } catch {
-    return 'auto';
+function saveManualLanguage(mode) {
+  try { localStorage.setItem(languageModeKey, mode); } catch {
+    // Manual navigation still works if storage is disabled.
   }
-}
-
-function saveLanguageMode(mode) {
-  try {
-    if (mode === 'auto') localStorage.removeItem(languageModeKey);
-    else localStorage.setItem(languageModeKey, mode);
-  } catch {
-    // Keep language links usable if the browser disallows storage.
-  }
-}
-
-function preferredBrowserLanguage() {
-  const available = navigator.languages?.length ? navigator.languages : [navigator.language];
-  return [...available]
-    .map(locale => String(locale || '').toLowerCase().split('-')[0])
-    .find(locale => locale === 'tr' || locale === 'ar') || 'ar';
 }
 
 function updateLanguageLinks() {
@@ -44,7 +24,6 @@ function updateLanguageLinks() {
       link.removeAttribute('aria-current');
     }
   }
-  automaticLanguageButton?.setAttribute('aria-pressed', String(getLanguageMode() === 'auto'));
 }
 
 for (const link of languageLinks) {
@@ -65,8 +44,7 @@ for (const link of languageLinks) {
 
     updateLanguageLinks();
     event.preventDefault();
-    saveLanguageMode(link.dataset.lang);
-    updateLanguageLinks();
+    saveManualLanguage(link.dataset.lang);
     if (link.dataset.lang === selectedLanguage()) return;
 
     markLanguageNavigation();
@@ -74,13 +52,3 @@ for (const link of languageLinks) {
   });
 }
 
-automaticLanguageButton?.addEventListener('click', () => {
-  saveLanguageMode('auto');
-  updateLanguageLinks();
-  const detected = preferredBrowserLanguage();
-  if (detected === selectedLanguage()) return;
-  const destination = languageLinks.find(link => link.dataset.lang === detected);
-  if (!destination) return;
-  markLanguageNavigation();
-  window.location.assign(destination.href);
-});

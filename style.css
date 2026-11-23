@@ -469,18 +469,3 @@ html[lang="ar"] .booking-faq-heading h2{letter-spacing:normal}
   header nav a{font-size:.72rem}
 }
 
-/* Third language option: follow browser/device language without changing the glass theme. */
-.lang button[data-lang="auto"] {
-  display:inline-flex; align-items:center; justify-content:center; gap:.2rem;
-  min-height:38px; padding:.25rem .25rem; border:0; background:transparent;
-  color:#e8d6c8; font-size:.72rem; opacity:.55; white-space:nowrap; cursor:pointer;
-}
-.lang button[data-lang="auto"][aria-pressed="true"] { opacity:1; color:#fff; }
-.lang :is(a,button):focus-visible { outline:2px solid #e2b294; outline-offset:3px; border-radius:3px; }
-@media (max-width:650px) {
-  .lang button[data-lang="auto"] { min-height:44px; padding:.25rem .3rem; font-size:.68rem; }
-}
-@media (max-width:380px) {
-  .lang { gap:.1rem; }
-  .lang button[data-lang="auto"] { padding-inline:.15rem; font-size:.63rem; }
-}

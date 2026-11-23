@@ -12,7 +12,7 @@ function staticChecks() {
     const page = fs.readFileSync(prefix + 'index.html', 'utf8');
     assert.equal((page.match(/data-service="/g) || []).length, 5, 'Five services must remain: ' + prefix);
     assert(page.includes('language-auto.js?v='), 'Early locale detector is loaded: ' + prefix);
-    assert(page.includes('data-lang="auto"'), 'Third device-language choice exists: ' + prefix);
+    assert(!page.includes('data-lang="auto"'), 'Automatic detection has no extra visible button: ' + prefix);
     assert(page.includes(prefix ? '../hamdi-motion.css?' : 'href="hamdi-motion.css?'), 'Motion style linked: ' + prefix);
     assert(page.includes(prefix ? '../hamdi-motion.mjs?' : 'src="hamdi-motion.mjs?'), 'Motion JS linked: ' + prefix);
     assert(page.includes(prefix ? '../hamdi-glass-premium.css?' : 'href="hamdi-glass-premium.css?'), 'Luxury glass skin linked: ' + prefix);
@@ -327,7 +327,7 @@ async function run() {
         }
       }
     }
-    // Device language is the default; a manual choice stays until Auto is re-enabled.
+    // Browser/device language is the default; a manual selection persists without an Auto button.
     for (const [deviceLocale, expected] of [['tr-TR', 'tr'], ['ar-SA', 'ar'], ['en-US', 'ar']]) {
       const localePage = await browser.newPage({ locale: deviceLocale });
       try {
@@ -335,8 +335,8 @@ async function run() {
         await localePage.waitForURL(url => url.pathname === (expected === 'tr' ? '/tr/' : '/'));
         assert.equal(await localePage.locator('html').getAttribute('lang'), expected,
           'Device locale selects the translated page: ' + deviceLocale);
-        assert.equal(await localePage.locator('.lang button[data-lang="auto"]').getAttribute('aria-pressed'), 'true',
-          'Automatic mode starts enabled');
+        assert.equal(await localePage.locator('.lang button[data-lang="auto"]').count(), 0,
+          'Automatic language detection has no visible toggle');
         const manual = expected === 'tr' ? 'ar' : 'tr';
         await localePage.locator('.lang a[data-lang="' + manual + '"]').evaluate(el => el.click());
         await localePage.waitForURL(url => url.pathname === (manual === 'tr' ? '/tr/' : '/'));
@@ -346,13 +346,17 @@ async function run() {
         await localePage.waitForURL(url => url.pathname === (manual === 'tr' ? '/tr/' : '/'));
         assert.equal(await localePage.locator('html').getAttribute('lang'), manual,
           'Manual language takes priority on return');
-        await localePage.locator('.lang button[data-lang="auto"]').evaluate(el => el.click());
-        await localePage.waitForURL(url => url.pathname === (expected === 'tr' ? '/tr/' : '/'));
-        assert.equal(await localePage.evaluate(() => localStorage.getItem('hamdi-language-mode')), null,
-          'Automatic mode clears the manual override');
-        assert.equal(await localePage.locator('html').getAttribute('lang'), expected,
-          'Auto uses browser locale again');
-        console.log('PASS automatic-language', deviceLocale, 'manual override and restoration');
+        // A manual choice remains respected; auto detection still runs on fresh visits.
+        const freshVisitor = await browser.newPage({ locale: deviceLocale });
+        try {
+          await freshVisitor.goto(origin, {waitUntil:'domcontentloaded'});
+          await freshVisitor.waitForURL(url => url.pathname === (expected === 'tr' ? '/tr/' : '/'));
+          assert.equal(await freshVisitor.locator('html').getAttribute('lang'), expected,
+            'New visitor follows browser language without using a button');
+        } finally {
+          await freshVisitor.close();
+        }
+        console.log('PASS automatic-language', deviceLocale, 'hidden auto + persistent manual choice');
       } finally {
         await localePage.close();
       }
