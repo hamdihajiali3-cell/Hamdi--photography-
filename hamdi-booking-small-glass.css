@@ -180,3 +180,26 @@
   #direct-booking[open]::before,
   #direct-booking[open]::after {animation:none!important;transition:none!important;}
 }
+
+
+/* Zero-wait booking interaction: no open/close/card-tap animations.
+   This is separate from loading the external form over the network. */
+.services .card,
+.services .card > div:last-child,
+.services .card a[data-service],
+.services .card a[data-service] i {
+  transition-duration:0s!important;
+  transition-delay:0s!important;
+}
+#direct-booking,
+#direct-booking[open],
+#direct-booking.mobile-dialog-fallback[open],
+#direct-booking::backdrop {
+  transition:none!important;
+  animation:none!important;
+  animation-delay:0s!important;
+}
+#direct-booking[open]::before,
+#direct-booking[open]::after {
+  animation:none!important;
+}
