@@ -11,6 +11,14 @@ function staticChecks() {
   const headers = fs.readFileSync('_headers', 'utf8');
   assert(headers.includes('microphone=(self)'), 'Nur needs microphone permission on the official same-origin domain');
   assert(!headers.includes('microphone=()'), 'Global permissions policy must not disable all microphones');
+  const nurScript = fs.readFileSync('hamdi-ai/app.js', 'utf8');
+  assert(!nurScript.includes('هذه نسخة للمراجعة، ولم تُنشر'), 'Published Nur page must not call itself an unpublished preview');
+  assert(!nurScript.includes('Bu inceleme sürümü yayınlanmadı'), 'Published Nur Turkish page must not show preview copy');
+  for (const nurPage of ['hamdi-ai/index.html', 'hamdi-ai/assistant.html', 'hamdi-ai/booking.html']) {
+    const html = fs.readFileSync(nurPage, 'utf8');
+    assert(!html.includes('ملاحظة صاحب المعاينة'), 'No preview owner note in ' + nurPage);
+    assert(html.includes('app.js?v=studio-voice-copy-20261123'), 'Nur copy cache-buster is updated: ' + nurPage);
+  }
   for (const prefix of ['', 'tr/']) {
     const page = fs.readFileSync(prefix + 'index.html', 'utf8');
     assert.equal((page.match(/data-service="/g) || []).length, 5, 'Five services must remain: ' + prefix);
