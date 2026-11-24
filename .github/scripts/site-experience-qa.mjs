@@ -109,6 +109,19 @@ async function run() {
             };
           });
           assert(glassSkin.blur.includes('blur('), 'Cards must have a real translucent glass backdrop');
+          const cleanOverlays = await page.locator('.services .card').first().evaluate(el => {
+            const after = getComputedStyle(el, '::after');
+            const before = getComputedStyle(el, '::before');
+            const card = getComputedStyle(el);
+            return {
+              afterContent:after.content,afterBackground:after.backgroundImage,
+              beforeContent:before.content,border:card.borderTopWidth
+            };
+          });
+          assert(cleanOverlays.afterContent === 'none' && cleanOverlays.afterBackground === 'none',
+            'Remove the actual glass-material image overlay inside the card');
+          assert(cleanOverlays.beforeContent !== 'none' && cleanOverlays.border !== '0px',
+            'Preserve the outer gold card border and styling');
           assert.equal(glassSkin.lens, 'none', 'Lens graphics behind text are gone');
 
           const originalCamera = await page.locator('#services').evaluate(section => {

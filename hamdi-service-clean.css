@@ -32,3 +32,13 @@
   animation:none!important;
   opacity:.65;
 }
+
+/* The remaining large 'phone edge' curves are actually the image
+   reference-glass-material.webp on each card's ::after overlay.
+   Remove ONLY that overlay; ::before is the preserved gold outer rim. */
+.services .card::after {
+  content:none!important;
+  display:none!important;
+  background:none!important;
+  background-image:none!important;
+}
