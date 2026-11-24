@@ -109,7 +109,7 @@ async function run() {
             };
           });
           assert(glassSkin.blur.includes('blur('), 'Cards must have a real translucent glass backdrop');
-          assert(glassSkin.lens.includes('reference-camera-lens.webp'), 'Approved mockup camera background is loaded');
+          assert.equal(glassSkin.lens, 'none', 'Lens graphics behind text are gone');
 
           const originalCamera = await page.locator('#services').evaluate(section => {
             const backdrop = getComputedStyle(section, '::before');
@@ -118,14 +118,9 @@ async function run() {
             const mask = backdrop.maskImage || backdrop.webkitMaskImage;
             return {width,sectionWidth:rect.width,mask,photo:backdrop.backgroundImage};
           });
-          if (label === 'desktop') {
-            assert(originalCamera.width < originalCamera.sectionWidth * .5,
-              'Original compact camera remains on left, not stretched across section');
-          }
-          assert(originalCamera.mask.includes('radial-gradient'),
-            'Original soft oval lens mask has been restored');
-          assert(originalCamera.photo.includes('reference-camera-lens.webp'),
-            'Original photographic lens is still visible');
+          assert.equal(originalCamera.photo, 'none', 'No camera lens artwork rendered');
+          assert.equal(originalCamera.photo, 'none',
+            'No large glass-ring photograph behind the service cards');
           assert(glassSkin.actionBackground.includes('linear-gradient'), 'Existing booking buttons have a gold glass finish');
           const crystalFinish = await page.evaluate(() => {
             const card = document.querySelector('#services .card');
@@ -199,7 +194,7 @@ async function run() {
             });
             return {photo,picture,firstHeight,wideHeight,bounds};
           });
-          assert(referenceVisual.photo.includes('reference-camera-lens.webp'), 'Mockup camera photograph appears as background');
+          assert.equal(referenceVisual.photo, 'none', 'Oversized lens graphic no longer crosses card text');
           assert.equal(await page.locator('.services .card > .art:visible').count(), 0,
             'No stickers visible in service cards');
           if (label === 'desktop') {

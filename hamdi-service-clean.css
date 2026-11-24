@@ -15,3 +15,20 @@
   .services .card,.services .card:nth-child(n+4){grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr)}
   .services .card > div:last-child,.services .card:nth-child(n+4) > div:last-child{width:100%;padding:.55rem}
 }
+
+/* Remove the giant lens/ring-shaped glass arcs visible BEHIND the service text.
+   They came from the services section's camera photo and curved aurora overlay,
+   not from the outer cards. The outer glass cards and gold outlines stay intact. */
+.services::before {
+  content:none!important;
+  display:none!important;
+  background:none!important;
+}
+.services::after {
+  content:"";
+  background:
+    radial-gradient(ellipse 58% 62% at 85% 10%,rgba(47,166,119,.13),transparent 77%),
+    linear-gradient(110deg,transparent,rgba(114,221,170,.045),transparent)!important;
+  animation:none!important;
+  opacity:.65;
+}
