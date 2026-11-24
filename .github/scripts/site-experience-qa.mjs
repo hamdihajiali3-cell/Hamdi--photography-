@@ -22,6 +22,7 @@ function staticChecks() {
   for (const prefix of ['', 'tr/']) {
     const page = fs.readFileSync(prefix + 'index.html', 'utf8');
     assert.equal((page.match(/data-service="/g) || []).length, 5, 'Five services must remain: ' + prefix);
+    assert(page.includes('hamdi-service-clean.css?v='), 'Clean service-card styling is linked: ' + prefix);
     assert(page.includes('language-auto.js?v='), 'Early locale detector is loaded: ' + prefix);
     assert(!page.includes('data-lang="auto"'), 'Automatic detection has no extra visible button: ' + prefix);
     assert(page.includes(prefix ? '../hamdi-motion.css?' : 'href="hamdi-motion.css?'), 'Motion style linked: ' + prefix);
@@ -148,8 +149,8 @@ async function run() {
               contactGlass:styles.contact.backgroundImage
             };
           });
-          assert(crystalFinish.cardBlur.includes('blur(') && crystalFinish.innerBlur.includes('blur('),
-            'Crystal cards and inner card panels both refract the background');
+          assert(crystalFinish.cardBlur.includes('blur('), 'Outer service cards retain glass blur');
+          assert(crystalFinish.innerBlur === 'none', 'Inner phone-like panel no longer applies blur');
           assert(crystalFinish.cardLayers.includes('rgba('),
             'Main card is built from translucent glass layers');
           const compactGlass = await page.locator('#services .card').first().evaluate(el => {
@@ -163,14 +164,14 @@ async function run() {
             return { cardWidth:cardRect.width, panelWidth:panelRect.width,
               panelInside:panelRect.left>=cardRect.left-2 && panelRect.right<=cardRect.right+2,
               artWidth:artRect.width, buttonHeight:buttonRect.height,
-              background:panelStyle.backgroundImage,
+              background:panelStyle.backgroundImage,border:panelStyle.borderTopWidth,
               blur:panelStyle.backdropFilter || panelStyle.webkitBackdropFilter || '' };
           });
-          assert(compactGlass.panelInside && compactGlass.panelWidth < compactGlass.cardWidth * .96,
-            'Small inner glass is narrower than the unchanged outer card');
-          assert(compactGlass.artWidth <= 93, 'Service illustration is no larger than 92px');
-          assert(compactGlass.blur.includes('blur(') && compactGlass.background.includes('rgba('),
-            'Compact service panel is translucent layered crystal');
+          assert(compactGlass.panelInside && compactGlass.panelWidth <= compactGlass.cardWidth,
+            'Clean card text remains inside the outer card');
+          assert.equal(compactGlass.artWidth, 0, 'Decorative sticker icons are hidden');
+          assert.equal(compactGlass.border, '0px', 'Inner phone-shaped border removed');
+          assert.equal(compactGlass.background, 'none', 'Inner plate removed');
           assert(compactGlass.buttonHeight >= 43, 'Smaller glass keeps the booking action accessible');
           assert(crystalFinish.scene.includes('radial-gradient'),
             'Emerald and gold cinematic background is present behind cards');
@@ -199,7 +200,8 @@ async function run() {
             return {photo,picture,firstHeight,wideHeight,bounds};
           });
           assert(referenceVisual.photo.includes('reference-camera-lens.webp'), 'Mockup camera photograph appears as background');
-          assert(referenceVisual.picture.includes('reference-service-icons.webp'), 'Mockup service illustrations appear on all cards');
+          assert.equal(await page.locator('.services .card > .art:visible').count(), 0,
+            'No stickers visible in service cards');
           if (label === 'desktop') {
             assert(referenceVisual.firstHeight <= 355, 'Desktop first-row cards should resemble compact mockup');
             assert(referenceVisual.wideHeight <= 250, 'Desktop second-row cards should be wide and short');

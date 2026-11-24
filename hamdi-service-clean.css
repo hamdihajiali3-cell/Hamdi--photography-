@@ -1,0 +1,17 @@
+/* Clean service cards: no pictogram stickers or phone-like inner plates. */
+.services .card,.services .card:first-child,.services .card:nth-child(3),.services .card:nth-child(4),.services .card.portrait,.services .card:nth-child(n+4){
+  grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr);align-items:center;
+}
+.services .card > .art,.services .card .art.wheel,.services .card .art.cap,.services .card .art.scissors,.services .card .art.photo,.services .card .art.portrait-art{display:none!important}
+.services .card > div:last-child,.services .card:nth-child(n+4) > div:last-child,html[lang="tr"] .services .card > div:last-child{
+  width:100%;max-width:100%;min-width:0;align-self:center;justify-self:center;
+  padding:clamp(.55rem,1.2vw,.95rem);overflow:visible;border:0;border-radius:0;
+  background:transparent;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;
+}
+.services .card > div:last-child::before,.services .card > div:last-child::after{display:none!important;content:none!important}
+.services .card > div:last-child :is(h3,p,a[data-service]){position:relative;z-index:1}
+.services .card > div:last-child > span{position:absolute;top:.3rem;inset-inline-end:.3rem}
+@media(max-width:650px){
+  .services .card,.services .card:nth-child(n+4){grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr)}
+  .services .card > div:last-child,.services .card:nth-child(n+4) > div:last-child{width:100%;padding:.55rem}
+}

@@ -18,6 +18,7 @@ on:
       - "script.js"
       - "language-auto.js"
       - "style.css"
+      - "hamdi-service-clean.css"
       - "hamdi-inline/site-assistant.mjs"
   workflow_dispatch:
 
