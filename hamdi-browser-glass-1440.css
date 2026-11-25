@@ -1,0 +1,144 @@
+/* Hamdi Photography | full-viewport 1440p crystal surfaces.
+   Keeps original structures, luxury booking buttons, Nur overlay and the
+   clean service-card decoration policy intact. Both themes are full width. */
+:root{
+  --hg-stroke:rgba(250,219,156,.38);
+  --hg-frost:rgba(10,76,52,.43);
+  --hg-soft-light:rgba(236,255,235,.12);
+}
+html{background:#03130e}
+body{
+  background:
+    radial-gradient(ellipse 75% 50% at 12% 0%,rgba(43,169,110,.2),transparent 77%),
+    radial-gradient(ellipse 65% 34% at 96% 70%,rgba(231,193,113,.10),transparent 76%),
+    linear-gradient(145deg,#020f0b,#0a2b1f 54%,#03130e)!important;
+}
+.site-frame{
+  width:100%!important;max-width:none!important;min-height:100svh!important;
+  margin:0!important;border:0!important;border-radius:0!important;
+  overflow:clip!important;
+  background:linear-gradient(153deg,rgba(18,90,61,.23),rgba(2,23,17,.34))!important;
+  box-shadow:inset 0 1px 0 rgba(255,247,224,.11)!important;
+}
+header{
+  background:
+    linear-gradient(117deg,rgba(250,225,170,.10),transparent 32%),
+    linear-gradient(115deg,rgba(10,69,48,.80),rgba(3,30,23,.76) 56%,rgba(12,70,47,.76))!important;
+  border-bottom:1px solid var(--hg-stroke)!important;
+  box-shadow:inset 0 1px rgba(255,252,238,.17),0 12px 32px rgba(0,0,0,.17)!important;
+  -webkit-backdrop-filter:blur(24px) saturate(1.45);
+  backdrop-filter:blur(24px) saturate(1.45);
+}
+.hero,.steps,.booking-faq,.contact{
+  position:relative;
+  background:
+    linear-gradient(125deg,rgba(246,255,239,.075),transparent 26%),
+    radial-gradient(ellipse 40% 73% at 86% 7%,rgba(74,214,149,.13),transparent 83%),
+    linear-gradient(145deg,rgba(15,88,60,.52),rgba(3,32,23,.56) 55%,rgba(8,54,39,.52))!important;
+  border-bottom:1px solid rgba(245,211,147,.18)!important;
+  box-shadow:inset 0 1px rgba(241,255,237,.10)!important;
+}
+/* Keep the photographic service-scene background defined by the service
+   cleanup stylesheet. Its ::before and ::after are intentionally untouched. */
+.services{
+  border-block:1px solid rgba(244,207,143,.21)!important;
+  box-shadow:inset 0 2px rgba(255,250,220,.08),inset 0 -1px rgba(244,207,143,.10)!important;
+}
+.studio,.booking-faq :is(.faq-item,details),.steps :is(li,.step),.contact-links a{
+  border-color:rgba(250,226,178,.30);
+  background-color:rgba(10,71,49,.22);
+  -webkit-backdrop-filter:blur(16px) saturate(1.25);
+  backdrop-filter:blur(16px) saturate(1.25);
+  box-shadow:inset 0 1px rgba(255,252,234,.14),0 12px 32px rgba(0,11,8,.18);
+}
+.studio{
+  background:
+    linear-gradient(138deg,rgba(252,255,231,.15),transparent 28%),
+    radial-gradient(ellipse at 85% 0%,rgba(141,248,183,.18),transparent 72%),
+    linear-gradient(145deg,rgba(14,99,65,.50),rgba(3,31,24,.63))!important;
+  border:1px solid rgba(255,225,174,.53)!important;
+}
+.services .card{
+  -webkit-backdrop-filter:blur(24px) saturate(1.5)!important;
+  backdrop-filter:blur(24px) saturate(1.5)!important;
+}
+footer{
+  background:linear-gradient(130deg,rgba(15,87,58,.65),rgba(2,23,17,.85))!important;
+  border-top:1px solid rgba(245,211,147,.22)!important;
+  -webkit-backdrop-filter:blur(16px);
+  backdrop-filter:blur(16px);
+}
+.glass-theme-switch{
+  display:inline-flex;align-items:center;gap:3px;
+  padding:3px;border:1px solid rgba(241,211,157,.42);
+  border-radius:999px;background:rgba(4,35,27,.34);
+  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+}
+.glass-theme-switch button{
+  appearance:none;border:0;border-radius:999px;
+  padding:.39rem .67rem;min-height:32px;cursor:pointer;
+  color:#f1eddc;background:transparent;font:inherit;
+  font-size:.78rem;white-space:nowrap;
+}
+.glass-theme-switch button[aria-pressed="true"]{
+  background:linear-gradient(120deg,rgba(227,190,121,.27),rgba(65,166,108,.27));
+  box-shadow:inset 0 1px rgba(255,252,230,.22);
+  color:#fff7da;
+}
+.glass-theme-switch button:focus-visible{outline:2px solid #f9d494;outline-offset:2px}
+/* Softer glass: brighter emerald, reduced gilding, still translucent. */
+html[data-glass-theme="soft"]{
+  --hg-stroke:rgba(198,255,222,.32);
+  --hg-frost:rgba(24,119,85,.30);
+}
+html[data-glass-theme="soft"] body{
+  background:
+    radial-gradient(ellipse 75% 65% at 14% 12%,rgba(80,217,156,.19),transparent 80%),
+    linear-gradient(135deg,#06231a,#11543c 55%,#071e18)!important;
+}
+html[data-glass-theme="soft"] .site-frame{
+  background:linear-gradient(145deg,rgba(58,171,119,.18),rgba(4,40,29,.26))!important;
+}
+html[data-glass-theme="soft"] header{
+  background:linear-gradient(115deg,rgba(31,123,88,.65),rgba(5,58,42,.70))!important;
+  border-bottom-color:rgba(197,255,217,.30)!important;
+}
+html[data-glass-theme="soft"] :is(.hero,.steps,.booking-faq,.contact){
+  background:
+    linear-gradient(124deg,rgba(243,255,245,.13),transparent 34%),
+    radial-gradient(ellipse 48% 78% at 89% 12%,rgba(101,240,170,.20),transparent 80%),
+    linear-gradient(140deg,rgba(26,134,94,.42),rgba(6,62,45,.43))!important;
+}
+html[data-glass-theme="soft"] .studio{
+  background:linear-gradient(145deg,rgba(236,255,233,.18),rgba(17,110,79,.37) 41%,rgba(4,40,30,.51))!important;
+  border-color:rgba(216,255,224,.46)!important;
+}
+html[data-glass-theme="soft"] .services .card{
+  border-color:rgba(218,255,231,.67)!important;
+  background:
+    linear-gradient(134deg,rgba(239,255,239,.24),transparent 34%),
+    linear-gradient(152deg,rgba(24,135,90,.45),rgba(4,54,42,.54))!important;
+}
+html[data-glass-theme="soft"] footer{
+  background:linear-gradient(140deg,rgba(32,119,83,.58),rgba(6,43,32,.77))!important;
+}
+@media(min-width:1800px){
+  .hero,.steps,.booking-faq,.contact{padding-inline:clamp(3rem,5vw,8rem)}
+  .services .cards,.services>.section-copy{max-width:1900px}
+}
+@media(min-width:2400px){
+  .hero{min-height:calc(100svh - 7rem)}
+  .services .cards,.services>.section-copy{max-width:2100px}
+}
+@media(max-width:920px){
+  header{backdrop-filter:blur(15px)}
+  .glass-theme-switch button{font-size:.7rem;padding:.33rem .50rem}
+}
+@media(max-width:650px){
+  .site-frame{overflow:hidden!important}
+  .glass-theme-switch{margin-block:.25rem}
+  .glass-theme-switch button{min-height:34px}
+}
+@media(prefers-reduced-transparency:reduce){
+  header,.studio,.services .card{backdrop-filter:none!important}
+}
