@@ -186,3 +186,15 @@
     background-position:left top!important;
   }
 }
+
+/* Requested: hide camera artwork entirely on all screen sizes and locales.
+   Keep the emerald/glass background, cards and booking controls intact. */
+.services::before,
+html[lang="ar"] .services::before,
+html[lang="tr"] .services::before {
+  content:none!important;
+  display:none!important;
+  visibility:hidden!important;
+  background:none!important;
+  background-image:none!important;
+}
