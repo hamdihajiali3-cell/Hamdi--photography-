@@ -131,3 +131,33 @@
     opacity:.84!important;
   }
 }
+
+/* Keep cinematic light effects OFF the camera artwork itself. The old
+   full-section ::after translucent aurora was still painted on top of the
+   side camera despite removing its image mask. */
+.services::before{
+  z-index:2!important;
+  opacity:1!important;
+  filter:none!important;
+  -webkit-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+  mix-blend-mode:normal!important;
+}
+.services::after{
+  /* Film/aurora remains in the content area, not across camera lens. */
+  -webkit-clip-path:inset(0 0 0 clamp(170px,17vw,245px))!important;
+  clip-path:inset(0 0 0 clamp(170px,17vw,245px))!important;
+}
+@media(min-width:651px) and (max-width:1050px){
+  .services::after{
+    -webkit-clip-path:inset(0 0 0 clamp(80px,11vw,115px))!important;
+    clip-path:inset(0 0 0 clamp(80px,11vw,115px))!important;
+  }
+}
+@media(max-width:650px){
+  .services::after{
+    -webkit-clip-path:inset(174px 0 0 0)!important;
+    clip-path:inset(174px 0 0 0)!important;
+  }
+}
