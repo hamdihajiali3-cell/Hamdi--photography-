@@ -94,3 +94,40 @@
 @media(prefers-reduced-motion:reduce) {
   .services::after {animation:none!important;}
 }
+
+/* Camera visibility repair: previous viewport-wide mask faded away most of
+   the tiny WebP lens, and mobile CSS hid it completely. Use the existing
+   full-resolution vector lens, fully visible in its own side-safe area. */
+.services::before{
+  content:""!important;
+  display:block!important;
+  position:absolute!important;
+  inset:0 auto 0 0!important;
+  width:clamp(170px,17vw,245px)!important;
+  height:100%!important;
+  background-image:url("hamdi-assets/emerald-gold-camera-lens.svg")!important;
+  background-position:left 51%!important;
+  background-size:100% auto!important;
+  background-repeat:no-repeat!important;
+  opacity:1!important;
+  filter:none!important;
+  mix-blend-mode:normal!important;
+  -webkit-mask-image:none!important;
+  mask-image:none!important;
+  pointer-events:none!important;
+  z-index:0!important;
+}
+@media(min-width:651px) and (max-width:1050px){
+  .services::before{width:clamp(80px,11vw,115px)!important;opacity:.83!important}
+}
+@media(max-width:650px){
+  .services::before{
+    display:block!important;
+    inset:0 auto auto 0!important;
+    width:104px!important;
+    height:174px!important;
+    background-position:left top!important;
+    background-size:104px auto!important;
+    opacity:.84!important;
+  }
+}
