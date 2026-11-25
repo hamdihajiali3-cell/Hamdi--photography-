@@ -161,3 +161,28 @@
     clip-path:inset(174px 0 0 0)!important;
   }
 }
+
+/* Fix the straight horizontal camera cut visible in the screenshot:
+   the older reference-match stylesheet left transform:translateY(-50%)
+   on ::before. The full-height pseudo-element was being shifted half a
+   section upward. Reset that inherited transform and its fixed box rules. */
+.services::before{
+  top:0!important;
+  bottom:0!important;
+  left:0!important;
+  right:auto!important;
+  transform:none!important;
+  -webkit-transform:none!important;
+  background-position:left center!important;
+  background-origin:border-box!important;
+  background-clip:border-box!important;
+}
+@media(max-width:650px){
+  .services::before{
+    top:0!important;
+    bottom:auto!important;
+    transform:none!important;
+    -webkit-transform:none!important;
+    background-position:left top!important;
+  }
+}
