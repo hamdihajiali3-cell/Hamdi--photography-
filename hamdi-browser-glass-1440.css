@@ -142,3 +142,25 @@ html[data-glass-theme="soft"] footer{
 @media(prefers-reduced-transparency:reduce){
   header,.studio,.services .card{backdrop-filter:none!important}
 }
+
+/* Slow emerald water ripples behind the glass surfaces. */
+body::after{
+  content:"";
+  position:fixed;
+  inset:-9%;
+  z-index:0;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse at 27% 38%,rgba(106,232,171,.25),transparent 53%),
+    repeating-radial-gradient(ellipse at 19% 88%,transparent 0 55px,rgba(132,242,188,.16) 66px 69px,rgba(31,137,103,.10) 79px,transparent 104px),
+    repeating-radial-gradient(ellipse at 87% 16%,transparent 0 82px,rgba(91,210,164,.12) 96px 99px,transparent 131px);
+  opacity:.72;
+  transform:translate3d(-2.5%,1%,0) scale(1.03) rotate(-5deg);
+}
+@media(prefers-reduced-motion:no-preference){
+  body::after{animation:hamdi-water-drift 19s ease-in-out infinite alternate}
+}
+@keyframes hamdi-water-drift{
+  48%{transform:translate3d(2.4%,-1.5%,0) scale(1.09) rotate(-1deg)}
+  100%{transform:translate3d(-.7%,-2.6%,0) scale(1.15) rotate(3deg)}
+}
