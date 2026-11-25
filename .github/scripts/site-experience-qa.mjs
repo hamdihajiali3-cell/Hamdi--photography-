@@ -387,6 +387,39 @@ async function run() {
         await localePage.close();
       }
     }
+    // 1440p monitor check: the cinematic background remains scalable, cards
+    // stay within the viewport and original glass/booking actions are intact.
+    for (const [locale, language] of [['', 'ar'], ['tr/', 'tr']]) {
+      const qhd = await browser.newPage({
+        viewport:{width:2560,height:1440},deviceScaleFactor:1,
+        locale:language === 'tr' ? 'tr-TR' : 'ar-SA'
+      });
+      try {
+        const response = await qhd.goto(origin + locale, {waitUntil:'domcontentloaded'});
+        assert.equal(response.status(),200,'1440p page responds');
+        const view = await qhd.evaluate(() => {
+          const section = document.getElementById('services');
+          const card = section.querySelector('.card');
+          const cardStyle = getComputedStyle(card);
+          return {
+            width:document.documentElement.scrollWidth,
+            viewport:innerWidth,
+            cards:section.querySelectorAll('.card').length,
+            background:getComputedStyle(section).backgroundImage,
+            blur:cardStyle.backdropFilter || cardStyle.webkitBackdropFilter,
+            art:getComputedStyle(card.querySelector('.art')).display,
+            before:getComputedStyle(card,'::before').content
+          };
+        });
+        assert(view.width <= view.viewport + 2,'No horizontal scrolling at 2560x1440');
+        assert.equal(view.cards,5,'All five services at 1440p');
+        assert(view.background.includes('linear-gradient'),'Cinematic emerald background scales to 1440p');
+        assert(view.blur.includes('blur('),'Gold glass cards retained at 1440p');
+        assert.equal(view.art,'none','Sticker icons hidden at 1440p');
+        assert.notEqual(view.before,'none','Outer gold card rim retained at 1440p');
+        console.log('PASS 1440p',language,'cinematic backdrop, five glass cards');
+      } finally { await qhd.close(); }
+    }
     // Non-destructive production Nur visual diagnostic. The remote Worker may
     // fail to load on CI; keep smoke checks independent of external availability.
     const nurPage = await browser.newPage({ viewport: { width: 1280, height: 900 } });
