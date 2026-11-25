@@ -118,8 +118,10 @@ async function run() {
               beforeContent:before.content,border:card.borderTopWidth
             };
           });
-          assert(cleanOverlays.afterContent === 'none' && cleanOverlays.afterBackground === 'none',
-            'Remove the actual glass-material image overlay inside the card');
+          assert(cleanOverlays.afterContent !== 'none' &&
+            cleanOverlays.afterBackground.includes('linear-gradient') &&
+            !cleanOverlays.afterBackground.includes('reference-glass-material.webp'),
+            'Restore subtle crystal reflection without phone-shaped glass image');
           assert(cleanOverlays.beforeContent !== 'none' && cleanOverlays.border !== '0px',
             'Preserve the outer gold card border and styling');
           assert.equal(glassSkin.lens, 'none', 'Lens graphics behind text are gone');

@@ -42,3 +42,24 @@
   background:none!important;
   background-image:none!important;
 }
+
+/* Restore soft crystal reflections ON THE OUTER CARD, without the image
+   texture that drew oversized screen/phone-shaped arcs behind the text.
+   The gold rim is still ::before, and the inner phone-shaped panel stays gone. */
+.services .card::after {
+  content:""!important;
+  display:block!important;
+  inset:0;
+  z-index:0;
+  border-radius:inherit;
+  pointer-events:none;
+  opacity:.58;
+  mix-blend-mode:screen;
+  filter:none;
+  background:
+    linear-gradient(132deg,rgba(255,255,233,.19) 0%,rgba(211,255,229,.085) 12%,transparent 31%),
+    linear-gradient(315deg,rgba(233,192,108,.09),transparent 33%)!important;
+  background-image:
+    linear-gradient(132deg,rgba(255,255,233,.19) 0%,rgba(211,255,229,.085) 12%,transparent 31%),
+    linear-gradient(315deg,rgba(233,192,108,.09),transparent 33%)!important;
+}
