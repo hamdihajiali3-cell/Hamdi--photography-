@@ -124,7 +124,8 @@ async function run() {
             'Restore subtle crystal reflection without phone-shaped glass image');
           assert(cleanOverlays.beforeContent !== 'none' && cleanOverlays.border !== '0px',
             'Preserve the outer gold card border and styling');
-          assert.equal(glassSkin.lens, 'none', 'Lens graphics behind text are gone');
+          if (label === 'desktop')
+            assert(glassSkin.lens.includes('reference-camera-lens.webp'), 'Original lens returned to the side background');
 
           const originalCamera = await page.locator('#services').evaluate(section => {
             const backdrop = getComputedStyle(section, '::before');
@@ -133,9 +134,10 @@ async function run() {
             const mask = backdrop.maskImage || backdrop.webkitMaskImage;
             return {width,sectionWidth:rect.width,mask,photo:backdrop.backgroundImage};
           });
-          assert.equal(originalCamera.photo, 'none', 'No camera lens artwork rendered');
-          assert.equal(originalCamera.photo, 'none',
-            'No large glass-ring photograph behind the service cards');
+          if (label === 'desktop')
+            assert(originalCamera.photo.includes('reference-camera-lens.webp'), 'Side camera photo restored');
+          if (label === 'desktop')
+            assert(originalCamera.mask.includes('linear-gradient'), 'Lens fades out before crossing card text');
           assert(glassSkin.actionBackground.includes('linear-gradient'), 'Existing booking buttons have a gold glass finish');
           const crystalFinish = await page.evaluate(() => {
             const card = document.querySelector('#services .card');
@@ -209,7 +211,8 @@ async function run() {
             });
             return {photo,picture,firstHeight,wideHeight,bounds};
           });
-          assert.equal(referenceVisual.photo, 'none', 'Oversized lens graphic no longer crosses card text');
+          if (label === 'desktop')
+            assert(referenceVisual.photo.includes('reference-camera-lens.webp'), 'Original photographic background is visible at the section edge');
           assert.equal(await page.locator('.services .card > .art:visible').count(), 0,
             'No stickers visible in service cards');
           if (label === 'desktop') {

@@ -63,3 +63,34 @@
     linear-gradient(132deg,rgba(255,255,233,.19) 0%,rgba(211,255,229,.085) 12%,transparent 31%),
     linear-gradient(315deg,rgba(233,192,108,.09),transparent 33%)!important;
 }
+
+/* Restore the original photographic/cinematic section background, confined
+   to its LEFT decorative zone so that it never overlays text inside cards.
+   The card's glass sheen remains image-free to avoid the unwanted arcs. */
+.services::before {
+  content:""!important;
+  display:block!important;
+  background:url("hamdi-assets/reference-camera-lens.webp") no-repeat left 54% / clamp(175px,17vw,228px) auto!important;
+  opacity:.78!important;
+  -webkit-mask-image:linear-gradient(to right,#000 0%,#000 6%,rgba(0,0,0,.38) 13%,transparent 22%)!important;
+  mask-image:linear-gradient(to right,#000 0%,#000 6%,rgba(0,0,0,.38) 13%,transparent 22%)!important;
+}
+.services::after {
+  content:""!important;
+  display:block!important;
+  opacity:.86!important;
+  background:
+    radial-gradient(ellipse 60% 80% at 90% 0%,rgba(35,173,106,.19),transparent 75%),
+    radial-gradient(ellipse 65% 65% at 40% 100%,rgba(50,194,139,.16),transparent 78%),
+    linear-gradient(139deg,transparent 20%,rgba(227,194,121,.085) 33%,transparent 44%),
+    linear-gradient(160deg,transparent 58%,rgba(93,211,140,.08) 67%,transparent 79%)!important;
+  animation:hamdi-crystal-aurora 14s ease-in-out infinite alternate!important;
+}
+@media(max-width:650px) {
+  /* Retain the cinematic colors on phones without a lens over text. */
+  .services::before {display:none!important;}
+  .services::after {opacity:.7!important;animation:none!important;}
+}
+@media(prefers-reduced-motion:reduce) {
+  .services::after {animation:none!important;}
+}
